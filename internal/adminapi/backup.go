@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/fs"
 	"net/http"
 	"strconv"
@@ -91,11 +90,10 @@ func (a *API) backupStatus(w http.ResponseWriter, _ *http.Request) {
 // either is not answered with an irrelevant variable to go and set.
 func pairURLError(raw string, allowPrivate bool) error {
 	err := recoveryclient.ValidateURL(raw, allowPrivate)
-	if err == nil || allowPrivate {
-		return err
-	}
-	if recoveryclient.ValidateURL(raw, true) == nil {
-		return fmt.Errorf("%w; set KYDNS_BACKUP_ALLOW_PRIVATE_RECOVERY for a KyRecovery on your own network", err)
+	if errors.Is(err, recoveryclient.ErrPrivateDestination) {
+		// One short message: the library's hint stacked on ours overran AuditSafe's limit
+		// and cut the switch name off the page.
+		return errors.New("recovery URL cannot target a private or reserved address; set KYDNS_BACKUP_ALLOW_PRIVATE_RECOVERY for a KyRecovery on your own network")
 	}
 	return err
 }
