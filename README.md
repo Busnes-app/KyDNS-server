@@ -515,7 +515,7 @@ curl -LO https://github.com/Busnes-app/kydns-server/releases/latest/download/kyd
 Verify it came from this repository's CI before installing:
 
 ```sh
-gh attestation verify kydns_<version>_arm64.deb --repo Busnes-app/kydns-server
+gh attestation verify kydns_<version>_arm64.deb --repo Busnes-app/KyDNS-server
 sudo apt install ./kydns_<version>_arm64.deb
 ```
 
@@ -525,7 +525,7 @@ and `aarch64`:
 ```sh
 # pick the .rpm matching your architecture from the latest release
 curl -LO https://github.com/Busnes-app/kydns-server/releases/latest/download/kydns-<version>-1.aarch64.rpm
-gh attestation verify kydns-<version>-1.aarch64.rpm --repo Busnes-app/kydns-server
+gh attestation verify kydns-<version>-1.aarch64.rpm --repo Busnes-app/KyDNS-server
 sudo dnf install ./kydns-<version>-1.aarch64.rpm
 ```
 
