@@ -10,9 +10,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Busness-app/kydns-server/internal/dhcpd"
-	"github.com/Busness-app/kydns-server/internal/discovery"
-	"github.com/Busness-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/dhcpd"
+	"github.com/Busnes-app/kydns-server/internal/discovery"
+	"github.com/Busnes-app/kydns-server/internal/store"
 )
 
 // dhcpWanted reports whether the built-in server should be running. A replica

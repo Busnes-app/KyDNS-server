@@ -16,9 +16,9 @@ import (
 
 	"github.com/miekg/dns"
 
-	"github.com/Busness-app/kydns-server/internal/config"
-	"github.com/Busness-app/kydns-server/internal/policy"
-	"github.com/Busness-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/config"
+	"github.com/Busnes-app/kydns-server/internal/policy"
+	"github.com/Busnes-app/kydns-server/internal/store"
 )
 
 // freePorts reserves n distinct ports. Every reservation is held open until

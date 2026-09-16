@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Busness-app/kydns-server/internal/config"
-	"github.com/Busness-app/kydns-server/internal/dnsserver"
+	"github.com/Busnes-app/kydns-server/internal/config"
+	"github.com/Busnes-app/kydns-server/internal/dnsserver"
 )
 
 func TestViewCreateAndList(t *testing.T) {

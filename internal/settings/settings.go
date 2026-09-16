@@ -8,8 +8,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/Busness-app/kydns-server/internal/store"
-	"github.com/Busness-app/kydns-server/internal/upstream"
+	"github.com/Busnes-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/upstream"
 )
 
 // TailscaleCGNAT is the range AllowTailscale adds to the ACL.

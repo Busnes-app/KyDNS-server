@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Busness-app/kydns-server/internal/settings"
-	"github.com/Busness-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/settings"
+	"github.com/Busnes-app/kydns-server/internal/store"
 )
 
 // validForm is a complete, accepted settings post. Tests change one field.

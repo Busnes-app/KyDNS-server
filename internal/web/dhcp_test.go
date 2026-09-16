@@ -11,9 +11,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Busness-app/kydns-server/internal/adminapi"
-	"github.com/Busness-app/kydns-server/internal/dhcpd"
-	"github.com/Busness-app/kydns-server/internal/discovery/dhcp"
+	"github.com/Busnes-app/kydns-server/internal/adminapi"
+	"github.com/Busnes-app/kydns-server/internal/dhcpd"
+	"github.com/Busnes-app/kydns-server/internal/discovery/dhcp"
 )
 
 // errNoBind stands in for the listener refusing to start.

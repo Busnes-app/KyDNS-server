@@ -6,7 +6,7 @@ import (
 	"net/netip"
 	"sort"
 
-	"github.com/Busness-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/store"
 )
 
 type entry struct {

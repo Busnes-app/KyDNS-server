@@ -14,9 +14,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Busness-app/kydns-server/internal/adminapi"
-	"github.com/Busness-app/kydns-server/internal/replica"
-	"github.com/Busness-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/adminapi"
+	"github.com/Busnes-app/kydns-server/internal/replica"
+	"github.com/Busnes-app/kydns-server/internal/store"
 )
 
 // The fixtures are chosen so no assertion can be satisfied by another's value:

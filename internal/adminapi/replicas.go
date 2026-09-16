@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Busness-app/kydns-server/internal/replica"
-	"github.com/Busness-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/replica"
+	"github.com/Busnes-app/kydns-server/internal/store"
 )
 
 // ErrNotServingReplicas is what Invite returns on a node with no replication

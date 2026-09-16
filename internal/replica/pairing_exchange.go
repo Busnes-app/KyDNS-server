@@ -14,7 +14,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/Busness-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/store"
 )
 
 // maxPairBytes caps both directions of the exchange: two short strings.

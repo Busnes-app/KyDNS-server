@@ -13,9 +13,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Busness-app/kydns-server/internal/adminapi"
-	"github.com/Busness-app/kydns-server/internal/registry"
-	"github.com/Busness-app/kydns-server/internal/replica"
+	"github.com/Busnes-app/kydns-server/internal/adminapi"
+	"github.com/Busnes-app/kydns-server/internal/registry"
+	"github.com/Busnes-app/kydns-server/internal/replica"
 )
 
 // The fingerprint this test's puller is pinned to. It shares no substring with

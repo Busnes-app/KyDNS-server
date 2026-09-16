@@ -657,8 +657,8 @@ import (
 	"github.com/Busness-app/ky-primitives/capsule"
 	"github.com/Busness-app/ky-primitives/recoveryclient"
 	"github.com/Busness-app/ky-primitives/recoverykey"
-	"github.com/Busness-app/kydns-server/internal/config"
-	"github.com/Busness-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/config"
+	"github.com/Busnes-app/kydns-server/internal/store"
 )
 
 func testService(t *testing.T, tweak func(*config.Config)) *Service {
@@ -860,8 +860,8 @@ import (
 	"github.com/Busness-app/ky-primitives/capsule"
 	"github.com/Busness-app/ky-primitives/keyfile"
 	"github.com/Busness-app/ky-primitives/recoveryclient"
-	"github.com/Busness-app/kydns-server/internal/config"
-	"github.com/Busness-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/config"
+	"github.com/Busnes-app/kydns-server/internal/store"
 	"gopkg.in/yaml.v3"
 )
 
@@ -1249,8 +1249,8 @@ import (
 	"time"
 
 	"github.com/Busness-app/ky-primitives/recoveryclient"
-	"github.com/Busness-app/kydns-server/internal/backup"
-	"github.com/Busness-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/backup"
+	"github.com/Busnes-app/kydns-server/internal/store"
 )
 
 func (a *API) requireBackup(w http.ResponseWriter) *backup.Service {

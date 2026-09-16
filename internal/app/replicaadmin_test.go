@@ -12,8 +12,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Busness-app/kydns-server/internal/replica"
-	"github.com/Busness-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/replica"
+	"github.com/Busnes-app/kydns-server/internal/store"
 )
 
 // startPrimaryListener runs the real replication listener the way the daemon

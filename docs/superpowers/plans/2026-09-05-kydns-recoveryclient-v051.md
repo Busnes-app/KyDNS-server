@@ -1,5 +1,5 @@
 **Repo:** kydns-server
-**PR:** #31 — https://github.com/Busness-app/kydns-server/pull/31 (migration; predecessor #30 merged)
+**PR:** #31 — https://github.com/Busnes-app/kydns-server/pull/31 (migration; predecessor #30 merged)
 **Worktree:** /home/yoshi/busness.app/kydns-server (branch fix/recoveryclient-v051; baseline 14839aea5a383d490fba7e2dc858424b12b91c39)
 
 # KyDNS recoveryclient v0.5.1 migration plan

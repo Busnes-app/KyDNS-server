@@ -9,12 +9,12 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/Busnes-app/kydns-server/internal/backup"
+	"github.com/Busnes-app/kydns-server/internal/config"
+	"github.com/Busnes-app/kydns-server/internal/registry"
+	"github.com/Busnes-app/kydns-server/internal/store"
 	"github.com/Busness-app/ky-primitives/recoveryclient"
 	"github.com/Busness-app/ky-primitives/recoverykey"
-	"github.com/Busness-app/kydns-server/internal/backup"
-	"github.com/Busness-app/kydns-server/internal/config"
-	"github.com/Busness-app/kydns-server/internal/registry"
-	"github.com/Busness-app/kydns-server/internal/store"
 )
 
 // backupEnv is one API with a real store and a real backup.Service behind it.
