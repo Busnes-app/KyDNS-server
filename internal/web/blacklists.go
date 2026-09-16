@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Busness-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/store"
 )
 
 var errNoSuchList = errors.New("no such list")

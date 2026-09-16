@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Busness-app/kydns-server/internal/store"
-	"github.com/Busness-app/kydns-server/internal/zone"
+	"github.com/Busnes-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/zone"
 	"github.com/miekg/dns"
 )
 

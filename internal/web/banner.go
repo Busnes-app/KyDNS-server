@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Busness-app/kydns-server/internal/dnsserver"
-	"github.com/Busness-app/kydns-server/internal/settings"
-	"github.com/Busness-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/dnsserver"
+	"github.com/Busnes-app/kydns-server/internal/settings"
+	"github.com/Busnes-app/kydns-server/internal/store"
 )
 
 // Banner is a dashboard notice. It is not dismissible by design: each one

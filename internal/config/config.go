@@ -13,7 +13,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Busness-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/store"
 	"gopkg.in/yaml.v3"
 )
 

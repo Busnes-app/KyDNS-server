@@ -61,7 +61,7 @@ import (
 	"encoding/base64"
 	"fmt"
 
-	"github.com/Busness-app/ky-primitives/recoverykey"
+	"github.com/Busnes-app/ky-primitives/recoverykey"
 )
 
 // Prints the base64 public half of a fresh recovery key. The private half and

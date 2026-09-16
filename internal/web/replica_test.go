@@ -11,10 +11,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Busness-app/kydns-server/internal/adminapi"
-	"github.com/Busness-app/kydns-server/internal/discovery/dhcp"
-	"github.com/Busness-app/kydns-server/internal/settings"
-	"github.com/Busness-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/adminapi"
+	"github.com/Busnes-app/kydns-server/internal/discovery/dhcp"
+	"github.com/Busnes-app/kydns-server/internal/settings"
+	"github.com/Busnes-app/kydns-server/internal/store"
 )
 
 const testPrimaryAddr = "10.0.0.9:8443"

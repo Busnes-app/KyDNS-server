@@ -2,7 +2,7 @@
 
 ## Purpose
 
-`internal/backup` is KyDNS's adapter over `github.com/Busness-app/ky-primitives/recoveryclient`.
+`internal/backup` is KyDNS's adapter over `github.com/Busnes-app/ky-primitives/recoveryclient`.
 It owns only what differs per product: what a KyDNS capsule carries, the KyDNS drill
 checks, and one `Service` that the admin routes, the scheduler and the CLI share. Pairing,
 key pinning, sealing, delivery, retention, schedule and restore are the library's; a

@@ -3,7 +3,7 @@ package policy
 import (
 	"testing"
 
-	"github.com/Busness-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/store"
 )
 
 func testSnapshot(t *testing.T, enabled bool) *Snapshot {

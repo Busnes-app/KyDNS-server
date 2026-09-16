@@ -3,10 +3,10 @@ package app
 import (
 	"sync"
 
-	"github.com/Busness-app/kydns-server/internal/adminapi"
-	"github.com/Busness-app/kydns-server/internal/config"
-	"github.com/Busness-app/kydns-server/internal/replica"
-	"github.com/Busness-app/kydns-server/internal/web"
+	"github.com/Busnes-app/kydns-server/internal/adminapi"
+	"github.com/Busnes-app/kydns-server/internal/config"
+	"github.com/Busnes-app/kydns-server/internal/replica"
+	"github.com/Busnes-app/kydns-server/internal/web"
 )
 
 // Role is what this node is.

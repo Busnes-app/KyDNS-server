@@ -10,8 +10,8 @@ import (
 	"sync"
 	"time"
 
-	idhcp "github.com/Busness-app/kydns-server/internal/discovery/dhcp"
-	"github.com/Busness-app/kydns-server/internal/store"
+	idhcp "github.com/Busnes-app/kydns-server/internal/discovery/dhcp"
+	"github.com/Busnes-app/kydns-server/internal/store"
 	"github.com/insomniacslk/dhcp/dhcpv4"
 	"github.com/insomniacslk/dhcp/dhcpv4/server4"
 )

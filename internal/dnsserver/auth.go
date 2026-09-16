@@ -6,7 +6,7 @@ import (
 	"strings"
 	"sync/atomic"
 
-	"github.com/Busness-app/kydns-server/internal/zone"
+	"github.com/Busnes-app/kydns-server/internal/zone"
 	"github.com/miekg/dns"
 )
 

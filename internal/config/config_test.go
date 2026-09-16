@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Busness-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/store"
 )
 
 func write(t *testing.T, body string) string {

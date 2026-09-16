@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Busness-app/kydns-server/internal/dnsserver"
-	"github.com/Busness-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/dnsserver"
+	"github.com/Busnes-app/kydns-server/internal/store"
 )
 
 func TestDashboardShowsRefusalCounters(t *testing.T) {

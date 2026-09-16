@@ -10,13 +10,13 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Busness-app/kydns-server/internal/adminapi"
-	"github.com/Busness-app/kydns-server/internal/config"
-	"github.com/Busness-app/kydns-server/internal/health"
-	"github.com/Busness-app/kydns-server/internal/policy"
-	"github.com/Busness-app/kydns-server/internal/replica"
-	"github.com/Busness-app/kydns-server/internal/settings"
-	"github.com/Busness-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/adminapi"
+	"github.com/Busnes-app/kydns-server/internal/config"
+	"github.com/Busnes-app/kydns-server/internal/health"
+	"github.com/Busnes-app/kydns-server/internal/policy"
+	"github.com/Busnes-app/kydns-server/internal/replica"
+	"github.com/Busnes-app/kydns-server/internal/settings"
+	"github.com/Busnes-app/kydns-server/internal/store"
 )
 
 const (

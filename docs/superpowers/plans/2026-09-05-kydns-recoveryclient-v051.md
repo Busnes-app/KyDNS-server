@@ -1,5 +1,5 @@
 **Repo:** kydns-server
-**PR:** #31 — https://github.com/Busness-app/kydns-server/pull/31 (migration; predecessor #30 merged)
+**PR:** #31 — https://github.com/Busnes-app/kydns-server/pull/31 (migration; predecessor #30 merged)
 **Worktree:** /home/yoshi/busness.app/kydns-server (branch fix/recoveryclient-v051; baseline 14839aea5a383d490fba7e2dc858424b12b91c39)
 
 # KyDNS recoveryclient v0.5.1 migration plan
@@ -43,7 +43,7 @@ only explicitly synthetic fixture data and its provenance to backup testdata.
 Retain the existing contracts: file `backup_key`, label `KyDNS:kyrecovery_token`,
 and row `kyrecovery_token_enc`. Existing legacy-row cleanup stays unchanged.
 
-Then run `go get github.com/Busness-app/ky-primitives@v0.5.1` and `go mod tidy`.
+Then run `go get github.com/Busnes-app/ky-primitives@v0.5.1` and `go mod tidy`.
 Inspect the resolved module API and dependency diff before adapting the callback.
 
 Done when the version resolves to the intended release, the fixture demonstrably

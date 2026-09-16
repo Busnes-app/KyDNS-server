@@ -8,9 +8,9 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/Busness-app/kydns-server/internal/policy"
-	"github.com/Busness-app/kydns-server/internal/registry"
-	"github.com/Busness-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/policy"
+	"github.com/Busnes-app/kydns-server/internal/registry"
+	"github.com/Busnes-app/kydns-server/internal/store"
 )
 
 func newBlacklistAPI(t *testing.T) (http.Handler, string, *policy.Service) {

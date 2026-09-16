@@ -1,7 +1,7 @@
 # v0.5.0 pairing fixture
 
 `pairing-v050.json` was generated using an isolated Go module requiring
-`github.com/Busness-app/ky-primitives v0.5.0` and Go 1.26.6. The exact generator
+`github.com/Busnes-app/ky-primitives v0.5.0` and Go 1.26.6. The exact generator
 is `pairing-v050-generator.go.txt`; copy it to `main.go` in a temporary module,
 pin v0.5.0, run `go mod tidy`, confirm `go list -m` reports v0.5.0, then run it.
 

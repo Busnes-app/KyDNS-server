@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Busness-app/kydns-server/internal/registry"
-	"github.com/Busness-app/kydns-server/internal/replica"
-	"github.com/Busness-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/registry"
+	"github.com/Busnes-app/kydns-server/internal/replica"
+	"github.com/Busnes-app/kydns-server/internal/store"
 )
 
 // testAdmin is the primary's half backed by the real store and the real invite

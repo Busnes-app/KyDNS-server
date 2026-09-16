@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Busness-app/ky-primitives/password"
+	"github.com/Busnes-app/ky-primitives/password"
 )
 
 // MinPasswordLen is the shortest admin password accepted, wherever one is

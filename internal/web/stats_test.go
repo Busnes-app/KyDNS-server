@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Busness-app/kydns-server/internal/dnsserver"
+	"github.com/Busnes-app/kydns-server/internal/dnsserver"
 )
 
 // withMetrics attaches live counters to a test server and drives a few queries

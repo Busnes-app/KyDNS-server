@@ -10,9 +10,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Busness-app/kydns-server/internal/registry"
-	"github.com/Busness-app/kydns-server/internal/settings"
-	"github.com/Busness-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/registry"
+	"github.com/Busnes-app/kydns-server/internal/settings"
+	"github.com/Busnes-app/kydns-server/internal/store"
 )
 
 // recordingMux records the patterns Routes registers. http.ServeMux cannot be

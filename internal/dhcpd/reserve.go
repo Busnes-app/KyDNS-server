@@ -5,7 +5,7 @@ import (
 	"net"
 	"net/netip"
 
-	"github.com/Busness-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/store"
 )
 
 // ReservationProblem is a reservation that cannot be resolved. Reason is

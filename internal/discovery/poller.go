@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Busness-app/kydns-server/internal/discovery/dhcp"
+	"github.com/Busnes-app/kydns-server/internal/discovery/dhcp"
 )
 
 // Poller reads a lease Source on an interval and calls onChange only when the

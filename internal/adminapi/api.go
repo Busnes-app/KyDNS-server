@@ -14,14 +14,14 @@ import (
 
 	"gopkg.in/yaml.v3"
 
-	"github.com/Busness-app/kydns-server/internal/backup"
-	"github.com/Busness-app/kydns-server/internal/discovery/dhcp"
-	"github.com/Busness-app/kydns-server/internal/dnsserver"
-	"github.com/Busness-app/kydns-server/internal/health"
-	"github.com/Busness-app/kydns-server/internal/policy"
-	"github.com/Busness-app/kydns-server/internal/registry"
-	"github.com/Busness-app/kydns-server/internal/settings"
-	"github.com/Busness-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/backup"
+	"github.com/Busnes-app/kydns-server/internal/discovery/dhcp"
+	"github.com/Busnes-app/kydns-server/internal/dnsserver"
+	"github.com/Busnes-app/kydns-server/internal/health"
+	"github.com/Busnes-app/kydns-server/internal/policy"
+	"github.com/Busnes-app/kydns-server/internal/registry"
+	"github.com/Busnes-app/kydns-server/internal/settings"
+	"github.com/Busnes-app/kydns-server/internal/store"
 )
 
 type API struct {

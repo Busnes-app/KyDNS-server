@@ -6,7 +6,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/Busness-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/store"
 )
 
 func TestRebuildSwapsSnapshot(t *testing.T) {

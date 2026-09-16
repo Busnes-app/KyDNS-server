@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/Busness-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/store"
 )
 
 func TestBuildParsesEverything(t *testing.T) {

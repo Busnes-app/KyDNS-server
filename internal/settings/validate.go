@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/Busness-app/kydns-server/internal/store"
-	"github.com/Busness-app/kydns-server/internal/upstream"
+	"github.com/Busnes-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/upstream"
 	"github.com/miekg/dns"
 )
 

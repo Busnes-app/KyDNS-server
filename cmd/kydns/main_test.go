@@ -8,10 +8,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Busness-app/ky-primitives/capsule"
-	"github.com/Busness-app/ky-primitives/recoverykey"
-	"github.com/Busness-app/kydns-server/internal/cli"
-	"github.com/Busness-app/kydns-server/internal/web"
+	"github.com/Busnes-app/ky-primitives/capsule"
+	"github.com/Busnes-app/ky-primitives/recoverykey"
+	"github.com/Busnes-app/kydns-server/internal/cli"
+	"github.com/Busnes-app/kydns-server/internal/web"
 )
 
 func TestRunUnknownSubcommand(t *testing.T) {

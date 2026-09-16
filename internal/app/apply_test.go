@@ -10,15 +10,15 @@ import (
 
 	"github.com/miekg/dns"
 
-	"github.com/Busness-app/kydns-server/internal/discovery"
-	"github.com/Busness-app/kydns-server/internal/discovery/dhcp"
-	"github.com/Busness-app/kydns-server/internal/dnsserver"
-	"github.com/Busness-app/kydns-server/internal/health"
-	"github.com/Busness-app/kydns-server/internal/registry"
-	"github.com/Busness-app/kydns-server/internal/settings"
-	"github.com/Busness-app/kydns-server/internal/store"
-	"github.com/Busness-app/kydns-server/internal/upstream"
-	"github.com/Busness-app/kydns-server/internal/zone"
+	"github.com/Busnes-app/kydns-server/internal/discovery"
+	"github.com/Busnes-app/kydns-server/internal/discovery/dhcp"
+	"github.com/Busnes-app/kydns-server/internal/dnsserver"
+	"github.com/Busnes-app/kydns-server/internal/health"
+	"github.com/Busnes-app/kydns-server/internal/registry"
+	"github.com/Busnes-app/kydns-server/internal/settings"
+	"github.com/Busnes-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/upstream"
+	"github.com/Busnes-app/kydns-server/internal/zone"
 )
 
 type fakeLister struct{}

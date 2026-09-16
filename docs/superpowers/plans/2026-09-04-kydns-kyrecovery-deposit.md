@@ -10,7 +10,7 @@ and restore path without changing KyDNS's DNS, replication, or import/export beh
 
 ## Sources of truth
 
-- Shared types and compatibility: `github.com/Busness-app/ky-primitives@v0.4.1`.
+- Shared types and compatibility: `github.com/Busnes-app/ky-primitives@v0.4.1`.
 - Wire protocol and limits: `kyrecovery-server/zero_code_pairing_handoff_spec.md`.
 - Product-side implementation: current `ky_server_base/internal/backup` plus the
   hardened behavior recorded in MySlop folder `kydns-kyrecovery-deposit`.
@@ -50,7 +50,7 @@ Files: `go.mod`, `go.sum`, `internal/auth/password.go`,
 `internal/auth/password_test.go`.
 
 1. Raise the Go directive to `1.26.6` and add
-   `github.com/Busness-app/ky-primitives v0.4.1`.
+   `github.com/Busnes-app/ky-primitives v0.4.1`.
 2. Replace KyDNS's PHC encoder and verifier with the shared password package while
    retaining `auth.HashPassword`, `auth.VerifyPassword`, and `MinPasswordLen` as the
    local API used by setup, reset, and login.

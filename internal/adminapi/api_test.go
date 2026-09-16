@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Busness-app/kydns-server/internal/registry"
-	"github.com/Busness-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/registry"
+	"github.com/Busnes-app/kydns-server/internal/store"
 )
 
 func newAPI(t *testing.T) (http.Handler, string) {

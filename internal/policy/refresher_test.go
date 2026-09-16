@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Busness-app/kydns-server/internal/store"
+	"github.com/Busnes-app/kydns-server/internal/store"
 )
 
 // newRefresher wires a refresher over a real store and a test HTTPS server.

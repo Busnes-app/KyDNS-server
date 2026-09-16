@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Busness-app/kydns-server/internal/auth"
+	"github.com/Busnes-app/kydns-server/internal/auth"
 )
 
 // registrar is the sliver of *http.ServeMux that registration uses. ServeMux
