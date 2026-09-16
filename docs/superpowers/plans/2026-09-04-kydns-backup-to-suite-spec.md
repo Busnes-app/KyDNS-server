@@ -6,7 +6,7 @@
 
 **Architecture:** Two phases. Phase A (unblocked today) commits the pending hardening diff, adds the product config and compose wiring, writes and proves the restore runbook, and fixes the docs. Phase B (on ky-primitives v0.5.0, which carries `recoveryclient`; tagged 2026-09-04 at 533a053) replaces the client, key pin, pairing record, drill and restore in `internal/backup` with thin calls into the library, then adds the spec items that build on it: unified `Run`, local backup directory, admin-set schedule, pin-by-hand, unpair, private-recovery opt-in, the rebuilt settings screen, and the decrypt guard.
 
-**Tech Stack:** Go 1.26.6, `github.com/Busness-app/ky-primitives` (stdlib-only), modernc SQLite, Go `html/template` server-rendered UI, docker compose.
+**Tech Stack:** Go 1.26.6, `github.com/Busnes-app/ky-primitives` (stdlib-only), modernc SQLite, Go `html/template` server-rendered UI, docker compose.
 
 **Spec:** MySlop folder `kydns-kyrecovery-deposit` post 192 (the 14-row contract, KyDNS's "owes" list) and folder `ky-primitives-kyrecovery-package` posts 189, 200, 204, 208 and 211 (the library, built as `recoveryclient` in ky-primitives PR #12, tagged v0.5.0 at 533a053). Durable copies: `/home/yoshi/busness.app/AGENTS.md` section "KyRecovery integration", and `ky_server_base/docs/superpowers/plans/2026-09-04-bring-suite-to-kysignon-spec.md`. Reference implementation: `kysignon-server` master (`internal/backup/{schedule,local,deposit,client}.go`, `internal/api/backup_handlers.go`, `docs/RESTORE.md`, `docker-compose.lan-dns.yml`).
 
@@ -301,8 +301,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Busness-app/ky-primitives/capsule"
-	"github.com/Busness-app/ky-primitives/recoverykey"
+	"github.com/Busnes-app/ky-primitives/capsule"
+	"github.com/Busnes-app/ky-primitives/recoverykey"
 )
 
 func main() {
@@ -362,7 +362,7 @@ fi
 echo "restore drill: all checks passed"
 ```
 
-Check the real names in `ky-primitives/recoverykey` before running: the split function and the share `String()` method must match what the package exports at v0.4.1 (`go doc github.com/Busness-app/ky-primitives/recoverykey`). If the names differ, fix the script, not the library.
+Check the real names in `ky-primitives/recoverykey` before running: the split function and the share `String()` method must match what the package exports at v0.4.1 (`go doc github.com/Busnes-app/ky-primitives/recoverykey`). If the names differ, fix the script, not the library.
 
 - [ ] **Step 2: Run the script; fix what it exposes**
 
@@ -481,14 +481,14 @@ Run the full gate (`gofmt -l . ; go vet ./... ; go test -race ./... ; git diff -
 
 ## Phase B: on `ky-primitives/recoveryclient` v0.5.0
 
-**Gate: satisfied.** `v0.5.0` was tagged on 2026-09-04 and resolves through the module proxy (`go get github.com/Busness-app/ky-primitives@v0.5.0` succeeds). It points at 533a053, the commit the surface block below was read from, so the block is the tag's API, verified with `go doc` on the tagged module. Phase A and Phase B can run back to back on one branch; keep them as separate PRs (Task 5 opens the first) so the review of the library adoption is not mixed with config and docs.
+**Gate: satisfied.** `v0.5.0` was tagged on 2026-09-04 and resolves through the module proxy (`go get github.com/Busnes-app/ky-primitives@v0.5.0` succeeds). It points at 533a053, the commit the surface block below was read from, so the block is the tag's API, verified with `go doc` on the tagged module. Phase A and Phase B can run back to back on one branch; keep them as separate PRs (Task 5 opens the first) so the review of the library adoption is not mixed with config and docs.
 
-**Before Task 6:** run `go doc github.com/Busness-app/ky-primitives/recoveryclient` after bumping and diff against the surface below, which was read from master at 533a053 (not from the design post). Where a name differs, follow the library and note it in the commit body. Where a behaviour differs, stop and post to the board; do not paper over it in KyDNS.
+**Before Task 6:** run `go doc github.com/Busnes-app/ky-primitives/recoveryclient` after bumping and diff against the surface below, which was read from master at 533a053 (not from the design post). Where a name differs, follow the library and note it in the commit body. Where a behaviour differs, stop and post to the board; do not paper over it in KyDNS.
 
 Library surface at v0.5.0:
 
 ```go
-package recoveryclient // import "github.com/Busness-app/ky-primitives/recoveryclient"
+package recoveryclient // import "github.com/Busnes-app/ky-primitives/recoveryclient"
 
 // Settings keys the package writes: kyrecovery_key_id, kyrecovery_threshold,
 // kyrecovery_total_shares, kyrecovery_url, kyrecovery_token_enc,
@@ -632,9 +632,9 @@ Decision recorded here: the sealed-token format changes from #27's hand-rolled A
 - [ ] **Step 1: Bump the module**
 
 ```bash
-go get github.com/Busness-app/ky-primitives@v0.5.0
+go get github.com/Busnes-app/ky-primitives@v0.5.0
 go mod tidy
-go doc github.com/Busness-app/ky-primitives/recoveryclient | head -80
+go doc github.com/Busnes-app/ky-primitives/recoveryclient | head -80
 ```
 
 Compare with the surface above; record renames.
@@ -654,9 +654,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Busness-app/ky-primitives/capsule"
-	"github.com/Busness-app/ky-primitives/recoveryclient"
-	"github.com/Busness-app/ky-primitives/recoverykey"
+	"github.com/Busnes-app/ky-primitives/capsule"
+	"github.com/Busnes-app/ky-primitives/recoveryclient"
+	"github.com/Busnes-app/ky-primitives/recoverykey"
 	"github.com/Busnes-app/kydns-server/internal/config"
 	"github.com/Busnes-app/kydns-server/internal/store"
 )
@@ -857,9 +857,9 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/Busness-app/ky-primitives/capsule"
-	"github.com/Busness-app/ky-primitives/keyfile"
-	"github.com/Busness-app/ky-primitives/recoveryclient"
+	"github.com/Busnes-app/ky-primitives/capsule"
+	"github.com/Busnes-app/ky-primitives/keyfile"
+	"github.com/Busnes-app/ky-primitives/recoveryclient"
 	"github.com/Busnes-app/kydns-server/internal/config"
 	"github.com/Busnes-app/kydns-server/internal/store"
 	"gopkg.in/yaml.v3"
@@ -1248,7 +1248,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/Busness-app/ky-primitives/recoveryclient"
+	"github.com/Busnes-app/ky-primitives/recoveryclient"
 	"github.com/Busnes-app/kydns-server/internal/backup"
 	"github.com/Busnes-app/kydns-server/internal/store"
 )
@@ -1371,7 +1371,7 @@ func backupLoop(ctx context.Context, svc *backup.Service, logger *slog.Logger) {
 }
 ```
 
-`serve.go` gains imports `encoding/json` and `github.com/Busness-app/ky-primitives/recoveryclient`. Pass `backupSvc` to `web.Options.Backup` as before; Task 8 changes that field's type.
+`serve.go` gains imports `encoding/json` and `github.com/Busnes-app/ky-primitives/recoveryclient`. Pass `backupSvc` to `web.Options.Backup` as before; Task 8 changes that field's type.
 
 - [ ] **Step 5: Run the tests**
 
@@ -1607,7 +1607,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/Busness-app/ky-primitives/recoveryclient/guardtest"
+	"github.com/Busnes-app/ky-primitives/recoveryclient/guardtest"
 )
 
 // Only the restore command may combine shares or open a suite-sealed capsule. The drill

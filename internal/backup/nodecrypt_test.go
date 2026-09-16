@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/Busness-app/ky-primitives/recoveryclient/guardtest"
+	"github.com/Busnes-app/ky-primitives/recoveryclient/guardtest"
 )
 
 // Only the restore command may combine shares or open a suite-sealed capsule. The drill

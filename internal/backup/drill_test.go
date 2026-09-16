@@ -12,11 +12,11 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/Busnes-app/ky-primitives/capsule"
+	"github.com/Busnes-app/ky-primitives/recoveryclient"
+	"github.com/Busnes-app/ky-primitives/recoverykey"
 	"github.com/Busnes-app/kydns-server/internal/config"
 	"github.com/Busnes-app/kydns-server/internal/store"
-	"github.com/Busness-app/ky-primitives/capsule"
-	"github.com/Busness-app/ky-primitives/recoveryclient"
-	"github.com/Busness-app/ky-primitives/recoverykey"
 )
 
 func openedDrill(t *testing.T, p recoveryclient.Payload) (string, capsule.Manifest) {

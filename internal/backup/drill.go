@@ -12,11 +12,11 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/Busnes-app/ky-primitives/capsule"
+	"github.com/Busnes-app/ky-primitives/keyfile"
+	"github.com/Busnes-app/ky-primitives/recoveryclient"
 	"github.com/Busnes-app/kydns-server/internal/config"
 	"github.com/Busnes-app/kydns-server/internal/store"
-	"github.com/Busness-app/ky-primitives/capsule"
-	"github.com/Busness-app/ky-primitives/keyfile"
-	"github.com/Busness-app/ky-primitives/recoveryclient"
 	"gopkg.in/yaml.v3"
 )
 

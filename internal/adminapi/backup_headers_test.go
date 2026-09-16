@@ -5,11 +5,11 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/Busnes-app/ky-primitives/recoveryclient"
+	"github.com/Busnes-app/ky-primitives/recoverykey"
 	"github.com/Busnes-app/kydns-server/internal/backup"
 	"github.com/Busnes-app/kydns-server/internal/config"
 	"github.com/Busnes-app/kydns-server/internal/store"
-	"github.com/Busness-app/ky-primitives/recoveryclient"
-	"github.com/Busness-app/ky-primitives/recoverykey"
 )
 
 // A capsule in a browser cache or sniffed as HTML is a capsule where it was never

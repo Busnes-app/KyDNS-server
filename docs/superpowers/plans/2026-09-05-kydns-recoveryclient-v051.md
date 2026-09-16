@@ -43,7 +43,7 @@ only explicitly synthetic fixture data and its provenance to backup testdata.
 Retain the existing contracts: file `backup_key`, label `KyDNS:kyrecovery_token`,
 and row `kyrecovery_token_enc`. Existing legacy-row cleanup stays unchanged.
 
-Then run `go get github.com/Busness-app/ky-primitives@v0.5.1` and `go mod tidy`.
+Then run `go get github.com/Busnes-app/ky-primitives@v0.5.1` and `go mod tidy`.
 Inspect the resolved module API and dependency diff before adapting the callback.
 
 Done when the version resolves to the intended release, the fixture demonstrably

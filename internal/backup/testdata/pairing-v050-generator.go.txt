@@ -4,9 +4,9 @@ import (
  "encoding/json"
  "os"
  "path/filepath"
- "github.com/Busness-app/ky-primitives/keyfile"
- "github.com/Busness-app/ky-primitives/recoveryclient"
- "github.com/Busness-app/ky-primitives/recoverykey"
+ "github.com/Busnes-app/ky-primitives/keyfile"
+ "github.com/Busnes-app/ky-primitives/recoveryclient"
+ "github.com/Busnes-app/ky-primitives/recoverykey"
 )
 type settings map[string]string
 func (s settings) Get(k string)(string,error){v,ok:=s[k];if !ok{return "",recoveryclient.ErrNotFound};return v,nil}
