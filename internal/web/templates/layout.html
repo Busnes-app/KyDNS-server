@@ -2,14 +2,14 @@
 <div class="app">
   <nav class="app-nav">
     <div class="brand">{{template "mark"}}<h1>KyDNS</h1></div>
-    <a href="/"{{if eq .Nav "dashboard"}} aria-current="page"{{end}}>Dashboard</a>
-    <a href="/services"{{if eq .Nav "services"}} aria-current="page"{{end}}>Services</a>
-    <a href="/records"{{if eq .Nav "records"}} aria-current="page"{{end}}>Records</a>
-    <a href="/discovered"{{if eq .Nav "discovered"}} aria-current="page"{{end}}>Discovered</a>
-    <a href="/blacklists"{{if eq .Nav "blacklists"}} aria-current="page"{{end}}>Blacklists</a>
-    <a href="/dhcp"{{if eq .Nav "dhcp"}} aria-current="page"{{end}}>DHCP</a>
-    {{if .ShowReplication}}<a href="/replication"{{if eq .Nav "replication"}} aria-current="page"{{end}}>Replication</a>{{end}}
-    <a href="/settings"{{if eq .Nav "settings"}} aria-current="page"{{end}}>Settings</a>
+    <a class="ky-nav-item" href="/"{{if eq .Nav "dashboard"}} aria-current="page"{{end}}>Dashboard</a>
+    <a class="ky-nav-item" href="/services"{{if eq .Nav "services"}} aria-current="page"{{end}}>Services</a>
+    <a class="ky-nav-item" href="/records"{{if eq .Nav "records"}} aria-current="page"{{end}}>Records</a>
+    <a class="ky-nav-item" href="/discovered"{{if eq .Nav "discovered"}} aria-current="page"{{end}}>Discovered</a>
+    <a class="ky-nav-item" href="/blacklists"{{if eq .Nav "blacklists"}} aria-current="page"{{end}}>Blacklists</a>
+    <a class="ky-nav-item" href="/dhcp"{{if eq .Nav "dhcp"}} aria-current="page"{{end}}>DHCP</a>
+    {{if .ShowReplication}}<a class="ky-nav-item" href="/replication"{{if eq .Nav "replication"}} aria-current="page"{{end}}>Replication</a>{{end}}
+    <a class="ky-nav-item" href="/settings"{{if eq .Nav "settings"}} aria-current="page"{{end}}>Settings</a>
     <form method="post" action="/logout">
       <input type="hidden" name="csrf_token" value="{{.CSRF}}">
       <button class="ghost" type="submit">Sign out</button>
