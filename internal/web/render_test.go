@@ -73,8 +73,8 @@ func TestFaviconIsLinkedAndEmbedded(t *testing.T) {
 	if rec.Code != http.StatusOK {
 		t.Fatalf("GET /static/favicon.svg = %d, want the icon to be embedded", rec.Code)
 	}
-	if !strings.Contains(rec.Body.String(), "#4deeea") {
-		t.Error("favicon does not use the --accent color the rest of the UI uses")
+	if !strings.Contains(rec.Body.String(), "data:image/png;base64,") {
+		t.Error("favicon does not embed the shared product stamp")
 	}
 
 	// /setup renders through base.html with no session, which is where the

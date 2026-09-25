@@ -4,8 +4,11 @@
 // before the first paint rather than flashing the default.
 (function () {
   const KEY = "kydns-theme";
-  const DEFAULT = "Patina Ky";
+  const media = window.matchMedia("(prefers-color-scheme: dark)");
+  const defaultTheme = () => media.matches ? "Busnes Dark" : "Busnes Light";
   const THEMES = {
+  "Busnes Light": {"bg": "#f8f6f0", "panel": "#ffffff", "ink": "#566461", "inkStrong": "#182326", "accent": "#bf3f18", "accentSoft": "#fbf0ec", "line": "rgba(24, 35, 38, 0.22)", "glow": "transparent", "sidebarStart": "#f2efe7", "sidebarEnd": "#f2efe7", "buttonText": "#ffffff"},
+  "Busnes Dark": {"bg": "#182326", "panel": "#1f2b2e", "ink": "#b3bcb8", "inkStrong": "#f2efe8", "accent": "#f5865f", "accentSoft": "#2b2622", "line": "rgba(242, 239, 232, 0.24)", "glow": "transparent", "sidebarStart": "#1f2b2e", "sidebarEnd": "#1f2b2e", "buttonText": "#182326"},
     "Dark Matter": { bg: "#1a1a1e", panel: "#252530", ink: "#d4c5e2", inkStrong: "#e8ddf5", accent: "#c29a72", accentSoft: "#5a3f31", line: "#404050", glow: "rgba(107, 74, 66, 0.25)", sidebarStart: "#1f1f24", sidebarEnd: "#2a2530", buttonText: "#24170f" },
     "Light Matter": { bg: "#f5efe5", panel: "#fff8ee", ink: "#4c3d32", inkStrong: "#2d1f15", accent: "#c29a72", accentSoft: "#e6d2be", line: "#c5b29d", glow: "rgba(175, 126, 92, 0.2)", sidebarStart: "#ede2d2", sidebarEnd: "#e4d6c3", buttonText: "#24170f" },
     "Tropics": { bg: "#f4f1eb", panel: "#fffaf0", ink: "#43362d", inkStrong: "#241a14", accent: "#9bc400", accentSoft: "#d4e3a0", line: "#c4b7a3", glow: "rgba(123, 165, 31, 0.2)", sidebarStart: "#ece5d8", sidebarEnd: "#e3dacb", buttonText: "#243100" },
@@ -43,13 +46,17 @@
   function stored() {
     try {
       const v = localStorage.getItem(KEY);
-      return Object.hasOwn(THEMES, v) ? v : DEFAULT;
+      return Object.hasOwn(THEMES, v) ? v : defaultTheme();
     } catch (e) {
-      return DEFAULT;
+      return defaultTheme();
     }
   }
 
   apply(stored());
+  media.addEventListener("change", function () {
+    try { if (Object.hasOwn(THEMES, localStorage.getItem(KEY))) return; } catch (e) {}
+    apply(stored());
+  });
   // Another tab, or the license iframe's parent, changed it.
   window.addEventListener("storage", function (e) { if (e.key === KEY) apply(stored()); });
 
