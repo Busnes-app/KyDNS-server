@@ -26,6 +26,19 @@ func TestStaticServesStylesheet(t *testing.T) {
 	if !strings.Contains(rec.Body.String(), "--accent") {
 		t.Error("app.css does not build on the existing design tokens")
 	}
+	styles := static(t, srv, "/static/styles.css")
+	if styles.Code != http.StatusOK {
+		t.Fatalf("GET /static/styles.css = %d", styles.Code)
+	}
+	for _, want := range []string{
+		`.nav-links a[aria-current="page"]`,
+		`border-bottom-color: var(--accent)`,
+		`border-left-color: var(--accent)`,
+	} {
+		if !strings.Contains(styles.Body.String(), want) {
+			t.Errorf("styles.css missing selected navigation treatment %q", want)
+		}
+	}
 }
 
 // The theme script runs before first paint from <head>, so every screen,
