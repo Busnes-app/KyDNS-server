@@ -37,6 +37,13 @@
   function apply(name) {
     const t = THEMES[name];
     const root = document.documentElement;
+    if (name === "Busnes Light" || name === "Busnes Dark") {
+      for (const key of ["--bg", "--panel", "--ink", "--ink-strong", "--accent", "--accent-soft", "--line", "--glow", "--sidebar-start", "--sidebar-end", "--button-text"]) root.style.removeProperty(key);
+      root.dataset.theme = name === "Busnes Light" ? "busnes-light" : "busnes-dark";
+      root.style.colorScheme = name === "Busnes Dark" ? "dark" : "light";
+      return;
+    }
+    delete root.dataset.theme;
     for (const k in t) {
       root.style.setProperty("--" + k.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase()), t[k]);
     }
