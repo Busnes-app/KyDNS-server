@@ -4,14 +4,16 @@
 package adminapi
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"net/http"
 	"strconv"
 	"strings"
 
+	suitehealth "github.com/Busnes-app/ky-primitives/health"
+	"github.com/Busnes-app/ky-primitives/logging"
 	"gopkg.in/yaml.v3"
 
 	"github.com/Busnes-app/kydns-server/internal/backup"
@@ -31,6 +33,7 @@ type API struct {
 	leases          func() []dhcp.Lease
 	discoveryOn     func() bool
 	health          func() []health.Status
+	healthCheck     func(context.Context) error
 	policy          *policy.Service
 	settings        *settings.Service
 	metrics         *dnsserver.Metrics
@@ -77,6 +80,13 @@ func NewAPI(reg *registry.Registry, acl *dnsserver.ACL, cache *dnsserver.Cache) 
 // discoveryOn is asked again on every request.
 func (a *API) WithProviders(leases func() []dhcp.Lease, statuses func() []health.Status, discoveryOn func() bool) *API {
 	a.leases, a.health, a.discoveryOn = leases, statuses, discoveryOn
+	return a
+}
+
+// WithHealthCheck attaches the local database check for the public instance endpoint.
+// API-only fixtures may leave it unset; Serve always supplies the store check.
+func (a *API) WithHealthCheck(check func(context.Context) error) *API {
+	a.healthCheck = check
 	return a
 }
 
@@ -225,10 +235,17 @@ type registrar interface {
 func (a *API) Routes(mux *http.ServeMux) { a.routes(mux) }
 
 func (a *API) routes(mux registrar) {
-	mux.HandleFunc("GET /api/v1/healthz", func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		fmt.Fprintln(w, "ok")
-	})
+	lg, err := logging.New(logging.Config{App: "kydns"})
+	if err != nil { // The fixed app name is valid; keep construction failure explicit.
+		panic(err)
+	}
+	var checks []suitehealth.Check
+	if a.healthCheck != nil {
+		checks = append(checks, suitehealth.Check{Name: "database", Run: a.healthCheck})
+	}
+	h := suitehealth.Handler("kydns", lg, checks...)
+	mux.HandleFunc("GET /healthz", h.ServeHTTP)
+	mux.HandleFunc("GET /api/v1/healthz", h.ServeHTTP)
 
 	auth := func(h http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
