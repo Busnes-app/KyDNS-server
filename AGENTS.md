@@ -79,7 +79,8 @@ Code, one concern per package:
 - `cmd/kydns` — command dispatch. `serve`, `admin`, and the API-backed verbs. Restore
   checks the unverified manifest for service `KyDNS` before reading shares; authenticated
   extraction then proves that same service binding.
-- `internal/app` — process wiring: config, store, servers, background loops. The scheduled
+- `internal/app` — process wiring: config, store, servers, background loops. It wires
+  the local store check into the public instance `/healthz` endpoint. The scheduled
   backup loop is quiet only for unconfigured backups; a pinned key whose file is missing is
   audited and logged as a failed backup run.
 - `internal/config` — the YAML config and its defaults. The file owns three
@@ -90,6 +91,7 @@ Code, one concern per package:
 - `internal/settings` — the settings snapshot the runtime reads, and the single
   path by which it changes: validate, persist, rebuild, apply, all or nothing.
 - `internal/store` — SQLite schema and migrations, the single write chokepoint.
+  `PingContext` checks the local database for instance health.
   `SnapshotTo` delegates to `recoveryclient.SQLiteSnapshot`, which binds the
   `VACUUM INTO` destination path rather than interpolating it.
   `OpenSnapshot` verifies and opens restored artifacts read-only without migrations.
@@ -112,7 +114,10 @@ Code, one concern per package:
   Its leases are the one discovery result that is persisted, so a restart
   cannot re-issue an address that is still in use.
 - `internal/adminapi`, `internal/web`, `internal/auth` — JSON API, server-side
-  rendered UI, sessions, password hashing, and verified OIDC login.
+  rendered UI, sessions, password hashing, and verified OIDC login. The admin API
+  serves public `ky.health/1` JSON on `/healthz` and `/api/v1/healthz` from one
+  five-second cache. A failed local database check returns 503 with safe status
+  codes; service discovery health remains on the authenticated `/api/v1/health`.
 - `internal/cli` — the API client behind the non-`serve` commands.
 
 The build must stay cgo-free: the image is distroless, so the pure-Go SQLite

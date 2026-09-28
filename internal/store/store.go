@@ -3,6 +3,7 @@
 package store
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -431,6 +432,8 @@ func Open(path string) (*Store, error) {
 }
 
 func (s *Store) Close() error { return s.db.Close() }
+
+func (s *Store) PingContext(ctx context.Context) error { return s.db.PingContext(ctx) }
 
 func isUnique(err error, fragment string) bool {
 	return err != nil && strings.Contains(err.Error(), "UNIQUE") && strings.Contains(err.Error(), fragment)

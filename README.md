@@ -62,6 +62,13 @@ pairing instead of at restore. In Docker, names that exist only on your LAN need
 
 ## What works today
 
+The admin listener exposes public `GET /healthz` as `ky.health/1` JSON for this
+KyDNS instance. `GET /api/v1/healthz` is a compatibility alias with the same
+response and five-second cache. The local database check returns HTTP 200 when
+healthy or 503 when unavailable; the response gives status codes and never the
+database error text. This endpoint does not probe DNS or other services. The
+service checks shown in the UI remain separate at authenticated `/api/v1/health`.
+
 - First-class services, each with its own address records and aliases, plus
   derived reverse records. Manual A, AAAA, and CNAME records for anything a
   service doesn't cover.

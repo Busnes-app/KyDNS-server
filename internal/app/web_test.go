@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"path/filepath"
@@ -25,6 +26,21 @@ func TestServeMountsWebUI(t *testing.T) {
 
 	base := fmt.Sprintf("http://127.0.0.1:%d", adminPort)
 	waitForHTTP(t, base+"/api/v1/healthz")
+	for _, path := range []string{"/healthz", "/api/v1/healthz"} {
+		resp, err := noRedirect().Get(base + path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var got struct{ Schema, Service, Status string }
+		err = json.NewDecoder(resp.Body).Decode(&got)
+		resp.Body.Close()
+		if err != nil {
+			t.Fatal(err)
+		}
+		if resp.StatusCode != http.StatusOK || got.Schema != "ky.health/1" || got.Service != "kydns" || got.Status != "ok" {
+			t.Fatalf("GET %s = %d %+v", path, resp.StatusCode, got)
+		}
+	}
 
 	client := noRedirect()
 	resp, err := client.Get(base + "/")
