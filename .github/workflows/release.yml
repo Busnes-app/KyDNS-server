@@ -31,7 +31,8 @@ jobs:
 
       - uses: actions/setup-go@v7
         with:
-          go-version-file: go.mod
+          go-version: stable
+          check-latest: true
           cache: true
 
       # Debian versions must start with a digit, so the tag's leading v goes.
