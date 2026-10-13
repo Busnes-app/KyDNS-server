@@ -141,7 +141,7 @@ func TestManagedSessionCannotEnrollFirstRecoveryKey(t *testing.T) {
 	if _, err := srv.o.Store.ApplyInstaller(context.Background(), webInstallerBundle(t, issuer), false); err != nil {
 		t.Fatal(err)
 	}
-	sso := srv.o.Sessions.CreateSSO(issuer, "owner")
+	sso := srv.o.Sessions.CreateSSO(issuer, "owner", 0)
 	c := &http.Cookie{Name: auth.CookieName, Value: sso.ID}
 	pin := url.Values{"public_key": {freshPublicKeyB64(t)}, "threshold": {"2"}, "total_shares": {"3"}}
 	for _, tc := range []struct {

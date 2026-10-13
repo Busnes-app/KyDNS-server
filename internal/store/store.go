@@ -817,17 +817,26 @@ func (s *Store) UnlinkAdminSSO() error {
 	return nil
 }
 
-func (s *Store) SSOSettings() (SSOSettings, error) {
+// SSOClient is the authentication configuration, including an installer-owned secret.
+// Only the OIDC exchange may use it; anything rendered uses SSOSettings.
+func (s *Store) SSOClient() (SSOSettings, error) { return s.ssoSettings(true) }
+
+// SSOSettings is the display view: a managed configuration omits its client secret.
+func (s *Store) SSOSettings() (SSOSettings, error) { return s.ssoSettings(false) }
+
+func (s *Store) ssoSettings(managedSecret bool) (SSOSettings, error) {
 	b, managed, err := s.InstallerConfiguration()
 	if err != nil {
 		return SSOSettings{}, err
 	}
 	if managed {
-		secret, err := applysetup.Secret(b.SSO.ClientSecretFile)
-		if err != nil {
-			return SSOSettings{}, err
+		sso := SSOSettings{Enabled: true, IssuerURL: b.SSO.IssuerURL, ClientID: b.SSO.ClientID}
+		if managedSecret {
+			if sso.ClientSecret, err = applysetup.Secret(b.SSO.ClientSecretFile); err != nil {
+				return SSOSettings{}, err
+			}
 		}
-		return SSOSettings{Enabled: true, IssuerURL: b.SSO.IssuerURL, ClientID: b.SSO.ClientID, ClientSecret: secret}, nil
+		return sso, nil
 	}
 
 	var sso SSOSettings

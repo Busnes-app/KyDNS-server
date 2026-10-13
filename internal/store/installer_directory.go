@@ -15,6 +15,8 @@ type InstallerDirectoryState struct {
 	Revision uint64 `json:"revision"`
 	Digest   string `json:"digest"`
 	Allowed  bool   `json:"allowed"`
+	// RevokedAt is the latest revoking revision; sessions from before it stay dead.
+	RevokedAt uint64 `json:"revokedAt,omitempty"`
 }
 
 func installerDirectoryKey(issuer, subject string) string {
@@ -80,9 +82,9 @@ func (s *Store) ApplyInstallerDirectory(ctx context.Context, issuer, event strin
 	}
 	defer tx.Rollback()
 	var prior string
+	var state InstallerDirectoryState
 	err = tx.QueryRowContext(ctx, "SELECT value FROM local_settings WHERE key=?", key).Scan(&prior)
 	if err == nil {
-		var state InstallerDirectoryState
 		if json.Unmarshal([]byte(prior), &state) != nil {
 			return errors.New("retained directory state invalid")
 		}
@@ -98,7 +100,10 @@ func (s *Store) ApplyInstallerDirectory(ctx context.Context, issuer, event strin
 	} else if !errors.Is(err, sql.ErrNoRows) {
 		return err
 	}
-	value, _ := json.Marshal(InstallerDirectoryState{revision, digest, allowed})
+	if !allowed {
+		state.RevokedAt = revision
+	}
+	value, _ := json.Marshal(InstallerDirectoryState{revision, digest, allowed, state.RevokedAt})
 	if _, err = tx.ExecContext(ctx, "INSERT INTO local_settings(key,value) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value", key, string(value)); err != nil {
 		return err
 	}

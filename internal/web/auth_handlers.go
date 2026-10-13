@@ -158,7 +158,7 @@ const (
 )
 
 func (s *Server) getSSOLogin(w http.ResponseWriter, r *http.Request) {
-	sso, err := s.o.Store.SSOSettings()
+	sso, err := s.o.Store.SSOClient()
 	ident, _ := s.o.Store.AdminIdentity()
 	ssoActive := sso.Enabled || (ident != nil && ident.SSOSub != "") || r.URL.Query().Get("link") == "true"
 	if err != nil || !ssoActive {
@@ -249,7 +249,7 @@ func (s *Server) getSSOCallback(w http.ResponseWriter, r *http.Request) {
 	}
 	s.clearSSOCookies(w, r)
 
-	sso, err := s.o.Store.SSOSettings()
+	sso, err := s.o.Store.SSOClient()
 	if err != nil {
 		http.Error(w, "failed to load SSO settings", http.StatusInternalServerError)
 		return
@@ -270,17 +270,17 @@ func (s *Server) getSSOCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	managed, allowed, e := s.o.Store.InstallerAdministrator(claims.Issuer, claims.Sub)
+	managed, authority, e := s.o.Store.InstallerAuthority(claims.Issuer, claims.Sub)
 	if e != nil {
 		http.Error(w, "administrator binding unavailable", 500)
 		return
 	}
 	if managed {
-		if isLink || !allowed {
+		if isLink || !authority.Allowed {
 			http.Error(w, "use the explicitly assigned administrator identity", 403)
 			return
 		}
-		s.setSessionCookie(w, r, s.o.Sessions.CreateSSO(claims.Issuer, claims.Sub))
+		s.setSessionCookie(w, r, s.o.Sessions.CreateSSO(claims.Issuer, claims.Sub, authority.Revision))
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}

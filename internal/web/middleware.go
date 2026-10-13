@@ -198,9 +198,9 @@ func New(o Options) *Server {
 		o.Logger = slog.Default()
 	}
 	if o.Sessions != nil && o.Store != nil {
-		o.Sessions.SetIdentityValidator(func(issuer, subject string) bool {
-			managed, allowed, err := o.Store.InstallerAdministrator(issuer, subject)
-			return err == nil && managed && allowed
+		o.Sessions.SetIdentityValidator(func(issuer, subject string, revision uint64) bool {
+			managed, st, err := o.Store.InstallerAuthority(issuer, subject)
+			return err == nil && managed && st.Allowed && revision >= st.RevokedAt
 		})
 	}
 	return &Server{o: o}

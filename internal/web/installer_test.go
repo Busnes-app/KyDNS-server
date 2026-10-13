@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"github.com/Busnes-app/ky-primitives/applysetup"
 	"github.com/Busnes-app/ky-primitives/syncauth"
+	"github.com/Busnes-app/kydns-server/internal/auth"
 	"github.com/Busnes-app/kydns-server/internal/config"
 	"net/http"
 	"net/http/httptest"
@@ -14,6 +15,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"testing"
 	"time"
@@ -197,5 +199,96 @@ func TestInstallerNetworkUsesTrustedPeer(t *testing.T) {
 				t.Fatalf("result %+v", result)
 			}
 		})
+	}
+}
+func TestManagedSettingsNeverRenderInstallerSecrets(t *testing.T) {
+	h, srv, local, _ := loggedIn(t)
+	issuer := "https://identity.example"
+	if _, err := srv.o.Store.ApplyInstaller(context.Background(), webInstallerBundle(t, issuer), false); err != nil {
+		t.Fatal(err)
+	}
+	managed := &http.Cookie{Name: auth.CookieName, Value: srv.o.Sessions.CreateSSO(issuer, "owner", 0).ID}
+	populated := regexp.MustCompile(`name="client_secret"[^>]*value="[^"]+"`)
+	for name, c := range map[string]*http.Cookie{"managed": managed, "local recovery": local} {
+		rec := get(t, h, "/settings", c)
+		body := rec.Body.String()
+		if rec.Code != 200 || strings.Contains(body, "fixture-directory-secret-at-least-16") || populated.MatchString(body) {
+			t.Fatalf("%s settings %d exposes the installer client secret", name, rec.Code)
+		}
+	}
+}
+
+// Reactivation must not revive a session or bound token issued before the revocation,
+// even when nothing used them while revoked. A fresh login works.
+func TestReactivationLeavesPreRevocationCredentialsDead(t *testing.T) {
+	provider := oidcTestServer(t, "owner", "administrator", "admin@example.com", "user", true)
+	roots := x509.NewCertPool()
+	roots.AddCert(provider.Certificate())
+	old := http.DefaultTransport
+	tr := old.(*http.Transport).Clone()
+	tr.TLSClientConfig = &tls.Config{RootCAs: roots, MinVersion: tls.VersionTLS12}
+	http.DefaultTransport = tr
+	t.Cleanup(func() { http.DefaultTransport = old; tr.CloseIdleConnections() })
+	_, srv := newWeb(t)
+	if _, err := srv.o.Store.ApplyInstaller(context.Background(), webInstallerBundle(t, provider.URL), false); err != nil {
+		t.Fatal(err)
+	}
+	mux := http.NewServeMux()
+	srv.Routes(mux)
+	srv.o.API.Routes(mux)
+	h := srv.WriteGate(mux)
+	login := func() *http.Cookie {
+		r := httptest.NewRequest("GET", "/auth/sso/callback?code=mock_code&state=test_state", nil)
+		for n, v := range map[string]string{cookieSSOState: "test_state", cookieSSOVerifier: "test_verifier", cookieSSONonce: "test_nonce"} {
+			r.AddCookie(&http.Cookie{Name: n, Value: v})
+		}
+		w := httptest.NewRecorder()
+		h.ServeHTTP(w, r)
+		if c := sessionCookie(w); w.Code == 303 && c != nil {
+			return c
+		}
+		t.Fatalf("login %d %s", w.Code, w.Body)
+		return nil
+	}
+	event := func(raw, eventType string) {
+		r := httptest.NewRequest("POST", PathInstallerDirectory, strings.NewReader(raw))
+		headers, err := syncauth.Sign([]byte("fixture-directory-secret-at-least-16"), time.Now(), eventType, "fixture-"+eventType, []byte(raw))
+		if err != nil {
+			t.Fatal(err)
+		}
+		headers.Apply(r)
+		w := httptest.NewRecorder()
+		h.ServeHTTP(w, r)
+		if w.Code != 204 {
+			t.Fatalf("%s %d %s", eventType, w.Code, w.Body)
+		}
+	}
+	api := func(token string) int {
+		r := httptest.NewRequest("GET", "/api/v1/services", nil)
+		r.Header.Set("Authorization", "Bearer "+token)
+		w := httptest.NewRecorder()
+		h.ServeHTTP(w, r)
+		return w.Code
+	}
+	stale := login()
+	token, err := srv.o.Registry.CreateIdentityToken("owner-api", provider.URL, "owner")
+	if err != nil {
+		t.Fatal(err)
+	}
+	event(`{"id":"owner","active":false,"meta":{"version":"W/\"2\""}}`, "user.deactivated")
+	event(`{"id":"owner","active":true,"roles":[{"value":"kydns.admin"}],"meta":{"version":"W/\"3\""}}`, "user.updated")
+	if rec := get(t, h, "/", stale); rec.Code != 303 {
+		t.Fatalf("pre-revocation session revived: %d", rec.Code)
+	}
+	if code := api(token); code != 401 {
+		t.Fatalf("pre-revocation token revived: %d", code)
+	}
+	fresh := login()
+	if rec := get(t, h, "/", fresh); rec.Code != 200 {
+		t.Fatalf("fresh login after reactivation %d", rec.Code)
+	}
+	event(`{"id":"owner","active":true,"roles":[{"value":"kydns.admin"}],"meta":{"version":"W/\"4\""}}`, "user.updated")
+	if rec := get(t, h, "/", fresh); rec.Code != 200 {
+		t.Fatalf("routine directory update ended the session %d", rec.Code)
 	}
 }

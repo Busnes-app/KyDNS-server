@@ -29,7 +29,8 @@ The protected bundle uses the shared `ky-primitives/applysetup` contract:
 
 Bundle and credential files must be private, bounded, regular, owned by the
 runtime user and referenced by absolute paths. Credentials never appear in the
-report or installer configuration row. The issuer is canonical HTTPS without a
+report, installer configuration row or settings page; only the OIDC exchange reads
+the client secret. The issuer is canonical HTTPS without a
 trailing slash. The directory secret requires at least 16 bytes.
 
 KyDNS has administrator accounts only. The bundle refuses `everyday` identities;
@@ -52,7 +53,8 @@ and updated events require an active flag, `kydns.admin` role and canonical posi
 `meta.version` such as `W/"3"`. Deactivation and deletion remove authority. A durable
 revision/digest fence refuses stale or conflicting events and accepts identical
 retries without new audit rows. Directory authority is node-local on replicas too.
-Sessions check current authority on every request. Tokens created by a managed
+Sessions check current authority on every request and record the directory revision
+at login; a session from before the latest revocation stays invalid after reactivation. Tokens created by a managed
 administrator are issuer/subject-bound, including descendants issued through the
 JSON API; offboarding deletes them atomically, and token creation checks that
 authority in the same transaction as the insert. Later reactivation does not restore

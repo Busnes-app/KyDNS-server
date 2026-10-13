@@ -149,28 +149,36 @@ func (s *Store) InstallerAdministrator(issuer, subject string) (managed, allowed
 }
 
 func installerAdministrator(q rowQuerier, issuer, subject string) (managed, allowed bool, err error) {
+	managed, state, err := installerAuthority(q, issuer, subject)
+	return managed, state.Allowed, err
+}
+
+// InstallerAuthority is InstallerAdministrator with the retained directory state, whose
+// Revision a session records at login and whose RevokedAt fences older sessions.
+func (s *Store) InstallerAuthority(issuer, subject string) (bool, InstallerDirectoryState, error) {
+	return installerAuthority(s.db, issuer, subject)
+}
+
+func installerAuthority(q rowQuerier, issuer, subject string) (bool, InstallerDirectoryState, error) {
 	b, managed, err := installerConfiguration(q)
-	if err != nil || !managed {
-		return managed, false, err
-	}
-	if issuer != b.SSO.IssuerURL {
-		return true, false, nil
+	if err != nil || !managed || issuer != b.SSO.IssuerURL {
+		return managed, InstallerDirectoryState{}, err
 	}
 	for _, id := range b.Admins {
 		if id.Subject == subject {
-			raw, e := localSetting(q, installerDirectoryKey(issuer, subject))
-			if errors.Is(e, ErrNotFound) {
-				return true, true, nil
+			raw, err := localSetting(q, installerDirectoryKey(issuer, subject))
+			if errors.Is(err, ErrNotFound) {
+				return true, InstallerDirectoryState{Allowed: true}, nil
 			}
-			if e != nil {
-				return true, false, e
+			if err != nil {
+				return true, InstallerDirectoryState{}, err
 			}
 			var state InstallerDirectoryState
 			if json.Unmarshal([]byte(raw), &state) != nil {
-				return true, false, errors.New("retained directory authority invalid")
+				return true, InstallerDirectoryState{}, errors.New("retained directory authority invalid")
 			}
-			return true, state.Allowed, nil
+			return true, state, nil
 		}
 	}
-	return true, false, nil
+	return true, InstallerDirectoryState{}, nil
 }
