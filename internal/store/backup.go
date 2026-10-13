@@ -17,9 +17,16 @@ type AuditEvent struct {
 	Actor, Action, Resource, Details, IP, Outcome string
 }
 
-func (s *Store) GetLocalSetting(key string) (string, error) {
+// rowQuerier is a *sql.DB or a *sql.Tx, so a read can join a caller's transaction.
+type rowQuerier interface {
+	QueryRow(query string, args ...any) *sql.Row
+}
+
+func (s *Store) GetLocalSetting(key string) (string, error) { return localSetting(s.db, key) }
+
+func localSetting(q rowQuerier, key string) (string, error) {
 	var value string
-	if err := s.db.QueryRow(`SELECT value FROM local_settings WHERE key = ?`, key).Scan(&value); err != nil {
+	if err := q.QueryRow(`SELECT value FROM local_settings WHERE key = ?`, key).Scan(&value); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return "", ErrNotFound
 		}

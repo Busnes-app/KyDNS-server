@@ -1,14 +1,17 @@
 package adminapi
 
 import (
+	"context"
 	"database/sql"
 	"encoding/base64"
 	"encoding/json"
 	"net/http"
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 
+	"github.com/Busnes-app/ky-primitives/applysetup"
 	"github.com/Busnes-app/ky-primitives/recoveryclient"
 	"github.com/Busnes-app/ky-primitives/recoverykey"
 	"github.com/Busnes-app/kydns-server/internal/backup"
@@ -25,6 +28,8 @@ type backupEnv struct {
 	h      http.Handler
 	tok    string
 	dbPath string
+	st     *store.Store
+	reg    *registry.Registry
 }
 
 // backupAPI builds an authed API whose backup service writes into t.TempDir().
@@ -53,7 +58,7 @@ func backupAPI(t *testing.T, tweak func(*config.Config)) (backupEnv, string) {
 		t.Fatal(err)
 	}
 	api := NewAPI(reg, nil, nil).WithBackupService(svc)
-	return backupEnv{h: api.Handler(), tok: tok, dbPath: dbPath}, tok
+	return backupEnv{h: api.Handler(), tok: tok, dbPath: dbPath, st: st, reg: reg}, tok
 }
 
 // pinKeyReq is a pin request for a freshly generated recovery key, so two
@@ -259,5 +264,46 @@ func TestBackupPairRefusesUnusableRecoveryURLs(t *testing.T) {
 		if st.KeyPinned || st.Paired {
 			t.Errorf("pair %s left state behind: %+v", tc.url, st)
 		}
+	}
+}
+
+// A directory-bound token cannot choose the first recovery key on either path: the
+// capsule carries the directory credentials. An unbound recovery token still can, and the
+// bound token may then back up to that trusted pin.
+func TestManagedTokenCannotEnrollFirstRecoveryKey(t *testing.T) {
+	e, local := backupAPI(t, func(c *config.Config) { c.BackupDir = t.TempDir() })
+	issuer, dir := "https://identity.example", t.TempDir()
+	secret := filepath.Join(dir, "secret")
+	if err := os.WriteFile(secret, []byte("fixture-directory-secret-at-least-16"), 0600); err != nil {
+		t.Fatal(err)
+	}
+	b := applysetup.Common{Schema: applysetup.Schema, Service: "kydns", SetupID: "12345678-1234-1234-1234-123456789abc",
+		SSO:    &applysetup.SSO{IssuerURL: issuer, ClientID: "kydns", ClientSecretFile: secret, DirectorySecretFile: secret, RedirectURI: "https://dns.example/auth/sso/callback"},
+		Admins: []applysetup.Identity{{Issuer: issuer, Subject: "owner", Username: "administrator"}}}
+	if _, err := e.st.ApplyInstaller(context.Background(), b, false); err != nil {
+		t.Fatal(err)
+	}
+	bound, err := e.reg.CreateIdentityToken("owner", issuer, "owner")
+	if err != nil {
+		t.Fatal(err)
+	}
+	pin := pinKeyReq(t)
+	for _, tc := range []struct{ path, body string }{
+		{"/api/v1/backup/pair-remote", `{"recovery_url":"https://kyrecovery.invalid","pairing_code":"123456"}`},
+		{"/api/v1/backup/pin-key", pin},
+	} {
+		if rr := do(t, e.h, "POST", tc.path, bound, tc.body); rr.Code != http.StatusForbidden {
+			t.Fatalf("bound %s = %d %s", tc.path, rr.Code, rr.Body)
+		}
+		var st backup.Status
+		if err := json.Unmarshal(do(t, e.h, "GET", "/api/v1/backup/status", local, "").Body.Bytes(), &st); err != nil || st.KeyPinned || st.Paired {
+			t.Fatalf("bound %s left state %+v %v", tc.path, st, err)
+		}
+	}
+	if rr := do(t, e.h, "POST", "/api/v1/backup/pin-key", local, pin); rr.Code != 200 {
+		t.Fatalf("recovery token pin = %d %s", rr.Code, rr.Body)
+	}
+	if rr := do(t, e.h, "POST", "/api/v1/backup/deposit", bound, ""); rr.Code != 200 {
+		t.Fatalf("bound deposit to trusted pin = %d %s", rr.Code, rr.Body)
 	}
 }

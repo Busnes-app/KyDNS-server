@@ -54,7 +54,8 @@ revision/digest fence refuses stale or conflicting events and accepts identical
 retries without new audit rows. Directory authority is node-local on replicas too.
 Sessions check current authority on every request. Tokens created by a managed
 administrator are issuer/subject-bound, including descendants issued through the
-JSON API; offboarding deletes them atomically. Later reactivation does not restore
+JSON API; offboarding deletes them atomically, and token creation checks that
+authority in the same transaction as the insert. Later reactivation does not restore
 old tokens. Legacy local recovery tokens retain their independent authority.
 
 `GET /api/v1/installer/network` returns only `clientIp`, `proxyHeadersTrusted` and
@@ -63,7 +64,10 @@ IP addresses or CIDRs and refuses `/0`. Browser cookies and OIDC callback scheme
 use the same peer trust. Untrusted forwarded headers cannot alter identity or scheme.
 
 Managed credentials are sealed in backups with a reference-to-destination map;
-see [RESTORE.md](RESTORE.md). Installer-driven backup enrollment is not yet supported
+see [RESTORE.md](RESTORE.md). Managed administrators cannot enroll the first
+recovery key by pinning or pairing; the local recovery administrator (`kydns admin
+reset-password` in the container) or an unbound recovery token does, after which
+managed administrators back up to that pin. Installer-driven backup enrollment is not yet supported
 and a nonempty `backup` bundle is refused before writes. Existing native backup
 configuration and operations remain available. Central client assignment/role and
 directory delivery must still be composed and verified by KyQuickStart; the presence

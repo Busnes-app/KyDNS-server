@@ -7,6 +7,7 @@ import (
 	"io/fs"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/Busnes-app/ky-primitives/recoveryclient"
@@ -48,11 +49,20 @@ func backupStatusCode(err error) (int, string) {
 		return http.StatusConflict, "a backup is already in progress"
 	case errors.Is(err, recoveryclient.ErrBadInterval):
 		return http.StatusBadRequest, recoveryclient.AuditSafe(err.Error())
+	case errors.Is(err, backup.ErrManagedEnrollment):
+		return http.StatusForbidden, err.Error()
 	case errors.Is(err, recoveryclient.ErrRemote):
 		return http.StatusBadGateway, recoveryclient.AuditSafe(err.Error())
 	default:
 		return http.StatusInternalServerError, recoveryclient.AuditSafe(err.Error())
 	}
+}
+
+// managedPrincipal reports whether the bearer acts for a directory-bound identity.
+// An unresolved bearer counts as bound, so the check fails closed.
+func (a *API) managedPrincipal(r *http.Request) bool {
+	issuer, subject, ok := a.reg.AuthenticateTokenPrincipal(strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer "))
+	return !ok || issuer != "" || subject != ""
 }
 
 func (a *API) backupFail(w http.ResponseWriter, code string, err error) {
@@ -120,7 +130,7 @@ func (a *API) backupPair(w http.ResponseWriter, r *http.Request) {
 		writeErr(w, http.StatusBadRequest, "backup_pair", "recovery_url", err.Error())
 		return
 	}
-	key, err := s.Pair(r.Context(), req.RecoveryURL, req.PairingCode)
+	key, err := s.Pair(r.Context(), req.RecoveryURL, req.PairingCode, a.managedPrincipal(r))
 	details := req.RecoveryURL + allow
 	if err != nil {
 		details += " " + err.Error()
@@ -146,7 +156,7 @@ func (a *API) backupPinKey(w http.ResponseWriter, r *http.Request) {
 	if !decode(w, r, &req) {
 		return
 	}
-	key, err := s.PinKey(req.PublicKey, req.Threshold, req.TotalShares)
+	key, err := s.PinKey(req.PublicKey, req.Threshold, req.TotalShares, a.managedPrincipal(r))
 	details := strconv.Itoa(req.Threshold) + "-of-" + strconv.Itoa(req.TotalShares)
 	if err != nil {
 		details += " " + err.Error()

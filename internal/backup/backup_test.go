@@ -47,7 +47,7 @@ func pinFresh(t *testing.T, s *Service) recoverykey.PrivateKey {
 		t.Fatal(err)
 	}
 	b64 := base64.StdEncoding.EncodeToString(priv.Public().Bytes())
-	if _, err := s.PinKey(b64, 2, 3); err != nil {
+	if _, err := s.PinKey(b64, 2, 3, false); err != nil {
 		t.Fatal(err)
 	}
 	return priv
@@ -104,7 +104,7 @@ func TestPinByHandIsWriteOnce(t *testing.T) {
 	s := testService(t, nil)
 	pinFresh(t, s)
 	other, _ := recoverykey.Generate()
-	_, err := s.PinKey(base64.StdEncoding.EncodeToString(other.Public().Bytes()), 2, 3)
+	_, err := s.PinKey(base64.StdEncoding.EncodeToString(other.Public().Bytes()), 2, 3, false)
 	if !errors.Is(err, fs.ErrExist) {
 		t.Fatalf("second pin error = %v, want fs.ErrExist", err)
 	}

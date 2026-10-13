@@ -40,7 +40,7 @@ func TestBackupLoopReportsAPinnedKeyWithNoKeyFile(t *testing.T) {
 		t.Fatal(err)
 	}
 	key := base64.StdEncoding.EncodeToString(priv.Public().Bytes())
-	if _, err := svc.PinKey(key, 2, 3); err != nil {
+	if _, err := svc.PinKey(key, 2, 3, false); err != nil {
 		t.Fatal(err)
 	}
 	if err := os.Remove(recoveryclient.RecoveryKeyPath(dir)); err != nil {

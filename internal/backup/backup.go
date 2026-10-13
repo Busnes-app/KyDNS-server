@@ -171,7 +171,26 @@ func (s *Service) Export() ([]byte, capsule.Manifest, error) {
 	return recoveryclient.Seal(p, key)
 }
 
-func (s *Service) Pair(ctx context.Context, url, code string) (recoveryclient.RecoveryKey, error) {
+// ErrManagedEnrollment refuses a directory-bound administrator the first recovery key:
+// capsules carry the directory credentials, so the key holder must outrank the directory.
+var ErrManagedEnrollment = errors.New("the first recovery key must be enrolled by the local recovery administrator or an unbound recovery token")
+
+// enrollable lets a managed identity use only a recovery key that is already pinned.
+func (s *Service) enrollable(managedIdentity bool) error {
+	if !managedIdentity {
+		return nil
+	}
+	_, err := s.Settings().Get(settingKeyID)
+	if errors.Is(err, recoveryclient.ErrNotFound) {
+		return ErrManagedEnrollment
+	}
+	return err
+}
+
+func (s *Service) Pair(ctx context.Context, url, code string, managedIdentity bool) (recoveryclient.RecoveryKey, error) {
+	if err := s.enrollable(managedIdentity); err != nil {
+		return recoveryclient.RecoveryKey{}, err
+	}
 	res, err := s.Client.ClaimPairing(ctx, url, code, ServiceName, ServiceName)
 	if err != nil {
 		return recoveryclient.RecoveryKey{}, err
@@ -182,7 +201,10 @@ func (s *Service) Pair(ctx context.Context, url, code string) (recoveryclient.Re
 	return res.Key, recoveryclient.StorePairing(s.Settings(), s.sealer, url, res.APIToken)
 }
 
-func (s *Service) PinKey(publicKeyB64 string, k, n int) (recoveryclient.RecoveryKey, error) {
+func (s *Service) PinKey(publicKeyB64 string, k, n int, managedIdentity bool) (recoveryclient.RecoveryKey, error) {
+	if err := s.enrollable(managedIdentity); err != nil {
+		return recoveryclient.RecoveryKey{}, err
+	}
 	key, err := recoveryclient.ParsePinRequest(publicKeyB64, k, n)
 	if err != nil {
 		return recoveryclient.RecoveryKey{}, err

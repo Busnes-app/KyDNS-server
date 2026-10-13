@@ -14,7 +14,11 @@ const installerConfigKey = "installer.config"
 
 // InstallerConfiguration contains protected target references, never credentials.
 func (s *Store) InstallerConfiguration() (applysetup.Common, bool, error) {
-	raw, err := s.GetLocalSetting(installerConfigKey)
+	return installerConfiguration(s.db)
+}
+
+func installerConfiguration(q rowQuerier) (applysetup.Common, bool, error) {
+	raw, err := localSetting(q, installerConfigKey)
 	if errors.Is(err, ErrNotFound) {
 		return applysetup.Common{}, false, nil
 	}
@@ -141,7 +145,11 @@ func (s *Store) ApplyInstaller(ctx context.Context, b applysetup.Common, check b
 // InstallerAdministrator returns only a configured exact issuer/subject grant.
 // The ordinary/local recovery account retains its original independent authority.
 func (s *Store) InstallerAdministrator(issuer, subject string) (managed, allowed bool, err error) {
-	b, managed, err := s.InstallerConfiguration()
+	return installerAdministrator(s.db, issuer, subject)
+}
+
+func installerAdministrator(q rowQuerier, issuer, subject string) (managed, allowed bool, err error) {
+	b, managed, err := installerConfiguration(q)
 	if err != nil || !managed {
 		return managed, false, err
 	}
@@ -150,7 +158,7 @@ func (s *Store) InstallerAdministrator(issuer, subject string) (managed, allowed
 	}
 	for _, id := range b.Admins {
 		if id.Subject == subject {
-			raw, e := s.GetLocalSetting(installerDirectoryKey(issuer, subject))
+			raw, e := localSetting(q, installerDirectoryKey(issuer, subject))
 			if errors.Is(e, ErrNotFound) {
 				return true, true, nil
 			}

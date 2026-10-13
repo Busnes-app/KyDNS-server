@@ -5,7 +5,6 @@ import (
 	"crypto/sha256"
 	"crypto/subtle"
 	"encoding/hex"
-	"errors"
 	"fmt"
 	"net/netip"
 	"strings"
@@ -326,17 +325,9 @@ func (r *Registry) CreateToken(label string) (string, error) {
 	return r.CreateIdentityToken(label, "", "")
 }
 
-// CreateIdentityToken binds descendants to the same live administrator authority.
+// CreateIdentityToken binds descendants to the same live administrator authority;
+// the store checks that authority atomically with the insert.
 func (r *Registry) CreateIdentityToken(label, issuer, subject string) (string, error) {
-	if issuer != "" || subject != "" {
-		managed, allowed, err := r.s.InstallerAdministrator(issuer, subject)
-		if err != nil {
-			return "", err
-		}
-		if !managed || !allowed {
-			return "", errors.New("administrator authority unavailable")
-		}
-	}
 	plaintext, hash := GenerateToken()
 	if _, err := r.s.PutToken(store.Token{Label: label, Hash: hash, Issuer: issuer, Subject: subject}); err != nil {
 		return "", err

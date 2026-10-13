@@ -70,6 +70,13 @@ func pairURLError(raw string, allowPrivate bool) error {
 	return err
 }
 
+// managedSession reports whether the session acts for a directory-bound identity.
+// No session counts as bound, so the check fails closed.
+func (s *Server) managedSession(r *http.Request) bool {
+	sess, ok := s.session(r)
+	return !ok || sess.IdentityIssuer != "" || sess.IdentitySubject != ""
+}
+
 func (s *Server) postBackupPair(w http.ResponseWriter, r *http.Request) {
 	b := s.o.Backup
 	if b == nil {
@@ -85,7 +92,7 @@ func (s *Server) postBackupPair(w http.ResponseWriter, r *http.Request) {
 		s.backupError(w, r, err)
 		return
 	}
-	key, err := b.Pair(r.Context(), u, code)
+	key, err := b.Pair(r.Context(), u, code, s.managedSession(r))
 	s.auditBackup(b, r, "backup.paired", key.Public.ID(), u+allow, err)
 	if err != nil {
 		s.backupError(w, r, err)
@@ -108,7 +115,7 @@ func (s *Server) postBackupPinKey(w http.ResponseWriter, r *http.Request) {
 		s.backupError(w, r, err)
 		return
 	}
-	key, err := b.PinKey(r.PostFormValue("public_key"), k, n)
+	key, err := b.PinKey(r.PostFormValue("public_key"), k, n, s.managedSession(r))
 	s.auditBackup(b, r, "backup.key_pinned", key.Public.ID(), fmt.Sprintf("%d-of-%d", k, n), err)
 	if err != nil {
 		s.backupError(w, r, err)

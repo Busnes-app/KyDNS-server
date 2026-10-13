@@ -871,12 +871,38 @@ func (s *Store) HasAdmin() (bool, error) {
 	return n > 0, nil
 }
 
+// beforeTokenInsert lets a test interleave a concurrent write; nil in production.
+var beforeTokenInsert func()
+
+// PutToken checks a bound token's authority and inserts it in one transaction, so a
+// concurrent ApplyInstallerDirectory revocation cannot commit between the two.
 func (s *Store) PutToken(t Token) (int64, error) {
-	res, err := s.db.Exec(`INSERT INTO tokens(label, hash, issuer, subject) VALUES(?, ?, ?, ?)`, t.Label, t.Hash, t.Issuer, t.Subject)
+	tx, err := s.db.Begin()
 	if err != nil {
 		return 0, err
 	}
-	return res.LastInsertId()
+	defer tx.Rollback()
+	if t.Issuer != "" || t.Subject != "" {
+		managed, allowed, err := installerAdministrator(tx, t.Issuer, t.Subject)
+		if err != nil {
+			return 0, err
+		}
+		if !managed || !allowed {
+			return 0, errors.New("administrator authority unavailable")
+		}
+	}
+	if beforeTokenInsert != nil {
+		beforeTokenInsert()
+	}
+	res, err := tx.Exec(`INSERT INTO tokens(label, hash, issuer, subject) VALUES(?, ?, ?, ?)`, t.Label, t.Hash, t.Issuer, t.Subject)
+	if err != nil {
+		return 0, err
+	}
+	id, err := res.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+	return id, tx.Commit()
 }
 
 func (s *Store) Tokens() ([]Token, error) {
