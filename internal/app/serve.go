@@ -18,6 +18,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Busnes-app/ky-primitives/applysetup"
 	"github.com/Busnes-app/ky-primitives/recoveryclient"
 	"github.com/miekg/dns"
 
@@ -365,6 +366,15 @@ func Serve(ctx context.Context, cfgPath string, logger *slog.Logger) error {
 		DiscoveryOn: poller.Enabled,
 	})
 	webSrv.Routes(mux)
+	socket, err := InstallerSocket(cfg.DataDir)
+	if err != nil {
+		return err
+	}
+	closeSetup, err := applysetup.StartLocal(ctx, socket, webSrv.ApplyInstaller, nil)
+	if err != nil {
+		return err
+	}
+	defer closeSetup()
 
 	adminSrv := &http.Server{
 		Addr: cfg.Admin.Listen,

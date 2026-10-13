@@ -7,6 +7,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"github.com/Busnes-app/ky-primitives/applysetup"
 	"strings"
 
 	_ "modernc.org/sqlite"
@@ -64,6 +65,8 @@ CREATE TABLE IF NOT EXISTS records (
 );
 CREATE TABLE IF NOT EXISTS tokens (
   id           INTEGER PRIMARY KEY,
+  issuer       TEXT NOT NULL DEFAULT '',
+  subject      TEXT NOT NULL DEFAULT '',
   label        TEXT NOT NULL,
   hash         TEXT NOT NULL UNIQUE,
   created_at   INTEGER NOT NULL DEFAULT (unixepoch()),
@@ -342,6 +345,8 @@ var migrations = []string{
 	 );`,
 	`ALTER TABLE settings ADD COLUMN dhcp_allow_foreign INTEGER NOT NULL DEFAULT 0;`,
 	`ALTER TABLE services ADD COLUMN mac TEXT NOT NULL DEFAULT '';`,
+	`ALTER TABLE tokens ADD COLUMN issuer TEXT NOT NULL DEFAULT '';
+	 ALTER TABLE tokens ADD COLUMN subject TEXT NOT NULL DEFAULT '';`,
 }
 
 // migrate runs against a transaction Open already holds, so a crash
@@ -773,6 +778,11 @@ func (s *Store) AdminIdentity() (*AdminIdentity, error) {
 }
 
 func (s *Store) LinkAdminSSO(sub, username, email string) error {
+	if _, managed, err := s.InstallerConfiguration(); err != nil {
+		return err
+	} else if managed {
+		return errors.New("installer-owned identities cannot be linked to the recovery account")
+	}
 	res, err := s.db.Exec(`
 		UPDATE admin
 		SET sso_sub = ?, sso_username = ?, sso_email = ?, sso_linked_at = unixepoch(), updated_at = unixepoch()
@@ -788,6 +798,11 @@ func (s *Store) LinkAdminSSO(sub, username, email string) error {
 }
 
 func (s *Store) UnlinkAdminSSO() error {
+	if _, managed, err := s.InstallerConfiguration(); err != nil {
+		return err
+	} else if managed {
+		return errors.New("installer-owned identities cannot be linked to the recovery account")
+	}
 	res, err := s.db.Exec(`
 		UPDATE admin
 		SET sso_sub = '', sso_username = '', sso_email = '', sso_linked_at = 0, updated_at = unixepoch()
@@ -803,9 +818,21 @@ func (s *Store) UnlinkAdminSSO() error {
 }
 
 func (s *Store) SSOSettings() (SSOSettings, error) {
+	b, managed, err := s.InstallerConfiguration()
+	if err != nil {
+		return SSOSettings{}, err
+	}
+	if managed {
+		secret, err := applysetup.Secret(b.SSO.ClientSecretFile)
+		if err != nil {
+			return SSOSettings{}, err
+		}
+		return SSOSettings{Enabled: true, IssuerURL: b.SSO.IssuerURL, ClientID: b.SSO.ClientID, ClientSecret: secret}, nil
+	}
+
 	var sso SSOSettings
 	var enabled int
-	err := s.db.QueryRow(`SELECT enabled, issuer_url, client_id, client_secret FROM sso_settings WHERE id = 1`).
+	err = s.db.QueryRow(`SELECT enabled, issuer_url, client_id, client_secret FROM sso_settings WHERE id = 1`).
 		Scan(&enabled, &sso.IssuerURL, &sso.ClientID, &sso.ClientSecret)
 	if errors.Is(err, sql.ErrNoRows) {
 		return SSOSettings{Enabled: false, IssuerURL: "https://auth.urlxl.com", ClientID: "kydns"}, nil
@@ -815,6 +842,11 @@ func (s *Store) SSOSettings() (SSOSettings, error) {
 }
 
 func (s *Store) SetSSOSettings(sso SSOSettings) error {
+	if _, managed, err := s.InstallerConfiguration(); err != nil {
+		return err
+	} else if managed {
+		return errors.New("installer-owned SSO configuration must be explicitly unmanaged before replacement")
+	}
 	enabledInt := 0
 	if sso.Enabled {
 		enabledInt = 1
@@ -840,7 +872,7 @@ func (s *Store) HasAdmin() (bool, error) {
 }
 
 func (s *Store) PutToken(t Token) (int64, error) {
-	res, err := s.db.Exec(`INSERT INTO tokens(label, hash) VALUES(?, ?)`, t.Label, t.Hash)
+	res, err := s.db.Exec(`INSERT INTO tokens(label, hash, issuer, subject) VALUES(?, ?, ?, ?)`, t.Label, t.Hash, t.Issuer, t.Subject)
 	if err != nil {
 		return 0, err
 	}
@@ -848,7 +880,7 @@ func (s *Store) PutToken(t Token) (int64, error) {
 }
 
 func (s *Store) Tokens() ([]Token, error) {
-	rows, err := s.db.Query(`SELECT id, label, hash, created_at, last_used_at FROM tokens ORDER BY id`)
+	rows, err := s.db.Query(`SELECT id, label, hash, created_at, last_used_at, issuer, subject FROM tokens ORDER BY id`)
 	if err != nil {
 		return nil, err
 	}
@@ -856,7 +888,7 @@ func (s *Store) Tokens() ([]Token, error) {
 	var out []Token
 	for rows.Next() {
 		var t Token
-		if err := rows.Scan(&t.ID, &t.Label, &t.Hash, &t.CreatedAt, &t.LastUsedAt); err != nil {
+		if err := rows.Scan(&t.ID, &t.Label, &t.Hash, &t.CreatedAt, &t.LastUsedAt, &t.Issuer, &t.Subject); err != nil {
 			return nil, err
 		}
 		out = append(out, t)

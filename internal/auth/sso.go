@@ -204,6 +204,9 @@ func (c *SSOClient) ExchangeCode(ctx context.Context, redirectURI, code, codeVer
 			}
 		}
 	}
+	// Userinfo cannot replace the verified ID-token identity binding.
+	rawClaims["iss"] = idToken.Issuer
+	rawClaims["sub"] = idToken.Subject
 	return parseClaimsMap(rawClaims), nil
 }
 

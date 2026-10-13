@@ -13,6 +13,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/Busnes-app/ky-primitives/applysetup"
 	"github.com/Busnes-app/ky-primitives/capsule"
 	"github.com/Busnes-app/ky-primitives/keyfile"
 	"github.com/Busnes-app/ky-primitives/recoveryclient"
@@ -111,6 +112,26 @@ func (s *Service) Collect() (recoveryclient.Payload, error) {
 		{Path: "config/kydns.yaml", Data: manifest, Mode: 0600},
 	}
 	required := []string{"data/kydns.db", "data/" + keyFile, "config/kydns.yaml"}
+	if bundle, managed, err := s.Store.InstallerConfiguration(); err != nil {
+		return recoveryclient.Payload{}, err
+	} else if managed {
+		mapping := map[string]string{}
+		for name, source := range map[string]string{"installer/client.secret": bundle.SSO.ClientSecretFile, "installer/directory.secret": bundle.SSO.DirectorySecretFile} {
+			secret, err := applysetup.Secret(source)
+			if err != nil {
+				return recoveryclient.Payload{}, err
+			}
+			files = append(files, recoveryclient.File{Path: name, Data: []byte(secret), Mode: 0600})
+			required = append(required, name)
+			mapping[name] = source
+		}
+		destinations, err := yaml.Marshal(mapping)
+		if err != nil {
+			return recoveryclient.Payload{}, err
+		}
+		files = append(files, recoveryclient.File{Path: "installer/credential-paths.yaml", Data: destinations, Mode: 0600})
+		required = append(required, "installer/credential-paths.yaml")
+	}
 	// node_key and recovery.pub are carried when they exist, and are then required on the
 	// way back: a restored node with the pin row but no key file cannot seal its next backup.
 	for _, m := range []struct{ path, src string }{

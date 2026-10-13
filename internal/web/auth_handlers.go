@@ -22,6 +22,8 @@ type registrar interface {
 func (s *Server) Routes(mux *http.ServeMux) { s.routes(mux) }
 
 func (s *Server) routes(mux registrar) {
+	mux.HandleFunc("GET /api/v1/installer/network", s.installerNetwork)
+	mux.HandleFunc("POST "+PathInstallerDirectory, s.installerDirectory)
 	mux.HandleFunc("GET /setup", s.getSetup)
 	mux.HandleFunc("POST "+PathSetup, s.postSetup)
 	mux.HandleFunc("GET /login", s.requireSetup(s.getLogin))
@@ -59,7 +61,7 @@ func (s *Server) postSetup(w http.ResponseWriter, r *http.Request) {
 	// Constant-time so the token cannot be recovered by timing.
 	given := r.PostFormValue("token")
 	if subtle.ConstantTimeCompare([]byte(given), []byte(s.o.SetupToken)) != 1 {
-		s.o.Logger.Warn("setup attempted with an invalid token", "source", sourceKey(r))
+		s.o.Logger.Warn("setup attempted with an invalid token", "source", s.sourceKey(r))
 		fail("That setup token is not correct. It was printed to the server log at startup.")
 		return
 	}
@@ -107,7 +109,7 @@ func (s *Server) postLogin(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "malformed form", http.StatusBadRequest)
 		return
 	}
-	key := sourceKey(r)
+	key := s.sourceKey(r)
 	// Sleep before answering, so guessing gets slower without ever locking out.
 	if d := s.o.Backoff.Delay(key); d > 0 {
 		time.Sleep(d)
@@ -203,7 +205,7 @@ func (s *Server) getSSOCallback(w http.ResponseWriter, r *http.Request) {
 
 	stateCookie, err := r.Cookie(cookieSSOState)
 	if err != nil || stateCookie.Value == "" || stateCookie.Value != state {
-		s.o.Logger.Warn("sso state mismatch or missing", "source", sourceKey(r))
+		s.o.Logger.Warn("sso state mismatch or missing", "source", s.sourceKey(r))
 		s.clearSSOCookies(w, r)
 		w.WriteHeader(http.StatusBadRequest)
 		sso, _ := s.o.Store.SSOSettings()
@@ -258,7 +260,7 @@ func (s *Server) getSSOCallback(w http.ResponseWriter, r *http.Request) {
 
 	claims, err := client.ExchangeCode(r.Context(), redirectURI, code, verifier, nonce)
 	if err != nil {
-		s.o.Logger.Warn("sso code exchange failed", "error", err, "source", sourceKey(r))
+		s.o.Logger.Warn("sso code exchange failed", "error", err, "source", s.sourceKey(r))
 		w.WriteHeader(http.StatusUnauthorized)
 		s.renderBare(w, "login.html", map[string]any{
 			"Title":      "Sign in",
@@ -268,6 +270,20 @@ func (s *Server) getSSOCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	managed, allowed, e := s.o.Store.InstallerAdministrator(claims.Issuer, claims.Sub)
+	if e != nil {
+		http.Error(w, "administrator binding unavailable", 500)
+		return
+	}
+	if managed {
+		if isLink || !allowed {
+			http.Error(w, "use the explicitly assigned administrator identity", 403)
+			return
+		}
+		s.setSessionCookie(w, r, s.o.Sessions.CreateSSO(claims.Issuer, claims.Sub))
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
 	ident, err := s.o.Store.AdminIdentity()
 	if err != nil {
 		s.o.Logger.Error("failed to load admin identity", "error", err)
@@ -333,14 +349,16 @@ func (s *Server) getSSOCallback(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) ssoRedirectURI(r *http.Request) string {
+	if b, managed, err := s.o.Store.InstallerConfiguration(); err == nil && managed {
+		return b.SSO.RedirectURI
+	}
+
 	scheme := "http"
-	if r.TLS != nil || r.Header.Get("X-Forwarded-Proto") == "https" {
+	if s.requestSecure(r) {
 		scheme = "https"
 	}
 	host := r.Host
-	if fHost := r.Header.Get("X-Forwarded-Host"); fHost != "" {
-		host = fHost
-	}
+
 	return fmt.Sprintf("%s://%s/auth/sso/callback", scheme, host)
 }
 
@@ -352,7 +370,7 @@ func (s *Server) setSSOCookie(w http.ResponseWriter, r *http.Request, name, valu
 		MaxAge:   maxAge,
 		HttpOnly: true,
 		SameSite: http.SameSiteLaxMode,
-		Secure:   r.TLS != nil || r.Header.Get("X-Forwarded-Proto") == "https",
+		Secure:   s.requestSecure(r),
 	})
 }
 
@@ -364,7 +382,7 @@ func (s *Server) clearSSOCookie(w http.ResponseWriter, r *http.Request, name str
 		MaxAge:   -1,
 		HttpOnly: true,
 		SameSite: http.SameSiteLaxMode,
-		Secure:   r.TLS != nil || r.Header.Get("X-Forwarded-Proto") == "https",
+		Secure:   s.requestSecure(r),
 	})
 }
 

@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"net/netip"
 	"os"
 	"path/filepath"
 	"slices"
@@ -69,7 +70,8 @@ type DNSConfig struct {
 }
 
 type AdminConfig struct {
-	Listen string `yaml:"listen"`
+	TrustedProxies []netip.Prefix `yaml:"-"`
+	Listen         string         `yaml:"listen"`
 }
 
 // ReplicationConfig is file-owned because it is needed before the database is
@@ -160,6 +162,24 @@ func Load(path string) (*Config, error) {
 	_ = yaml.Unmarshal(raw, &probe)
 	c.explicitEmptyDomain = probe.DNS.PrivateDomain != nil && *probe.DNS.PrivateDomain == ""
 
+	for _, item := range strings.Split(os.Getenv("KYDNS_TRUSTED_PROXIES"), ",") {
+		item = strings.TrimSpace(item)
+		if item == "" {
+			continue
+		}
+		prefix, err := netip.ParsePrefix(item)
+		if err != nil {
+			addr, e := netip.ParseAddr(item)
+			if e != nil {
+				return nil, errors.New("KYDNS_TRUSTED_PROXIES requires IPs or CIDRs")
+			}
+			prefix = netip.PrefixFrom(addr, addr.BitLen())
+		}
+		if prefix.Bits() == 0 {
+			return nil, errors.New("KYDNS_TRUSTED_PROXIES must not trust every address")
+		}
+		c.Admin.TrustedProxies = append(c.Admin.TrustedProxies, prefix.Masked())
+	}
 	c.overlayEnv()
 	c.applyDefaults()
 	if err := c.applyBackupEnv(); err != nil {

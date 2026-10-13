@@ -4,7 +4,6 @@ package web
 
 import (
 	"log/slog"
-	"net"
 	"net/http"
 	"strings"
 
@@ -100,13 +99,14 @@ const roleReplica = "replica"
 // transport, not the API's own exempt path, because the screen calls adminapi
 // in-process.
 const (
-	PathSetup        = "/setup"
-	PathLogin        = "/login"
-	PathLogout       = "/logout"
-	PathPromote      = "/replication/promote"
-	PathJoin         = "/replication/join"
-	PathDHCPSettings = "/dhcp/settings"
-	PathDHCPSuggest  = "/dhcp/suggest"
+	PathSetup              = "/setup"
+	PathLogin              = "/login"
+	PathLogout             = "/logout"
+	PathPromote            = "/replication/promote"
+	PathJoin               = "/replication/join"
+	PathDHCPSettings       = "/dhcp/settings"
+	PathDHCPSuggest        = "/dhcp/suggest"
+	PathInstallerDirectory = "/api/v1/installer/directory"
 )
 
 // webWriteExempt is the whole exemption list. Signing in is how an operator
@@ -135,6 +135,8 @@ var webWriteExempt = map[string]bool{
 	PathSetup: true, PathLogin: true, PathLogout: true,
 	PathPromote: true, PathJoin: true,
 	PathDHCPSettings: true, PathDHCPSuggest: true,
+	// Signed identity authority is node-local and must reach replicas too.
+	PathInstallerDirectory: true,
 }
 
 // managedBy names the box to make the change on.
@@ -189,8 +191,17 @@ func (s *Server) WriteGate(next http.Handler) http.Handler {
 type Server struct{ o Options }
 
 func New(o Options) *Server {
+	if o.Config == nil {
+		o.Config = &config.Config{}
+	}
 	if o.Logger == nil {
 		o.Logger = slog.Default()
+	}
+	if o.Sessions != nil && o.Store != nil {
+		o.Sessions.SetIdentityValidator(func(issuer, subject string) bool {
+			managed, allowed, err := o.Store.InstallerAdministrator(issuer, subject)
+			return err == nil && managed && allowed
+		})
 	}
 	return &Server{o: o}
 }
@@ -282,14 +293,14 @@ func (s *Server) setSessionCookie(w http.ResponseWriter, r *http.Request, sess *
 		Path:     "/",
 		HttpOnly: true,
 		SameSite: http.SameSiteLaxMode,
-		Secure:   r.TLS != nil,
+		Secure:   s.requestSecure(r),
 	})
 }
 
-func sourceKey(r *http.Request) string {
-	host, _, err := net.SplitHostPort(r.RemoteAddr)
-	if err != nil {
-		return r.RemoteAddr
-	}
-	return host
+func (s *Server) sourceKey(r *http.Request) string {
+	return auth.ClientIP(r, s.o.Config.Admin.TrustedProxies)
+}
+func (s *Server) requestSecure(r *http.Request) bool {
+	_, _, scheme := auth.RequestNetwork(r, s.o.Config.Admin.TrustedProxies)
+	return scheme == "https"
 }

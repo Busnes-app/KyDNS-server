@@ -44,6 +44,8 @@ type Record struct {
 }
 
 type Token struct {
+	Issuer     string
+	Subject    string
 	ID         int64
 	Label      string
 	Hash       string
