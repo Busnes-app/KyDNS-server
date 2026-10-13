@@ -72,5 +72,4 @@ of this interface alone is not a completed suite installation.
 Verification: `go test -race ./internal/store ./internal/registry ./internal/adminapi
 ./internal/web ./internal/auth ./internal/config ./internal/app ./internal/backup
 ./cmd/kydns`; the SSH fixture in KyQuickStart uses `KYQ_TEST_DNS_BINARY`.
-The new shared setup package is currently built through an explicit isolated Go
-workspace until the shared library release is published.
+The shared setup package comes from ky-primitives v0.10.0.
