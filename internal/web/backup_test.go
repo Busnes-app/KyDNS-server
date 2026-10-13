@@ -1,6 +1,7 @@
 package web
 
 import (
+	"context"
 	"encoding/base64"
 	"net/http"
 	"net/url"
@@ -11,6 +12,7 @@ import (
 
 	"github.com/Busnes-app/ky-primitives/recoveryclient"
 	"github.com/Busnes-app/ky-primitives/recoverykey"
+	"github.com/Busnes-app/kydns-server/internal/auth"
 	"github.com/Busnes-app/kydns-server/internal/backup"
 	"github.com/Busnes-app/kydns-server/internal/config"
 )
@@ -42,7 +44,7 @@ func freshPublicKeyB64(t *testing.T) string {
 
 func pinViaService(t *testing.T, srv *Server) {
 	t.Helper()
-	if _, err := srv.o.Backup.PinKey(freshPublicKeyB64(t), 2, 3); err != nil {
+	if _, err := srv.o.Backup.PinKey(freshPublicKeyB64(t), 2, 3, false); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -126,5 +128,44 @@ func TestBackupTemplateHasNoInlineHandlers(t *testing.T) {
 	b, _ := os.ReadFile("templates/settings.html")
 	if regexp.MustCompile(`\son[a-z]+=`).Match(b) {
 		t.Fatal("inline event handler in settings.html")
+	}
+}
+
+// A managed SSO administrator cannot choose the first recovery key on either path: the
+// capsule carries the directory credentials. The local recovery administrator still can,
+// and a managed session may then use the trusted pin.
+func TestManagedSessionCannotEnrollFirstRecoveryKey(t *testing.T) {
+	dir := t.TempDir()
+	h, srv, local, localCSRF := loggedInWithBackup(t, dir)
+	issuer := "https://identity.example"
+	if _, err := srv.o.Store.ApplyInstaller(context.Background(), webInstallerBundle(t, issuer), false); err != nil {
+		t.Fatal(err)
+	}
+	sso := srv.o.Sessions.CreateSSO(issuer, "owner", 0)
+	c := &http.Cookie{Name: auth.CookieName, Value: sso.ID}
+	pin := url.Values{"public_key": {freshPublicKeyB64(t)}, "threshold": {"2"}, "total_shares": {"3"}}
+	for _, tc := range []struct {
+		path string
+		form url.Values
+	}{
+		{"/settings/backup/pair", url.Values{"recovery_url": {"https://kyrecovery.invalid"}, "pairing_code": {"123456"}}},
+		{"/settings/backup/pin-key", pin},
+	} {
+		path, form := tc.path, tc.form
+		form.Set("csrf_token", sso.CSRF)
+		rr := postForm(t, h, path, form, c)
+		if rr.Code != 400 || !strings.Contains(rr.Body.String(), "local recovery administrator") {
+			t.Fatalf("managed %s = %d %s", path, rr.Code, rr.Body)
+		}
+		if st, err := srv.o.Backup.Status(); err != nil || st.KeyPinned || st.Paired {
+			t.Fatalf("managed %s left state %+v %v", path, st, err)
+		}
+	}
+	pin.Set("csrf_token", localCSRF)
+	if rr := postForm(t, h, "/settings/backup/pin-key", pin, local); rr.Code != 303 {
+		t.Fatalf("local recovery pin = %d %s", rr.Code, rr.Body)
+	}
+	if rr := postForm(t, h, "/settings/backup/deposit", url.Values{"csrf_token": {sso.CSRF}}, c); rr.Code != 303 {
+		t.Fatalf("managed deposit to trusted pin = %d %s", rr.Code, rr.Body)
 	}
 }

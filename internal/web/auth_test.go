@@ -380,7 +380,8 @@ func TestEveryPostRouteRequiresSessionAndCSRF(t *testing.T) {
 	h, srv := newWeb(t)
 	setupAndLogin(t, h)
 	c := loginCookie(t, h)
-	preSession := map[string]bool{PathSetup: true, PathLogin: true}
+	// Directory events authenticate their signed body, not a browser session.
+	preSession := map[string]bool{PathSetup: true, PathLogin: true, "/api/v1/installer/directory": true}
 	for _, path := range registeredPostRoutes(t, srv) {
 		if preSession[path] {
 			continue
@@ -394,14 +395,14 @@ func TestEveryPostRouteRequiresSessionAndCSRF(t *testing.T) {
 	}
 }
 
-func oidcTestServer(t *testing.T, sub, username, email, role string) *httptest.Server {
+func oidcTestServer(t *testing.T, sub, username, email, role string, tls ...bool) *httptest.Server {
 	t.Helper()
 	key, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
 		t.Fatal(err)
 	}
 	var srv *httptest.Server
-	srv = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	srv = httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		claims := map[string]any{"sub": sub, "username": username, "email": email, "role": role}
 		switch r.URL.Path {
@@ -430,6 +431,11 @@ func oidcTestServer(t *testing.T, sub, username, email, role string) *httptest.S
 			http.NotFound(w, r)
 		}
 	}))
+	if len(tls) > 0 && tls[0] {
+		srv.StartTLS()
+	} else {
+		srv.Start()
+	}
 	t.Cleanup(srv.Close)
 	return srv
 }

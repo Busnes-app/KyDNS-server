@@ -20,6 +20,8 @@ loses the backup, so treat the cards as seriously as the server.
 | `data/backup_key` | A 32-byte secret stored as hex. The KyRecovery token stored sealed in the database opens **only** with this file; without it a restored node cannot talk to KyRecovery |
 | `data/node_key` | this node's replication identity. Present only when the node has joined or hosted replication; a standalone node has none |
 | `data/recovery.pub` | the pinned suite recovery public key. Present only when the node had a pinned key; it is what the restored node seals its next capsule to |
+| `installer/client.secret`, `installer/directory.secret` | protected managed SSO and signed-directory credentials, present only with installer-owned SSO |
+| `installer/credential-paths.yaml` | original target paths for those credentials; reference only, never an instruction to write automatically |
 | `config/kydns.yaml` | a record of `data_dir`, `dns.listen` and `admin.listen` as they were. Reference only — it is not the file the server reads |
 
 `node_key` and `recovery.pub` are carried when they exist, and are then named in
@@ -120,6 +122,13 @@ key when the capsule was sealed; see Step 4.
 
 The restored `data/` becomes the contents of the `kydns-data` volume, which the
 service mounts at `/var/lib/kydns`.
+
+If the capsule contains `installer/`, inspect `credential-paths.yaml` and restore
+each credential to the retained path inside the intended target container, mode
+600 and owned by the runtime user. Map paths deliberately for a replacement host;
+do not execute paths from the capsule or overwrite unrelated files. The database
+retains these references, so restoring only `data/` cannot restore managed SSO.
+Keep these credentials sealed and remove the opened copies after verification.
 
 The runtime image is distroless: it holds the `kydns` binary and nothing else —
 no shell, no `cp`, no `ls`. So every step below that has to look at or move
@@ -241,7 +250,7 @@ Changes made after it are gone unless you re-apply them.
 - **Sessions.** KyDNS sessions are server-side and in memory. The restored
   process starts with none, so every session anywhere is already gone. There is
   nothing to revoke.
-- **API tokens.** The capsule carried them, so they still work. If the reason
+- **API tokens.** The capsule carried them. Managed administrator tokens also require the restored issuer/subject directory authority; replay current directory state before trusting a restored grant. Legacy local recovery tokens retain their independent authority. If the reason
   you are restoring is a compromise, regenerate each one in Settings; the old
   values in anyone's script keep working until you do.
 - **`backup_key`.** Rotating it means unpairing and pairing again: the
@@ -252,8 +261,8 @@ Changes made after it are gone unless you re-apply them.
   again; the peers re-authorize the new identity.
 - **There is no database encryption key in KyDNS.** `kydns.db` is a plain
   SQLite file, protected by file permissions and by the disk it sits on. Do not
-  go looking for one to preserve or rotate — the only long-lived secrets are the
-  two files above and the custodian shares.
+  go looking for one to preserve or rotate — long-lived secrets also include protected managed SSO and directory credentials
+  when installer setup is configured. Custodian shares stay outside the server.
 
 ## Afterwards
 

@@ -218,6 +218,9 @@ var writeExempt = map[string]bool{
 // authenticated is the one bearer-token check, shared so the write gate and
 // the handlers behind it can never disagree about who is anonymous.
 func (a *API) authenticated(r *http.Request) bool {
+	if !strings.HasPrefix(r.Header.Get("Authorization"), "Bearer ") {
+		return false
+	}
 	token := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
 	return token != "" && a.reg != nil && a.reg.AuthenticateToken(token)
 }
@@ -691,7 +694,12 @@ func (a *API) createToken(w http.ResponseWriter, r *http.Request) {
 	if !decode(w, r, &d) {
 		return
 	}
-	plaintext, err := a.reg.CreateToken(d.Label)
+	issuer, subject, ok := a.reg.AuthenticateTokenPrincipal(strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer "))
+	if !ok {
+		writeErr(w, http.StatusUnauthorized, "unauthenticated", "", "administrator authority unavailable")
+		return
+	}
+	plaintext, err := a.reg.CreateIdentityToken(d.Label, issuer, subject)
 	if err != nil {
 		writeRegistryErr(w, err)
 		return

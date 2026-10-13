@@ -13,6 +13,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/Busnes-app/ky-primitives/applysetup"
 	"github.com/Busnes-app/ky-primitives/capsule"
 	"github.com/Busnes-app/ky-primitives/keyfile"
 	"github.com/Busnes-app/ky-primitives/recoveryclient"
@@ -111,6 +112,26 @@ func (s *Service) Collect() (recoveryclient.Payload, error) {
 		{Path: "config/kydns.yaml", Data: manifest, Mode: 0600},
 	}
 	required := []string{"data/kydns.db", "data/" + keyFile, "config/kydns.yaml"}
+	if bundle, managed, err := s.Store.InstallerConfiguration(); err != nil {
+		return recoveryclient.Payload{}, err
+	} else if managed {
+		mapping := map[string]string{}
+		for name, source := range map[string]string{"installer/client.secret": bundle.SSO.ClientSecretFile, "installer/directory.secret": bundle.SSO.DirectorySecretFile} {
+			secret, err := applysetup.Secret(source)
+			if err != nil {
+				return recoveryclient.Payload{}, err
+			}
+			files = append(files, recoveryclient.File{Path: name, Data: []byte(secret), Mode: 0600})
+			required = append(required, name)
+			mapping[name] = source
+		}
+		destinations, err := yaml.Marshal(mapping)
+		if err != nil {
+			return recoveryclient.Payload{}, err
+		}
+		files = append(files, recoveryclient.File{Path: "installer/credential-paths.yaml", Data: destinations, Mode: 0600})
+		required = append(required, "installer/credential-paths.yaml")
+	}
 	// node_key and recovery.pub are carried when they exist, and are then required on the
 	// way back: a restored node with the pin row but no key file cannot seal its next backup.
 	for _, m := range []struct{ path, src string }{
@@ -150,7 +171,26 @@ func (s *Service) Export() ([]byte, capsule.Manifest, error) {
 	return recoveryclient.Seal(p, key)
 }
 
-func (s *Service) Pair(ctx context.Context, url, code string) (recoveryclient.RecoveryKey, error) {
+// ErrManagedEnrollment refuses a directory-bound administrator the first recovery key:
+// capsules carry the directory credentials, so the key holder must outrank the directory.
+var ErrManagedEnrollment = errors.New("the first recovery key must be enrolled by the local recovery administrator or an unbound recovery token")
+
+// enrollable lets a managed identity use only a recovery key that is already pinned.
+func (s *Service) enrollable(managedIdentity bool) error {
+	if !managedIdentity {
+		return nil
+	}
+	_, err := s.Settings().Get(settingKeyID)
+	if errors.Is(err, recoveryclient.ErrNotFound) {
+		return ErrManagedEnrollment
+	}
+	return err
+}
+
+func (s *Service) Pair(ctx context.Context, url, code string, managedIdentity bool) (recoveryclient.RecoveryKey, error) {
+	if err := s.enrollable(managedIdentity); err != nil {
+		return recoveryclient.RecoveryKey{}, err
+	}
 	res, err := s.Client.ClaimPairing(ctx, url, code, ServiceName, ServiceName)
 	if err != nil {
 		return recoveryclient.RecoveryKey{}, err
@@ -161,7 +201,10 @@ func (s *Service) Pair(ctx context.Context, url, code string) (recoveryclient.Re
 	return res.Key, recoveryclient.StorePairing(s.Settings(), s.sealer, url, res.APIToken)
 }
 
-func (s *Service) PinKey(publicKeyB64 string, k, n int) (recoveryclient.RecoveryKey, error) {
+func (s *Service) PinKey(publicKeyB64 string, k, n int, managedIdentity bool) (recoveryclient.RecoveryKey, error) {
+	if err := s.enrollable(managedIdentity); err != nil {
+		return recoveryclient.RecoveryKey{}, err
+	}
 	key, err := recoveryclient.ParsePinRequest(publicKeyB64, k, n)
 	if err != nil {
 		return recoveryclient.RecoveryKey{}, err

@@ -13,21 +13,26 @@ import (
 const CookieName = "kydns_session"
 
 type Session struct {
-	ID       string
-	CSRF     string
-	Created  time.Time
-	LastSeen time.Time
+	IdentityIssuer  string
+	IdentitySubject string
+	// IdentityRevision is the directory revision at login; see SetIdentityValidator.
+	IdentityRevision uint64
+	ID               string
+	CSRF             string
+	Created          time.Time
+	LastSeen         time.Time
 }
 
 // Sessions is an in-memory session store. Restart forces re-login, which is
 // the deliberate trade: session state never touches the database or backups,
 // and a homelab DNS server restarts rarely.
 type Sessions struct {
-	mu       sync.Mutex
-	byID     map[string]*Session
-	idle     time.Duration
-	absolute time.Duration
-	now      func() time.Time
+	mu              sync.Mutex
+	byID            map[string]*Session
+	idle            time.Duration
+	absolute        time.Duration
+	now             func() time.Time
+	identityAllowed func(issuer, subject string, revision uint64) bool
 }
 
 func NewSessions(idle, absolute time.Duration) *Sessions {
@@ -44,11 +49,21 @@ func randomHex(n int) string {
 	return hex.EncodeToString(buf)
 }
 
-func (s *Sessions) Create() *Session {
+func (s *Sessions) Create() *Session { return s.CreateSSO("", "", 0) }
+
+// SetIdentityValidator checks a managed session's current authority on every Get,
+// including that no revocation happened after its login revision.
+func (s *Sessions) SetIdentityValidator(fn func(issuer, subject string, revision uint64) bool) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.identityAllowed = fn
+}
+
+func (s *Sessions) CreateSSO(issuer, subject string, revision uint64) *Session {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	now := s.now()
-	sess := &Session{ID: randomHex(32), CSRF: randomHex(32), Created: now, LastSeen: now}
+	sess := &Session{IdentityIssuer: issuer, IdentitySubject: subject, IdentityRevision: revision, ID: randomHex(32), CSRF: randomHex(32), Created: now, LastSeen: now}
 	s.byID[sess.ID] = sess
 	return sess
 }
@@ -64,7 +79,7 @@ func (s *Sessions) Get(id string) (*Session, bool) {
 		return nil, false
 	}
 	now := s.now()
-	if now.Sub(sess.LastSeen) > s.idle || now.Sub(sess.Created) > s.absolute {
+	if now.Sub(sess.LastSeen) > s.idle || now.Sub(sess.Created) > s.absolute || (sess.IdentitySubject != "" && (s.identityAllowed == nil || !s.identityAllowed(sess.IdentityIssuer, sess.IdentitySubject, sess.IdentityRevision))) {
 		delete(s.byID, id)
 		return nil, false
 	}

@@ -3,7 +3,7 @@ module github.com/Busnes-app/kydns-server
 go 1.26.9
 
 require (
-	github.com/Busnes-app/ky-primitives v0.9.0
+	github.com/Busnes-app/ky-primitives v0.10.0
 	github.com/coreos/go-oidc/v3 v3.21.0
 	github.com/go-jose/go-jose/v4 v4.1.5
 	github.com/insomniacslk/dhcp v0.0.0-20260728151720-c308df0fdcef

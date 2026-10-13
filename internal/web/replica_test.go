@@ -103,11 +103,12 @@ func TestReplicaRefusesEveryPostRoute(t *testing.T) {
 // only that the post is answered; settings.Service refuses any write reaching
 // past the eight DHCP fields, which is why /dhcp/reserve - a service write, and
 // replicated - is not on this list.
-func TestExemptSetIsExactlyTheSevenNamedPaths(t *testing.T) {
+func TestExemptSetIsExactlyTheNamedPaths(t *testing.T) {
 	want := map[string]bool{
 		PathSetup: true, PathLogin: true, PathLogout: true,
 		PathPromote: true, PathJoin: true,
 		PathDHCPSettings: true, PathDHCPSuggest: true,
+		PathInstallerDirectory: true,
 	}
 	if !maps.Equal(webWriteExempt, want) {
 		t.Fatalf("webWriteExempt = %v, want %v", webWriteExempt, want)

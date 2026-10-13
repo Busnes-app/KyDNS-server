@@ -27,6 +27,7 @@ behaviour that belongs to every product in the suite is fixed there, not here.
 - `backup_key` is created by `New` and is a required capsule member: it opens the sealed
   KyRecovery token, so a restore without it cannot resume deposits. It stores a 32-byte
   secret as hex; checks use `keyfile.Load`, preserving the existing encoding.
+- Managed installer SSO credentials are required capsule members (`installer/client.secret`, `installer/directory.secret`); `installer/credential-paths.yaml` records their retained target destinations. Private reads fail collection if a credential is missing or unsafe. Restore the files explicitly as described in `docs/RESTORE.md`.
 - `node_key` and `recovery.pub` are included when they exist and are then listed in
   `required_files`. A restored node needs `recovery.pub` beside its pin row or it cannot
   seal its next backup.

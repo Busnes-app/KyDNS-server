@@ -12,6 +12,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Busnes-app/ky-primitives/applysetup"
 	"github.com/Busnes-app/ky-primitives/capsule"
 	"github.com/Busnes-app/ky-primitives/recoveryclient"
 	"github.com/Busnes-app/ky-primitives/recoverykey"
@@ -46,7 +47,7 @@ func pinFresh(t *testing.T, s *Service) recoverykey.PrivateKey {
 		t.Fatal(err)
 	}
 	b64 := base64.StdEncoding.EncodeToString(priv.Public().Bytes())
-	if _, err := s.PinKey(b64, 2, 3); err != nil {
+	if _, err := s.PinKey(b64, 2, 3, false); err != nil {
 		t.Fatal(err)
 	}
 	return priv
@@ -103,7 +104,7 @@ func TestPinByHandIsWriteOnce(t *testing.T) {
 	s := testService(t, nil)
 	pinFresh(t, s)
 	other, _ := recoverykey.Generate()
-	_, err := s.PinKey(base64.StdEncoding.EncodeToString(other.Public().Bytes()), 2, 3)
+	_, err := s.PinKey(base64.StdEncoding.EncodeToString(other.Public().Bytes()), 2, 3, false)
 	if !errors.Is(err, fs.ErrExist) {
 		t.Fatalf("second pin error = %v, want fs.ErrExist", err)
 	}
@@ -276,4 +277,38 @@ func checkByName(t *testing.T, checks []recoveryclient.Check) map[string]bool {
 		names[c.Name] = c.Passed
 	}
 	return names
+}
+
+func TestCollectorIncludesManagedCredentialsAndRefusesMissingFile(t *testing.T) {
+	s := testService(t, nil)
+	client := filepath.Join(s.Cfg.DataDir, "client.secret")
+	directory := filepath.Join(s.Cfg.DataDir, "directory.secret")
+	for _, p := range []string{client, directory} {
+		if err := os.WriteFile(p, []byte("disposable-managed-credential"), 0600); err != nil {
+			t.Fatal(err)
+		}
+	}
+	b := applysetup.Common{Schema: applysetup.Schema, Service: "kydns", SetupID: "12345678-1234-1234-1234-123456789abc", SSO: &applysetup.SSO{IssuerURL: "https://identity.example", ClientID: "dns", ClientSecretFile: client, DirectorySecretFile: directory, RedirectURI: "https://dns.example/auth/sso/callback"}, Admins: []applysetup.Identity{{Issuer: "https://identity.example", Subject: "owner", Username: "admin"}}}
+	if _, err := s.Store.ApplyInstaller(context.Background(), b, false); err != nil {
+		t.Fatal(err)
+	}
+	p, err := s.Collect()
+	if err != nil {
+		t.Fatal(err)
+	}
+	found := map[string]bool{}
+	for _, f := range p.Files {
+		found[f.Path] = true
+	}
+	for _, name := range []string{"installer/client.secret", "installer/directory.secret", "installer/credential-paths.yaml"} {
+		if !found[name] {
+			t.Fatalf("missing member %s", name)
+		}
+	}
+	if err = os.Remove(client); err != nil {
+		t.Fatal(err)
+	}
+	if _, err = s.Collect(); err == nil {
+		t.Fatal("backup silently omitted required credential")
+	}
 }

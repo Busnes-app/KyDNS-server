@@ -10,6 +10,9 @@ lists.
 KyDNS can pair with KyRecovery using a one-time six-digit code and back itself
 up automatically; see [Backups](#backups) below.
 
+Container-local installer setup and exact KyIdentity administrator grants are documented in
+[INSTALLER_SETUP.md](docs/INSTALLER_SETUP.md).
+
 ## Example
 
 Register a service once:

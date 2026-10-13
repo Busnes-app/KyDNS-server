@@ -56,10 +56,16 @@ func run(args []string, stdout io.Writer) int {
 		return 2
 	}
 	switch args[0] {
+	case "apply-setup":
+		if err := app.RunInstaller(args[1:], stdout); err != nil {
+			fmt.Fprintln(os.Stderr, "kydns setup:", err)
+			return 1
+		}
+		return 0
 	case "serve":
 		fs := flag.NewFlagSet("serve", flag.ContinueOnError)
 		fs.SetOutput(stdout)
-		cfg := fs.String("config", "/etc/kydns/kydns.yaml", "path to the config file")
+		cfg := fs.String("config", app.InstallerConfigPath(), "path to the config file")
 		if err := fs.Parse(args[1:]); err != nil {
 			return 2
 		}
@@ -79,7 +85,7 @@ func run(args []string, stdout io.Writer) int {
 		}
 		fs := flag.NewFlagSet("admin reset-password", flag.ContinueOnError)
 		fs.SetOutput(stdout)
-		cfg := fs.String("config", "/etc/kydns/kydns.yaml", "path to the config file")
+		cfg := fs.String("config", app.InstallerConfigPath(), "path to the config file")
 		if err := fs.Parse(args[2:]); err != nil {
 			return 2
 		}

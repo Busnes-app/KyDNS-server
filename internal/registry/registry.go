@@ -322,31 +322,48 @@ func HashToken(plaintext string) string {
 }
 
 func (r *Registry) CreateToken(label string) (string, error) {
+	return r.CreateIdentityToken(label, "", "")
+}
+
+// CreateIdentityToken binds descendants to the same live administrator authority;
+// the store checks that authority atomically with the insert.
+func (r *Registry) CreateIdentityToken(label, issuer, subject string) (string, error) {
 	plaintext, hash := GenerateToken()
-	if _, err := r.s.PutToken(store.Token{Label: label, Hash: hash}); err != nil {
+	if _, err := r.s.PutToken(store.Token{Label: label, Hash: hash, Issuer: issuer, Subject: subject}); err != nil {
 		return "", err
 	}
 	return plaintext, nil
 }
 
-// AuthenticateToken compares in constant time against every stored hash.
 func (r *Registry) AuthenticateToken(plaintext string) bool {
+	_, _, ok := r.AuthenticateTokenPrincipal(plaintext)
+	return ok
+}
+
+// AuthenticateTokenPrincipal checks authority on every request, including child creation.
+func (r *Registry) AuthenticateTokenPrincipal(plaintext string) (string, string, bool) {
 	if !strings.HasPrefix(plaintext, tokenPrefix) {
-		return false
+		return "", "", false
 	}
 	want := HashToken(plaintext)
 	toks, err := r.s.Tokens()
 	if err != nil {
-		return false
+		return "", "", false
 	}
-	ok := false
 	for _, t := range toks {
-		if subtle.ConstantTimeCompare([]byte(t.Hash), []byte(want)) == 1 {
-			ok = true
-			_ = r.s.TouchToken(t.ID)
+		if subtle.ConstantTimeCompare([]byte(t.Hash), []byte(want)) != 1 {
+			continue
 		}
+		if t.Issuer != "" || t.Subject != "" {
+			managed, allowed, err := r.s.InstallerAdministrator(t.Issuer, t.Subject)
+			if err != nil || !managed || !allowed {
+				return "", "", false
+			}
+		}
+		_ = r.s.TouchToken(t.ID)
+		return t.Issuer, t.Subject, true
 	}
-	return ok
+	return "", "", false
 }
 
 func (r *Registry) Tokens() ([]store.Token, error) { return r.s.Tokens() }
