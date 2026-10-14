@@ -27,12 +27,14 @@ jobs:
       id-token: write     # keyless attestation
       attestations: write
     steps:
-      - uses: actions/checkout@v7
-
-      - uses: actions/setup-go@v7
+      # gh publishes with GH_TOKEN; nothing here pushes with git.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          go-version: stable
-          check-latest: true
+          persist-credentials: false
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
           cache: true
 
       # Debian versions must start with a digit, so the tag's leading v goes.
@@ -108,11 +110,11 @@ jobs:
       # Keyless, free, and verifiable with `gh attestation verify`. Signing
       # from the first release is far cheaper than retrofitting it once people
       # are already downloading unsigned binaries.
-      - uses: actions/attest-build-provenance@v4
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
           subject-path: "dist/*.tar.gz, dist/*.deb, dist/*.rpm, dist/*.img.xz, dist/SHA256SUMS"
 
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: kydns-${{ steps.version.outputs.version }}
           path: |
@@ -152,15 +154,17 @@ jobs:
       id-token: write     # keyless attestation
       attestations: write
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
-      - uses: docker/login-action@v4
+      - uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: docker/setup-buildx-action@v4
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
 
       # Derived, not spelled out: a hardcoded owner silently stopped being
       # writable when the repository moved accounts, and GITHUB_TOKEN can only
@@ -173,7 +177,7 @@ jobs:
       # the release and not the commit ci.yml stamps. Both the tag as written
       # and the bare version are pushed; :latest is left to ci.yml, where it
       # keeps meaning tip of main.
-      - uses: docker/build-push-action@v7
+      - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         id: push
         with:
           context: .
@@ -187,7 +191,7 @@ jobs:
 
       # The packages in the release are attested; an image people docker pull
       # is no less worth vouching for.
-      - uses: actions/attest-build-provenance@v4
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
           subject-name: ${{ steps.image.outputs.name }}
           subject-digest: ${{ steps.push.outputs.digest }}

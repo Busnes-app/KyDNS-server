@@ -17,12 +17,11 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-go@v7
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version: stable
-          check-latest: true
+          go-version-file: go.mod
           cache: true
 
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -56,12 +55,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-go@v7
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version: stable
-          check-latest: true
+          go-version-file: go.mod
           cache: true
 
       # KyDNS ships on a distroless base with no libc, so the binary must
@@ -93,7 +91,7 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: build image
         run: docker build -t kydns:ci .
@@ -110,8 +108,9 @@ jobs:
           admin:
             listen: "127.0.0.1:18053"
           YAML
+          # Host networking refuses the port sysctl; these ports need none.
           docker run -d --name kydns-ci --network=host \
-            --cap-drop ALL --cap-add NET_BIND_SERVICE \
+            --cap-drop ALL \
             -v /tmp/ci/kydns.yaml:/etc/kydns/kydns.yaml:ro \
             -v kydns-ci-data:/var/lib/kydns \
             kydns:ci
@@ -153,7 +152,7 @@ jobs:
         run: |
           set -eux
           docker run -d --name kydns-bare -p 127.0.0.1:18054:8053 \
-            --cap-drop ALL --cap-add NET_BIND_SERVICE \
+            --cap-drop ALL --sysctl net.ipv4.ip_unprivileged_port_start=0 \
             -v kydns-bare-data:/var/lib/kydns \
             kydns:ci
           for i in $(seq 1 60); do
@@ -162,6 +161,11 @@ jobs:
           done
           curl -sf http://127.0.0.1:18054/api/v1/healthz || {
             echo "bare container never became healthy"
+            docker logs kydns-bare; exit 1; }
+          # A failed bind on :53 exits the process, so still running as
+          # 65532 proves the non-root port setup.
+          test "$(docker inspect -f '{{.State.Running}} {{.Config.User}}' kydns-bare)" = "true 65532:65532" || {
+            echo "bare container is not running as 65532"
             docker logs kydns-bare; exit 1; }
           docker logs kydns-bare 2>&1 | grep -q "setup token" || {
             echo "no setup token in the log; first-run setup would be a dead end"
@@ -184,15 +188,15 @@ jobs:
       contents: read
       packages: write
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: docker/login-action@v4
+      - uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: docker/setup-buildx-action@v4
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
 
       # Derived, not spelled out: the hardcoded owner silently stopped being
       # writable when the repository moved accounts, and GITHUB_TOKEN can only
@@ -204,7 +208,7 @@ jobs:
       # arm64 covers the Pi and the ARM NAS boxes KyDNS is small enough to run
       # on. No QEMU: the Dockerfile cross-compiles with GOARCH, and the
       # distroless base runs nothing at build time.
-      - uses: docker/build-push-action@v7
+      - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           context: .
           platforms: linux/amd64,linux/arm64
@@ -233,12 +237,11 @@ jobs:
             arch: arm64
     runs-on: ${{ matrix.runner }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-go@v7
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version: stable
-          check-latest: true
+          go-version-file: go.mod
           cache: true
 
       # Each leg builds only the architecture it goes on to test.
@@ -437,7 +440,7 @@ jobs:
   rpi-image:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: a base laid out like Raspberry Pi OS
         run: |
@@ -522,12 +525,11 @@ jobs:
             base: rockylinux:9
     runs-on: ${{ matrix.runner }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-go@v7
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version: stable
-          check-latest: true
+          go-version-file: go.mod
           cache: true
 
       # `make package` starts by removing dist, so the first package is copied
