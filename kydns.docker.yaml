@@ -23,6 +23,9 @@ admin:
   # addresses only — with a LAN-attached network that is its LAN address, and
   # with a bridge network it is whatever ports you publish.
   #
-  # KyDNS speaks plain HTTP. Put a TLS-terminating reverse proxy in front of
-  # it if you expose it beyond your LAN.
+  # KyDNS speaks plain HTTP, and the admin UI answers only the container's own
+  # loopback or a reverse proxy listed in KYDNS_TRUSTED_PROXIES that reached it
+  # over HTTPS. Everything else gets 403, except /healthz and /api/v1/healthz.
+  # Binding 0.0.0.0 is what lets that proxy connect; it does not open the UI
+  # to the LAN.
   listen: "0.0.0.0:8053"

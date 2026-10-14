@@ -20,9 +20,11 @@ data_dir: /var/lib/kydns
 #
 #   ssh -L 8053:127.0.0.1:8053 <this-host>
 #
-# or a TLS-terminating reverse proxy in front of it. To override the default,
-# uncomment the two lines below — but only if you accept publishing an
-# unencrypted admin UI to your LAN.
+# or a TLS-terminating reverse proxy on another machine. The UI answers only
+# loopback or a proxy listed in KYDNS_TRUSTED_PROXIES that reached it over
+# HTTPS; anything else gets 403. For that proxy, uncomment the two lines below
+# and set KYDNS_TRUSTED_PROXIES in the unit's environment
+# (systemctl edit kydns). The SSH tunnel needs neither.
 #
 # admin:
 #   listen: "0.0.0.0:8053"

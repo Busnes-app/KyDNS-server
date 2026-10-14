@@ -15,6 +15,18 @@ impact, reproduction steps, and any suggested mitigation.
   Queries are answered only from the `allow_query` ranges; everything else gets
   `REFUSED`.
 - Administrative endpoints require authentication and authorization.
+- The admin listener answers only two kinds of peer: the host's loopback, and a
+  reverse proxy listed in `KYDNS_TRUSTED_PROXIES` whose `X-Forwarded-Proto` is
+  `https`. Every other request gets 403 before authentication, except
+  `GET /healthz` and `/api/v1/healthz`, which stay open. `KYDNS_TRUSTED_PROXIES`
+  is empty by default and refuses `/0`; forwarded headers from any other peer
+  are ignored.
+- The first-run setup token is written to `<data_dir>/setup-token`, mode 0600.
+  Under systemd (`JOURNAL_STREAM` set) it is not logged; read the file. In a
+  container, where the image has no shell to read it with, it is also logged.
+- The container runs as uid 65532 with every capability dropped. Ports below
+  1024 come from `net.ipv4.ip_unprivileged_port_start=0` in the container's own
+  network namespace, never the host's.
 - OIDC login uses authorization code with PKCE and verifies the ID token's
   signature, issuer, audience, expiry, non-empty subject, and per-login nonce.
   Userinfo may enrich profile and role claims only when its subject matches the
@@ -131,7 +143,9 @@ add it with a confirmation.
   hold a trust anchor, or walk a chain of trust. An `AD` bit from KyDNS means
   the upstream said it validated, not that KyDNS checked.
 - **The admin listener speaks plain HTTP.** It defaults to `127.0.0.1:8053`.
-  Exposing it beyond loopback requires a TLS-terminating reverse proxy.
+  Beyond loopback it answers only through a TLS-terminating reverse proxy listed
+  in `KYDNS_TRUSTED_PROXIES`. That proxy's own hop to KyDNS is still plain
+  HTTP, so keep it on the same host or a network you trust.
 - **Blacklist filtering is domain filtering**, not traffic inspection, parental
   control, or a malware guarantee.
 - Anyone with write access to the database file can reset the admin password
@@ -183,5 +197,5 @@ pin, the receipts and the local copies stay, and the screen says so. The deposit
 credential itself is dead only when the KyRecovery admin revokes it — KyDNS can forget a
 token, it cannot invalidate one.
 
-See [DESGINE.md](DESGINE.md) for the architecture and
+See [DESIGN.md](DESIGN.md) for the architecture and
 [LOGGING.md](LOGGING.md) for privacy-safe logging requirements.
