@@ -3,7 +3,7 @@
 <div class="brand">{{template "mark"}}<h1>KyDNS</h1></div>
 <div class="centered card">
   <h2>Set up KyDNS</h2>
-  <p class="muted">The setup token was written to the server log when KyDNS started.</p>
+  <p class="muted">The setup token is in the <code>setup-token</code> file in the KyDNS data directory (<code>sudo cat /var/lib/kydns/setup-token</code> on a package install). A container also prints it to its log.</p>
   {{if .Error}}<p class="error">{{.Error}}</p>{{end}}
   <form class="stack" method="post" action="/setup">
     <label for="token">Setup token</label>

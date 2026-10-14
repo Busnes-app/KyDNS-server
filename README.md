@@ -627,7 +627,8 @@ kydns serve --config /etc/kydns/kydns.yaml
 ```
 
 On first start with no admin account, KyDNS writes a setup token to
-`<data_dir>/setup-token` and logs it. Open the admin listener, enter that
+`<data_dir>/setup-token` (mode 0600). It is printed to the log too, except under
+systemd, where the journal is readable by more than root. Open the admin listener, enter that
 token, and choose a password. A bootstrap API token for the CLI is written to
 `<data_dir>/bootstrap-token`.
 

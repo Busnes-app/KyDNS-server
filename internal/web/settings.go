@@ -201,6 +201,12 @@ func (s *Server) postSSOSettings(w http.ResponseWriter, r *http.Request) {
 	issuerURL := strings.TrimSpace(r.PostFormValue("issuer_url"))
 	clientID := strings.TrimSpace(r.PostFormValue("client_id"))
 	clientSecret := strings.TrimSpace(r.PostFormValue("client_secret"))
+	// The page never renders the secret back, so blank means "keep it".
+	if clientSecret == "" && r.PostFormValue("clear_secret") != "1" {
+		if cur, err := s.o.Store.SSOSettings(); err == nil {
+			clientSecret = cur.ClientSecret
+		}
+	}
 
 	if issuerURL == "" {
 		issuerURL = "https://auth.urlxl.com"

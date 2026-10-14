@@ -2,10 +2,12 @@ package app
 
 import (
 	"bytes"
+	"errors"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/Busnes-app/kydns-server/internal/auth"
 	"github.com/Busnes-app/kydns-server/internal/store"
@@ -70,14 +72,67 @@ func TestResetAdminPasswordReplacesIt(t *testing.T) {
 		t.Fatal(err)
 	}
 	hash := adminHash(t, dir)
-	if !auth.VerifyPassword(hash, "a-brand-new-password") {
+	if !verified(hash, "a-brand-new-password") {
 		t.Error("the new password does not verify")
 	}
-	if auth.VerifyPassword(hash, "the-old-password") {
+	if verified(hash, "the-old-password") {
 		t.Error("the old password still works")
 	}
-	if !strings.Contains(out.String(), "Restart KyDNS") {
-		t.Error("output does not mention that sessions survive until a restart")
+	if !strings.Contains(out.String(), "session has ended") {
+		t.Error("output does not say that signed-in sessions ended")
+	}
+}
+
+// A reset is how an operator recovers from a compromise, so it must also cut
+// off a linked SSO identity and every live session.
+func TestResetUnlinksSSOAndVoidsSessions(t *testing.T) {
+	cfg, dir := seeded(t, "the-old-password")
+	st, err := store.Open(filepath.Join(dir, "kydns.db"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	_ = st.SetSSOSettings(store.SSOSettings{Enabled: true, IssuerURL: "https://idp.example", ClientID: "kydns"})
+	if err := st.LinkAdminSSO("attacker", "mallory", ""); err != nil {
+		t.Fatal(err)
+	}
+	st.Close()
+	before := time.Now()
+
+	if err := ResetAdminPassword(cfg, answers("a-brand-new-password", "a-brand-new-password"), &bytes.Buffer{}); err != nil {
+		t.Fatal(err)
+	}
+	st, err = store.Open(filepath.Join(dir, "kydns.db"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer st.Close()
+	ident, _ := st.AdminIdentity()
+	sso, _ := st.SSOSettings()
+	nb, _ := st.SessionsNotBefore()
+	if ident.SSOSub != "" || sso.Enabled || nb.Before(before) {
+		t.Fatalf("after reset: sub=%q sso=%v notBefore=%v (reset began %v)", ident.SSOSub, sso.Enabled, nb, before)
+	}
+}
+
+// The database stays closed while the prompt waits: Ctrl-C there skips every
+// defer, and an open store would leave WAL and SHM files owned by whoever ran
+// the command, typically root.
+func TestResetPromptsBeforeOpeningTheDatabase(t *testing.T) {
+	cfg, dir := seeded(t, "the-old-password")
+	var open []string
+	abandoned := func(string) (string, error) {
+		for _, suffix := range []string{"-wal", "-shm"} {
+			if _, err := os.Stat(filepath.Join(dir, "kydns.db"+suffix)); err == nil {
+				open = append(open, suffix)
+			}
+		}
+		return "", errors.New("interrupted")
+	}
+	if err := ResetAdminPassword(cfg, abandoned, &bytes.Buffer{}); err == nil {
+		t.Fatal("an interrupted prompt reported success")
+	}
+	if len(open) > 0 {
+		t.Fatalf("kydns.db%v existed while the prompt was waiting", open)
 	}
 }
 
@@ -87,7 +142,7 @@ func TestResetWorksWithNoExistingAdmin(t *testing.T) {
 	if err := ResetAdminPassword(cfg, answers("a-brand-new-password", "a-brand-new-password"), &bytes.Buffer{}); err != nil {
 		t.Fatal(err)
 	}
-	if !auth.VerifyPassword(adminHash(t, dir), "a-brand-new-password") {
+	if !verified(adminHash(t, dir), "a-brand-new-password") {
 		t.Error("password was not set")
 	}
 }
@@ -98,7 +153,7 @@ func TestResetRejectsMismatch(t *testing.T) {
 	if err == nil {
 		t.Fatal("mismatched passwords were accepted")
 	}
-	if !auth.VerifyPassword(adminHash(t, dir), "the-old-password") {
+	if !verified(adminHash(t, dir), "the-old-password") {
 		t.Error("a failed reset changed the stored password")
 	}
 }
@@ -108,7 +163,7 @@ func TestResetRejectsShortPassword(t *testing.T) {
 	if err := ResetAdminPassword(cfg, answers("short", "short"), &bytes.Buffer{}); err == nil {
 		t.Fatal("a short password was accepted")
 	}
-	if !auth.VerifyPassword(adminHash(t, dir), "the-old-password") {
+	if !verified(adminHash(t, dir), "the-old-password") {
 		t.Error("a failed reset changed the stored password")
 	}
 }
@@ -156,7 +211,13 @@ func TestResetRestoresWebLogin(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !auth.VerifyPassword(hash, "a-brand-new-password") {
+	if !verified(hash, "a-brand-new-password") {
 		t.Error("the stored hash does not accept the new password")
 	}
+}
+
+// verified is VerifyPassword for tests, where the checker is never busy.
+func verified(encoded, plaintext string) bool {
+	ok, err := auth.VerifyPassword(encoded, plaintext)
+	return err == nil && ok
 }

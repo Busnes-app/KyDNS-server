@@ -4,8 +4,11 @@ package web
 
 import (
 	"log/slog"
+	"net"
 	"net/http"
+	"net/netip"
 	"strings"
+	"time"
 
 	"github.com/Busnes-app/kydns-server/internal/adminapi"
 	"github.com/Busnes-app/kydns-server/internal/auth"
@@ -188,6 +191,37 @@ func (s *Server) WriteGate(next http.Handler) http.Handler {
 	})
 }
 
+// TransportGate serves the admin listener only to this host's loopback or to an
+// HTTPS reverse proxy in KYDNS_TRUSTED_PROXIES. Anything else would carry the
+// password, session cookie and tokens in cleartext across the LAN. The public
+// health endpoints stay open for monitors; they carry no secrets. As the
+// outermost handler it also forbids framing by other sites, for every response.
+func (s *Server) TransportGate(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Security-Policy", "frame-ancestors 'self'")
+		w.Header().Set("X-Frame-Options", "SAMEORIGIN")
+		if r.URL.Path == "/healthz" || r.URL.Path == "/api/v1/healthz" || s.transportAllowed(r) {
+			next.ServeHTTP(w, r)
+			return
+		}
+		http.Error(w, "KyDNS serves its admin UI only on this host's loopback or through an HTTPS "+
+			"reverse proxy listed in KYDNS_TRUSTED_PROXIES.", http.StatusForbidden)
+	})
+}
+
+func (s *Server) transportAllowed(r *http.Request) bool {
+	_, trusted, scheme := auth.RequestNetwork(r, s.o.Config.Admin.TrustedProxies)
+	if trusted {
+		return scheme == "https"
+	}
+	host, _, err := net.SplitHostPort(r.RemoteAddr)
+	if err != nil {
+		return false
+	}
+	ip, err := netip.ParseAddr(host)
+	return err == nil && ip.Unmap().IsLoopback()
+}
+
 type Server struct{ o Options }
 
 func New(o Options) *Server {
@@ -202,6 +236,13 @@ func New(o Options) *Server {
 			managed, st, err := o.Store.InstallerAuthority(issuer, subject)
 			return err == nil && managed && st.Allowed && revision >= st.RevokedAt
 		})
+		o.Sessions.SetNotBefore(func() time.Time {
+			t, err := o.Store.SessionsNotBefore()
+			if err != nil {
+				return time.Now().Add(time.Hour) // fail closed
+			}
+			return t
+		})
 	}
 	return &Server{o: o}
 }
@@ -211,11 +252,12 @@ func (s *Server) Options() Options { return s.o }
 
 const minPasswordLen = auth.MinPasswordLen
 
+// hasAdmin fails closed: a database error must never reopen /setup.
 func (s *Server) hasAdmin() bool {
 	ok, err := s.o.Store.HasAdmin()
 	if err != nil {
 		s.o.Logger.Error("check admin", "error", err)
-		return false
+		return true
 	}
 	return ok
 }

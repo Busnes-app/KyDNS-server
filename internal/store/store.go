@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"github.com/Busnes-app/ky-primitives/applysetup"
 	"strings"
+	"time"
 
 	_ "modernc.org/sqlite"
 )
@@ -97,7 +98,9 @@ CREATE TABLE IF NOT EXISTS admin (
   sso_username  TEXT NOT NULL DEFAULT '',
   sso_email     TEXT NOT NULL DEFAULT '',
   sso_linked_at INTEGER NOT NULL DEFAULT 0,
-  updated_at    INTEGER NOT NULL DEFAULT (unixepoch())
+  updated_at    INTEGER NOT NULL DEFAULT (unixepoch()),
+  -- Unix milliseconds; sessions created before it are void. Set by a password reset.
+  sessions_not_before INTEGER NOT NULL DEFAULT 0
 );
 CREATE TABLE IF NOT EXISTS sso_settings (
   id            INTEGER PRIMARY KEY CHECK (id = 1),
@@ -347,6 +350,7 @@ var migrations = []string{
 	`ALTER TABLE services ADD COLUMN mac TEXT NOT NULL DEFAULT '';`,
 	`ALTER TABLE tokens ADD COLUMN issuer TEXT NOT NULL DEFAULT '';
 	 ALTER TABLE tokens ADD COLUMN subject TEXT NOT NULL DEFAULT '';`,
+	`ALTER TABLE admin ADD COLUMN sessions_not_before INTEGER NOT NULL DEFAULT 0;`,
 }
 
 // migrate runs against a transaction Open already holds, so a crash
@@ -754,6 +758,47 @@ func (s *Store) SetAdminPassword(hash string) error {
 		ON CONFLICT(id) DO UPDATE SET password_hash = excluded.password_hash,
 		                              updated_at = excluded.updated_at`, hash)
 	return err
+}
+
+// ResetAdmin is the recovery path for a compromised or forgotten admin: it sets
+// the password, removes the linked SSO identity, switches SSO off and voids
+// every session, in one transaction. An installer-owned SSO configuration is
+// left to the installer.
+func (s *Store) ResetAdmin(hash string, now time.Time) error {
+	_, managed, err := s.InstallerConfiguration()
+	if err != nil {
+		return err
+	}
+	tx, err := s.db.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+	// An upsert: recovery must also work when setup was never completed.
+	if _, err := tx.Exec(`
+		INSERT INTO admin(id, password_hash, sessions_not_before, updated_at) VALUES(1, ?, ?, unixepoch())
+		ON CONFLICT(id) DO UPDATE SET password_hash = excluded.password_hash,
+		       sso_sub = '', sso_username = '', sso_email = '', sso_linked_at = 0,
+		       sessions_not_before = excluded.sessions_not_before, updated_at = excluded.updated_at`,
+		hash, now.UnixMilli()); err != nil {
+		return err
+	}
+	if !managed {
+		if _, err := tx.Exec(`UPDATE sso_settings SET enabled = 0 WHERE id = 1`); err != nil {
+			return err
+		}
+	}
+	return tx.Commit()
+}
+
+// SessionsNotBefore is the instant before which every session is void.
+func (s *Store) SessionsNotBefore() (time.Time, error) {
+	var ms int64
+	err := s.db.QueryRow(`SELECT sessions_not_before FROM admin WHERE id = 1`).Scan(&ms)
+	if errors.Is(err, sql.ErrNoRows) {
+		return time.Time{}, nil
+	}
+	return time.UnixMilli(ms), err
 }
 
 func (s *Store) AdminHash() (string, error) {

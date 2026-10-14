@@ -10,6 +10,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"net"
 	"net/http"
 	"net/netip"
 	"os"
@@ -378,11 +379,18 @@ func Serve(ctx context.Context, cfgPath string, logger *slog.Logger) error {
 
 	adminSrv := &http.Server{
 		Addr: cfg.Admin.Listen,
-		// Both gates sit outside the mux, so a replica refuses every write:
-		// one added later, or one on a path with no route at all. Each answers
-		// in its own transport's language.
-		Handler:           api.WriteGate(webSrv.WriteGate(mux)),
+		// The gates sit outside the mux, so they cover routes added later and
+		// paths with no route at all. The transport gate is outermost: nothing
+		// is answered over cleartext from the LAN. The write gates make a
+		// replica refuse every write, each in its own transport's language.
+		Handler:           webSrv.TransportGate(api.WriteGate(webSrv.WriteGate(mux))),
 		ReadHeaderTimeout: 5 * time.Second,
+	}
+	if !loopbackListen(cfg.Admin.Listen) && len(cfg.Admin.TrustedProxies) == 0 {
+		logger.Warn("the admin listener is not loopback and no reverse proxy is trusted, "+
+			"so the admin UI refuses every request except /healthz",
+			"listen", cfg.Admin.Listen,
+			"fix", "put an HTTPS reverse proxy in front and set KYDNS_TRUSTED_PROXIES to its address")
 	}
 
 	go func() { errs <- dnsSrv.ListenAndServe(cfg.DNS.Listen) }()
@@ -588,8 +596,8 @@ func warnUnreachableViews(st *store.Store, allowTailscale bool, logger *slog.Log
 }
 
 // ensureSetupToken mints the one-time token that gates /setup, unless an admin
-// already exists. It is logged and written to the data dir, because the
-// operator needs it from a terminal before any UI is reachable.
+// already exists. It is written to the data dir at 0600, because the operator
+// needs it from a terminal before any UI is reachable.
 func ensureSetupToken(st *store.Store, dataDir string, logger *slog.Logger) (string, error) {
 	has, err := st.HasAdmin()
 	if err != nil {
@@ -607,7 +615,27 @@ func ensureSetupToken(st *store.Store, dataDir string, logger *slog.Logger) (str
 	if err := os.WriteFile(path, []byte(token+"\n"), 0o600); err != nil {
 		return "", err
 	}
-	logger.Info("no admin account yet: open the web UI and use this setup token",
-		"token", token, "path", path)
+	// The journal is readable by adm, wheel and systemd-journal, so under
+	// systemd the 0600 file is the only copy. A container has no shell to cat
+	// it with, so its log carries the token.
+	if os.Getenv("JOURNAL_STREAM") != "" {
+		logger.Info("no admin account yet: open the web UI and use the setup token in this file", "path", path)
+	} else {
+		logger.Info("no admin account yet: open the web UI and use this setup token",
+			"token", token, "path", path)
+	}
 	return token, nil
+}
+
+// loopbackListen reports whether addr binds only this host's loopback.
+func loopbackListen(addr string) bool {
+	host, _, err := net.SplitHostPort(addr)
+	if err != nil {
+		return false
+	}
+	if host == "localhost" {
+		return true
+	}
+	ip, err := netip.ParseAddr(host)
+	return err == nil && ip.Unmap().IsLoopback()
 }

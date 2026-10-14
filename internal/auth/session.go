@@ -33,6 +33,7 @@ type Sessions struct {
 	absolute        time.Duration
 	now             func() time.Time
 	identityAllowed func(issuer, subject string, revision uint64) bool
+	notBefore       func() time.Time
 }
 
 func NewSessions(idle, absolute time.Duration) *Sessions {
@@ -59,6 +60,14 @@ func (s *Sessions) SetIdentityValidator(fn func(issuer, subject string, revision
 	s.identityAllowed = fn
 }
 
+// SetNotBefore voids, on every Get, any session created before fn's instant.
+// It lets a password reset in another process end this one's sessions.
+func (s *Sessions) SetNotBefore(fn func() time.Time) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.notBefore = fn
+}
+
 func (s *Sessions) CreateSSO(issuer, subject string, revision uint64) *Session {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -79,7 +88,8 @@ func (s *Sessions) Get(id string) (*Session, bool) {
 		return nil, false
 	}
 	now := s.now()
-	if now.Sub(sess.LastSeen) > s.idle || now.Sub(sess.Created) > s.absolute || (sess.IdentitySubject != "" && (s.identityAllowed == nil || !s.identityAllowed(sess.IdentityIssuer, sess.IdentitySubject, sess.IdentityRevision))) {
+	if now.Sub(sess.LastSeen) > s.idle || now.Sub(sess.Created) > s.absolute ||
+		(s.notBefore != nil && sess.Created.Before(s.notBefore())) || (sess.IdentitySubject != "" && (s.identityAllowed == nil || !s.identityAllowed(sess.IdentityIssuer, sess.IdentitySubject, sess.IdentityRevision))) {
 		delete(s.byID, id)
 		return nil, false
 	}

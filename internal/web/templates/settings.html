@@ -226,7 +226,10 @@
       </form>
     </div>
     {{else}}
-    <p><a href="/auth/sso/login?link=true" class="button ghost">Link SSO identity</a></p>
+    <form method="post" action="/settings/sso/link">
+      <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
+      <button type="submit" class="ghost"{{template "ro" $}}>Link SSO identity</button>
+    </form>
     {{end}}
   {{end}}
 
@@ -248,7 +251,9 @@
           <input id="client_id" name="client_id" type="text" value="{{.SSOSettings.ClientID}}" placeholder="kydns">
 
           <label for="client_secret">Client secret <span class="muted">(optional with PKCE)</span></label>
-          <input id="client_secret" name="client_secret" type="password" value="{{.SSOSettings.ClientSecret}}">
+          <input id="client_secret" name="client_secret" type="password" autocomplete="off"
+                 placeholder="{{if .SSOSettings.ClientSecret}}Saved. Leave blank to keep it{{end}}">
+          {{if .SSOSettings.ClientSecret}}<label><input type="checkbox" name="clear_secret" value="1"> Remove the saved secret</label>{{end}}
         </div>
       </fieldset>
     </div>

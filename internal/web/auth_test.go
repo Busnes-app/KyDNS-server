@@ -289,7 +289,7 @@ func TestSetupIsSingleUse(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if auth.VerifyPassword(hash, "attacker-password") {
+	if verified(hash, "attacker-password") {
 		t.Error("a second setup POST replaced the admin password")
 	}
 }
@@ -502,74 +502,172 @@ func TestSSOGetLoginSetsPKCEAndRedirects(t *testing.T) {
 	}
 }
 
-func TestSSOCallbackRejectsNonAdminRole(t *testing.T) {
-	mockSSOServer := oidcTestServer(t, "sub-1", "regular_bob", "bob@urlxl.com", "user")
-
-	h, srv := newWeb(t)
-	setupAndLogin(t, h)
-	_ = srv.o.Store.SetSSOSettings(store.SSOSettings{
-		Enabled:   true,
-		IssuerURL: mockSSOServer.URL,
-		ClientID:  "kydns",
-	})
-
+// ssoCallback replays a provider redirect carrying the cookies startSSO set.
+func ssoCallback(t *testing.T, h http.Handler, link bool, session *http.Cookie) *httptest.ResponseRecorder {
+	t.Helper()
 	req := httptest.NewRequest("GET", "/auth/sso/callback?code=mock_code&state=test_state", nil)
 	req.AddCookie(&http.Cookie{Name: cookieSSOState, Value: "test_state"})
 	req.AddCookie(&http.Cookie{Name: cookieSSOVerifier, Value: "test_verifier"})
 	req.AddCookie(&http.Cookie{Name: cookieSSONonce, Value: "test_nonce"})
-
+	if link {
+		req.AddCookie(&http.Cookie{Name: cookieSSOLink, Value: "1"})
+	}
+	if session != nil {
+		req.AddCookie(session)
+	}
 	rec := httptest.NewRecorder()
 	h.ServeHTTP(rec, req)
+	return rec
+}
 
-	if rec.Code != http.StatusForbidden {
-		t.Fatalf("callback status = %d, want 403 Forbidden for non-admin", rec.Code)
-	}
-	if !strings.Contains(rec.Body.String(), "requires an Administrator account") {
-		t.Errorf("unexpected body: %s", rec.Body.String())
+// An identity nobody linked is refused, whatever role its provider gives it.
+func TestSSOCallbackRefusesUnlinkedIdentity(t *testing.T) {
+	for _, role := range []string{"user", "admin"} {
+		t.Run(role, func(t *testing.T) {
+			idp := oidcTestServer(t, "sub-1", "bob", "bob@example.com", role)
+			h, srv := newWeb(t)
+			setupAndLogin(t, h)
+			_ = srv.o.Store.SetSSOSettings(store.SSOSettings{Enabled: true, IssuerURL: idp.URL, ClientID: "kydns"})
+
+			rec := ssoCallback(t, h, false, nil)
+			if rec.Code != http.StatusForbidden {
+				t.Fatalf("status = %d, want 403", rec.Code)
+			}
+			if sessionCookie(rec) != nil {
+				t.Fatal("an unlinked identity got a session")
+			}
+			if ident, _ := srv.o.Store.AdminIdentity(); ident.SSOSub != "" {
+				t.Fatalf("callback linked %q on its own", ident.SSOSub)
+			}
+		})
 	}
 }
 
-func TestSSOCallbackAutoLinksAdminAndLogsIn(t *testing.T) {
-	mockSSOServer := oidcTestServer(t, "sso-sub-admin-999", "admin_yoshi", "yoshi@urlxl.com", "admin")
-
+// Dropping the link cookie must not turn a link attempt into a takeover: the
+// unauthenticated attacker from the review, with an IdP admin account.
+func TestSSOCallbackWithoutLinkCookieDoesNotAutoLink(t *testing.T) {
+	idp := oidcTestServer(t, "attacker", "mallory", "m@example.com", "admin")
 	h, srv := newWeb(t)
 	setupAndLogin(t, h)
-	_ = srv.o.Store.SetSSOSettings(store.SSOSettings{
-		Enabled:   true,
-		IssuerURL: mockSSOServer.URL,
-		ClientID:  "kydns",
-	})
+	// SSO never switched on: the stock install.
+	_ = srv.o.Store.SetSSOSettings(store.SSOSettings{IssuerURL: idp.URL, ClientID: "kydns"})
 
-	req := httptest.NewRequest("GET", "/auth/sso/callback?code=mock_code&state=test_state", nil)
-	req.AddCookie(&http.Cookie{Name: cookieSSOState, Value: "test_state"})
-	req.AddCookie(&http.Cookie{Name: cookieSSOVerifier, Value: "test_verifier"})
-	req.AddCookie(&http.Cookie{Name: cookieSSONonce, Value: "test_nonce"})
-
-	rec := httptest.NewRecorder()
-	h.ServeHTTP(rec, req)
-
-	if rec.Code != http.StatusSeeOther {
-		t.Fatalf("status = %d, want 303 redirect", rec.Code)
+	rec := ssoCallback(t, h, false, nil)
+	if rec.Code != http.StatusForbidden || sessionCookie(rec) != nil {
+		t.Fatalf("status = %d, session = %v; want 403 and none", rec.Code, sessionCookie(rec))
 	}
-	if rec.Header().Get("Location") != "/" {
-		t.Errorf("redirect = %s, want /", rec.Header().Get("Location"))
+	sso, _ := srv.o.Store.SSOSettings()
+	ident, _ := srv.o.Store.AdminIdentity()
+	if sso.Enabled || ident.SSOSub != "" {
+		t.Fatalf("SSO enabled=%v linked=%q after a refused callback", sso.Enabled, ident.SSOSub)
+	}
+}
+
+func TestSSOCallbackLogsInTheLinkedIdentity(t *testing.T) {
+	idp := oidcTestServer(t, "sub-linked", "yoshi", "y@example.com", "user")
+	h, srv := newWeb(t)
+	setupAndLogin(t, h)
+	_ = srv.o.Store.SetSSOSettings(store.SSOSettings{Enabled: true, IssuerURL: idp.URL, ClientID: "kydns"})
+	_ = srv.o.Store.LinkAdminSSO("sub-linked", "yoshi", "y@example.com")
+
+	rec := ssoCallback(t, h, false, nil)
+	if rec.Code != http.StatusSeeOther || rec.Header().Get("Location") != "/" || sessionCookie(rec) == nil {
+		t.Fatalf("status = %d, location = %q; want 303 to / with a session", rec.Code, rec.Header().Get("Location"))
+	}
+}
+
+// Switching SSO off stops even the linked identity.
+func TestSSOCallbackRefusedWhenDisabled(t *testing.T) {
+	idp := oidcTestServer(t, "sub-linked", "yoshi", "y@example.com", "admin")
+	h, srv := newWeb(t)
+	setupAndLogin(t, h)
+	_ = srv.o.Store.SetSSOSettings(store.SSOSettings{Enabled: false, IssuerURL: idp.URL, ClientID: "kydns"})
+	_ = srv.o.Store.LinkAdminSSO("sub-linked", "yoshi", "y@example.com")
+
+	if rec := ssoCallback(t, h, false, nil); rec.Code != http.StatusForbidden || sessionCookie(rec) != nil {
+		t.Fatalf("status = %d; want 403 and no session", rec.Code)
+	}
+}
+
+func TestSSOLinkCallbackNeedsASession(t *testing.T) {
+	idp := oidcTestServer(t, "attacker", "mallory", "m@example.com", "admin")
+	h, srv := newWeb(t)
+	setupAndLogin(t, h)
+	_ = srv.o.Store.SetSSOSettings(store.SSOSettings{IssuerURL: idp.URL, ClientID: "kydns"})
+
+	rec := ssoCallback(t, h, true, nil)
+	if rec.Code != http.StatusSeeOther || !strings.HasPrefix(rec.Header().Get("Location"), "/login") {
+		t.Fatalf("status = %d, location = %q; want a redirect to /login", rec.Code, rec.Header().Get("Location"))
+	}
+	if ident, _ := srv.o.Store.AdminIdentity(); ident.SSOSub != "" {
+		t.Fatalf("linked %q without a session", ident.SSOSub)
+	}
+}
+
+func TestSSOLinkFromSettingsLinksAndEnables(t *testing.T) {
+	idp := oidcTestServer(t, "sub-mine", "yoshi", "y@example.com", "user")
+	h, srv := newWeb(t)
+	setupAndLogin(t, h)
+	c := loginCookie(t, h)
+	sess, _ := srv.o.Sessions.Get(c.Value)
+	_ = srv.o.Store.SetSSOSettings(store.SSOSettings{IssuerURL: idp.URL, ClientID: "kydns"})
+
+	rec := postForm(t, h, "/settings/sso/link", url.Values{"csrf_token": {sess.CSRF}}, c)
+	if rec.Code != http.StatusSeeOther || !strings.HasPrefix(rec.Header().Get("Location"), idp.URL) {
+		t.Fatalf("link start = %d to %q; want a redirect to the provider", rec.Code, rec.Header().Get("Location"))
+	}
+	var linkCookie bool
+	for _, ck := range rec.Result().Cookies() {
+		linkCookie = linkCookie || (ck.Name == cookieSSOLink && ck.Value == "1")
+	}
+	if !linkCookie {
+		t.Fatal("link start did not mark the flow as a link")
 	}
 
-	// Verify session cookie was set
-	var sessCookie *http.Cookie
-	for _, c := range rec.Result().Cookies() {
-		if c.Name == auth.CookieName && c.Value != "" {
-			sessCookie = c
+	if rec := ssoCallback(t, h, true, c); rec.Code != http.StatusSeeOther || rec.Header().Get("Location") != "/settings" {
+		t.Fatalf("link callback = %d to %q", rec.Code, rec.Header().Get("Location"))
+	}
+	ident, _ := srv.o.Store.AdminIdentity()
+	sso, _ := srv.o.Store.SSOSettings()
+	if ident.SSOSub != "sub-mine" || !sso.Enabled {
+		t.Fatalf("linked=%q enabled=%v; want sub-mine and true", ident.SSOSub, sso.Enabled)
+	}
+}
+
+// The old GET link entry point is gone: ?link=true neither bypasses the
+// "SSO is off" check nor marks a flow as a link.
+func TestSSOLoginIgnoresLinkParameter(t *testing.T) {
+	h, _ := newWeb(t)
+	setupAndLogin(t, h)
+	rec := get(t, h, "/auth/sso/login?link=true", nil)
+	if rec.Code != http.StatusSeeOther || !strings.Contains(rec.Header().Get("Location"), "SSO+is+not+enabled") {
+		t.Fatalf("status = %d, location = %q; want the not-enabled redirect", rec.Code, rec.Header().Get("Location"))
+	}
+	for _, ck := range rec.Result().Cookies() {
+		if ck.Name == cookieSSOState || ck.Name == cookieSSOLink {
+			t.Fatalf("set %s while SSO is off", ck.Name)
 		}
 	}
-	if sessCookie == nil {
-		t.Fatalf("expected session cookie set after SSO login")
-	}
+}
 
-	// Verify AdminIdentity was auto-linked
-	ident, err := srv.o.Store.AdminIdentity()
-	if err != nil || ident.SSOSub != "sso-sub-admin-999" || ident.SSOUsername != "admin_yoshi" {
-		t.Errorf("unexpected linked identity: %+v, err: %v", ident, err)
+// Exchange failures are logged, not shown to whoever is at the login page.
+func TestSSOExchangeErrorIsNotShown(t *testing.T) {
+	idp := oidcTestServer(t, "sub-1", "bob", "bob@example.com", "admin")
+	h, srv := newWeb(t)
+	setupAndLogin(t, h)
+	_ = srv.o.Store.SetSSOSettings(store.SSOSettings{Enabled: true, IssuerURL: idp.URL, ClientID: "kydns"})
+
+	req := httptest.NewRequest("GET", "/auth/sso/callback?code=c&state=s", nil)
+	req.AddCookie(&http.Cookie{Name: cookieSSOState, Value: "s"})
+	req.AddCookie(&http.Cookie{Name: cookieSSOVerifier, Value: "v"})
+	req.AddCookie(&http.Cookie{Name: cookieSSONonce, Value: "not-the-issued-nonce"})
+	rec := httptest.NewRecorder()
+	h.ServeHTTP(rec, req)
+	if rec.Code != http.StatusUnauthorized {
+		t.Fatalf("status = %d, want 401", rec.Code)
+	}
+	if body := rec.Body.String(); strings.Contains(body, "nonce") || strings.Contains(body, idp.URL) {
+		t.Fatalf("error detail leaked to the page: %s", body)
 	}
 }
 
@@ -632,4 +730,10 @@ func TestSettingsPageRendersWithLinkedSSO(t *testing.T) {
 	if !strings.Contains(rec.Body.String(), "SSO identity linked") || !strings.Contains(rec.Body.String(), "yoshi_admin") {
 		t.Errorf("expected 'SSO identity linked' and 'yoshi_admin' in settings HTML, got: %s", rec.Body.String())
 	}
+}
+
+// verified is VerifyPassword for tests, where the checker is never busy.
+func verified(encoded, plaintext string) bool {
+	ok, err := auth.VerifyPassword(encoded, plaintext)
+	return err == nil && ok
 }
