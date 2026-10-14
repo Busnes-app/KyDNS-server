@@ -1,11 +1,87 @@
 package store
 
-import "testing"
+import (
+	"errors"
+	"testing"
+)
 
 func baseSettings() Settings {
 	return Settings{PrivateDomain: "home.arpa", TTL: 60, CacheMinTTL: 5,
 		CacheMaxTTL: 3600, NegativeMaxTTL: 300, CacheEntries: 10000,
 		HealthInterval: 30, HealthTimeout: 5, HealthWorkers: 8}
+}
+
+func TestReplicationSnapshotReadsConfigWithoutListBodies(t *testing.T) {
+	s := open(t)
+	if err := s.PutSettings(baseSettings()); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := s.PutService(Service{Name: "web", Addresses: []Address{{Address: "192.168.1.5"}}, Aliases: []string{"www"}}); err != nil {
+		t.Fatal(err)
+	}
+	id, err := s.PutBlacklistList(BlacklistList{Name: "ads", URL: "https://lists.example/ads", Format: "domains", IntervalSeconds: 3600})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := s.SetBlacklistSnapshot(id, []string{"ads.example"}, 0, "", "", 1); err != nil {
+		t.Fatal(err)
+	}
+	want, err := s.ConfigVersion()
+	if err != nil {
+		t.Fatal(err)
+	}
+	version, in, err := s.ReplicationSnapshot()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if version != want {
+		t.Errorf("version = %d, want %d", version, want)
+	}
+	if len(in.Services) != 1 || len(in.Services[0].Addresses) != 1 || len(in.Services[0].Aliases) != 1 {
+		t.Errorf("services = %+v, want web with its address and alias", in.Services)
+	}
+	if in.Settings.PrivateDomain != "home.arpa" {
+		t.Errorf("settings = %+v", in.Settings)
+	}
+	if len(in.Lists) != 1 || len(in.Lists[0].Snapshot) != 0 {
+		t.Errorf("lists = %+v, want the definition without its body", in.Lists)
+	}
+}
+
+// check sees the row as it would be stored, node-local fields merged in, and a
+// refusal leaves the store as it was.
+func TestApplySnapshotCheckRunsOnMergedRowBeforeWriting(t *testing.T) {
+	s := open(t)
+	local := baseSettings()
+	local.DiscoveryInterval = 45
+	if err := s.PutSettings(local); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := s.PutService(Service{Name: "keeper"}); err != nil {
+		t.Fatal(err)
+	}
+	incoming := baseSettings()
+	incoming.TTL = 999
+	incoming.DiscoveryInterval = 1
+	var seen Settings
+	err := s.ApplySnapshot(SnapshotInput{Services: []Service{{Name: "new"}}, Settings: incoming},
+		func(in SnapshotInput) error { seen = in.Settings; return errors.New("refused") })
+	if err == nil {
+		t.Fatal("a refused check did not abort the apply")
+	}
+	if seen.TTL != 999 || seen.DiscoveryInterval != 45 {
+		t.Errorf("check saw %+v, want the incoming TTL with the local discovery_interval", seen)
+	}
+	svcs, err := s.Services()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(svcs) != 1 || svcs[0].Name != "keeper" {
+		t.Errorf("Services() = %+v after a refused check, want [keeper]", svcs)
+	}
+	if got, _, _ := s.Settings(); got.TTL != local.TTL {
+		t.Errorf("TTL = %d after a refused check, want %d", got.TTL, local.TTL)
+	}
 }
 
 func TestApplySnapshotReplacesRegistry(t *testing.T) {
@@ -16,7 +92,7 @@ func TestApplySnapshotReplacesRegistry(t *testing.T) {
 	err := s.ApplySnapshot(SnapshotInput{
 		Services: []Service{{Name: "new"}},
 		Settings: baseSettings(),
-	})
+	}, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -53,7 +129,7 @@ func TestApplySnapshotRollsBackEverythingOnFailure(t *testing.T) {
 			{Kind: "deny", Domain: "ads.example"},
 			{Kind: "allow", Domain: "ads.example"},
 		},
-	})
+	}, nil)
 	if err == nil {
 		t.Fatal("ApplySnapshot() accepted two rules for one domain")
 	}
@@ -83,7 +159,7 @@ func TestApplySnapshotLeavesTokensAndAdminAlone(t *testing.T) {
 	if err := s.SetAdminPassword("argon2-hash"); err != nil {
 		t.Fatal(err)
 	}
-	if err := s.ApplySnapshot(SnapshotInput{Settings: baseSettings()}); err != nil {
+	if err := s.ApplySnapshot(SnapshotInput{Settings: baseSettings()}, nil); err != nil {
 		t.Fatal(err)
 	}
 	toks, err := s.Tokens()
@@ -118,7 +194,7 @@ func TestApplySnapshotKeepsLocalListBodies(t *testing.T) {
 		Settings: baseSettings(),
 		Lists: []BlacklistList{{Name: "steven",
 			URL: "https://example.test/hosts", Format: "hosts", Enabled: true}},
-	})
+	}, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -152,7 +228,7 @@ func TestApplySnapshotClearsBodyWhenURLChanges(t *testing.T) {
 		Settings: baseSettings(),
 		Lists: []BlacklistList{{Name: "steven",
 			URL: "https://new.example/hosts", Format: "hosts", Enabled: true}},
-	})
+	}, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -180,7 +256,7 @@ func TestApplySnapshotDeletesListsAbsentFromSnapshot(t *testing.T) {
 		URL: "https://example.test/gone", Format: "hosts"}); err != nil {
 		t.Fatal(err)
 	}
-	err := s.ApplySnapshot(SnapshotInput{Settings: baseSettings()})
+	err := s.ApplySnapshot(SnapshotInput{Settings: baseSettings()}, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -201,7 +277,7 @@ func TestApplySnapshotNewListStartsWithEmptyBody(t *testing.T) {
 		Settings: baseSettings(),
 		Lists: []BlacklistList{{Name: "fresh",
 			URL: "https://example.test/fresh", Format: "hosts", Enabled: true}},
-	})
+	}, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -225,7 +301,7 @@ func TestApplySnapshotAppliesBlacklistSettingsAndRules(t *testing.T) {
 		Settings:  baseSettings(),
 		Blacklist: BlacklistSettings{Enabled: false, BlockTTL: 120},
 		Rules:     []BlacklistRule{{Kind: "deny", Domain: "ads.example"}},
-	})
+	}, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -282,7 +358,7 @@ func TestApplySnapshotPreservesNodeLocalSettings(t *testing.T) {
 	incoming.DHCPLeaseSeconds = 7200
 	incoming.DHCPSecondaryDNS = "10.0.0.3"
 	incoming.DHCPAllowForeign = false
-	if err := s.ApplySnapshot(SnapshotInput{Settings: incoming}); err != nil {
+	if err := s.ApplySnapshot(SnapshotInput{Settings: incoming}, nil); err != nil {
 		t.Fatal(err)
 	}
 

@@ -256,7 +256,7 @@ func Serve(ctx context.Context, cfgPath string, logger *slog.Logger) error {
 
 	errs := make(chan error, 3)
 	repl, err := startReplication(ctx, cfg, role, st,
-		&replicaApplier{st: st, settings: settingsHolder, policy: policyHolder, live: live},
+		&replicaApplier{st: st, settings: settingsHolder, policy: policyHolder, live: live, logger: logger},
 		checker.Statuses, logger)
 	if err != nil {
 		return err

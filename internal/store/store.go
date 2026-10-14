@@ -387,20 +387,15 @@ func migrate(tx *sql.Tx, freshDB bool) error {
 }
 
 func Open(path string) (*Store, error) {
-	db, err := sql.Open("sqlite", path+"?_pragma=busy_timeout(5000)")
+	// Pragmas live in the DSN so every connection gets them, including one
+	// database/sql opens to replace a bad one.
+	db, err := sql.Open("sqlite", path+"?_pragma=busy_timeout(5000)&_pragma=foreign_keys(1)"+
+		"&_pragma=journal_mode(WAL)&_pragma=synchronous(NORMAL)")
 	if err != nil {
 		return nil, fmt.Errorf("open sqlite: %w", err)
 	}
 	// One writer, so a single connection avoids SQLITE_BUSY entirely.
 	db.SetMaxOpenConns(1)
-	for _, p := range []string{
-		"PRAGMA journal_mode=WAL", "PRAGMA foreign_keys=ON", "PRAGMA synchronous=NORMAL",
-	} {
-		if _, err := db.Exec(p); err != nil {
-			db.Close()
-			return nil, fmt.Errorf("%s: %w", p, err)
-		}
-	}
 
 	// A database with no services table has never been written by KyDNS, so
 	// the schema below creates everything and no migration should run.
@@ -477,8 +472,17 @@ func putView(tx *sql.Tx, v View) error {
 	return nil
 }
 
-func (s *Store) Views() ([]View, error) {
-	rows, err := s.db.Query(`
+// queryer is the read half of *sql.DB and *sql.Tx, so a read can run alone or
+// inside the one transaction ReplicationSnapshot reads everything in.
+type queryer interface {
+	Query(query string, args ...any) (*sql.Rows, error)
+	QueryRow(query string, args ...any) *sql.Row
+}
+
+func (s *Store) Views() ([]View, error) { return views(s.db) }
+
+func views(q queryer) ([]View, error) {
+	rows, err := q.Query(`
 		SELECT v.name, COALESCE(sn.cidr, '')
 		FROM views v LEFT JOIN view_subnets sn ON sn.view_name = v.name
 		ORDER BY v.name, sn.cidr`)
@@ -597,9 +601,11 @@ func nullable(s string) any {
 	return s
 }
 
-func (s *Store) Service(id int64) (Service, error) {
+func (s *Store) Service(id int64) (Service, error) { return service(s.db, id) }
+
+func service(q queryer, id int64) (Service, error) {
 	var svc Service
-	err := s.db.QueryRow(
+	err := q.QueryRow(
 		`SELECT id, name, check_url, check_insecure, proxy_address, route_via_proxy, mac FROM services WHERE id = ?`, id).
 		Scan(&svc.ID, &svc.Name, &svc.CheckURL, &svc.CheckInsecure, &svc.ProxyAddress, &svc.RouteViaProxy, &svc.MAC)
 	if errors.Is(err, sql.ErrNoRows) {
@@ -608,17 +614,17 @@ func (s *Store) Service(id int64) (Service, error) {
 	if err != nil {
 		return Service{}, err
 	}
-	if svc.Addresses, err = s.addresses(svc.ID); err != nil {
+	if svc.Addresses, err = addresses(q, svc.ID); err != nil {
 		return Service{}, err
 	}
-	if svc.Aliases, err = s.aliases(svc.ID); err != nil {
+	if svc.Aliases, err = aliases(q, svc.ID); err != nil {
 		return Service{}, err
 	}
 	return svc, nil
 }
 
-func (s *Store) addresses(serviceID int64) ([]Address, error) {
-	rows, err := s.db.Query(
+func addresses(q queryer, serviceID int64) ([]Address, error) {
+	rows, err := q.Query(
 		`SELECT id, address, COALESCE(view_name, '') FROM service_addresses WHERE service_id = ? ORDER BY id`, serviceID)
 	if err != nil {
 		return nil, err
@@ -635,8 +641,8 @@ func (s *Store) addresses(serviceID int64) ([]Address, error) {
 	return out, rows.Err()
 }
 
-func (s *Store) aliases(serviceID int64) ([]string, error) {
-	rows, err := s.db.Query(`SELECT name FROM aliases WHERE service_id = ? ORDER BY name`, serviceID)
+func aliases(q queryer, serviceID int64) ([]string, error) {
+	rows, err := q.Query(`SELECT name FROM aliases WHERE service_id = ? ORDER BY name`, serviceID)
 	if err != nil {
 		return nil, err
 	}
@@ -654,8 +660,10 @@ func (s *Store) aliases(serviceID int64) ([]string, error) {
 
 // Services returns every service with addresses and aliases loaded. The
 // snapshot builder is the main caller, so IDs are collected in one pass first.
-func (s *Store) Services() ([]Service, error) {
-	rows, err := s.db.Query(`SELECT id FROM services ORDER BY name`)
+func (s *Store) Services() ([]Service, error) { return services(s.db) }
+
+func services(q queryer) ([]Service, error) {
+	rows, err := q.Query(`SELECT id FROM services ORDER BY name`)
 	if err != nil {
 		return nil, err
 	}
@@ -674,7 +682,7 @@ func (s *Store) Services() ([]Service, error) {
 	}
 	out := make([]Service, 0, len(ids))
 	for _, id := range ids {
-		svc, err := s.Service(id)
+		svc, err := service(q, id)
 		if err != nil {
 			return nil, err
 		}
@@ -718,8 +726,10 @@ func putRecord(tx *sql.Tx, r Record) (int64, error) {
 	return res.LastInsertId()
 }
 
-func (s *Store) Records() ([]Record, error) {
-	rows, err := s.db.Query(
+func (s *Store) Records() ([]Record, error) { return records(s.db) }
+
+func records(q queryer) ([]Record, error) {
+	rows, err := q.Query(
 		`SELECT id, name, type, value, COALESCE(view_name, '') FROM records ORDER BY name, type`)
 	if err != nil {
 		return nil, err
@@ -1008,19 +1018,61 @@ type SnapshotInput struct {
 	Rules     []BlacklistRule
 }
 
+// ReplicationSnapshot reads the replicated configuration and the version it is
+// at in one transaction, so a write landing mid-read can neither fail the read
+// nor ship a body that matches no version. List bodies are left out: a
+// downloaded list belongs to the node that fetched it.
+func (s *Store) ReplicationSnapshot() (int64, SnapshotInput, error) {
+	var in SnapshotInput
+	tx, err := s.db.Begin()
+	if err != nil {
+		return 0, in, err
+	}
+	defer tx.Rollback()
+	version, err := configVersion(tx)
+	if err != nil {
+		return 0, in, err
+	}
+	if in.Views, err = views(tx); err != nil {
+		return 0, in, err
+	}
+	if in.Services, err = services(tx); err != nil {
+		return 0, in, err
+	}
+	if in.Records, err = records(tx); err != nil {
+		return 0, in, err
+	}
+	var ok bool
+	if in.Settings, ok, err = loadSettings(tx); err != nil {
+		return 0, in, err
+	} else if !ok {
+		return 0, in, errors.New("settings row vanished")
+	}
+	if in.Blacklist, err = blacklistSettings(tx); err != nil {
+		return 0, in, err
+	}
+	if in.Lists, err = blacklistLists(tx, false); err != nil {
+		return 0, in, err
+	}
+	if in.Rules, err = blacklistRules(tx); err != nil {
+		return 0, in, err
+	}
+	return version, in, nil
+}
+
 // ApplySnapshot replaces all replicated state in one transaction. A replica
 // applying a bad document must be left exactly as it was, so nothing here is
 // allowed to commit independently. Tokens, the admin account, and list
 // bodies are node-local and untouched.
-func (s *Store) ApplySnapshot(in SnapshotInput) error {
+//
+// check, if not nil, sees the snapshot as it would be stored, node-local
+// settings included, before anything is written; its error aborts the apply.
+func (s *Store) ApplySnapshot(in SnapshotInput, check func(SnapshotInput) error) error {
 	tx, err := s.db.Begin()
 	if err != nil {
 		return err
 	}
 	defer tx.Rollback()
-	if err := replaceAll(tx, in.Views, in.Services, in.Records); err != nil {
-		return err
-	}
 	// dhcp_lease_file, discovery_interval, log_queries, log_client_ip and every
 	// dhcp_* column are node-local and never replicated. Enforced here rather
 	// than trusted to the caller, so a later caller that forwards a pulled
@@ -1047,6 +1099,15 @@ FROM settings WHERE id = 1`).
 		settings.DHCPRangeStart, settings.DHCPRangeEnd = dhcpRangeStart, dhcpRangeEnd
 		settings.DHCPGateway, settings.DHCPLeaseSeconds = dhcpGateway, dhcpLeaseSeconds
 		settings.DHCPSecondaryDNS, settings.DHCPAllowForeign = dhcpSecondaryDNS, dhcpAllowForeign
+	}
+	in.Settings = settings
+	if check != nil {
+		if err := check(in); err != nil {
+			return err
+		}
+	}
+	if err := replaceAll(tx, in.Views, in.Services, in.Records); err != nil {
+		return err
 	}
 	if err := putSettings(tx, settings); err != nil {
 		return err

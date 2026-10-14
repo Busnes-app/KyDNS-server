@@ -326,7 +326,7 @@ func TestADHCPSaveAndAPullSurviveEitherOrder(t *testing.T) {
 			}
 		}
 		pull := func() {
-			if err := s.ApplySnapshot(SnapshotInput{Settings: pulled}); err != nil {
+			if err := s.ApplySnapshot(SnapshotInput{Settings: pulled}, nil); err != nil {
 				t.Fatal(err)
 			}
 		}

@@ -607,6 +607,28 @@ func TestImportReplaceAcceptsRoutedServiceWithProxyAddress(t *testing.T) {
 	}
 }
 
+// A body past maxBody is refused whole. Truncating it instead would let a
+// replace import that still parses at the cut wipe everything after it.
+func TestOversizedImportIs413AndChangesNothing(t *testing.T) {
+	h, tok := newAPI(t)
+	do(t, h, "POST", "/api/v1/services", tok, `{"name":"keep","addresses":[{"address":"192.168.1.9"}]}`)
+	body := `{"views":[],"services":[],"records":[]}` + strings.Repeat(" ", maxBody)
+	if rec := do(t, h, "POST", "/api/v1/import?mode=replace", tok, body); rec.Code != http.StatusRequestEntityTooLarge {
+		t.Fatalf("oversized import = %d, want 413", rec.Code)
+	}
+	if got := do(t, h, "GET", "/api/v1/services", tok, "").Body.String(); !strings.Contains(got, "keep") {
+		t.Errorf("oversized import changed the registry: %s", got)
+	}
+}
+
+func TestOversizedJSONBodyIs413(t *testing.T) {
+	h, tok := newAPI(t)
+	body := `{"name":"big","addresses":[{"address":"192.168.1.9"}]}` + strings.Repeat(" ", maxBody)
+	if rec := do(t, h, "POST", "/api/v1/services", tok, body); rec.Code != http.StatusRequestEntityTooLarge {
+		t.Fatalf("oversized body = %d, want 413", rec.Code)
+	}
+}
+
 func TestTokensEndpointNeverReturnsPlaintext(t *testing.T) {
 	h, tok := newAPI(t)
 	rec := do(t, h, "POST", "/api/v1/tokens", tok, `{"label":"second"}`)

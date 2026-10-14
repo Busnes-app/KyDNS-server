@@ -10,6 +10,32 @@ import (
 	"testing"
 )
 
+// KYDNS_TOKEN is a bearer credential: plain http may carry it only over
+// loopback.
+func TestNewClientRefusesCleartextToRemoteHosts(t *testing.T) {
+	for url, ok := range map[string]bool{
+		"":                          true, // the loopback default
+		"http://127.0.0.1:8053":     true,
+		"http://127.9.9.9:8053/":    true,
+		"http://[::1]:8053":         true,
+		"http://localhost:8053":     true,
+		"https://dns.example:8053":  true,
+		"http://192.168.1.2:8053":   false,
+		"http://dns.example":        false,
+		"http://localhost.evil.com": false,
+		"ftp://127.0.0.1":           false,
+	} {
+		t.Setenv("KYDNS_URL", url)
+		_, err := NewClient()
+		if ok && err != nil {
+			t.Errorf("KYDNS_URL=%q refused: %v", url, err)
+		}
+		if !ok && err == nil {
+			t.Errorf("KYDNS_URL=%q accepted, want refused", url)
+		}
+	}
+}
+
 func TestServiceListRendersUntaggedAsAllViews(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		json.NewEncoder(w).Encode(map[string]any{"services": []map[string]any{{

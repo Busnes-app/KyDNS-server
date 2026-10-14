@@ -7,9 +7,11 @@ import (
 	"strings"
 )
 
-func (s *Store) BlacklistSettings() (BlacklistSettings, error) {
+func (s *Store) BlacklistSettings() (BlacklistSettings, error) { return blacklistSettings(s.db) }
+
+func blacklistSettings(q queryer) (BlacklistSettings, error) {
 	var b BlacklistSettings
-	err := s.db.QueryRow(`SELECT enabled, block_ttl FROM blacklist_settings WHERE id = 1`).
+	err := q.QueryRow(`SELECT enabled, block_ttl FROM blacklist_settings WHERE id = 1`).
 		Scan(&b.Enabled, &b.BlockTTL)
 	if errors.Is(err, sql.ErrNoRows) {
 		return BlacklistSettings{Enabled: true, BlockTTL: 60}, nil
@@ -52,22 +54,22 @@ func scanList(sc interface{ Scan(...any) error }, body *string) (BlacklistList, 
 // BlacklistLists loads every list with its snapshot. The policy rebuild is the
 // caller; the UI uses BlacklistListMetas instead.
 func (s *Store) BlacklistLists() ([]BlacklistList, error) {
-	return s.blacklistLists(true)
+	return blacklistLists(s.db, true)
 }
 
 // BlacklistListMetas loads every list without its snapshot, so rendering a
 // screen does not pull megabytes of domains out of the database.
 func (s *Store) BlacklistListMetas() ([]BlacklistList, error) {
-	return s.blacklistLists(false)
+	return blacklistLists(s.db, false)
 }
 
-func (s *Store) blacklistLists(withBody bool) ([]BlacklistList, error) {
+func blacklistLists(db queryer, withBody bool) ([]BlacklistList, error) {
 	q := `SELECT ` + listColumns
 	if withBody {
 		q += `, snapshot`
 	}
 	q += ` FROM blacklist_lists ORDER BY builtin DESC, name`
-	rows, err := s.db.Query(q)
+	rows, err := db.Query(q)
 	if err != nil {
 		return nil, err
 	}
@@ -176,8 +178,10 @@ func (s *Store) DeleteBlacklistList(id int64) error {
 	return nil
 }
 
-func (s *Store) BlacklistRules() ([]BlacklistRule, error) {
-	rows, err := s.db.Query(`SELECT id, kind, domain FROM blacklist_rules ORDER BY kind, domain`)
+func (s *Store) BlacklistRules() ([]BlacklistRule, error) { return blacklistRules(s.db) }
+
+func blacklistRules(q queryer) ([]BlacklistRule, error) {
+	rows, err := q.Query(`SELECT id, kind, domain FROM blacklist_rules ORDER BY kind, domain`)
 	if err != nil {
 		return nil, err
 	}

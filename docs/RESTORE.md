@@ -236,7 +236,8 @@ was not found, which means the copy went somewhere other than `$vol`.
   opens it.
 - Replication: a restored primary that has `data/node_key` keeps its identity
   and its replicas reconnect. A standalone node has no `node_key` and there is
-  nothing here to prove.
+  nothing here to prove. A restored `node_key` must be mode 0600 and owned by
+  the service user, or the node refuses to start.
 
 ## Step 5: decide what to trust
 

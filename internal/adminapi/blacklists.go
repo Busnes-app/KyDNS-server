@@ -276,13 +276,16 @@ func (a *API) deleteBlacklistRule(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
-// applyBlacklistDoc writes the imported policy. A document with no blacklist
-// block changes nothing, so an older backup imports cleanly. Replace validates
-// the whole policy before writing any of it; merge adds without wiping.
-func (a *API) applyBlacklistDoc(doc *blacklistDoc, replace bool) error {
+// checkBlacklistReplace reports whether a replace import's policy would be
+// accepted, writing nothing.
+func (a *API) checkBlacklistReplace(doc *blacklistDoc) error {
 	if doc == nil || a.policy == nil {
 		return nil
 	}
+	return a.policy.CheckPolicy(doc.inputs())
+}
+
+func (doc *blacklistDoc) inputs() (store.BlacklistSettings, []store.BlacklistList, []store.BlacklistRule) {
 	lists := make([]store.BlacklistList, 0, len(doc.Lists))
 	for _, l := range doc.Lists {
 		lists = append(lists, fromBlacklistListDTO(l))
@@ -291,9 +294,19 @@ func (a *API) applyBlacklistDoc(doc *blacklistDoc, replace bool) error {
 	for _, r := range doc.Rules {
 		rules = append(rules, store.BlacklistRule{Kind: r.Kind, Domain: r.Domain})
 	}
+	return store.BlacklistSettings{Enabled: doc.Enabled, BlockTTL: doc.BlockTTL}, lists, rules
+}
+
+// applyBlacklistDoc writes the imported policy. A document with no blacklist
+// block changes nothing, so an older backup imports cleanly. Replace validates
+// the whole policy before writing any of it; merge adds without wiping.
+func (a *API) applyBlacklistDoc(doc *blacklistDoc, replace bool) error {
+	if doc == nil || a.policy == nil {
+		return nil
+	}
+	set, lists, rules := doc.inputs()
 	if replace {
-		return a.policy.ReplacePolicy(
-			store.BlacklistSettings{Enabled: doc.Enabled, BlockTTL: doc.BlockTTL}, lists, rules)
+		return a.policy.ReplacePolicy(set, lists, rules)
 	}
 	if err := a.policy.SetSettings(doc.Enabled, doc.BlockTTL); err != nil {
 		return err

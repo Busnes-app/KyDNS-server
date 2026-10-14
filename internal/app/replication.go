@@ -14,6 +14,7 @@ import (
 	"github.com/Busnes-app/kydns-server/internal/config"
 	"github.com/Busnes-app/kydns-server/internal/health"
 	"github.com/Busnes-app/kydns-server/internal/policy"
+	"github.com/Busnes-app/kydns-server/internal/registry"
 	"github.com/Busnes-app/kydns-server/internal/replica"
 	"github.com/Busnes-app/kydns-server/internal/settings"
 	"github.com/Busnes-app/kydns-server/internal/store"
@@ -117,42 +118,11 @@ func (s *storeSource) Version() (replica.VersionReply, error) {
 	return replica.VersionReply{SchemaVersion: replica.SchemaVersion, ConfigVersion: v, NodeID: s.nodeID}, nil
 }
 
-// Snapshot reads the version before the configuration. A write landing between
-// the two ships as data newer than the version it carries, which the next tick
-// pulls again; the other order would have a replica record a version for a
-// configuration it never received and stop asking.
+// Snapshot reads the version and the configuration in one store transaction,
+// so the body is exactly the configuration at the version it carries.
 func (s *storeSource) Snapshot() (replica.Snapshot, error) {
-	version, err := s.st.ConfigVersion()
+	version, in, err := s.st.ReplicationSnapshot()
 	if err != nil {
-		return replica.Snapshot{}, err
-	}
-	var in store.SnapshotInput
-	if in.Views, err = s.st.Views(); err != nil {
-		return replica.Snapshot{}, err
-	}
-	if in.Services, err = s.st.Services(); err != nil {
-		return replica.Snapshot{}, err
-	}
-	if in.Records, err = s.st.Records(); err != nil {
-		return replica.Snapshot{}, err
-	}
-	set, ok, err := s.st.Settings()
-	if err != nil {
-		return replica.Snapshot{}, err
-	}
-	if !ok {
-		return replica.Snapshot{}, errors.New("settings row vanished")
-	}
-	in.Settings = set
-	if in.Blacklist, err = s.st.BlacklistSettings(); err != nil {
-		return replica.Snapshot{}, err
-	}
-	// Metas, not bodies: a downloaded list belongs to the node that fetched it,
-	// and shipping megabytes of domains every pull would be its own bug.
-	if in.Lists, err = s.st.BlacklistListMetas(); err != nil {
-		return replica.Snapshot{}, err
-	}
-	if in.Rules, err = s.st.BlacklistRules(); err != nil {
 		return replica.Snapshot{}, err
 	}
 	body, err := json.Marshal(in)
@@ -175,17 +145,36 @@ type replicaApplier struct {
 	settings *settings.Holder
 	policy   *policy.Holder
 	live     *liveComponents
+	logger   *slog.Logger
 }
 
 func (a *replicaApplier) Apply(cfg json.RawMessage) error {
-	if err := (replica.SnapshotApplier{Store: a.st}).Apply(cfg); err != nil {
+	if err := (replica.SnapshotApplier{Store: a.st, Check: checkSnapshot}).Apply(cfg); err != nil {
 		return err
 	}
 	if err := a.settings.Rebuild(); err != nil {
 		return err
 	}
+	// The primary's ACL is honoured as stored, so the operator is told here.
+	warnPublicACL(a.settings.Current().Raw, a.logger)
 	a.live.Apply(a.settings.Current()) // rebuilds the zone snapshot too
 	return a.policy.Rebuild()
+}
+
+// checkSnapshot holds a pulled snapshot to the rules boot and the write paths
+// apply. A primary on a newer or compromised build could otherwise commit a
+// row this node refuses to start with after its next reboot.
+func checkSnapshot(in store.SnapshotInput) error {
+	if err := settings.ValidateStored(in.Settings); err != nil {
+		return fmt.Errorf("snapshot settings: %w", err)
+	}
+	if _, err := settings.Build(in.Settings); err != nil {
+		return fmt.Errorf("snapshot settings: %w", err)
+	}
+	if _, _, _, err := registry.ValidateDocument(in.Settings.PrivateDomain, in.Views, in.Services, in.Records); err != nil {
+		return fmt.Errorf("snapshot registry: %w", err)
+	}
+	return nil
 }
 
 // primaryFingerprint is the pinned key of the primary this replica follows.

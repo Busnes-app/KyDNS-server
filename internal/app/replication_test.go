@@ -182,6 +182,97 @@ func TestSnapshotBodyIsNeverOlderThanItsVersion(t *testing.T) {
 	}
 }
 
+// A service deleted while a snapshot is being read must not fail the snapshot:
+// the primary reads it in one transaction, so it sees the service whole or not
+// at all.
+func TestSnapshotSurvivesConcurrentDeletes(t *testing.T) {
+	db := openDB(t, t.TempDir())
+	if err := db.PutSettings(store.Settings{PrivateDomain: "home.arpa."}); err != nil {
+		t.Fatal(err)
+	}
+	src := &storeSource{st: db, nodeID: "primary"}
+
+	stop := make(chan struct{})
+	done := make(chan struct{})
+	go func() {
+		defer close(done)
+		for {
+			select {
+			case <-stop:
+				return
+			default:
+			}
+			id, err := db.PutService(store.Service{Name: "churn", Addresses: []store.Address{{Address: "192.168.1.1"}}})
+			if err != nil {
+				t.Error(err)
+				return
+			}
+			if err := db.DeleteService(id); err != nil {
+				t.Error(err)
+				return
+			}
+		}
+	}()
+	defer func() { close(stop); <-done }()
+
+	for range 300 {
+		if _, err := src.Snapshot(); err != nil {
+			t.Fatalf("snapshot under concurrent deletes: %v", err)
+		}
+	}
+}
+
+// A replica validates a pulled snapshot before committing it. Boot refuses an
+// invalid stored settings row, so committing one first would leave a replica
+// that serves until its next restart and then never starts again.
+func TestReplicaRefusesInvalidSnapshotBeforeWriting(t *testing.T) {
+	db := openDB(t, t.TempDir())
+	good := store.Settings{PrivateDomain: "home.arpa", Upstreams: []string{"tls://1.1.1.1:853"},
+		TTL: 60, CacheMinTTL: 5, CacheMaxTTL: 3600, NegativeMaxTTL: 300, CacheEntries: 100,
+		DiscoveryInterval: 60, HealthInterval: 30, HealthTimeout: 5, HealthWorkers: 4}
+	if err := db.PutSettings(good); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.PutService(store.Service{Name: "keep", Addresses: []store.Address{{Address: "192.168.1.9"}}}); err != nil {
+		t.Fatal(err)
+	}
+	noUpstreams := good
+	noUpstreams.Upstreams = nil
+	svc := []store.Service{{Name: "new", Addresses: []store.Address{{Address: "192.168.1.10"}}}}
+
+	for name, in := range map[string]store.SnapshotInput{
+		"settings":      {Settings: noUpstreams, Services: svc},
+		"service":       {Settings: good, Services: []store.Service{{Name: "bad name!", Addresses: []store.Address{{Address: "192.168.1.10"}}}}},
+		"record":        {Settings: good, Services: svc, Records: []store.Record{{Name: "x.elsewhere.", Type: "A", Value: "192.168.1.11"}}},
+		"record view":   {Settings: good, Services: svc, Records: []store.Record{{Name: "x.home.arpa.", Type: "A", Value: "192.168.1.11", View: "ghost"}}},
+		"view subnet":   {Settings: good, Services: svc, Views: []store.View{{Name: "lan", Subnets: []string{"not-a-cidr"}}}},
+		"service addr":  {Settings: good, Services: []store.Service{{Name: "new", Addresses: []store.Address{{Address: "nope"}}}}},
+		"reverse zones": {Settings: func() store.Settings { s := good; s.ReverseZones = []string{"bad"}; return s }(), Services: svc},
+	} {
+		cfg, err := json.Marshal(in)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := (&replicaApplier{st: db}).Apply(cfg); err == nil {
+			t.Errorf("%s: an invalid snapshot was applied", name)
+		}
+		svcs, err := db.Services()
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(svcs) != 1 || svcs[0].Name != "keep" {
+			t.Errorf("%s: services = %+v after a refused snapshot, want [keep]", name, svcs)
+		}
+		got, _, err := db.Settings()
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(got.Upstreams) != 1 || len(got.ReverseZones) != 0 {
+			t.Errorf("%s: settings changed by a refused snapshot: %+v", name, got)
+		}
+	}
+}
+
 // The whole point of the replication plan: a service written on the primary is
 // answered by the replica, over DNS, and keeps being answered once the primary
 // is gone.

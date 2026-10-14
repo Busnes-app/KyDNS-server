@@ -1,6 +1,7 @@
 package replica
 
 import (
+	"crypto/ed25519"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -55,6 +56,44 @@ func TestPrivateKeyIsNotReadableByOthers(t *testing.T) {
 	}
 	if mode := fi.Mode().Perm(); mode != 0o600 {
 		t.Fatalf("node_key mode = %#o, want 0600", mode)
+	}
+}
+
+// A key relaxed to 0644 by a chmod or a careless restore is no longer secret,
+// so it is refused rather than used.
+func TestPermissiveKeyIsRefused(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("POSIX modes only")
+	}
+	dir := t.TempDir()
+	if _, err := LoadOrCreateIdentity(dir); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Chmod(filepath.Join(dir, "node_key"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := LoadOrCreateIdentity(dir); err == nil {
+		t.Fatal("a world-readable node_key was loaded")
+	}
+}
+
+// node_key files already on disk are 32 raw seed bytes and must keep loading
+// as the same identity, or every paired peer would refuse this node.
+func TestExistingRawKeyKeepsItsIdentity(t *testing.T) {
+	dir := t.TempDir()
+	seed := make([]byte, ed25519.SeedSize)
+	for i := range seed {
+		seed[i] = byte(i)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "node_key"), seed, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	id, err := LoadOrCreateIdentity(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if want := Fingerprint(ed25519.NewKeyFromSeed(seed).Public().(ed25519.PublicKey)); id.NodeID != want {
+		t.Fatalf("NodeID = %s, want %s", id.NodeID, want)
 	}
 }
 
