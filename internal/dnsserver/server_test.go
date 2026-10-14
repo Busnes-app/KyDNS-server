@@ -369,20 +369,17 @@ func TestUDPReplyRespectsTheClientsBufferSize(t *testing.T) {
 		}
 	})
 
-	t.Run("a big enough client gets the whole answer", func(t *testing.T) {
+	t.Run("a larger offer is capped at 1232", func(t *testing.T) {
 		addr := forwardOnlyServer(t, bigUpstream("tls://1.1.1.1:853", true))
 		m := new(dns.Msg)
 		m.SetQuestion("big.example.com.", dns.TypeTXT)
 		m.SetEdns0(4096, true)
 		resp, n := udpExchange(t, addr, m)
-		if n <= 1232 {
-			t.Errorf("reply = %d bytes, want the full answer a 4096 client can hold", n)
+		if n > 1232 {
+			t.Errorf("reply = %d bytes, want at most 1232 whatever the client offers", n)
 		}
-		if resp.Truncated {
-			t.Error("TC set on a reply that fits")
-		}
-		if len(resp.Answer) != 10 {
-			t.Errorf("Answer = %d records, want all 10", len(resp.Answer))
+		if !resp.Truncated {
+			t.Error("TC clear on a capped reply: nothing tells the client to retry over TCP")
 		}
 	})
 

@@ -2,6 +2,7 @@ package zone
 
 import (
 	"log/slog"
+	"sync"
 	"sync/atomic"
 )
 
@@ -17,6 +18,10 @@ type Holder struct {
 	logger *slog.Logger
 	cur    atomic.Pointer[Snapshot]
 	gen    atomic.Uint32
+
+	// rebuildMu serializes Rebuild so a slower concurrent rebuild can never
+	// store a stale snapshot over a newer one. Readers never take it.
+	rebuildMu sync.Mutex
 }
 
 func NewHolder(src Source, logger *slog.Logger) *Holder { return &Holder{src: src, logger: logger} }
@@ -24,6 +29,8 @@ func NewHolder(src Source, logger *slog.Logger) *Holder { return &Holder{src: sr
 // Rebuild pulls fresh input, builds a complete snapshot, and swaps it in. It
 // is all-or-nothing: any error returns before the swap.
 func (h *Holder) Rebuild() error {
+	h.rebuildMu.Lock()
+	defer h.rebuildMu.Unlock()
 	in, err := h.src()
 	if err != nil {
 		return err

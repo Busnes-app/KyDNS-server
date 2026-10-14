@@ -46,6 +46,30 @@ func TestHealthyHTTPServiceIsUp(t *testing.T) {
 	}
 }
 
+// Probes share a transport: a fresh one per probe was never closed, so each
+// cycle leaked a connection pool. Reuse shows as one TCP connection.
+func TestProbesReuseConnections(t *testing.T) {
+	var conns atomic.Int32
+	srv := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	}))
+	srv.Config.ConnState = func(_ net.Conn, s http.ConnState) {
+		if s == http.StateNew {
+			conns.Add(1)
+		}
+	}
+	srv.Start()
+	defer srv.Close()
+
+	c := newChecker([]store.Service{{ID: 1, Name: "ok", CheckURL: srv.URL}})
+	for range 3 {
+		c.CheckOnce(context.Background())
+	}
+	if n := conns.Load(); n != 1 {
+		t.Errorf("connections = %d over three probes, want 1 reused", n)
+	}
+}
+
 // Two consecutive failures are required before a service is marked down, so a
 // single blip does not flap the dashboard.
 func TestTwoFailuresRequiredToGoDown(t *testing.T) {
