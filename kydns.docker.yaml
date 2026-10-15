@@ -23,6 +23,8 @@ admin:
   # addresses only — with a LAN-attached network that is its LAN address, and
   # with a bridge network it is whatever ports you publish.
   #
-  # KyDNS speaks plain HTTP. Put a TLS-terminating reverse proxy in front of
-  # it if you expose it beyond your LAN.
+  # KyDNS speaks plain HTTP. On a LAN-attached network, this exposes the UI
+  # to the LAN. Put a TLS-terminating proxy in front and restrict port 8053
+  # to that proxy with network controls before setup. KYDNS_TRUSTED_PROXIES
+  # trusts forwarded headers from the proxy; it does not restrict access.
   listen: "0.0.0.0:8053"

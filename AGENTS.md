@@ -2,7 +2,7 @@
 
 KyDNS is a Homelab DNS server with easy domain name assignments and blackhole filtering.
 
-Please see the css directory and fonts directory for look and feel.
+Please see `internal/web/static/` (`styles.css`, `fonts/`) for look and feel.
 
 # Ponytail, lazy senior dev mode
 
@@ -48,7 +48,7 @@ Non-trivial logic must include one runnable check (unit test or minimal self-che
 Keep these aligned:
 
 - `README.md` — product scope and user-facing capabilities.
-- `DESGINE.md` — architecture. Replication ships (`internal/replica`).
+- `DESIGN.md` — architecture. Replication ships (`internal/replica`).
 - `LOGGING.md` — logging and privacy requirements.
 - `SECURITY.md` — security policy and trust boundaries.
 - `CONTRIBUTING.md` — contribution and verification workflow.
