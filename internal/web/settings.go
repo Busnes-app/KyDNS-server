@@ -151,8 +151,12 @@ func (s *Server) postViewDelete(w http.ResponseWriter, r *http.Request) {
 // postTokenNew renders the settings page directly rather than redirecting,
 // because the plaintext exists only in this response.
 func (s *Server) postTokenNew(w http.ResponseWriter, r *http.Request) {
-	sess, _ := s.session(r)
-	plaintext, err := s.o.Registry.CreateIdentityToken(r.PostFormValue("label"), sess.IdentityIssuer, sess.IdentitySubject)
+	sess, ok := s.session(r)
+	if !ok {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+	plaintext, err := s.o.Registry.CreateIdentityTokenAtGeneration(r.PostFormValue("label"), sess.IdentityIssuer, sess.IdentitySubject, sess.RecoveryGeneration)
 	if err != nil {
 		s.settingsError(w, r, err)
 		return

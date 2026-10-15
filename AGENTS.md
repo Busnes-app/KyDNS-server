@@ -94,7 +94,9 @@ Code, one concern per package:
   `ResetAdmin` atomically revokes all API tokens and browser sessions, unlinks local
   SSO, and disables unmanaged SSO; installer-managed SSO remains unchanged.
   Sessions bind to the monotonic recovery generation captured before authentication,
-  so an in-flight login using old credentials cannot survive recovery.
+  so an in-flight login using old credentials cannot survive recovery. Token issuance
+  carries that generation from browser/API authentication and checks it in the insert
+  transaction; a pre-recovery request cannot mint a surviving replacement token.
   Verify with `go test ./internal/store ./internal/app -run Reset`.
   `PingContext` checks the local database for instance health.
   `SnapshotTo` delegates to `recoveryclient.SQLiteSnapshot`, which binds the

@@ -800,7 +800,7 @@ func (s *Store) SessionsNotBefore() (time.Time, error) {
 	var ms int64
 	err := s.db.QueryRow(`SELECT sessions_not_before FROM admin WHERE id = 1`).Scan(&ms)
 	if errors.Is(err, sql.ErrNoRows) {
-		return time.Time{}, nil
+		return time.UnixMilli(0), nil
 	}
 	return time.UnixMilli(ms), err
 }
@@ -935,11 +935,27 @@ var beforeTokenInsert func()
 // PutToken checks a bound token's authority and inserts it in one transaction, so a
 // concurrent ApplyInstallerDirectory revocation cannot commit between the two.
 func (s *Store) PutToken(t Token) (int64, error) {
+	generation, err := s.SessionsNotBefore()
+	if err != nil {
+		return 0, err
+	}
+	return s.PutTokenAtGeneration(t, generation)
+}
+
+// PutTokenAtGeneration fences issuance against recovery in the insert transaction.
+func (s *Store) PutTokenAtGeneration(t Token, generation time.Time) (int64, error) {
 	tx, err := s.db.Begin()
 	if err != nil {
 		return 0, err
 	}
 	defer tx.Rollback()
+	var current int64
+	if err := tx.QueryRow(`SELECT COALESCE((SELECT sessions_not_before FROM admin WHERE id = 1), 0)`).Scan(&current); err != nil {
+		return 0, err
+	}
+	if !generation.Equal(time.UnixMilli(current)) {
+		return 0, errors.New("administrator recovery invalidated token issuance")
+	}
 	if t.Issuer != "" || t.Subject != "" {
 		managed, allowed, err := installerAdministrator(tx, t.Issuer, t.Subject)
 		if err != nil {
