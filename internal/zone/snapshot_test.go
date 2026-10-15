@@ -468,3 +468,90 @@ func TestMultiHomedServiceLogsNothing(t *testing.T) {
 		t.Errorf("log = %q, want nothing for one service with two addresses", out)
 	}
 }
+
+// A DHCP client may not claim a name the network trusts implicitly: WPAD
+// would hand every browser a hostile proxy.
+func TestReservedLeaseNamesNotPublished(t *testing.T) {
+	for _, host := range []string{"wpad", "WPAD", "isatap", "localhost", "ns", "kydns"} {
+		s := build(t, Input{Leases: []Lease{{Hostname: host, Address: "192.168.1.77"}}})
+		name := strings.ToLower(host) + ".home.arpa."
+		if got := s.Lookup("", name); len(got) != 0 {
+			t.Errorf("%s = %+v, want no lease record", name, got)
+		}
+		if got := s.LookupPTR("", "77.1.168.192.in-addr.arpa."); got != "" {
+			t.Errorf("%s PTR = %q, want none", host, got)
+		}
+	}
+}
+
+func TestNodeHostnameLeaseRejected(t *testing.T) {
+	prev := hostname
+	hostname = func() (string, error) { return "Pi-Node.lan", nil }
+	t.Cleanup(func() { hostname = prev })
+	reservedWarned.Delete("pi-node.home.arpa.") // warn-once is process-wide; -count=N reruns
+
+	var buf bytes.Buffer
+	logger := slog.New(slog.NewTextHandler(&buf, nil))
+	in := Input{Zone: "home.arpa.", Leases: []Lease{{Hostname: "pi-node", Address: "192.168.1.77"}}}
+	for range 2 {
+		s, err := Build(in, logger)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got := s.Lookup("", "pi-node.home.arpa."); len(got) != 0 {
+			t.Errorf("= %+v, want the node's own name refused to a lease", got)
+		}
+	}
+	out := buf.String()
+	if n := strings.Count(out, "level=WARN"); n != 1 {
+		t.Errorf("warnings = %d, want exactly one per name:\n%s", n, out)
+	}
+	if strings.Contains(out, "192.168.1.77") {
+		t.Errorf("log leaks the lease address: %s", out)
+	}
+}
+
+// A service claims its name in every view, so where it has no address the
+// name stays absent (NXDOMAIN) rather than falling through to a lease.
+func TestServiceNameNotLeasableInViewWithoutAddress(t *testing.T) {
+	svc := store.Service{ID: 1, Name: "vault", Aliases: []string{"secrets"}, Addresses: []store.Address{
+		{Address: "100.101.102.103", View: "tailnet"},
+	}}
+	s := build(t, Input{
+		Views:    tailnetView(),
+		Services: []store.Service{svc},
+		Records:  []store.Record{{Name: "git.home.arpa.", Type: "A", Value: "100.64.0.9", View: "tailnet"}},
+		Leases: []Lease{
+			{Hostname: "vault", Address: "192.168.1.77"},
+			{Hostname: "secrets", Address: "192.168.1.78"},
+			{Hostname: "git", Address: "192.168.1.79"},
+		},
+	})
+	for _, n := range []string{"vault.home.arpa.", "secrets.home.arpa.", "git.home.arpa."} {
+		if got := s.Lookup("", n); len(got) != 0 {
+			t.Errorf("default view %s = %+v, want no lease answer", n, got)
+		}
+	}
+	if got := s.LookupPTR("", "77.1.168.192.in-addr.arpa."); got != "" {
+		t.Errorf("PTR = %q, want none for a refused lease", got)
+	}
+	if got := values(s.Lookup("tailnet", "vault.home.arpa.")); len(got) != 1 || got[0] != "100.101.102.103" {
+		t.Errorf("tailnet = %v, want the service address", got)
+	}
+}
+
+// View fallback is per name: one view-tagged record must not hide untagged
+// records at other names in that view.
+func TestTaggedRecordFallbackIsPerName(t *testing.T) {
+	s := build(t, Input{Views: tailnetView(), Records: []store.Record{
+		{Name: "a.home.arpa.", Type: "A", Value: "100.64.0.1", View: "tailnet"},
+		{Name: "a.home.arpa.", Type: "A", Value: "192.168.1.1"},
+		{Name: "b.home.arpa.", Type: "A", Value: "192.168.1.2"},
+	}})
+	if got := values(s.Lookup("tailnet", "a.home.arpa.")); len(got) != 1 || got[0] != "100.64.0.1" {
+		t.Errorf("tailnet a = %v, want only the tagged record", got)
+	}
+	if got := values(s.Lookup("tailnet", "b.home.arpa.")); len(got) != 1 || got[0] != "192.168.1.2" {
+		t.Errorf("tailnet b = %v, want the untagged record", got)
+	}
+}

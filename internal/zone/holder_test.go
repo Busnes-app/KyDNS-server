@@ -2,9 +2,12 @@ package zone
 
 import (
 	"errors"
+	"fmt"
 	"net/netip"
 	"sync"
+	"sync/atomic"
 	"testing"
+	"time"
 
 	"github.com/Busnes-app/kydns-server/internal/store"
 )
@@ -154,4 +157,48 @@ func TestConcurrentReadsDuringRebuild(t *testing.T) {
 		}
 	}
 	wg.Wait()
+}
+
+// A slower Rebuild that read the source first must never store its snapshot
+// over a newer one: deleted records would resurrect and the serial regress.
+func TestConcurrentRebuildsKeepNewestSnapshot(t *testing.T) {
+	var calls atomic.Int32
+	started, entered, secondDone := make(chan struct{}), make(chan struct{}), make(chan struct{})
+	wait := func(ch chan struct{}) {
+		select {
+		case <-ch:
+		case <-time.After(200 * time.Millisecond): // serialized: the other call cannot run yet
+		}
+	}
+	h := NewHolder(func() (Input, error) {
+		n := calls.Add(1)
+		in := Input{Zone: "home.arpa.", Services: []store.Service{{
+			ID: 1, Name: "kypost", Addresses: []store.Address{{Address: fmt.Sprintf("192.168.1.%d", n)}},
+		}}}
+		if n == 1 {
+			close(started)
+			wait(entered)
+			wait(secondDone)
+		} else {
+			close(entered)
+		}
+		return in, nil
+	}, nil)
+
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go func() { defer wg.Done(); _ = h.Rebuild() }()
+	<-started
+	if err := h.Rebuild(); err != nil {
+		t.Fatal(err)
+	}
+	close(secondDone)
+	wg.Wait()
+
+	if got := h.Current().Lookup("", "kypost.home.arpa."); got[0].Value != "192.168.1.2" {
+		t.Errorf("address = %q, want the last source state 192.168.1.2", got[0].Value)
+	}
+	if got, want := h.Current().Generation, h.Generation(); got != want {
+		t.Errorf("snapshot Generation = %d, want the newest %d", got, want)
+	}
 }
