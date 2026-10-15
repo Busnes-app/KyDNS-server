@@ -105,6 +105,28 @@ func TestImportValidatesBeforeReplacing(t *testing.T) {
 	}
 }
 
+// A replace whose blacklist block the store would refuse is rejected before
+// the registry is wiped, not after.
+func TestImportReplaceFailingInPolicyKeepsRegistry(t *testing.T) {
+	h, tok, _ := newBlacklistAPI(t)
+	if rec := do(t, h, "POST", "/api/v1/services", tok, `{"name":"keep","addresses":[{"address":"192.168.1.9"}]}`); rec.Code != http.StatusCreated {
+		t.Fatal(rec.Body)
+	}
+	list := `{"name":"a","url":"https://lists.example/x","format":"domains","enabled":true,"interval_seconds":3600}`
+	for name, block := range map[string]string{
+		"duplicate rule": `"lists":[],"rules":[{"kind":"deny","domain":"x.example"},{"kind":"allow","domain":"x.example"}]`,
+		"duplicate list": `"lists":[` + list + `,` + list + `],"rules":[]`,
+	} {
+		doc := `{"views":[],"services":[],"records":[],"blacklist":{"enabled":true,"block_ttl":60,` + block + `}}`
+		if rec := do(t, h, "POST", "/api/v1/import?mode=replace", tok, doc); rec.Code != http.StatusConflict {
+			t.Errorf("%s: import = %d, want 409: %s", name, rec.Code, rec.Body)
+		}
+		if got := do(t, h, "GET", "/api/v1/services", tok, "").Body.String(); !strings.Contains(got, "keep") {
+			t.Errorf("%s: a rejected import wiped the registry: %s", name, got)
+		}
+	}
+}
+
 // Merge adds without wiping, and an omitted blacklist block changes nothing.
 func TestImportMergeAddsAndOmissionChangesNothing(t *testing.T) {
 	h, tok, svc := newBlacklistAPI(t)

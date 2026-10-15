@@ -7,6 +7,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -460,10 +461,17 @@ func decode(w http.ResponseWriter, r *http.Request, v any) bool {
 const maxBody = 16 << 20
 
 // bodyBytes reads the whole request body up front so a handler can inspect it
-// (e.g. which keys are present) before unmarshalling it.
+// (e.g. which keys are present) before unmarshalling it. A body over maxBody
+// is refused, never truncated: a cut document can still parse.
 func bodyBytes(w http.ResponseWriter, r *http.Request) ([]byte, bool) {
-	body, err := io.ReadAll(io.LimitReader(r.Body, maxBody))
-	if err != nil {
+	body, err := io.ReadAll(http.MaxBytesReader(w, r.Body, maxBody))
+	var tooBig *http.MaxBytesError
+	switch {
+	case errors.As(err, &tooBig):
+		writeErr(w, http.StatusRequestEntityTooLarge, "body_too_large", "",
+			fmt.Sprintf("request body exceeds %d bytes", maxBody))
+		return nil, false
+	case err != nil:
 		writeErr(w, http.StatusBadRequest, "malformed_json", "", err.Error())
 		return nil, false
 	}
@@ -813,9 +821,8 @@ func (a *API) export(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *API) importDoc(w http.ResponseWriter, r *http.Request) {
-	body, err := io.ReadAll(io.LimitReader(r.Body, maxBody))
-	if err != nil {
-		writeErr(w, http.StatusBadRequest, "read_failed", "", err.Error())
+	body, ok := bodyBytes(w, r)
+	if !ok {
 		return
 	}
 	var doc transfer
@@ -837,6 +844,15 @@ func (a *API) importDoc(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.URL.Query().Get("mode") == "replace" {
+		// Registry, policy and settings are three separately atomic writes, so
+		// the two after the registry are checked before it is replaced: a
+		// rejection there would otherwise leave the registry already gone.
+		// ponytail: an I/O failure between the writes can still half-apply;
+		// one store transaction across all three is the upgrade.
+		if err := a.checkBlacklistReplace(doc.Blacklist); err != nil {
+			writeRegistryErr(w, err)
+			return
+		}
 		views := make([]store.View, 0, len(doc.Views))
 		for _, v := range doc.Views {
 			views = append(views, store.View{Name: v.Name, Subnets: v.Subnets})

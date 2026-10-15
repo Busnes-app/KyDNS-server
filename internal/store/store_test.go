@@ -29,6 +29,27 @@ func TestMigrationsAreIdempotent(t *testing.T) {
 	}
 }
 
+// A connection opened after Open, as database/sql does after ErrBadConn, must
+// carry the same pragmas, or it would run without foreign keys.
+func TestFreshConnectionKeepsPragmas(t *testing.T) {
+	s := open(t)
+	s.db.SetMaxIdleConns(0) // every released connection closes; the next query dials anew
+	for _, c := range []struct {
+		pragma string
+		want   string
+	}{
+		{"foreign_keys", "1"}, {"synchronous", "1"}, {"busy_timeout", "5000"}, {"journal_mode", "wal"},
+	} {
+		var got string
+		if err := s.db.QueryRow("PRAGMA " + c.pragma).Scan(&got); err != nil {
+			t.Fatal(err)
+		}
+		if got != c.want {
+			t.Errorf("PRAGMA %s on a fresh connection = %s, want %s", c.pragma, got, c.want)
+		}
+	}
+}
+
 func TestViewRoundTrip(t *testing.T) {
 	s := open(t)
 	if err := s.PutView(View{Name: "tailnet", Subnets: []string{"100.64.0.0/10"}}); err != nil {

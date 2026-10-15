@@ -2,13 +2,11 @@ package replica
 
 import (
 	"crypto/ed25519"
-	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
-	"errors"
-	"fmt"
-	"os"
 	"path/filepath"
+
+	"github.com/Busnes-app/ky-primitives/keyfile"
 )
 
 const keyFile = "node_key"
@@ -29,28 +27,14 @@ func Fingerprint(pub ed25519.PublicKey) string {
 }
 
 // LoadOrCreateIdentity reads data_dir/node_key, generating it on first use. A
-// key that exists but cannot be parsed is an error: silently replacing it
-// would change this node's identity and make every paired peer refuse it.
+// key that exists but cannot be parsed, or that others can read, is an error:
+// silently replacing it would change this node's identity and make every
+// paired peer refuse it. Raw is the format node_key has always been written in.
 func LoadOrCreateIdentity(dataDir string) (*Identity, error) {
-	path := filepath.Join(dataDir, keyFile)
-	seed, err := os.ReadFile(path)
-	switch {
-	case err == nil:
-		if len(seed) != ed25519.SeedSize {
-			return nil, fmt.Errorf("%s: want %d bytes, found %d", path, ed25519.SeedSize, len(seed))
-		}
-	case errors.Is(err, os.ErrNotExist):
-		seed = make([]byte, ed25519.SeedSize)
-		if _, err := rand.Read(seed); err != nil {
-			return nil, err
-		}
-		if err := os.WriteFile(path, seed, 0o600); err != nil {
-			return nil, fmt.Errorf("write %s: %w", path, err)
-		}
-	default:
+	seed, err := keyfile.LoadOrCreateEncoded(filepath.Join(dataDir, keyFile), ed25519.SeedSize, keyfile.Raw)
+	if err != nil {
 		return nil, err
 	}
-
 	priv := ed25519.NewKeyFromSeed(seed)
 	pub := priv.Public().(ed25519.PublicKey)
 	return &Identity{PrivateKey: priv, PublicKey: pub, NodeID: Fingerprint(pub)}, nil

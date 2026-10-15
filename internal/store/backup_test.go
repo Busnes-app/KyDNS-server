@@ -56,7 +56,7 @@ func TestLocalSettingsAndAuditSurviveSnapshotApply(t *testing.T) {
 	if err := s.RecordAudit(AuditEvent{Actor: "admin", Action: "backup.paired", Outcome: "success"}); err != nil {
 		t.Fatal(err)
 	}
-	if err := s.ApplySnapshot(SnapshotInput{Settings: baseSettings()}); err != nil {
+	if err := s.ApplySnapshot(SnapshotInput{Settings: baseSettings()}, nil); err != nil {
 		t.Fatal(err)
 	}
 	if got, err := s.GetLocalSetting("kyrecovery_token"); err != nil || got != "sealed" {

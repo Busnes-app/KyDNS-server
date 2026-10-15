@@ -61,7 +61,7 @@ func (r *Registry) knownViews() (map[string]bool, error) {
 // validateService normalizes and validates a service against a set of known
 // view names. It never touches the store, so import --replace can validate a
 // whole document before writing any of it.
-func (r *Registry) validateService(svc store.Service, known map[string]bool, zone string) (store.Service, error) {
+func validateService(svc store.Service, known map[string]bool, zone string) (store.Service, error) {
 	svc.Name = strings.ToLower(strings.TrimSpace(svc.Name))
 	if err := ValidateName(svc.Name+"."+zone, zone); err != nil {
 		return svc, err
@@ -125,7 +125,7 @@ func (r *Registry) PutService(svc store.Service) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	svc, err = r.validateService(svc, known, r.Zone())
+	svc, err = validateService(svc, known, r.Zone())
 	if err != nil {
 		return 0, err
 	}
@@ -160,7 +160,7 @@ func (r *Registry) DeleteService(id int64) error {
 
 // validateRecord normalizes and validates a record against a set of known
 // view names. It never touches the store; see validateService.
-func (r *Registry) validateRecord(rec store.Record, known map[string]bool, zone string) (store.Record, error) {
+func validateRecord(rec store.Record, known map[string]bool, zone string) (store.Record, error) {
 	rec.Name = Normalize(rec.Name)
 	rec.Type = strings.ToUpper(strings.TrimSpace(rec.Type))
 	if err := ValidateRecordType(rec.Type); err != nil {
@@ -199,7 +199,7 @@ func (r *Registry) PutRecord(rec store.Record) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	rec, err = r.validateRecord(rec, known, r.Zone())
+	rec, err = validateRecord(rec, known, r.Zone())
 	if err != nil {
 		return 0, err
 	}
@@ -221,7 +221,7 @@ func (r *Registry) DeleteRecord(id int64) error {
 
 // validateView normalizes and validates a view. It never touches the store;
 // see validateService.
-func (r *Registry) validateView(v store.View) (store.View, error) {
+func validateView(v store.View) (store.View, error) {
 	v.Name = strings.ToLower(strings.TrimSpace(v.Name))
 	if err := ValidateLabel(v.Name); err != nil {
 		return v, invalid("name", "view_name_invalid", "view name %q must be a single DNS label", v.Name)
@@ -240,7 +240,7 @@ func (r *Registry) validateView(v store.View) (store.View, error) {
 }
 
 func (r *Registry) PutView(v store.View) error {
-	v, err := r.validateView(v)
+	v, err := validateView(v)
 	if err != nil {
 		return err
 	}
@@ -267,40 +267,51 @@ func (r *Registry) DeleteView(name string) error {
 func (r *Registry) ReplaceAll(views []store.View, services []store.Service, records []store.Record) error {
 	// One zone for the whole document: a rename landing mid-import must not
 	// validate half of it against each domain.
-	zone := r.Zone()
+	vs, ss, rs, err := ValidateDocument(r.Zone(), views, services, records)
+	if err != nil {
+		return err
+	}
+	if err := r.s.ReplaceAll(vs, ss, rs); err != nil {
+		return err
+	}
+	return r.onChange()
+}
+
+// ValidateDocument normalizes and validates a whole registry against zone
+// without touching the store. A replica runs it on a pulled snapshot too.
+func ValidateDocument(zone string, views []store.View, services []store.Service, records []store.Record) (
+	[]store.View, []store.Service, []store.Record, error) {
+	zone = Normalize(zone)
 	vs := make([]store.View, 0, len(views))
 	known := map[string]bool{}
 	for _, v := range views {
-		v, err := r.validateView(v)
+		v, err := validateView(v)
 		if err != nil {
-			return err
+			return nil, nil, nil, err
 		}
 		vs = append(vs, v)
 		known[v.Name] = true
 	}
 	ss := make([]store.Service, 0, len(services))
 	for _, svc := range services {
-		svc, err := r.validateService(svc, known, zone)
+		svc, err := validateService(svc, known, zone)
 		if err != nil {
-			return err
+			return nil, nil, nil, err
 		}
 		if err := macUnique(svc, ss); err != nil {
-			return err
+			return nil, nil, nil, err
 		}
 		ss = append(ss, svc)
 	}
 	rs := make([]store.Record, 0, len(records))
 	for _, rec := range records {
-		rec, err := r.validateRecord(rec, known, zone)
+		rec, err := validateRecord(rec, known, zone)
 		if err != nil {
-			return err
+			return nil, nil, nil, err
 		}
 		rs = append(rs, rec)
 	}
-	if err := r.s.ReplaceAll(vs, ss, rs); err != nil {
-		return err
-	}
-	return r.onChange()
+	return vs, ss, rs, nil
 }
 
 const tokenPrefix = "kydns_"

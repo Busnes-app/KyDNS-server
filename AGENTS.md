@@ -102,13 +102,20 @@ Code, one concern per package:
   `SnapshotTo` delegates to `recoveryclient.SQLiteSnapshot`, which binds the
   `VACUUM INTO` destination path rather than interpolating it.
   `OpenSnapshot` verifies and opens restored artifacts read-only without migrations.
+  Connection pragmas live in the DSN so every pooled connection gets them.
+  `ReplicationSnapshot` reads the replicated config in one transaction;
+  `ApplySnapshot` runs its check on the merged row before writing anything.
 - `internal/registry`, `internal/zone` — services, records, views, validation,
-  and the immutable zone snapshot the DNS server reads.
+  and the immutable zone snapshot the DNS server reads. `ValidateDocument` is
+  the store-free whole-registry check import and replica apply share.
 - `internal/backup` — the KyDNS adapter over `ky-primitives/recoveryclient`: what a
   capsule carries, the drill checks, and the `Service` the routes, scheduler and CLI
   share. Pairing, pinning, delivery and schedule live in the library.
 - `internal/replica` — linked-node pairing accepts only literal IP:port peer
   addresses and authenticates self-signed peers by Ed25519 key fingerprint.
+  `node_key` (raw 32-byte seed) loads through `keyfile`, so a non-0600 key is
+  refused. A replica validates a pulled snapshot (settings and registry) before
+  committing it.
 - `internal/dnsserver` — ACL, authoritative answers, cache, forwarding.
 - `internal/upstream` — DoT, DoH, and opt-in plain-UDP upstreams.
 - `internal/policy` — blacklist normalization, list parsing, fetch, refresh,
@@ -125,7 +132,8 @@ Code, one concern per package:
   serves public `ky.health/1` JSON on `/healthz` and `/api/v1/healthz` from one
   five-second cache. A failed local database check returns 503 with safe status
   codes; service discovery health remains on the authenticated `/api/v1/health`.
-- `internal/cli` — the API client behind the non-`serve` commands.
+- `internal/cli` — the API client behind the non-`serve` commands. It refuses
+  plain `http://` to a non-loopback `KYDNS_URL`, since the token is a bearer.
 
 The build must stay cgo-free: the image is distroless, so the pure-Go SQLite
 driver is not optional.

@@ -22,10 +22,12 @@ func unpackList(s string) []string {
 
 // Settings returns the stored settings. The bool is false when no row exists,
 // which is how a first run knows to seed from the config file.
-func (s *Store) Settings() (Settings, bool, error) {
+func (s *Store) Settings() (Settings, bool, error) { return loadSettings(s.db) }
+
+func loadSettings(q queryer) (Settings, bool, error) {
 	var v Settings
 	var rz, up, aq string
-	err := s.db.QueryRow(`
+	err := q.QueryRow(`
 SELECT private_domain, reverse_zones, upstreams, allow_query, allow_tailscale,
        ttl, cache_min_ttl, cache_max_ttl, negative_max_ttl, cache_entries,
        log_queries, log_client_ip, dhcp_lease_file, discovery_interval,

@@ -46,11 +46,13 @@ type StateStore interface {
 }
 
 // SnapshotApplier applies a pulled document to the local store. ApplySnapshot
-// keeps the node-local settings itself, so nothing is merged here.
+// keeps the node-local settings itself, so nothing is merged here. Check, if
+// set, vets the document as it would be stored before anything is written.
 type SnapshotApplier struct {
 	Store interface {
-		ApplySnapshot(in store.SnapshotInput) error
+		ApplySnapshot(in store.SnapshotInput, check func(store.SnapshotInput) error) error
 	}
+	Check func(store.SnapshotInput) error
 }
 
 func (a SnapshotApplier) Apply(cfg json.RawMessage) error {
@@ -58,7 +60,7 @@ func (a SnapshotApplier) Apply(cfg json.RawMessage) error {
 	if err := json.Unmarshal(cfg, &in); err != nil {
 		return fmt.Errorf("decode snapshot: %w", err)
 	}
-	return a.Store.ApplySnapshot(in)
+	return a.Store.ApplySnapshot(in, a.Check)
 }
 
 // Status is what the operator surface renders.

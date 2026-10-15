@@ -638,7 +638,8 @@ token, and choose a password. A bootstrap API token for the CLI is written to
 The CLI reads `KYDNS_URL` (default `http://127.0.0.1:8053`) and `KYDNS_TOKEN`.
 Everything except `serve` and `admin` goes through the JSON API, so the CLI
 works on the host itself, or from any machine through the trusted HTTPS proxy
-(`KYDNS_URL=https://<proxy>`):
+(`KYDNS_URL=https://<proxy>`). The CLI refuses to send the token over plain
+`http://` to anything but loopback.
 
 | Command | Does |
 |---|---|

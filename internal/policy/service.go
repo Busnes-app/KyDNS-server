@@ -2,6 +2,7 @@ package policy
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"net/url"
 	"strings"
@@ -220,40 +221,9 @@ func (s *Service) TopBlocked(n int) []NameCount { return s.h.TopBlocked(n) }
 // neither bypass the rules PutList enforces one at a time, nor leave the
 // policy half-wiped.
 func (s *Service) ReplacePolicy(set store.BlacklistSettings, lists []store.BlacklistList, rules []store.BlacklistRule) error {
-	if set.BlockTTL < 1 || set.BlockTTL > maxBlockTTL {
-		return registry.Invalid("block_ttl", "block_ttl_range",
-			"the block TTL must be between 1 and %d seconds", maxBlockTTL)
-	}
-	manifest, err := BuiltinManifest()
+	ls, rs, err := s.preparePolicy(set, lists, rules)
 	if err != nil {
 		return err
-	}
-	builtinNames := make(map[string]bool, len(manifest.Lists))
-	for _, b := range manifest.Lists {
-		builtinNames[b.Name] = true
-	}
-	ls := make([]store.BlacklistList, 0, len(lists))
-	for _, l := range lists {
-		v, err := s.validateList(l)
-		if err != nil {
-			return err
-		}
-		// An imported document's own builtin flag is untrusted: only the
-		// shipped manifest may mint an undeletable, immutable list.
-		v.Builtin = builtinNames[v.Name]
-		ls = append(ls, v)
-	}
-	rs := make([]store.BlacklistRule, 0, len(rules))
-	for _, r := range rules {
-		kind := strings.ToLower(strings.TrimSpace(r.Kind))
-		if kind != PolicyAllow && kind != PolicyDeny {
-			return registry.Invalid("kind", "kind_invalid", "a rule is either allow or deny")
-		}
-		n, err := Normalize(r.Domain)
-		if err != nil {
-			return registry.Invalid("domain", "domain_invalid", "%q is not a domain name", r.Domain)
-		}
-		rs = append(rs, store.BlacklistRule{Kind: kind, Domain: n})
 	}
 	if err := s.st.ReplaceBlacklist(set, ls, rs); err != nil {
 		return err
@@ -264,4 +234,62 @@ func (s *Service) ReplacePolicy(set store.BlacklistSettings, lists []store.Black
 		return err
 	}
 	return s.h.Rebuild()
+}
+
+// CheckPolicy reports whether ReplacePolicy would accept the document,
+// writing nothing, so an import can refuse it before replacing anything else.
+func (s *Service) CheckPolicy(set store.BlacklistSettings, lists []store.BlacklistList, rules []store.BlacklistRule) error {
+	_, _, err := s.preparePolicy(set, lists, rules)
+	return err
+}
+
+// preparePolicy validates and normalizes a whole policy, including the
+// uniqueness the store would otherwise enforce only once writing has begun.
+func (s *Service) preparePolicy(set store.BlacklistSettings, lists []store.BlacklistList, rules []store.BlacklistRule) ([]store.BlacklistList, []store.BlacklistRule, error) {
+	if set.BlockTTL < 1 || set.BlockTTL > maxBlockTTL {
+		return nil, nil, registry.Invalid("block_ttl", "block_ttl_range",
+			"the block TTL must be between 1 and %d seconds", maxBlockTTL)
+	}
+	manifest, err := BuiltinManifest()
+	if err != nil {
+		return nil, nil, err
+	}
+	builtinNames := make(map[string]bool, len(manifest.Lists))
+	for _, b := range manifest.Lists {
+		builtinNames[b.Name] = true
+	}
+	ls := make([]store.BlacklistList, 0, len(lists))
+	seen := map[string]bool{}
+	for _, l := range lists {
+		v, err := s.validateList(l)
+		if err != nil {
+			return nil, nil, err
+		}
+		if seen[v.Name] {
+			return nil, nil, fmt.Errorf("%w: list %s", store.ErrDuplicateName, v.Name)
+		}
+		seen[v.Name] = true
+		// An imported document's own builtin flag is untrusted: only the
+		// shipped manifest may mint an undeletable, immutable list.
+		v.Builtin = builtinNames[v.Name]
+		ls = append(ls, v)
+	}
+	rs := make([]store.BlacklistRule, 0, len(rules))
+	seen = map[string]bool{}
+	for _, r := range rules {
+		kind := strings.ToLower(strings.TrimSpace(r.Kind))
+		if kind != PolicyAllow && kind != PolicyDeny {
+			return nil, nil, registry.Invalid("kind", "kind_invalid", "a rule is either allow or deny")
+		}
+		n, err := Normalize(r.Domain)
+		if err != nil {
+			return nil, nil, registry.Invalid("domain", "domain_invalid", "%q is not a domain name", r.Domain)
+		}
+		if seen[n] {
+			return nil, nil, fmt.Errorf("%w: a rule for %s already exists", store.ErrDuplicateName, n)
+		}
+		seen[n] = true
+		rs = append(rs, store.BlacklistRule{Kind: kind, Domain: n})
+	}
+	return ls, rs, nil
 }

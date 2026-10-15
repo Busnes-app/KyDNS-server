@@ -9,6 +9,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/netip"
+	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -20,16 +22,38 @@ type Client struct {
 	HTTP    *http.Client
 }
 
-func NewClient() *Client {
+// NewClient reads KYDNS_URL and KYDNS_TOKEN. The token is a bearer
+// credential, so plain http is refused for anything but loopback.
+func NewClient() (*Client, error) {
 	base := os.Getenv("KYDNS_URL")
 	if base == "" {
 		base = "http://127.0.0.1:8053"
+	}
+	u, err := url.Parse(base)
+	if err != nil {
+		return nil, fmt.Errorf("KYDNS_URL: %w", err)
+	}
+	switch {
+	case u.Scheme == "https":
+	case u.Scheme == "http" && isLoopback(u.Hostname()):
+	case u.Scheme == "http":
+		return nil, fmt.Errorf("KYDNS_URL %s would send KYDNS_TOKEN in cleartext; use https:// for a remote server", base)
+	default:
+		return nil, fmt.Errorf("KYDNS_URL %s: scheme must be https (or http for loopback)", base)
 	}
 	return &Client{
 		BaseURL: strings.TrimSuffix(base, "/"),
 		Token:   os.Getenv("KYDNS_TOKEN"),
 		HTTP:    &http.Client{Timeout: 10 * time.Second},
+	}, nil
+}
+
+func isLoopback(host string) bool {
+	if host == "localhost" {
+		return true
 	}
+	ip, err := netip.ParseAddr(host)
+	return err == nil && ip.IsLoopback()
 }
 
 // APIError is the API's structured error. The code is carried, not only the
@@ -279,7 +303,12 @@ func Run(args []string, stdout, stderr io.Writer) int {
 		fmt.Fprintf(stderr, "kydns: unknown subcommand %q\n", args[0])
 		return 2
 	}
-	return cmd.Run(NewClient(), args[1:], stdout, stderr)
+	c, err := NewClient()
+	if err != nil {
+		fmt.Fprintln(stderr, "kydns:", err)
+		return 2
+	}
+	return cmd.Run(c, args[1:], stdout, stderr)
 }
 
 func fail(stderr io.Writer, err error) int {
