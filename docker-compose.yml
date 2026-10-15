@@ -31,7 +31,8 @@ services:
 
     environment:
       # The address of your TLS-terminating reverse proxy, comma-separated IPs
-      # or CIDRs. The admin UI answers nothing else; see step 2 below.
+      # or CIDRs. Trusts forwarded headers only; firewall port 8053 to restrict
+      # who can connect. See step 2 below.
       KYDNS_TRUSTED_PROXIES: ${KYDNS_TRUSTED_PROXIES:-}
       # Backups. The schedule is set in the admin UI; this is
       # only its default. A local backup directory needs a volume mounted at the
