@@ -21,10 +21,10 @@ func TestHashAndVerify(t *testing.T) {
 	if strings.Contains(h, "correct horse") {
 		t.Error("hash contains the plaintext")
 	}
-	if !VerifyPassword(h, "correct horse battery staple") {
+	if !verified(h, "correct horse battery staple") {
 		t.Error("VerifyPassword() rejected the correct password")
 	}
-	if VerifyPassword(h, "wrong") {
+	if verified(h, "wrong") {
 		t.Error("VerifyPassword() accepted the wrong password")
 	}
 }
@@ -36,7 +36,7 @@ func TestHashIsSalted(t *testing.T) {
 	if a == b {
 		t.Error("two hashes of the same password are identical, want distinct salts")
 	}
-	if !VerifyPassword(a, "same") || !VerifyPassword(b, "same") {
+	if !verified(a, "same") || !verified(b, "same") {
 		t.Error("salted hashes failed to verify")
 	}
 }
@@ -48,7 +48,7 @@ func TestVerifyRejectsMalformed(t *testing.T) {
 		"$argon2id$v=19$m=64,t=1,p=1$notbase64!$alsonot!",
 		"$argon2id$v=1$m=64,t=1,p=1$YWJj$YWJj",
 	} {
-		if VerifyPassword(h, "x") {
+		if verified(h, "x") {
 			t.Errorf("VerifyPassword(%q) = true, want false", h)
 		}
 	}
@@ -67,7 +67,7 @@ func TestVerifyAcceptsExistingKyDNSHash(t *testing.T) {
 	key := argon2.IDKey([]byte(plaintext), salt, 3, 64*1024, 2, 32)
 	legacy := fmt.Sprintf("$argon2id$v=19$m=65536,t=3,p=2$%s$%s",
 		base64.RawStdEncoding.EncodeToString(salt), base64.RawStdEncoding.EncodeToString(key))
-	if !VerifyPassword(legacy, plaintext) {
+	if !verified(legacy, plaintext) {
 		t.Fatal("shared verifier rejected a legacy KyDNS password hash")
 	}
 }
@@ -115,4 +115,10 @@ func TestBackoffIsPerKey(t *testing.T) {
 	if d := b.Delay("5.6.7.8"); d != 0 {
 		t.Errorf("Delay() for an unrelated source = %v, want 0", d)
 	}
+}
+
+// verified is VerifyPassword for tests, where the checker is never busy.
+func verified(encoded, plaintext string) bool {
+	ok, err := VerifyPassword(encoded, plaintext)
+	return err == nil && ok
 }

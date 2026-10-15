@@ -9,6 +9,7 @@ import (
 	"net/netip"
 	"strings"
 	"sync/atomic"
+	"time"
 
 	"github.com/Busnes-app/kydns-server/internal/store"
 )
@@ -325,11 +326,22 @@ func (r *Registry) CreateToken(label string) (string, error) {
 	return r.CreateIdentityToken(label, "", "")
 }
 
-// CreateIdentityToken binds descendants to the same live administrator authority;
-// the store checks that authority atomically with the insert.
+// CreateIdentityToken issues a token from local authority. HTTP callers use
+// CreateIdentityTokenAtGeneration with their authenticated recovery generation.
 func (r *Registry) CreateIdentityToken(label, issuer, subject string) (string, error) {
+	generation, err := r.RecoveryGeneration()
+	if err != nil {
+		return "", err
+	}
+	return r.CreateIdentityTokenAtGeneration(label, issuer, subject, generation)
+}
+
+func (r *Registry) RecoveryGeneration() (time.Time, error) { return r.s.SessionsNotBefore() }
+
+// CreateIdentityTokenAtGeneration uses the generation captured before authentication.
+func (r *Registry) CreateIdentityTokenAtGeneration(label, issuer, subject string, generation time.Time) (string, error) {
 	plaintext, hash := GenerateToken()
-	if _, err := r.s.PutToken(store.Token{Label: label, Hash: hash, Issuer: issuer, Subject: subject}); err != nil {
+	if _, err := r.s.PutTokenAtGeneration(store.Token{Label: label, Hash: hash, Issuer: issuer, Subject: subject}, generation); err != nil {
 		return "", err
 	}
 	return plaintext, nil

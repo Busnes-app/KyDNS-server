@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"golang.org/x/term"
 
@@ -35,12 +36,8 @@ func ResetAdminPassword(cfgPath string, read PasswordReader, out io.Writer) erro
 	if _, err := os.Stat(dbPath); err != nil {
 		return fmt.Errorf("no database at %s: has KyDNS ever run?", dbPath)
 	}
-	st, err := store.Open(dbPath)
-	if err != nil {
-		return err
-	}
-	defer st.Close()
-
+	// Prompt before opening: Open writes WAL files and runs migrations, which
+	// an abandoned prompt must not leave behind.
 	password, err := read("New admin password: ")
 	if err != nil {
 		return err
@@ -60,14 +57,19 @@ func ResetAdminPassword(cfgPath string, read PasswordReader, out io.Writer) erro
 	if err != nil {
 		return err
 	}
-	if err := st.SetAdminPassword(hash); err != nil {
+	st, err := store.Open(dbPath)
+	if err != nil {
+		return err
+	}
+	defer st.Close()
+	if err := st.ResetAdmin(hash, time.Now()); err != nil {
 		return err
 	}
 
 	fmt.Fprintf(out, "Admin password updated in %s.\n", dbPath)
-	// Sessions live in the running process's memory, so a reset performed
-	// against a live server does not end them.
-	fmt.Fprintln(out, "Restart KyDNS to end any signed-in sessions.")
+	fmt.Fprintln(out, "Every signed-in session has ended, every API token was revoked, and any linked SSO identity was unlinked.")
+	fmt.Fprintln(out, "SSO is disabled unless managed by the installer; installer-managed SSO remains unchanged.")
+	fmt.Fprintln(out, "Sign in with the new password to create replacement API tokens for your integrations, or restart KyDNS to generate a new bootstrap token.")
 	return nil
 }
 

@@ -694,12 +694,17 @@ func (a *API) createToken(w http.ResponseWriter, r *http.Request) {
 	if !decode(w, r, &d) {
 		return
 	}
+	generation, err := a.reg.RecoveryGeneration()
+	if err != nil {
+		writeRegistryErr(w, err)
+		return
+	}
 	issuer, subject, ok := a.reg.AuthenticateTokenPrincipal(strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer "))
 	if !ok {
 		writeErr(w, http.StatusUnauthorized, "unauthenticated", "", "administrator authority unavailable")
 		return
 	}
-	plaintext, err := a.reg.CreateIdentityToken(d.Label, issuer, subject)
+	plaintext, err := a.reg.CreateIdentityTokenAtGeneration(d.Label, issuer, subject, generation)
 	if err != nil {
 		writeRegistryErr(w, err)
 		return

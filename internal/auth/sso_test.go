@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -98,9 +99,6 @@ func TestSSOAuthURLAndExchangeCode(t *testing.T) {
 	if claims.Sub != "user-uuid-12345" || claims.Username != "admin_yoshi" || claims.Role != "admin" {
 		t.Errorf("unexpected claims: %+v", claims)
 	}
-	if !claims.IsAdmin() {
-		t.Errorf("expected claims.IsAdmin() == true")
-	}
 }
 
 func TestExchangeCodeRejectsWrongNonce(t *testing.T) {
@@ -149,8 +147,8 @@ func TestAuthentikOIDCDiscoveryAndGroups(t *testing.T) {
 		"groups":             []string{"authentik default admins", "kydns_admin"},
 	}
 	parsed := parseClaimsMap(authentikClaims)
-	if !parsed.IsAdmin() {
-		t.Errorf("expected Authentik admin groups to satisfy IsAdmin()")
+	if !slices.Contains(parsed.Groups, "kydns_admin") {
+		t.Errorf("Authentik groups not parsed: %v", parsed.Groups)
 	}
 	if parsed.Username != "akadmin" {
 		t.Errorf("expected username 'akadmin', got %q", parsed.Username)
@@ -165,7 +163,7 @@ func TestAuthentikOIDCDiscoveryAndGroups(t *testing.T) {
 		},
 	}
 	kcParsed := parseClaimsMap(keycloakClaims)
-	if !kcParsed.IsAdmin() {
-		t.Errorf("expected Keycloak realm_access.roles to satisfy IsAdmin()")
+	if !slices.Contains(kcParsed.Roles, "admin") {
+		t.Errorf("Keycloak realm_access.roles not parsed: %v", kcParsed.Roles)
 	}
 }
