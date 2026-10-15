@@ -277,6 +277,13 @@ func (d *dhcpRunner) build(v store.Settings, probe bool) (built, error) {
 			"the DHCP range %s-%s is not inside %s, the subnet of interface %q",
 			start, end, info.Subnet, v.DHCPInterface)
 	}
+	// Both ends are inside the subnet, so the range covers the network or
+	// broadcast address only by ending on it.
+	if network, bcast := info.Subnet.Masked().Addr(), dhcpd.BroadcastOf(info.Subnet); start == network || end == bcast {
+		return built{}, fmt.Errorf(
+			"the DHCP range %s-%s includes %s or %s, the network or broadcast address of %s; no device may be given either",
+			start, end, network, bcast, info.Subnet)
+	}
 
 	// The rogue check is a start-time gate, not a periodic one; re-checking a
 	// live segment is watchForeign's job.

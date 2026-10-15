@@ -67,7 +67,7 @@ func Reservations(svcs []store.Service, subnet netip.Prefix) (map[string]netip.A
 			for addr := range seen {
 				c.addr = addr
 			}
-			if c.addr == subnet.Masked().Addr() || c.addr == broadcastOf(subnet) {
+			if c.addr == subnet.Masked().Addr() || c.addr == BroadcastOf(subnet) {
 				c.why = fmt.Sprintf(
 					"%s is the network or broadcast address of %s, which no device may be given; give the service another address",
 					c.addr, subnet)
@@ -119,11 +119,9 @@ func Reservations(svcs []store.Service, subnet netip.Prefix) (map[string]netip.A
 	return out, problems
 }
 
-// broadcastOf is the last address of an IPv4 subnet. Neither it nor the
-// network address may be handed to a device, but subnet.Contains accepts both
-// and the allocator's protected set covers only the host and the gateway - so
-// without this a service given one would have it reserved and handed out.
-func broadcastOf(p netip.Prefix) netip.Addr {
+// BroadcastOf is the last address of an IPv4 subnet. Neither it nor the
+// network address may be handed to a device, but subnet.Contains accepts both.
+func BroadcastOf(p netip.Prefix) netip.Addr {
 	if !p.Addr().Is4() {
 		return netip.Addr{}
 	}
