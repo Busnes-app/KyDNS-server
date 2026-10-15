@@ -2,11 +2,13 @@ package web
 
 import (
 	"crypto/subtle"
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/Busnes-app/kydns-server/internal/auth"
+	"github.com/Busnes-app/kydns-server/internal/store"
 )
 
 // registrar is the sliver of *http.ServeMux that registration uses. ServeMux
@@ -58,11 +60,12 @@ func (s *Server) postSetup(w http.ResponseWriter, r *http.Request) {
 		s.renderBare(w, "setup.html", map[string]any{"Title": "Set up KyDNS", "Error": msg})
 	}
 
-	// Constant-time so the token cannot be recovered by timing.
+	// No token was minted when an admin existed at startup, and "" must not
+	// match "". Constant-time so the token cannot be recovered by timing.
 	given := r.PostFormValue("token")
-	if subtle.ConstantTimeCompare([]byte(given), []byte(s.o.SetupToken)) != 1 {
+	if s.o.SetupToken == "" || subtle.ConstantTimeCompare([]byte(given), []byte(s.o.SetupToken)) != 1 {
 		s.o.Logger.Warn("setup attempted with an invalid token", "source", s.sourceKey(r))
-		fail("That setup token is not correct. It was printed to the server log at startup.")
+		fail("That setup token is not correct. Read it from the setup-token file in the KyDNS data directory.")
 		return
 	}
 	password := r.PostFormValue("password")
@@ -93,16 +96,21 @@ func (s *Server) getLogin(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
+	s.renderLogin(w, r.URL.Query().Get("error"))
+}
+
+// renderLogin shows the sign-in page, offering SSO only when it is switched on.
+func (s *Server) renderLogin(w http.ResponseWriter, errMsg string) {
 	sso, _ := s.o.Store.SSOSettings()
-	ident, _ := s.o.Store.AdminIdentity()
-	ssoEnabled := sso.Enabled || (ident != nil && ident.SSOSub != "")
-	errMsg := r.URL.Query().Get("error")
 	s.renderBare(w, "login.html", map[string]any{
 		"Title":      "Sign in",
-		"SSOEnabled": ssoEnabled,
+		"SSOEnabled": sso.Enabled,
 		"Error":      errMsg,
 	})
 }
+
+// verifyPassword is a seam so a test can stand in for a saturated checker.
+var verifyPassword = auth.VerifyPassword
 
 func (s *Server) postLogin(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
@@ -114,23 +122,26 @@ func (s *Server) postLogin(w http.ResponseWriter, r *http.Request) {
 	if d := s.o.Backoff.Delay(key); d > 0 {
 		time.Sleep(d)
 	}
+	generation := s.o.Sessions.RecoveryGeneration()
 	hash, err := s.o.Store.AdminHash()
-	if err != nil || !auth.VerifyPassword(hash, r.PostFormValue("password")) {
+	ok := false
+	if err == nil {
+		ok, err = verifyPassword(hash, r.PostFormValue("password"))
+	}
+	if errors.Is(err, auth.ErrBusy) {
+		w.WriteHeader(http.StatusServiceUnavailable)
+		s.renderLogin(w, "KyDNS is busy checking other sign-ins. Try again in a moment.")
+		return
+	}
+	if !ok {
 		s.o.Backoff.Fail(key)
 		s.o.Logger.Warn("failed login", "source", key)
 		w.WriteHeader(http.StatusUnauthorized)
-		sso, _ := s.o.Store.SSOSettings()
-		ident, _ := s.o.Store.AdminIdentity()
-		ssoEnabled := sso.Enabled || (ident != nil && ident.SSOSub != "")
-		s.renderBare(w, "login.html", map[string]any{
-			"Title":      "Sign in",
-			"SSOEnabled": ssoEnabled,
-			"Error":      "That password is not correct.",
-		})
+		s.renderLogin(w, "That password is not correct.")
 		return
 	}
 	s.o.Backoff.Reset(key)
-	s.setSessionCookie(w, r, s.o.Sessions.Create())
+	s.setSessionCookie(w, r, s.o.Sessions.CreateAuthenticated("", "", 0, generation))
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
@@ -145,7 +156,7 @@ func (s *Server) postLogout(w http.ResponseWriter, r *http.Request) {
 		MaxAge:   -1,
 		HttpOnly: true,
 		SameSite: http.SameSiteLaxMode,
-		Secure:   r.TLS != nil,
+		Secure:   s.requestSecure(r),
 	})
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
@@ -159,13 +170,25 @@ const (
 
 func (s *Server) getSSOLogin(w http.ResponseWriter, r *http.Request) {
 	sso, err := s.o.Store.SSOClient()
-	ident, _ := s.o.Store.AdminIdentity()
-	ssoActive := sso.Enabled || (ident != nil && ident.SSOSub != "") || r.URL.Query().Get("link") == "true"
-	if err != nil || !ssoActive {
+	if err != nil || !sso.Enabled {
 		http.Redirect(w, r, "/login?error=SSO+is+not+enabled", http.StatusSeeOther)
 		return
 	}
+	s.startSSO(w, r, sso, false)
+}
 
+// postSSOLink starts linking an identity to the signed-in admin. It is a
+// CSRF-checked POST so no other site can link an account on the admin's behalf.
+func (s *Server) postSSOLink(w http.ResponseWriter, r *http.Request) {
+	sso, err := s.o.Store.SSOClient()
+	if err != nil {
+		s.settingsError(w, r, err)
+		return
+	}
+	s.startSSO(w, r, sso, true)
+}
+
+func (s *Server) startSSO(w http.ResponseWriter, r *http.Request, sso store.SSOSettings, isLink bool) {
 	verifier, challenge, err := auth.GeneratePKCE()
 	if err != nil {
 		http.Error(w, "failed to generate PKCE challenge", http.StatusInternalServerError)
@@ -183,7 +206,6 @@ func (s *Server) getSSOLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isLink := r.URL.Query().Get("link") == "true"
 	s.setSSOCookie(w, r, cookieSSOState, state, 300)
 	s.setSSOCookie(w, r, cookieSSOVerifier, verifier, 300)
 	s.setSSOCookie(w, r, cookieSSONonce, nonce, 300)
@@ -200,6 +222,7 @@ func (s *Server) getSSOLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) getSSOCallback(w http.ResponseWriter, r *http.Request) {
+	generation := s.o.Sessions.RecoveryGeneration()
 	code := r.URL.Query().Get("code")
 	state := r.URL.Query().Get("state")
 
@@ -262,11 +285,8 @@ func (s *Server) getSSOCallback(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		s.o.Logger.Warn("sso code exchange failed", "error", err, "source", s.sourceKey(r))
 		w.WriteHeader(http.StatusUnauthorized)
-		s.renderBare(w, "login.html", map[string]any{
-			"Title":      "Sign in",
-			"SSOEnabled": sso.Enabled,
-			"Error":      "Single Sign-On failed: " + err.Error(),
-		})
+		// The detail is in the log; provider and network errors are not for strangers.
+		s.renderLogin(w, "Single sign-on failed. Try again, or sign in with your password.")
 		return
 	}
 
@@ -280,7 +300,7 @@ func (s *Server) getSSOCallback(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "use the explicitly assigned administrator identity", 403)
 			return
 		}
-		s.setSessionCookie(w, r, s.o.Sessions.CreateSSO(claims.Issuer, claims.Sub, authority.Revision))
+		s.setSessionCookie(w, r, s.o.Sessions.CreateAuthenticated(claims.Issuer, claims.Sub, authority.Revision, generation))
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
@@ -291,21 +311,7 @@ func (s *Server) getSSOCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isAlreadyLinked := (ident != nil && ident.SSOSub != "" && ident.SSOSub == claims.Sub)
-
-	// 1. Role enforcement: Must be Admin in IdP (or already linked to this local Admin)
-	if !isLink && !isAlreadyLinked && !claims.IsAdmin() {
-		s.o.Logger.Warn("sso non-admin rejected", "sub", claims.Sub, "role", claims.Role, "groups", claims.Groups, "username", claims.Username)
-		w.WriteHeader(http.StatusForbidden)
-		s.renderBare(w, "login.html", map[string]any{
-			"Title":      "Sign in",
-			"SSOEnabled": true,
-			"Error":      "Access denied: KyDNS requires an Administrator account or a linked identity.",
-		})
-		return
-	}
-
-	// 2. Linking flow (initiated from Settings)
+	// Linking needs the admin's own session: the link cookie alone is client-held.
 	if isLink {
 		if _, ok := s.session(r); !ok {
 			http.Redirect(w, r, "/login?error=Session+expired+during+linking", http.StatusSeeOther)
@@ -317,34 +323,25 @@ func (s *Server) getSSOCallback(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		sso.Enabled = true
-		_ = s.o.Store.SetSSOSettings(sso)
+		if err := s.o.Store.SetSSOSettings(sso); err != nil {
+			s.o.Logger.Error("failed to enable sso after linking", "error", err)
+		}
 		s.o.Logger.Info("sso identity linked to admin", "sub", claims.Sub, "username", claims.Username)
 		http.Redirect(w, r, "/settings", http.StatusSeeOther)
 		return
 	}
 
-	// 3. Login flow
-	if ident.SSOSub != "" {
-		if ident.SSOSub != claims.Sub {
-			s.o.Logger.Warn("sso subject mismatch", "expected", ident.SSOSub, "got", claims.Sub, "username", claims.Username)
-			w.WriteHeader(http.StatusUnauthorized)
-			s.renderBare(w, "login.html", map[string]any{
-				"Title":      "Sign in",
-				"SSOEnabled": true,
-				"Error":      "This KySignOn account (" + claims.Username + ") is not linked to the KyDNS Admin. Log in with your password to manage SSO settings.",
-			})
-			return
-		}
-	} else {
-		// First-time SSO login: Auto-link since KySignOn verified admin role
-		_ = s.o.Store.LinkAdminSSO(claims.Sub, claims.Username, claims.Email)
-		sso.Enabled = true
-		_ = s.o.Store.SetSSOSettings(sso)
-		s.o.Logger.Info("sso first-time auto-linked admin", "sub", claims.Sub, "username", claims.Username)
+	// Only the identity the admin linked from a signed-in session may log in.
+	// Nothing links on first login: an IdP-side admin role is not ownership.
+	if !sso.Enabled || ident.SSOSub == "" || ident.SSOSub != claims.Sub {
+		s.o.Logger.Warn("sso login refused: identity not linked", "sub", claims.Sub, "username", claims.Username, "source", s.sourceKey(r))
+		w.WriteHeader(http.StatusForbidden)
+		s.renderLogin(w, "This account is not linked to the KyDNS admin. Sign in with your password and link it under Settings.")
+		return
 	}
 
 	s.o.Logger.Info("sso login successful", "sub", claims.Sub, "username", claims.Username)
-	s.setSessionCookie(w, r, s.o.Sessions.Create())
+	s.setSessionCookie(w, r, s.o.Sessions.CreateAuthenticated("", "", 0, generation))
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 

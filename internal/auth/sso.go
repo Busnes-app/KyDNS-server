@@ -32,26 +32,6 @@ type SSOTokenClaims struct {
 	RawClaims         map[string]any `json:"-"`
 }
 
-// IsAdmin returns true if the claims indicate Administrator status in KySignOn, Authentik, or Keycloak.
-func (c *SSOTokenClaims) IsAdmin() bool {
-	if strings.EqualFold(c.Role, "admin") || strings.EqualFold(c.Role, "administrator") {
-		return true
-	}
-	for _, g := range c.Groups {
-		gClean := strings.ToLower(strings.TrimSpace(g))
-		if gClean == "admin" || gClean == "admins" || gClean == "kydns_admin" || gClean == "kydns-admin" || gClean == "kydns_admins" || gClean == "authentik default admins" {
-			return true
-		}
-	}
-	for _, r := range c.Roles {
-		rClean := strings.ToLower(strings.TrimSpace(r))
-		if rClean == "admin" || rClean == "administrator" || rClean == "kydns_admin" {
-			return true
-		}
-	}
-	return false
-}
-
 type OIDCEndpoints struct {
 	AuthorizationEndpoint string `json:"authorization_endpoint"`
 	TokenEndpoint         string `json:"token_endpoint"`

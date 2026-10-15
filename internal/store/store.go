@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"github.com/Busnes-app/ky-primitives/applysetup"
 	"strings"
+	"time"
 
 	_ "modernc.org/sqlite"
 )
@@ -97,7 +98,9 @@ CREATE TABLE IF NOT EXISTS admin (
   sso_username  TEXT NOT NULL DEFAULT '',
   sso_email     TEXT NOT NULL DEFAULT '',
   sso_linked_at INTEGER NOT NULL DEFAULT 0,
-  updated_at    INTEGER NOT NULL DEFAULT (unixepoch())
+  updated_at    INTEGER NOT NULL DEFAULT (unixepoch()),
+  -- Unix milliseconds; sessions created before it are void. Set by a password reset.
+  sessions_not_before INTEGER NOT NULL DEFAULT 0
 );
 CREATE TABLE IF NOT EXISTS sso_settings (
   id            INTEGER PRIMARY KEY CHECK (id = 1),
@@ -347,6 +350,7 @@ var migrations = []string{
 	`ALTER TABLE services ADD COLUMN mac TEXT NOT NULL DEFAULT '';`,
 	`ALTER TABLE tokens ADD COLUMN issuer TEXT NOT NULL DEFAULT '';
 	 ALTER TABLE tokens ADD COLUMN subject TEXT NOT NULL DEFAULT '';`,
+	`ALTER TABLE admin ADD COLUMN sessions_not_before INTEGER NOT NULL DEFAULT 0;`,
 }
 
 // migrate runs against a transaction Open already holds, so a crash
@@ -766,6 +770,51 @@ func (s *Store) SetAdminPassword(hash string) error {
 	return err
 }
 
+// ResetAdmin is the recovery path for a compromised or forgotten admin: it sets
+// the password, removes the linked SSO identity, switches SSO off and voids
+// every session and API token, in one transaction. An installer-owned SSO
+// configuration is left to the installer.
+func (s *Store) ResetAdmin(hash string, now time.Time) error {
+	_, managed, err := s.InstallerConfiguration()
+	if err != nil {
+		return err
+	}
+	tx, err := s.db.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+	// An upsert: recovery must also work when setup was never completed.
+	if _, err := tx.Exec(`
+		INSERT INTO admin(id, password_hash, sessions_not_before, updated_at) VALUES(1, ?, ?, unixepoch())
+		ON CONFLICT(id) DO UPDATE SET password_hash = excluded.password_hash,
+		       sso_sub = '', sso_username = '', sso_email = '', sso_linked_at = 0,
+		       sessions_not_before = MAX(admin.sessions_not_before + 1, excluded.sessions_not_before), updated_at = excluded.updated_at`,
+		hash, now.UnixMilli()); err != nil {
+		return err
+	}
+	if _, err := tx.Exec(`DELETE FROM tokens`); err != nil {
+		return err
+	}
+	if !managed {
+		if _, err := tx.Exec(`UPDATE sso_settings SET enabled = 0 WHERE id = 1`); err != nil {
+			return err
+		}
+	}
+	return tx.Commit()
+}
+
+// SessionsNotBefore returns the recovery generation, encoded as a timestamp.
+// ResetAdmin advances it even when the clock repeats or moves backwards.
+func (s *Store) SessionsNotBefore() (time.Time, error) {
+	var ms int64
+	err := s.db.QueryRow(`SELECT sessions_not_before FROM admin WHERE id = 1`).Scan(&ms)
+	if errors.Is(err, sql.ErrNoRows) {
+		return time.UnixMilli(0), nil
+	}
+	return time.UnixMilli(ms), err
+}
+
 func (s *Store) AdminHash() (string, error) {
 	var hash string
 	err := s.db.QueryRow(`SELECT password_hash FROM admin WHERE id = 1`).Scan(&hash)
@@ -896,11 +945,27 @@ var beforeTokenInsert func()
 // PutToken checks a bound token's authority and inserts it in one transaction, so a
 // concurrent ApplyInstallerDirectory revocation cannot commit between the two.
 func (s *Store) PutToken(t Token) (int64, error) {
+	generation, err := s.SessionsNotBefore()
+	if err != nil {
+		return 0, err
+	}
+	return s.PutTokenAtGeneration(t, generation)
+}
+
+// PutTokenAtGeneration fences issuance against recovery in the insert transaction.
+func (s *Store) PutTokenAtGeneration(t Token, generation time.Time) (int64, error) {
 	tx, err := s.db.Begin()
 	if err != nil {
 		return 0, err
 	}
 	defer tx.Rollback()
+	var current int64
+	if err := tx.QueryRow(`SELECT COALESCE((SELECT sessions_not_before FROM admin WHERE id = 1), 0)`).Scan(&current); err != nil {
+		return 0, err
+	}
+	if !generation.Equal(time.UnixMilli(current)) {
+		return 0, errors.New("administrator recovery invalidated token issuance")
+	}
 	if t.Issuer != "" || t.Subject != "" {
 		managed, allowed, err := installerAdministrator(tx, t.Issuer, t.Subject)
 		if err != nil {

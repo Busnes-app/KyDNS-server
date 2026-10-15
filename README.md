@@ -216,7 +216,7 @@ start, because KyDNS needs them before it has a database or a web UI:
 |---|---|---|
 | `data_dir` | *required* | Holds the database and the bootstrap/setup tokens. Back it up. |
 | `dns.listen` | `:53` | UDP and TCP. Port 53 needs root or `CAP_NET_BIND_SERVICE`. |
-| `admin.listen` | `127.0.0.1:8053` | Web UI and JSON API. Plain HTTP — proxy it for TLS. |
+| `admin.listen` | `127.0.0.1:8053` | Web UI and JSON API. Plain HTTP; use a TLS-terminating proxy and restrict network access when binding beyond loopback. |
 
 Two more are read from the file only if you run more than one server:
 `replication.listen` and `replication.primary`. Setting both is a startup
@@ -573,9 +573,12 @@ ssh -L 8053:127.0.0.1:8053 <this-host>
 ```
 
 then open `http://127.0.0.1:8053/setup` and enter the token to create your
-admin account. To publish the UI on your LAN instead, change `admin.listen`
-in `/etc/kydns/kydns.yaml` to `0.0.0.0:8053` — and put a TLS-terminating
-reverse proxy in front of it.
+admin account. To publish the UI on your LAN, use a TLS-terminating reverse
+proxy and firewall the admin port so only that proxy can reach it.
+`KYDNS_TRUSTED_PROXIES` controls forwarded headers, not network access.
+For a proxy on another host, change `admin.listen` in
+`/etc/kydns/kydns.yaml` to `0.0.0.0:8053` and set `KYDNS_TRUSTED_PROXIES` to the
+proxy's address (comma-separated IPs or CIDRs) with `systemctl edit kydns`.
 
 | Path | What it is |
 |---|---|
@@ -627,15 +630,16 @@ kydns serve --config /etc/kydns/kydns.yaml
 ```
 
 On first start with no admin account, KyDNS writes a setup token to
-`<data_dir>/setup-token` and logs it. Open the admin listener, enter that
+`<data_dir>/setup-token` (mode 0600). It is printed to the log too, except under
+systemd, where the journal is readable by more than root. Open the admin listener, enter that
 token, and choose a password. A bootstrap API token for the CLI is written to
 `<data_dir>/bootstrap-token`.
 
 The CLI reads `KYDNS_URL` (default `http://127.0.0.1:8053`) and `KYDNS_TOKEN`.
 Everything except `serve` and `admin` goes through the JSON API, so the CLI
-works from any machine that can reach the admin listener. A remote server needs
-an `https://` URL: the CLI refuses to send the token over plain `http://` to
-anything but loopback.
+works on the host itself, or from any machine through the trusted HTTPS proxy
+(`KYDNS_URL=https://<proxy>`). The CLI refuses to send the token over plain
+`http://` to anything but loopback.
 
 | Command | Does |
 |---|---|
@@ -667,8 +671,11 @@ kydns admin reset-password --config /etc/kydns/kydns.yaml
 This is the one command that opens the database directly instead of going
 through the API, because there is otherwise no way back in. It needs write
 access to the database file — anyone who has that can already read every hash
-and token in it, so it is not an extra way in. Restart KyDNS afterwards to end
-any sessions that are still signed in.
+and token in it, so it is not an extra way in. The reset immediately ends existing
+sessions, revokes every API token, unlinks the local SSO identity, and disables
+SSO unless it is installer-managed. Installer-managed SSO remains unchanged.
+Sign in with the new password to create replacement tokens for integrations,
+or restart KyDNS to generate a new bootstrap token.
 
 In Docker, where the image has no shell:
 
@@ -689,8 +696,8 @@ out addresses on your physical LAN outlives any one stack.
 
 **The built-in DHCP server does not work on this install path.** It has to
 hear client broadcasts, which is why it is supported only on a native install
-or in Docker with `network_mode: host` — not on a LAN-attached container
-network. The startup check refuses a bridge-mode container but not this one,
+or in Docker with `network_mode: host` (which needs a host sysctl, see "Four
+things that bite") — not on a LAN-attached container network. The startup check refuses a bridge-mode container but not this one,
 so enabling DHCP here gives you a listener that reports itself running and may
 never hear a client. Leave DHCP to the router on this path, or install
 natively.
@@ -717,6 +724,13 @@ In `kydns.yaml` change two of the three file-owned settings from their
 defaults: `data_dir: /var/lib/kydns`, and `admin.listen: "0.0.0.0:8053"`.
 Leaving admin on `127.0.0.1` would bind the *container's* loopback, reachable
 from nowhere. `dns.listen` is already right at `:53`.
+
+`0.0.0.0` exposes plain HTTP on the container's LAN address. Before setup,
+restrict port 8053 with network controls so only your TLS-terminating reverse
+proxy can connect. Set `KYDNS_TRUSTED_PROXIES` in `.env` to the proxy's address
+as KyDNS sees it (comma-separated IPs or CIDRs; `/0` is refused), and open
+`/setup` through the proxy's `https://` address. This setting trusts forwarded
+headers; it does not block direct access to `http://$KYDNS_IP:8053/`.
 
 The image already has both set, in `kydns.docker.yaml` baked in at
 `/etc/kydns/kydns.yaml`, so a `docker run` with no config mounted at all
@@ -748,9 +762,11 @@ Apply, which restarts the container, which is what picking up a file-owned key
 takes anyway. On a `br0` address that port needs no mapping; it is already on
 the container's own LAN address.
 
-Set the container on your `br0` network so it gets its own LAN address, start
-it, read the setup token from the log, and do everything else — upstreams, the
-private domain, filtering, `allow_query` — from the web UI.
+Set the container on your `br0` network so it gets its own LAN address, add
+`KYDNS_TRUSTED_PROXIES` as a Variable holding your reverse proxy's address,
+start it, read the setup token from the log, and do everything else —
+upstreams, the private domain, filtering, `allow_query` — from the web UI,
+through that proxy over HTTPS.
 
 #### Pre-creating it
 
@@ -777,23 +793,52 @@ only if you want the router to hold a DHCP reservation for it — KyDNS uses a
 static address, so it does not. Set `KYDNS_NET_DRIVER=macvlan` if you want it
 anyway.
 
-#### Three things that bite
+#### Four things that bite
 
 - **The host cannot reach the container.** macvlan and ipvlan both deliberately
   block host-to-container traffic. Everything else on the LAN is fine; only the
   Docker host itself can't reach KyDNS. That matters if the host resolves
   through it. `docker-compose.yml` has the shim-interface fix.
 - **Use the named volume for `data_dir`, not a host directory.** The container
-  drops all capabilities except `NET_BIND_SERVICE`, losing `CAP_DAC_OVERRIDE`,
-  so it cannot write into a directory owned by another user. A bind mount from
-  your home directory fails with `unable to open database file`. Chown it to
-  root if you need one.
+  runs as uid 65532 with every capability dropped, so it cannot write into a
+  directory owned by another user. A bind mount from your home directory fails
+  with `unable to open database file`. Chown it to `65532:65532` if you need
+  one.
+- **Port 53 comes from a sysctl, not a capability.** A non-root process cannot
+  use an added `NET_BIND_SERVICE`, so compose sets
+  `net.ipv4.ip_unprivileged_port_start=0` in the container's own network
+  namespace. Under `network_mode: host`, the DHCP path, there is no own
+  namespace: Docker refuses the sysctl, so drop it, and the host's value
+  applies. **An existing host-network install stops binding port 53 on
+  upgrade** until you do one of two things: switch to the native package,
+  which systemd gives `CAP_NET_BIND_SERVICE` alone, or lower the limit on the
+  host, which lets every local user bind 53 and up:
+
+  ```sh
+  echo 'net.ipv4.ip_unprivileged_port_start=53' | sudo tee /etc/sysctl.d/60-kydns.conf
+  sudo sysctl --system
+  ```
 - **The image has no shell.** It is distroless, about 29 MB. Read the first-run
   tokens from the volume rather than with `docker exec`:
 
 ```sh
 docker run --rm -v kydns-server_kydns-data:/d busybox cat /d/setup-token
 ```
+
+#### Upgrading from an image that ran as root
+
+Images before the move to uid 65532 wrote the volume as root, and the new one
+cannot open that database. Chown it once, with KyDNS stopped; running it again
+is harmless:
+
+```sh
+docker compose stop kydns
+docker run --rm -v kydns-server_kydns-data:/d busybox chown -R 65532:65532 /d
+docker compose up -d
+```
+
+Compose files of your own also need the `sysctls` entry from
+`docker-compose.yml` and no longer need `cap_add: ["NET_BIND_SERVICE"]`.
 
 #### WiFi
 
@@ -811,7 +856,7 @@ name, and an ipvlan network with `parent=wlan0` does.
 - Configuration exports must not contain upstream credentials or private keys.
 - Public DNS names and private service names remain separate by default.
 
-See [DESGINE.md](DESGINE.md) for the architecture, [LOGGING.md](LOGGING.md)
+See [DESIGN.md](DESIGN.md) for the architecture, [LOGGING.md](LOGGING.md)
 for logging requirements, and [SECURITY.md](SECURITY.md) for security policy.
 
 ## Scope

@@ -15,7 +15,7 @@ code and the product scope, design, security, and logging documents consistent.
 ## Documentation changes
 
 Use plain Markdown and link related requirements instead of duplicating them.
-Keep `README.md`, `DESGINE.md`, `LOGGING.md`, and `SECURITY.md` aligned when a
+Keep `README.md`, `DESIGN.md`, `LOGGING.md`, and `SECURITY.md` aligned when a
 change affects more than one concern. The blacklist behavior is owned by
 [`docs/superpowers/specs/2026-08-12-kydns-blacklists.md`](docs/superpowers/specs/2026-08-12-kydns-blacklists.md).
 

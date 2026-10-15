@@ -2,7 +2,7 @@
 
 KyDNS is a Homelab DNS server with easy domain name assignments and blackhole filtering.
 
-Please see the css directory and fonts directory for look and feel.
+Please see `internal/web/static/` (`styles.css`, `fonts/`) for look and feel.
 
 # Ponytail, lazy senior dev mode
 
@@ -48,7 +48,7 @@ Non-trivial logic must include one runnable check (unit test or minimal self-che
 Keep these aligned:
 
 - `README.md` — product scope and user-facing capabilities.
-- `DESGINE.md` — architecture. Replication ships (`internal/replica`).
+- `DESIGN.md` — architecture. Replication ships (`internal/replica`).
 - `LOGGING.md` — logging and privacy requirements.
 - `SECURITY.md` — security policy and trust boundaries.
 - `CONTRIBUTING.md` — contribution and verification workflow.
@@ -91,6 +91,13 @@ Code, one concern per package:
 - `internal/settings` — the settings snapshot the runtime reads, and the single
   path by which it changes: validate, persist, rebuild, apply, all or nothing.
 - `internal/store` — SQLite schema and migrations, the single write chokepoint.
+  `ResetAdmin` atomically revokes all API tokens and browser sessions, unlinks local
+  SSO, and disables unmanaged SSO; installer-managed SSO remains unchanged.
+  Sessions bind to the monotonic recovery generation captured before authentication,
+  so an in-flight login using old credentials cannot survive recovery. Token issuance
+  carries that generation from browser/API authentication and checks it in the insert
+  transaction; a pre-recovery request cannot mint a surviving replacement token.
+  Verify with `go test ./internal/store ./internal/app -run Reset`.
   `PingContext` checks the local database for instance health.
   `SnapshotTo` delegates to `recoveryclient.SQLiteSnapshot`, which binds the
   `VACUUM INTO` destination path rather than interpolating it.
