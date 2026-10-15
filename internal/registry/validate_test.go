@@ -37,6 +37,22 @@ func TestValidateNameRequiresPrivateDomain(t *testing.T) {
 	}
 }
 
+// RFC 1035 caps a name at 255 wire octets: 253 characters without the
+// trailing dot, 254 with it.
+func TestValidateNameLengthBoundary(t *testing.T) {
+	labels := strings.Repeat(strings.Repeat("a", 63)+".", 3)
+	ok := labels + strings.Repeat("d", 51) + ".home.arpa." // 254 with the dot
+	if len(ok) != 254 {
+		t.Fatalf("fixture length %d, want 254", len(ok))
+	}
+	if err := ValidateName(ok, "home.arpa."); err != nil {
+		t.Errorf("253-character name rejected: %v", err)
+	}
+	if err := ValidateName(labels+strings.Repeat("d", 52)+".home.arpa.", "home.arpa."); err == nil {
+		t.Error("254-character name accepted, want error")
+	}
+}
+
 func TestNormalize(t *testing.T) {
 	for in, want := range map[string]string{
 		"KyPost.Home.Arpa":  "kypost.home.arpa.",
