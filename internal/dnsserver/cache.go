@@ -98,8 +98,8 @@ func (c *Cache) lookup(q dns.Question, do bool) (*dns.Msg, bool) {
 	return out, true
 }
 
-// Put stores a response, clamping its TTL. Negative answers use the SOA
-// MINIMUM per RFC 2308, clamped by negMaxTTL.
+// Put stores a response, clamping its TTL. Negative answers use the lesser of
+// the SOA's TTL and MINIMUM per RFC 2308, clamped by negMaxTTL.
 func (c *Cache) Put(q dns.Question, do bool, m *dns.Msg) {
 	if m == nil {
 		return
@@ -138,7 +138,7 @@ func (c *Cache) ttlFor(m *dns.Msg) uint32 {
 	if m.Rcode == dns.RcodeNameError || len(m.Answer) == 0 {
 		for _, rr := range m.Ns {
 			if soa, ok := rr.(*dns.SOA); ok {
-				return clamp(soa.Minttl, c.minTTL, c.negMaxTTL)
+				return clamp(min(soa.Hdr.Ttl, soa.Minttl), c.minTTL, c.negMaxTTL)
 			}
 		}
 		return 0 // nothing authoritative to base a negative TTL on

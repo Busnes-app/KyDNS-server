@@ -10,19 +10,19 @@ import (
 )
 
 // Prober answers one question: is this address already in use by something
-// we did not give it to? A false negative costs a duplicate address, which
-// the client then declines; a false positive costs one address for ten
-// minutes. The budget is small because it sits in the path of every new
-// OFFER.
+// other than the client mac? A client still on its own expired address is
+// not a conflict. A false negative costs a duplicate address, which the
+// client then declines; a false positive costs one address for ten minutes.
+// The budget is small because it sits in the path of every new OFFER.
 type Prober interface {
-	InUse(ip netip.Addr) bool
+	InUse(ip netip.Addr, mac string) bool
 }
 
 // nopProber is for renewals and reservations, which are not probed, and for
 // tests.
 type nopProber struct{}
 
-func (nopProber) InUse(netip.Addr) bool { return false }
+func (nopProber) InUse(netip.Addr, string) bool { return false }
 
 type prober struct {
 	iface  string
@@ -53,7 +53,7 @@ func NewProber(iface string, budget time.Duration) Prober {
 // negative here costs one address that the client declines (there is a
 // DHCPDECLINE path for exactly that); blocking an OFFER because this probe
 // misfired would be worse.
-func (p *prober) InUse(ip netip.Addr) bool {
+func (p *prober) InUse(ip netip.Addr, mac string) bool {
 	deadline := time.Now().Add(p.budget)
 	nudgeARP(ip)
 	if wait := time.Until(deadline); wait > 0 {
@@ -63,7 +63,8 @@ func (p *prober) InUse(ip netip.Addr) bool {
 	if err != nil {
 		return false
 	}
-	return parseARPTable(string(b), p.iface)[ip]
+	hw, ok := parseARPTable(string(b), p.iface)[ip]
+	return ok && hw != mac
 }
 
 // nudgeARP sends one throwaway UDP datagram to ip. Its only purpose is the
@@ -80,10 +81,11 @@ func nudgeARP(ip netip.Addr) {
 	c.Write([]byte{0})
 }
 
-// parseARPTable returns the addresses on iface with a complete (ATF_COM,
-// 0x2) entry. A complete entry means something answered ARP for it recently.
-func parseARPTable(table, iface string) map[netip.Addr]bool {
-	live := map[netip.Addr]bool{}
+// parseARPTable maps the addresses on iface with a complete (ATF_COM, 0x2)
+// entry to the MAC that answered. A complete entry means something answered
+// ARP for it recently.
+func parseARPTable(table, iface string) map[netip.Addr]string {
+	live := map[netip.Addr]string{}
 	lines := strings.Split(table, "\n")
 	if len(lines) > 0 {
 		lines = lines[1:] // drop the header row
@@ -98,7 +100,7 @@ func parseARPTable(table, iface string) map[netip.Addr]bool {
 			continue
 		}
 		if addr, err := netip.ParseAddr(f[0]); err == nil {
-			live[addr] = true
+			live[addr] = normalizeMAC(f[3])
 		}
 	}
 	return live

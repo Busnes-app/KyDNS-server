@@ -48,7 +48,9 @@ impact, reproduction steps, and any suggested mitigation.
   subnet, and only an administrator can make one. Hostnames arrive in option
   12, which any device on the LAN chooses, so each one is cut to a single
   lowercase DNS label of letters, digits, and hyphens, or dropped, and a lease
-  can never shadow a service, an alias, or a manual record. DHCP does not
+  can never shadow a service, an alias, or a manual record in any view, nor
+  claim `wpad`, `isatap`, `localhost`, `ns`, `kydns` or the node's own
+  hostname. This holds for lease files too. DHCP does not
   authenticate clients, so a RELEASE changes state only when its MAC and
   client address match the active lease and its server identifier names this
   KyDNS listener; malformed or foreign releases are ignored. The ordinary

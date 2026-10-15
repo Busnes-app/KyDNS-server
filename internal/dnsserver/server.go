@@ -119,42 +119,56 @@ func (s *Server) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 		view = snap.Matcher.Match(src)
 	}
 
+	block := func(ttl uint32, decision string) {
+		m := new(dns.Msg)
+		m.SetRcode(r, dns.RcodeNameError)
+		m.Authoritative = false // the block is local policy, not zone data
+		m.RecursionAvailable = true
+		m.Ns = []dns.RR{blockSOA(q.Name, ttl)}
+		reply(m, "blocked", view, decision)
+	}
+	edns := r.IsEdns0()
+	do := edns != nil && edns.Do()
+
 	if m := s.o.Auth.Answer(snap, view, q); m != nil {
 		rcode := m.Rcode
 		m.SetRcode(r, rcode)
 		m.Authoritative = true
+		if blocked, decision, ttl := s.finishChain(m, q, do); blocked {
+			block(ttl, decision)
+			return
+		}
 		reply(m, "authoritative", view, "local")
 		return
 	}
 
-	// The name is not ours, so it would be forwarded. This is the only place
-	// filtering applies, and it decides before anything leaves the machine.
-	policy := ""
-	if s.o.Policy != nil {
-		blocked, decision, ttl := s.o.Policy.Decide(q.Name)
-		policy = decision
-		if blocked {
-			m := new(dns.Msg)
-			m.SetRcode(r, dns.RcodeNameError)
-			m.Authoritative = false // the block is local policy, not zone data
-			m.RecursionAvailable = true
-			m.Ns = []dns.RR{blockSOA(q.Name, ttl)}
-			reply(m, "blocked", view, decision)
-			return
-		}
+	// The name is not ours, so it would be forwarded. Filtering decides here,
+	// before anything leaves the machine, and on CNAME targets in the answer.
+	blocked, policy, ttl := s.decide(q.Name)
+	if blocked {
+		block(ttl, policy)
+		return
 	}
 
 	if s.o.Forwarder == nil {
 		fail(dns.RcodeServerFailure, "forward")
 		return
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), forwardTimeout)
 	defer cancel()
-	edns := r.IsEdns0()
-	resp, err := s.o.Forwarder.Resolve(ctx, q, edns != nil && edns.Do())
+	resp, err := s.o.Forwarder.Resolve(ctx, q, do)
 	if err != nil {
-		s.o.Logger.Warn("forward failed", "qname", q.Name, "error", err)
+		// LOGGING.md: query names are logged only with query logging on.
+		if s.logQueries.Load() {
+			s.o.Logger.Warn("forward failed", "qname", q.Name, "error", err)
+		} else {
+			s.o.Logger.Warn("forward failed", "error", err)
+		}
 		fail(dns.RcodeServerFailure, "forward")
+		return
+	}
+	if blocked, decision, ttl := s.cloaked(resp.Answer); blocked {
+		block(ttl, decision)
 		return
 	}
 	out := resp.Copy()
@@ -166,6 +180,85 @@ func (s *Server) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 		stripOPT(out)
 	}
 	reply(out, "forward", view, policy)
+}
+
+// forwardTimeout bounds one upstream resolution.
+const forwardTimeout = 10 * time.Second
+
+// decide asks the policy about name. A nil policy blocks nothing.
+func (s *Server) decide(name string) (bool, string, uint32) {
+	if s.o.Policy == nil {
+		return false, "", 0
+	}
+	return s.o.Policy.Decide(name)
+}
+
+// cloaked reports a block on any CNAME target in rrs, so a tracker hidden
+// behind a first-party alias is blocked like the tracker itself.
+func (s *Server) cloaked(rrs []dns.RR) (bool, string, uint32) {
+	for _, rr := range rrs {
+		if c, ok := rr.(*dns.CNAME); ok {
+			if blocked, decision, ttl := s.decide(c.Target); blocked {
+				return true, decision, ttl
+			}
+		}
+	}
+	return false, "", 0
+}
+
+// finishChain completes an authoritative CNAME chain that leaves our zones,
+// since a LAN stub resolver cannot. Only records on the chain are appended, so
+// an upstream cannot plant data for other names. It reports a policy block on
+// any outside name along the chain. On a forward failure the partial chain is
+// still a correct answer.
+func (s *Server) finishChain(m *dns.Msg, q dns.Question, do bool) (bool, string, uint32) {
+	if q.Qtype == dns.TypeCNAME || len(m.Answer) == 0 || len(m.Answer) > cnameChaseDepth || s.o.Forwarder == nil {
+		return false, "", 0
+	}
+	last, ok := m.Answer[len(m.Answer)-1].(*dns.CNAME)
+	if !ok || s.o.Auth.Owns(last.Target) {
+		return false, "", 0
+	}
+	if blocked, decision, ttl := s.decide(last.Target); blocked {
+		return true, decision, ttl
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), forwardTimeout)
+	defer cancel()
+	resp, err := s.o.Forwarder.Resolve(ctx, dns.Question{Name: last.Target, Qtype: q.Qtype, Qclass: q.Qclass}, do)
+	if err != nil {
+		return false, "", 0
+	}
+	chain := onChain(last.Target, resp.Answer)
+	if blocked, decision, ttl := s.cloaked(chain); blocked {
+		return true, decision, ttl
+	}
+	m.Answer = append(m.Answer, chain...)
+	if resp.Rcode == dns.RcodeNameError {
+		m.Rcode = dns.RcodeNameError
+	}
+	return false, "", 0
+}
+
+// onChain keeps the records owned by name or by a CNAME target reachable
+// from it.
+func onChain(name string, rrs []dns.RR) []dns.RR {
+	names := map[string]bool{dns.CanonicalName(name): true}
+	for grew := true; grew; { // each pass adds a hop or ends; bounded by len(rrs)
+		grew = false
+		for _, rr := range rrs {
+			if c, ok := rr.(*dns.CNAME); ok && names[dns.CanonicalName(c.Hdr.Name)] && !names[dns.CanonicalName(c.Target)] {
+				names[dns.CanonicalName(c.Target)] = true
+				grew = true
+			}
+		}
+	}
+	var out []dns.RR
+	for _, rr := range rrs {
+		if names[dns.CanonicalName(rr.Header().Name)] {
+			out = append(out, rr)
+		}
+	}
+	return out
 }
 
 // sourceAddr extracts the client address, unmapped so v4-in-v6 peers match
@@ -201,10 +294,11 @@ func writeErrText(err error, includeAddr bool) string {
 }
 
 // clientUDPSize is the datagram budget the client advertised. A client that
-// sent no OPT record does not speak EDNS0, so 512 is its ceiling.
+// sent no OPT record does not speak EDNS0, so 512 is its ceiling. Larger
+// offers are capped at 1232, past which UDP fragments (DNS Flag Day 2020).
 func clientUDPSize(r *dns.Msg) int {
 	if edns := r.IsEdns0(); edns != nil {
-		return int(edns.UDPSize())
+		return min(int(edns.UDPSize()), 1232)
 	}
 	return dns.MinMsgSize
 }

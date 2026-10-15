@@ -94,6 +94,23 @@ func TestUnnormalizableNameIsForwarded(t *testing.T) {
 	}
 }
 
+// An underscore fails strict normalization but is a legal DNS label; it must
+// not be a way around the blocklist.
+func TestUnnormalizableNameStillMatchesParents(t *testing.T) {
+	s := testSnapshot(t, true)
+	for _, n := range []string{"_x.banned.example.", "a_b.BANNED.example", "_x.ads.example"} {
+		if got := s.Decide(n); !got.Blocked {
+			t.Errorf("Decide(%s) = %+v, want blocked", n, got)
+		}
+	}
+	if got := s.Decide("_x.evil.shared.example"); !got.Blocked || got.Policy != PolicyDeny {
+		t.Errorf("Decide(_x.evil.shared.example) = %+v, want the deny rule", got)
+	}
+	if got := s.Decide("a_b.shared.example"); got.Blocked || got.Policy != PolicyAllow {
+		t.Errorf("Decide(a_b.shared.example) = %+v, want allowed", got)
+	}
+}
+
 func TestBlockTTLComesFromSettings(t *testing.T) {
 	s := Build(
 		store.BlacklistSettings{Enabled: true, BlockTTL: 15},
