@@ -327,6 +327,25 @@ func TestBuildRefusesAMalformedSecondaryDNS(t *testing.T) {
 	}
 }
 
+// A range reaching the subnet's network or broadcast address is a typo the
+// operator should hear about, not one the pool quietly works around.
+func TestBuildRefusesARangeCoveringTheNetworkOrBroadcast(t *testing.T) {
+	d, _ := newBuildableRunner(func(context.Context, string, time.Duration) ([]dhcpd.Foreign, error) {
+		return nil, nil
+	})
+	for _, r := range [][2]string{{"192.168.1.0", "192.168.1.200"}, {"192.168.1.100", "192.168.1.255"}} {
+		v := buildableSettings()
+		v.DHCPRangeStart, v.DHCPRangeEnd = r[0], r[1]
+		srv, err := d.build(v, false)
+		if err == nil {
+			t.Fatalf("build of %s-%s returned %v", r[0], r[1], srv)
+		}
+		if !strings.Contains(err.Error(), "network or broadcast") {
+			t.Errorf("the error does not say why: %v", err)
+		}
+	}
+}
+
 func TestNeedsProbe(t *testing.T) {
 	v := buildableSettings()
 	d, _ := newTestRunner(RoleStandalone)

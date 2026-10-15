@@ -18,6 +18,7 @@ type Lease struct {
 	IP       netip.Addr
 	Hostname string
 	Expires  time.Time
+	hold     bool // an OFFER's tentative hold, not yet REQUESTed
 }
 
 // Config is the pool. Host is our own address and Gateway the router's;
@@ -102,9 +103,49 @@ func (a *Allocator) Offer(mac string, requested netip.Addr, hold time.Duration) 
 	return a.allocate(mac, "", requested, hold, true)
 }
 
+// Confirm commits asked to mac for a REQUEST. It never picks an address:
+// asked must be the client's reservation or what it already holds, lease or
+// offer hold. So a REQUEST no DISCOVER preceded cannot claim a fresh address,
+// and a refused one commits nothing.
+func (a *Allocator) Confirm(mac, hostname string, asked netip.Addr, ttl time.Duration) (Lease, bool) {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	// These mirror rules 1 and 2 below, so allocateLocked lands on asked.
+	if r, ok := a.reserved[mac]; ok && !a.protected(r) {
+		if r != asked {
+			// The reservation still wins. Free it for the DISCOVER our NAK
+			// sends this client back to, but lease it nothing now.
+			if holder, ok := a.byIP[r]; ok && holder != mac {
+				delete(a.byMAC, holder)
+				delete(a.byIP, r)
+			}
+			return Lease{}, false
+		}
+	} else if l, ok := a.byMAC[mac]; !ok || l.IP != asked || !a.usable(asked) || a.reservedIP[asked] != "" {
+		return Lease{}, false
+	}
+	l, _, ok := a.allocateLocked(mac, hostname, asked, ttl, false)
+	return l, ok
+}
+
+// ReleaseHold drops mac's offer hold but never a lease: one forged packet
+// must not end a lease.
+func (a *Allocator) ReleaseHold(mac string) {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	if l, ok := a.byMAC[mac]; ok && l.hold {
+		delete(a.byIP, l.IP)
+		delete(a.byMAC, mac)
+	}
+}
+
 func (a *Allocator) allocate(mac, hostname string, requested netip.Addr, ttl time.Duration, tentative bool) (Lease, bool, bool) {
 	a.mu.Lock()
 	defer a.mu.Unlock()
+	return a.allocateLocked(mac, hostname, requested, ttl, tentative)
+}
+
+func (a *Allocator) allocateLocked(mac, hostname string, requested netip.Addr, ttl time.Duration, tentative bool) (Lease, bool, bool) {
 	now := a.now()
 
 	// First claim wins, decided here rather than by the caller: two REQUESTs
@@ -124,11 +165,12 @@ func (a *Allocator) allocate(mac, hostname string, requested netip.Addr, ttl tim
 		if hasPrev && prev.IP != ip {
 			delete(a.byIP, prev.IP)
 		}
-		l := Lease{MAC: mac, IP: ip, Hostname: hostname, Expires: now.Add(ttl)}
+		l := Lease{MAC: mac, IP: ip, Hostname: hostname, Expires: now.Add(ttl), hold: tentative}
 		// A tentative hold never weakens a live lease on the same address:
 		// its name stays and its expiry only ever moves later.
 		if tentative && held && prev.IP == ip {
 			l.Hostname = prev.Hostname
+			l.hold = prev.hold
 			if prev.Expires.After(l.Expires) {
 				l.Expires = prev.Expires
 			}
@@ -218,7 +260,7 @@ func (a *Allocator) Decline(mac string, ip netip.Addr) bool {
 	delete(a.byMAC, mac)
 	delete(a.byIP, ip)
 	if a.inRange(ip) {
-		a.quarantine[ip] = a.now().Add(quarantineFor)
+		a.quarantineLocked(ip)
 	}
 	return true
 }
@@ -234,11 +276,35 @@ func (a *Allocator) reservationFor(mac string) (netip.Addr, bool) {
 }
 
 // Quarantine keeps an address out of the pool, for a probe that found it in
-// use by something we did not hand it to.
-func (a *Allocator) Quarantine(ip netip.Addr) {
+// use by something we did not hand it to. False means it was refused.
+func (a *Allocator) Quarantine(ip netip.Addr) bool {
 	a.mu.Lock()
 	defer a.mu.Unlock()
-	a.quarantine[ip] = a.now().Add(quarantineFor)
+	return a.quarantineLocked(ip)
+}
+
+// quarantineLocked refuses once half the pool is quarantined: it is fed by
+// unauthenticated ARP answers and DECLINEs, so it must never empty the pool.
+// Callers hold a.mu.
+func (a *Allocator) quarantineLocked(ip netip.Addr) bool {
+	now := a.now()
+	n := uint64(0)
+	for q, until := range a.quarantine {
+		if !until.After(now) {
+			delete(a.quarantine, q)
+			continue
+		}
+		n++
+	}
+	size := uint64(0)
+	if a.inRange(a.cfg.Start) {
+		size = uint64(u32(a.cfg.End)-u32(a.cfg.Start)) + 1
+	}
+	if n >= size/2 {
+		return false
+	}
+	a.quarantine[ip] = now.Add(quarantineFor)
+	return true
 }
 
 // Leases returns the unexpired leases, for the DNS zone and the UI.
@@ -302,9 +368,11 @@ func (a *Allocator) usable(ip netip.Addr) bool {
 }
 
 // protected reports whether ip is one this server must never hand to a
-// client whatever the configuration says: our own address, and the router's.
+// client whatever the configuration says: our own address, the router's, and
+// the subnet's network and broadcast addresses.
 func (a *Allocator) protected(ip netip.Addr) bool {
-	return ip == a.cfg.Host || ip == a.cfg.Gateway
+	return ip == a.cfg.Host || ip == a.cfg.Gateway ||
+		ip == a.cfg.Subnet.Masked().Addr() || ip == BroadcastOf(a.cfg.Subnet)
 }
 
 func (a *Allocator) inRange(ip netip.Addr) bool {

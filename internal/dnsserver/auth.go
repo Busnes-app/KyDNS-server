@@ -175,7 +175,7 @@ func (a *Authoritative) Answer(snap *zone.Snapshot, view string, q dns.Question)
 }
 
 // chase follows in-zone CNAME targets so the client gets one complete answer.
-// Out-of-zone targets are returned alone for the client's resolver to continue.
+// Out-of-zone targets are returned alone; Server.finishChain completes them.
 func (a *Authoritative) chase(zn string, snap *zone.Snapshot, view, name, target string, qtype uint16, depth int, ttl uint32) []dns.RR {
 	cname := &dns.CNAME{
 		Hdr:    dns.RR_Header{Name: name, Rrtype: dns.TypeCNAME, Class: dns.ClassINET, Ttl: ttl},

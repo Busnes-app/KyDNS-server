@@ -4,10 +4,19 @@ import (
 	"fmt"
 	"log/slog"
 	"net/netip"
+	"os"
 	"strings"
+	"sync"
 
 	"github.com/Busnes-app/kydns-server/internal/store"
 )
+
+// hostname is the node's name source, a variable so tests can pin it.
+var hostname = os.Hostname
+
+// reservedWarned holds the lease names already warned about, so every
+// rebuild does not repeat the warning.
+var reservedWarned sync.Map
 
 // RR is one resolved record. Name is a normalized FQDN.
 type RR struct {
@@ -92,13 +101,73 @@ func pick[T any](view string, tagOf func(T) string, all []T) []T {
 	return untagged
 }
 
+// pickRecords applies pick per name, so a tagged record at one name never
+// hides untagged records at another.
+func pickRecords(view string, all []store.Record) []store.Record {
+	byName := map[string][]store.Record{}
+	var order []string
+	for _, r := range all {
+		n := strings.ToLower(r.Name)
+		if _, ok := byName[n]; !ok {
+			order = append(order, n)
+		}
+		byName[n] = append(byName[n], r)
+	}
+	var out []store.Record
+	for _, n := range order {
+		out = append(out, pick(view, func(r store.Record) string { return r.View }, byName[n])...)
+	}
+	return out
+}
+
+// reservedLeaseNames are names no DHCP client may claim: proxy and tunnel
+// autodiscovery, loopback, the zone's NS target, and this node itself.
+func reservedLeaseNames(zone string) map[string]bool {
+	r := map[string]bool{zone: true}
+	for _, l := range []string{"wpad", "isatap", "localhost", "ns", "kydns"} {
+		r[l+"."+zone] = true
+	}
+	if h, err := hostname(); err == nil {
+		if first, _, _ := strings.Cut(strings.ToLower(h), "."); first != "" {
+			r[first+"."+zone] = true
+		}
+	}
+	return r
+}
+
 func buildIndex(in Input, view, zone string, logger *slog.Logger) (*Index, error) {
 	idx := &Index{Forward: map[string][]RR{}, Reverse: map[string]string{}}
+
+	// Every service, alias and manual name is claimed in every view, so a
+	// lease never answers where the owner has no record: that view gets
+	// NXDOMAIN, as for any service without an address there.
+	taken := map[string]bool{}
+	for _, svc := range in.Services {
+		taken[qualify(svc.Name, zone)] = true
+		for _, alias := range svc.Aliases {
+			taken[qualify(alias, zone)] = true
+		}
+	}
+	for _, r := range in.Records {
+		if r.Type != "PTR" {
+			taken[strings.ToLower(r.Name)] = true
+		}
+	}
+	reserved := reservedLeaseNames(zone)
 
 	// Precedence is applied by writing in ascending priority and letting later
 	// layers replace earlier ones: lease, then service/alias, then manual.
 	for _, l := range in.Leases {
 		name := qualify(l.Hostname, zone)
+		if reserved[name] {
+			if _, seen := reservedWarned.LoadOrStore(name, true); !seen {
+				logger.Warn("a DHCP lease claims a reserved name; not published", "name", name)
+			}
+			continue
+		}
+		if taken[name] {
+			continue
+		}
 		idx.Forward[name] = []RR{{Name: name, Type: addrType(l.Address), Value: l.Address}}
 		// A lease is a forward record, so it derives a PTR like any other.
 		// Later layers overwrite it, which is precedence working.
@@ -167,7 +236,7 @@ func buildIndex(in Input, view, zone string, logger *slog.Logger) (*Index, error
 	// lease layer put there; further records at that name accumulate, so a
 	// multi-homed name keeps every address the operator authored.
 	claimed := map[string]bool{}
-	for _, r := range pick(view, func(r store.Record) string { return r.View }, in.Records) {
+	for _, r := range pickRecords(view, in.Records) {
 		name := strings.ToLower(r.Name)
 		if r.Type == "PTR" {
 			idx.Reverse[name] = strings.ToLower(r.Value)

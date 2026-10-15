@@ -1,6 +1,7 @@
 package dhcpd
 
 import (
+	"net"
 	"net/netip"
 	"testing"
 	"time"
@@ -134,6 +135,42 @@ func TestAllocateSkipsTheHostAndGateway(t *testing.T) {
 	}
 	if want := netip.MustParseAddr("192.168.1.2"); l.IP != want {
 		t.Fatalf("address = %v, want %v", l.IP, want)
+	}
+}
+
+// The network and broadcast addresses are in every subnet and no device may
+// have either, whatever range the operator typed.
+func TestAllocateSkipsTheNetworkAndBroadcastAddresses(t *testing.T) {
+	cfg := testConfig()
+	cfg.Start, cfg.End = netip.MustParseAddr("192.168.1.0"), netip.MustParseAddr("192.168.1.255")
+	a := NewAllocator(cfg, func() time.Time { return epoch })
+	for i := range 256 {
+		l, ok := a.Allocate(net.HardwareAddr{0x02, 0, 0, 0, 0, byte(i)}.String(), "", netip.Addr{}, time.Hour)
+		if !ok {
+			break
+		}
+		if s := l.IP.String(); s == "192.168.1.0" || s == "192.168.1.255" {
+			t.Fatalf("handed out %v", l.IP)
+		}
+	}
+	for _, ip := range []string{"192.168.1.0", "192.168.1.255"} {
+		if l, _ := a.Allocate("aa:aa:aa:aa:aa:aa", "", netip.MustParseAddr(ip), time.Hour); l.IP.String() == ip {
+			t.Fatalf("honoured a request for %v", ip)
+		}
+	}
+}
+
+// The quarantine is fed by unauthenticated ARP answers and DECLINEs. Capped
+// at half the pool, it can slow allocation but never empty the pool.
+func TestQuarantineNeverTakesMoreThanHalfThePool(t *testing.T) {
+	cfg := testConfig()
+	cfg.End = netip.MustParseAddr("192.168.1.13") // .10-.13: four addresses
+	a := NewAllocator(cfg, func() time.Time { return epoch })
+	for ip := cfg.Start; ip.Compare(cfg.End) <= 0; ip = ip.Next() {
+		a.Quarantine(ip)
+	}
+	if n := len(a.quarantine); n != 2 {
+		t.Fatalf("quarantine holds %d of 4 addresses, want 2", n)
 	}
 }
 
