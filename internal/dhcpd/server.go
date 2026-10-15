@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"net"
 	"net/netip"
+	"runtime/debug"
 	"slices"
 	"strings"
 	"sync"
@@ -25,6 +26,10 @@ var _ idhcp.Source = (*Server)(nil)
 // reservation, not a lease: holding the full lease term for one would let a
 // flood of forged DISCOVERs exhaust the pool with no ACK ever sent.
 const offerHold = 60 * time.Second
+
+// maxInFlight bounds the goroutines server4 starts, one per packet, each of
+// which may sit in a probe. Past it a packet is dropped; clients retry.
+const maxInFlight = 64
 
 // LeaseStore is the store slice this package needs, named here so the
 // package does not depend on the whole store.
@@ -53,8 +58,10 @@ type Options struct {
 
 // Server is the built-in DHCPv4 server. It implements discovery/dhcp.Source.
 type Server struct {
-	opts Options
-	now  func() time.Time
+	opts      Options
+	now       func() time.Time
+	slots     chan struct{} // see maxInFlight
+	relayOnce sync.Once
 
 	mu     sync.Mutex
 	srv    *server4.Server
@@ -121,7 +128,7 @@ func New(o Options) *Server {
 	if now == nil {
 		now = time.Now
 	}
-	return &Server{opts: o, now: now}
+	return &Server{opts: o, now: now, slots: make(chan struct{}, maxInFlight)}
 }
 
 func (s *Server) Name() string { return "built-in" }
@@ -228,7 +235,21 @@ func (s *Server) restore() error {
 
 // handle is the whole packet path. Every test drives this directly, so it
 // takes the conn rather than reaching for one.
-func (s *Server) handle(conn net.PacketConn, peer net.Addr, m *dhcpv4.DHCPv4) {
+func (s *Server) handle(conn net.PacketConn, _ net.Addr, m *dhcpv4.DHCPv4) {
+	select {
+	case s.slots <- struct{}{}:
+		defer func() { <-s.slots }()
+	default:
+		return
+	}
+	var mac string
+	defer func() {
+		// One bad packet must not take the process, and DNS with it, down.
+		if r := recover(); r != nil {
+			s.opts.Logger.Error("dhcp handler panicked; packet dropped",
+				"mac", mac, "panic", r, "stack", string(debug.Stack()))
+		}
+	}()
 	if m == nil {
 		return
 	}
@@ -237,8 +258,16 @@ func (s *Server) handle(conn net.PacketConn, peer net.Addr, m *dhcpv4.DHCPv4) {
 	// lease, and an empty MAC compares equal to the zero value byIP returns
 	// for a free address. Dropped here, before any branch, like any other
 	// malformed packet.
-	mac := normalizeMAC(m.ClientHWAddr.String())
+	mac = normalizeMAC(m.ClientHWAddr.String())
 	if mac == "" {
+		return
+	}
+	// Relaying is unsupported: a relayed client is on another segment, which
+	// our pool and broadcast replies do not serve.
+	if gi := m.GatewayIPAddr; gi != nil && !gi.IsUnspecified() {
+		s.relayOnce.Do(func() {
+			s.opts.Logger.Warn("dropping relayed DHCP packets; relaying is not supported", "giaddr", gi.String())
+		})
 		return
 	}
 	// Our own conflict probe. Answering it would make this server
@@ -248,9 +277,9 @@ func (s *Server) handle(conn net.PacketConn, peer net.Addr, m *dhcpv4.DHCPv4) {
 	}
 	switch m.MessageType() {
 	case dhcpv4.MessageTypeDiscover:
-		s.offer(conn, peer, m, mac)
+		s.offer(conn, m, mac)
 	case dhcpv4.MessageTypeRequest:
-		s.ack(conn, peer, m, mac)
+		s.ack(conn, m, mac)
 	case dhcpv4.MessageTypeRelease:
 		ip, ipOK := netip.AddrFromSlice(m.ClientIPAddr)
 		server, serverOK := netip.AddrFromSlice(m.ServerIdentifier())
@@ -287,41 +316,41 @@ func (s *Server) handle(conn net.PacketConn, peer net.Addr, m *dhcpv4.DHCPv4) {
 		}
 		s.opts.OnChange()
 	case dhcpv4.MessageTypeInform:
-		s.inform(conn, peer, m)
+		s.inform(conn, m)
 	default:
 		// Anything else, including a message with no type at all, is dropped.
 	}
 }
 
-func (s *Server) offer(conn net.PacketConn, peer net.Addr, m *dhcpv4.DHCPv4, mac string) {
+func (s *Server) offer(conn net.PacketConn, m *dhcpv4.DHCPv4, mac string) {
 	l, ok := s.allocate(mac, m, false)
 	if !ok {
 		s.opts.Logger.Warn("no free address to offer",
 			"mac", mac, "range", s.opts.Cfg.Start.String()+"-"+s.opts.Cfg.End.String())
 		return
 	}
-	s.reply(conn, peer, m, dhcpv4.MessageTypeOffer, l.IP)
+	s.reply(conn, m, dhcpv4.MessageTypeOffer, l.IP, netip.Addr{})
 }
 
-func (s *Server) ack(conn net.PacketConn, peer net.Addr, m *dhcpv4.DHCPv4, mac string) {
-	// A client asking to keep an address we do not control must be told so,
-	// or it will sit on it until the lease it thinks it has runs out.
+func (s *Server) ack(conn net.PacketConn, m *dhcpv4.DHCPv4, mac string) {
+	// RFC 2131 4.3.2: a REQUEST naming another server took that server's
+	// offer. It is not ours to answer; only our hold for it goes.
+	if sid, ok := netip.AddrFromSlice(m.ServerIdentifier()); ok && sid.Unmap() != s.opts.Iface.Addr {
+		s.opts.Alloc.ReleaseHold(mac)
+		return
+	}
+	// Every RFC 2131 REQUEST state names its address, in option 50 or ciaddr;
+	// one naming none is NAKed back to DISCOVER rather than leased one. A
+	// client that names an address it cannot have is NAKed, not re-addressed,
+	// or it would go on using the old one.
 	asked := askedFor(m)
-	if asked.IsValid() && !s.opts.Cfg.Subnet.Contains(asked) {
-		s.nak(conn, peer, m)
+	if !asked.IsValid() || !s.opts.Cfg.Subnet.Contains(asked) {
+		s.nak(conn, m)
 		return
 	}
 	l, ok := s.allocate(mac, m, true)
 	if !ok {
-		s.nak(conn, peer, m)
-		return
-	}
-	// RFC 2131 4.3.2: a client that named an address and cannot have it is
-	// NAKed, not quietly re-addressed. Silently answering with a different
-	// address is what a promoted replica would do to every client whose lease
-	// it does not know, and the client would go on using the old one.
-	if asked.IsValid() && l.IP != asked {
-		s.nak(conn, peer, m)
+		s.nak(conn, m)
 		return
 	}
 	row := store.DHCPLease{
@@ -336,7 +365,7 @@ func (s *Server) ack(conn net.PacketConn, peer net.Addr, m *dhcpv4.DHCPv4, mac s
 		// two out of step. Serve the client and say the persistence failed.
 		s.opts.Logger.Error("could not persist a lease", "mac", mac, "ip", row.IP, "error", err)
 	}
-	s.reply(conn, peer, m, dhcpv4.MessageTypeAck, l.IP)
+	s.reply(conn, m, dhcpv4.MessageTypeAck, l.IP, netip.Addr{})
 	s.opts.OnChange()
 }
 
@@ -345,13 +374,14 @@ func (s *Server) ack(conn net.PacketConn, peer net.Addr, m *dhcpv4.DHCPv4, mac s
 // offerHold only and never claims a name, because only a client that reaches
 // REQUEST is trusted enough for either. Option 12 is client-chosen, so a bare
 // DISCOVER must not be able to plant a name in Leases() by itself, nor to cut
-// short a lease the same client already holds.
+// short a lease the same client already holds. A REQUEST only confirms what
+// askedFor names; see Alloc.Confirm.
 func (s *Server) allocate(mac string, m *dhcpv4.DHCPv4, commit bool) (Lease, bool) {
-	var requested netip.Addr
-	if ip, ok := netip.AddrFromSlice(m.RequestedIPAddress()); ok {
-		requested = ip.Unmap()
-	}
 	if !commit {
+		var requested netip.Addr
+		if ip, ok := netip.AddrFromSlice(m.RequestedIPAddress()); ok {
+			requested = ip.Unmap()
+		}
 		l, fresh, ok := s.opts.Alloc.Offer(mac, requested, offerHold)
 		if !ok {
 			return Lease{}, false
@@ -359,17 +389,21 @@ func (s *Server) allocate(mac string, m *dhcpv4.DHCPv4, commit bool) (Lease, boo
 		// Only an address new to this client is probed. A renewal or a
 		// reservation is one it is already entitled to, and its own answer
 		// would quarantine the address out from under it.
-		if fresh && s.opts.Prober.InUse(l.IP) {
-			s.opts.Logger.Warn("an address in the pool answered a probe; quarantining it", "ip", l.IP)
-			s.opts.Alloc.Quarantine(l.IP)
+		if fresh && s.opts.Prober.InUse(l.IP, mac) {
 			s.opts.Alloc.Release(mac, l.IP)
+			if !s.opts.Alloc.Quarantine(l.IP) {
+				s.opts.Logger.Warn("an address in the pool answered a probe, and half the pool is already quarantined; not offering it",
+					"ip", l.IP)
+				return Lease{}, false
+			}
+			s.opts.Logger.Warn("an address in the pool answered a probe; quarantining it", "ip", l.IP)
 			l, _, ok = s.opts.Alloc.Offer(mac, netip.Addr{}, offerHold)
 			return l, ok
 		}
 		return l, true
 	}
 	hostname := sanitizeHostname(m.HostName())
-	l, ok := s.opts.Alloc.Allocate(mac, hostname, requested, s.opts.Cfg.LeaseTime)
+	l, ok := s.opts.Alloc.Confirm(mac, hostname, askedFor(m), s.opts.Cfg.LeaseTime)
 	if ok && hostname != "" && l.Hostname == "" {
 		s.opts.Logger.Warn("two clients claim one hostname; the later one gets an address and no name",
 			"hostname", hostname, "mac", mac)
@@ -377,17 +411,20 @@ func (s *Server) allocate(mac string, m *dhcpv4.DHCPv4, commit bool) (Lease, boo
 	return l, ok
 }
 
-func (s *Server) reply(conn net.PacketConn, peer net.Addr, m *dhcpv4.DHCPv4, t dhcpv4.MessageType, yours netip.Addr) {
+// reply sends our options, with yours and a lease time when it grants an
+// address. It goes to `to` when valid, else broadcast.
+func (s *Server) reply(conn net.PacketConn, m *dhcpv4.DHCPv4, t dhcpv4.MessageType, yours, to netip.Addr) {
 	self := net.IP(s.opts.Iface.Addr.AsSlice())
 	mods := []dhcpv4.Modifier{
 		dhcpv4.WithMessageType(t),
 		dhcpv4.WithServerIP(self),
 		dhcpv4.WithOption(dhcpv4.OptServerIdentifier(self)),
 		dhcpv4.WithOption(dhcpv4.OptSubnetMask(net.CIDRMask(s.opts.Cfg.Subnet.Bits(), 32))),
-		dhcpv4.WithOption(dhcpv4.OptIPAddressLeaseTime(s.opts.Cfg.LeaseTime)),
 	}
 	if yours.IsValid() {
-		mods = append(mods, dhcpv4.WithYourIP(net.IP(yours.AsSlice())))
+		mods = append(mods,
+			dhcpv4.WithYourIP(net.IP(yours.AsSlice())),
+			dhcpv4.WithOption(dhcpv4.OptIPAddressLeaseTime(s.opts.Cfg.LeaseTime)))
 	}
 	if s.opts.Cfg.Gateway.IsValid() {
 		mods = append(mods, dhcpv4.WithOption(dhcpv4.OptRouter(net.IP(s.opts.Cfg.Gateway.AsSlice()))))
@@ -398,19 +435,19 @@ func (s *Server) reply(conn net.PacketConn, peer net.Addr, m *dhcpv4.DHCPv4, t d
 	if s.opts.Domain != "" {
 		mods = append(mods, dhcpv4.WithOption(dhcpv4.OptDomainName(s.opts.Domain)))
 	}
-	s.send(conn, peer, m, mods...)
+	s.send(conn, to, m, mods...)
 }
 
-func (s *Server) nak(conn net.PacketConn, peer net.Addr, m *dhcpv4.DHCPv4) {
+func (s *Server) nak(conn net.PacketConn, m *dhcpv4.DHCPv4) {
 	self := net.IP(s.opts.Iface.Addr.AsSlice())
-	s.send(conn, peer, m,
+	s.send(conn, netip.Addr{}, m,
 		dhcpv4.WithMessageType(dhcpv4.MessageTypeNak),
 		dhcpv4.WithOption(dhcpv4.OptServerIdentifier(self)))
 }
 
 // askedFor is the address a REQUEST names: option 50 in SELECTING and
 // INIT-REBOOT, ciaddr in RENEWING and REBINDING. An invalid result means the
-// client named none and will take whatever we give it.
+// client named none.
 func askedFor(m *dhcpv4.DHCPv4) netip.Addr {
 	for _, ip := range []net.IP{m.RequestedIPAddress(), m.ClientIPAddr} {
 		if a, ok := netip.AddrFromSlice(ip); ok {
@@ -423,21 +460,30 @@ func askedFor(m *dhcpv4.DHCPv4) netip.Addr {
 }
 
 // inform answers a client that has an address already and wants only options.
-// No lease is allocated and nothing is persisted.
-func (s *Server) inform(conn net.PacketConn, peer net.Addr, m *dhcpv4.DHCPv4) {
-	s.reply(conn, peer, m, dhcpv4.MessageTypeAck, netip.Addr{})
+// No lease is allocated and nothing is persisted. RFC 2131 4.3.5: the ACK
+// goes to ciaddr; one outside our subnet is not answered, so a forged INFORM
+// cannot aim our reply at an arbitrary host.
+func (s *Server) inform(conn net.PacketConn, m *dhcpv4.DHCPv4) {
+	ci, ok := netip.AddrFromSlice(m.ClientIPAddr)
+	if !ok || !s.opts.Cfg.Subnet.Contains(ci.Unmap()) {
+		return
+	}
+	s.reply(conn, m, dhcpv4.MessageTypeAck, netip.Addr{}, ci.Unmap())
 }
 
-// send broadcasts the reply. Every reply is broadcast: a client that has no
+// send broadcasts the reply unless `to` is valid. A client that has no
 // address yet cannot be reached by unicast without a raw socket, and one that
-// does is still listening on 0.0.0.0:68.
-func (s *Server) send(conn net.PacketConn, _ net.Addr, m *dhcpv4.DHCPv4, mods ...dhcpv4.Modifier) {
+// does is still listening on 0.0.0.0:68; only INFORM is unicast.
+func (s *Server) send(conn net.PacketConn, to netip.Addr, m *dhcpv4.DHCPv4, mods ...dhcpv4.Modifier) {
 	reply, err := dhcpv4.NewReplyFromRequest(m, mods...)
 	if err != nil {
 		s.opts.Logger.Warn("could not build a dhcp reply", "error", err)
 		return
 	}
 	dst := &net.UDPAddr{IP: net.IPv4bcast, Port: 68}
+	if to.IsValid() {
+		dst.IP = net.IP(to.AsSlice())
+	}
 	if _, err := conn.WriteTo(reply.ToBytes(), dst); err != nil {
 		s.opts.Logger.Warn("could not send a dhcp reply", "error", err)
 	}

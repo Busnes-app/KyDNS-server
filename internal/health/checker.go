@@ -226,6 +226,16 @@ func (c *Checker) record(svc store.Service, forced string, probeErr error) {
 	}
 }
 
+// Probes share two transports, so connections are pooled and idle ones close
+// instead of a fresh, never-closed pool per probe.
+var (
+	verifiedTransport = &http.Transport{IdleConnTimeout: 90 * time.Second}
+	insecureTransport = &http.Transport{
+		IdleConnTimeout: 90 * time.Second,
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+)
+
 // probe supports http(s) and tcp. For HTTP a 2xx or 3xx is healthy and
 // redirects are not followed; for tcp a completed connection is healthy and
 // nothing is read or written.
@@ -247,10 +257,14 @@ func (c *Checker) probe(ctx context.Context, target string, insecure bool) error
 	if err != nil {
 		return err
 	}
+	// Private services usually carry self-signed certificates, so
+	// verification is opt-out per service rather than globally disabled.
+	transport := verifiedTransport
+	if insecure {
+		transport = insecureTransport
+	}
 	client := &http.Client{
-		// Private services usually carry self-signed certificates, so
-		// verification is opt-out per service rather than globally disabled.
-		Transport: &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: insecure}},
+		Transport: transport,
 		CheckRedirect: func(*http.Request, []*http.Request) error {
 			return http.ErrUseLastResponse
 		},

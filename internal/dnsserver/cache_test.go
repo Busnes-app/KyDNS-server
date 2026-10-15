@@ -148,6 +148,26 @@ func TestNegativeCachingUsesSOAMinimum(t *testing.T) {
 	}
 }
 
+// RFC 2308 section 5: the negative TTL is the lesser of the SOA's own TTL and
+// its MINIMUM, so a short-lived SOA cannot be cached as a long NXDOMAIN.
+func TestNegativeTTLIsLesserOfSOATTLAndMinimum(t *testing.T) {
+	c := NewCache(10, 5, 3600, 3600)
+	m := new(dns.Msg)
+	m.Rcode = dns.RcodeNameError
+	m.Ns = []dns.RR{&dns.SOA{
+		Hdr:    dns.RR_Header{Name: "example.com.", Rrtype: dns.TypeSOA, Class: dns.ClassINET, Ttl: 30},
+		Minttl: 900,
+	}}
+	q := question("nope.example.com.")
+	now := time.Now()
+	c.now = func() time.Time { return now }
+	c.Put(q, false, m)
+	now = now.Add(40 * time.Second)
+	if _, ok := c.Get(q, false); ok {
+		t.Error("negative entry outlived the SOA's own 30s TTL")
+	}
+}
+
 // A negative answer with no SOA has no basis for a TTL and must not be cached.
 func TestNegativeWithoutSOANotCached(t *testing.T) {
 	c := NewCache(10, 5, 3600, 60)

@@ -1,6 +1,10 @@
 package policy
 
-import "github.com/Busnes-app/kydns-server/internal/store"
+import (
+	"strings"
+
+	"github.com/Busnes-app/kydns-server/internal/store"
+)
 
 // The values the query log's policy field can take, alongside a list name.
 const (
@@ -19,7 +23,8 @@ type Decision struct {
 	Blocked bool
 	Policy  string
 	TTL     uint32
-	// Name is the normalized query name, empty when it could not be normalized.
+	// Name is the normalized query name, or its lowercased form when strict
+	// normalization failed.
 	// It exists so the block counters can key on it without normalizing twice.
 	Name string
 }
@@ -67,15 +72,19 @@ func Build(set store.BlacklistSettings, lists []store.BlacklistList, rules []sto
 }
 
 // Decide applies the precedence the spec fixes: an explicit deny, then an
-// explicit allow, then the enabled lists. A name it cannot normalize is
-// forwarded: filtering never turns a strange query into a failure.
+// explicit allow, then the enabled lists. A name it cannot normalize (an
+// underscore label, say) is still matched leniently by its suffixes, so it is
+// no way around the list, and otherwise forwarded rather than failed.
 func (s *Snapshot) Decide(name string) Decision {
 	if s == nil || !s.enabled {
 		return Decision{Policy: PolicyForwarded}
 	}
 	n, err := Normalize(name)
 	if err != nil {
-		return Decision{Policy: PolicyForwarded}
+		n = strings.TrimSuffix(strings.ToLower(strings.TrimSpace(name)), ".")
+		if n == "" {
+			return Decision{Policy: PolicyForwarded}
+		}
 	}
 	if s.deny.Match(n) {
 		return Decision{Blocked: true, Policy: PolicyDeny, TTL: s.ttl, Name: n}

@@ -22,12 +22,14 @@ type captureConn struct {
 	net.PacketConn
 	mu   sync.Mutex
 	sent [][]byte
+	to   []net.Addr
 }
 
-func (c *captureConn) WriteTo(b []byte, _ net.Addr) (int, error) {
+func (c *captureConn) WriteTo(b []byte, to net.Addr) (int, error) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	c.sent = append(c.sent, append([]byte(nil), b...))
+	c.to = append(c.to, to)
 	return len(b), nil
 }
 
@@ -143,9 +145,13 @@ func newTestServerWithClock(t *testing.T) (*Server, *memStore, *time.Time) {
 
 // stubProber reports exactly one address as already in use, exercising the
 // probe-hit branch nopProber can never reach.
-type stubProber struct{ inUse netip.Addr }
+// by is the MAC answering for it; empty is some device that is no client.
+type stubProber struct {
+	inUse netip.Addr
+	by    string
+}
 
-func (p stubProber) InUse(ip netip.Addr) bool { return ip == p.inUse }
+func (p stubProber) InUse(ip netip.Addr, mac string) bool { return ip == p.inUse && mac != p.by }
 
 func discover(mac string, hostname string) *dhcpv4.DHCPv4 {
 	hw, err := net.ParseMAC(mac)
@@ -169,6 +175,21 @@ func request(mac, hostname string, requested netip.Addr) *dhcpv4.DHCPv4 {
 		m.UpdateOption(dhcpv4.OptRequestedIPAddress(net.IP(requested.AsSlice())))
 	}
 	return m
+}
+
+// bind runs the DISCOVER-OFFER-REQUEST exchange a real client makes, leaving
+// the server's answer to the REQUEST in c. No offer, no REQUEST.
+func bind(t *testing.T, s *Server, c *captureConn, mac, hostname string) {
+	t.Helper()
+	oc := &captureConn{}
+	s.handle(oc, &net.UDPAddr{IP: net.IPv4zero}, discover(mac, hostname))
+	offers := oc.replies(t)
+	if len(offers) != 1 {
+		return
+	}
+	r := request(mac, hostname, netip.MustParseAddr(offers[0].YourIPAddr.String()))
+	r.UpdateOption(dhcpv4.OptServerIdentifier(offers[0].ServerIdentifier()))
+	s.handle(c, &net.UDPAddr{IP: net.IPv4zero}, r)
 }
 
 // anonymous builds a packet with no chaddr and drives it through the real
@@ -242,7 +263,7 @@ func TestDiscoverDoesNotPersistALease(t *testing.T) {
 func TestRequestGetsAnAckAndPersists(t *testing.T) {
 	s, ms := newTestServer(t)
 	c := &captureConn{}
-	s.handle(c, &net.UDPAddr{IP: net.IPv4zero}, request("aa:aa:aa:aa:aa:aa", "laptop", netip.Addr{}))
+	bind(t, s, c, "aa:aa:aa:aa:aa:aa", "laptop")
 
 	replies := c.replies(t)
 	if len(replies) != 1 || replies[0].MessageType() != dhcpv4.MessageTypeAck {
@@ -273,7 +294,7 @@ func TestRequestForAnAddressWeDoNotControlIsNaked(t *testing.T) {
 
 func TestReleaseFreesTheAddress(t *testing.T) {
 	s, ms := newTestServer(t)
-	s.handle(&captureConn{}, &net.UDPAddr{IP: net.IPv4zero}, request("aa:aa:aa:aa:aa:aa", "laptop", netip.Addr{}))
+	bind(t, s, &captureConn{}, "aa:aa:aa:aa:aa:aa", "laptop")
 
 	rel := discover("aa:aa:aa:aa:aa:aa", "laptop")
 	rel.UpdateOption(dhcpv4.OptMessageType(dhcpv4.MessageTypeRelease))
@@ -302,8 +323,7 @@ func TestReleaseMustMatchTheLeaseAndServer(t *testing.T) {
 	} {
 		t.Run(name, func(t *testing.T) {
 			s, ms := newTestServer(t)
-			s.handle(&captureConn{}, &net.UDPAddr{IP: net.IPv4zero},
-				request("aa:aa:aa:aa:aa:aa", "laptop", netip.Addr{}))
+			bind(t, s, &captureConn{}, "aa:aa:aa:aa:aa:aa", "laptop")
 			rel := discover("aa:aa:aa:aa:aa:aa", "laptop")
 			rel.UpdateOption(dhcpv4.OptMessageType(dhcpv4.MessageTypeRelease))
 			rel.ClientIPAddr = net.ParseIP("192.168.1.10")
@@ -320,7 +340,7 @@ func TestReleaseMustMatchTheLeaseAndServer(t *testing.T) {
 func TestDeclineQuarantinesTheAddress(t *testing.T) {
 	s, _ := newTestServer(t)
 	c := &captureConn{}
-	s.handle(c, &net.UDPAddr{IP: net.IPv4zero}, request("aa:aa:aa:aa:aa:aa", "one", netip.Addr{}))
+	bind(t, s, c, "aa:aa:aa:aa:aa:aa", "one")
 	first := c.replies(t)[0].YourIPAddr
 
 	dec := discover("aa:aa:aa:aa:aa:aa", "one")
@@ -329,7 +349,7 @@ func TestDeclineQuarantinesTheAddress(t *testing.T) {
 	s.handle(&captureConn{}, &net.UDPAddr{IP: net.IPv4zero}, dec)
 
 	c2 := &captureConn{}
-	s.handle(c2, &net.UDPAddr{IP: net.IPv4zero}, request("bb:bb:bb:bb:bb:bb", "two", netip.Addr{}))
+	bind(t, s, c2, "bb:bb:bb:bb:bb:bb", "two")
 	if got := c2.replies(t)[0].YourIPAddr; got.Equal(first) {
 		t.Fatalf("re-offered %v after it was declined", got)
 	}
@@ -339,6 +359,7 @@ func TestInformGetsOptionsAndNoAddress(t *testing.T) {
 	s, ms := newTestServer(t)
 	inf := discover("aa:aa:aa:aa:aa:aa", "laptop")
 	inf.UpdateOption(dhcpv4.OptMessageType(dhcpv4.MessageTypeInform))
+	inf.ClientIPAddr = net.IP{192, 168, 1, 77} // RFC 2131 4.4.3: INFORM carries ciaddr
 	c := &captureConn{}
 	s.handle(c, &net.UDPAddr{IP: net.IPv4zero}, inf)
 
@@ -356,8 +377,8 @@ func TestInformGetsOptionsAndNoAddress(t *testing.T) {
 
 func TestSecondClaimOnAHostnameGetsNoName(t *testing.T) {
 	s, ms := newTestServer(t)
-	s.handle(&captureConn{}, &net.UDPAddr{IP: net.IPv4zero}, request("aa:aa:aa:aa:aa:aa", "laptop", netip.Addr{}))
-	s.handle(&captureConn{}, &net.UDPAddr{IP: net.IPv4zero}, request("bb:bb:bb:bb:bb:bb", "laptop", netip.Addr{}))
+	bind(t, s, &captureConn{}, "aa:aa:aa:aa:aa:aa", "laptop")
+	bind(t, s, &captureConn{}, "bb:bb:bb:bb:bb:bb", "laptop")
 
 	got, _ := ms.DHCPLeases()
 	if len(got) != 2 {
@@ -376,7 +397,7 @@ func TestSecondClaimOnAHostnameGetsNoName(t *testing.T) {
 
 func TestLeasesImplementsTheDiscoverySource(t *testing.T) {
 	s, _ := newTestServer(t)
-	s.handle(&captureConn{}, &net.UDPAddr{IP: net.IPv4zero}, request("aa:aa:aa:aa:aa:aa", "laptop", netip.Addr{}))
+	bind(t, s, &captureConn{}, "aa:aa:aa:aa:aa:aa", "laptop")
 
 	ls, err := s.Leases(t.Context())
 	if err != nil {
@@ -465,7 +486,7 @@ func TestDiscoverHostnameIsNotClaimed(t *testing.T) {
 	s.handle(&captureConn{}, &net.UDPAddr{IP: net.IPv4zero}, discover("aa:aa:aa:aa:aa:aa", "laptop"))
 
 	c := &captureConn{}
-	s.handle(c, &net.UDPAddr{IP: net.IPv4zero}, request("bb:bb:bb:bb:bb:bb", "laptop", netip.Addr{}))
+	bind(t, s, c, "bb:bb:bb:bb:bb:bb", "laptop")
 	if got := c.replies(t)[0].MessageType(); got != dhcpv4.MessageTypeAck {
 		t.Fatalf("second client's REQUEST for the name got %v, want ACK", got)
 	}
@@ -477,7 +498,7 @@ func TestDiscoverHostnameIsNotClaimed(t *testing.T) {
 
 func TestAckGrantsTheFullLeaseTerm(t *testing.T) {
 	s, ms := newTestServer(t)
-	s.handle(&captureConn{}, &net.UDPAddr{IP: net.IPv4zero}, request("aa:aa:aa:aa:aa:aa", "laptop", netip.Addr{}))
+	bind(t, s, &captureConn{}, "aa:aa:aa:aa:aa:aa", "laptop")
 
 	got, _ := ms.DHCPLeases()
 	if len(got) != 1 {
@@ -583,7 +604,7 @@ func TestStopCancelsAndIsIdempotent(t *testing.T) {
 // option 12; the lease it already holds has to survive it intact.
 func TestDiscoverDoesNotWeakenAnExistingLease(t *testing.T) {
 	s, ms := newTestServer(t)
-	s.handle(&captureConn{}, &net.UDPAddr{IP: net.IPv4zero}, request("aa:aa:aa:aa:aa:aa", "laptop", netip.Addr{}))
+	bind(t, s, &captureConn{}, "aa:aa:aa:aa:aa:aa", "laptop")
 	before, _ := ms.DHCPLeases()
 	if len(before) != 1 || before[0].Hostname != "laptop" {
 		t.Fatalf("setup: persisted %+v, want one laptop lease", before)
@@ -616,7 +637,7 @@ func TestDiscoverDoesNotWeakenAnExistingLease(t *testing.T) {
 func TestDiscoverDoesNotFreeAnExistingLeaseForAnotherClient(t *testing.T) {
 	s, _, now := newTestServerWithClock(t)
 	c := &captureConn{}
-	s.handle(c, &net.UDPAddr{IP: net.IPv4zero}, request("aa:aa:aa:aa:aa:aa", "laptop", netip.Addr{}))
+	bind(t, s, c, "aa:aa:aa:aa:aa:aa", "laptop")
 	victim := c.replies(t)[0].YourIPAddr
 	// Not prober-blind: the victim answers a probe of its own address.
 	s.opts.Prober = stubProber{inUse: netip.MustParseAddr(victim.String())}
@@ -625,7 +646,7 @@ func TestDiscoverDoesNotFreeAnExistingLeaseForAnotherClient(t *testing.T) {
 	*now = now.Add(offerHold + time.Second)
 
 	c2 := &captureConn{}
-	s.handle(c2, &net.UDPAddr{IP: net.IPv4zero}, request("bb:bb:bb:bb:bb:bb", "other", netip.Addr{}))
+	bind(t, s, c2, "bb:bb:bb:bb:bb:bb", "other")
 	if got := c2.replies(t)[0].YourIPAddr; got.Equal(victim) {
 		t.Fatalf("acked %v to a second client while the first still holds it", got)
 	}
@@ -649,7 +670,7 @@ func TestDiscoverDoesNotWeakenAReservedClientsLease(t *testing.T) {
 	res := netip.MustParseAddr("192.168.1.11")
 	s.opts.Alloc.SetReservations(map[string]netip.Addr{mac: res})
 
-	s.handle(&captureConn{}, &net.UDPAddr{IP: net.IPv4zero}, request(mac, "laptop", netip.Addr{}))
+	bind(t, s, &captureConn{}, mac, "laptop")
 	s.handle(&captureConn{}, &net.UDPAddr{IP: net.IPv4zero}, discover(mac, ""))
 
 	ls, _ := s.Leases(t.Context())
@@ -668,8 +689,8 @@ func TestDiscoverDoesNotWeakenAReservedClientsLease(t *testing.T) {
 // and a device that sends no hostname gets no name.
 func TestRequestWithNoHostnameClearsTheName(t *testing.T) {
 	s, ms := newTestServer(t)
-	s.handle(&captureConn{}, &net.UDPAddr{IP: net.IPv4zero}, request("aa:aa:aa:aa:aa:aa", "laptop", netip.Addr{}))
-	s.handle(&captureConn{}, &net.UDPAddr{IP: net.IPv4zero}, request("aa:aa:aa:aa:aa:aa", "", netip.Addr{}))
+	bind(t, s, &captureConn{}, "aa:aa:aa:aa:aa:aa", "laptop")
+	bind(t, s, &captureConn{}, "aa:aa:aa:aa:aa:aa", "")
 
 	got, _ := ms.DHCPLeases()
 	if len(got) != 1 || got[0].Hostname != "" {
@@ -686,7 +707,7 @@ func TestRequestWithNoHostnameClearsTheName(t *testing.T) {
 func TestDiscoverDoesNotProbeAnAddressTheClientAlreadyHolds(t *testing.T) {
 	s, ms := newTestServer(t)
 	const mac = "aa:aa:aa:aa:aa:aa"
-	s.handle(&captureConn{}, &net.UDPAddr{IP: net.IPv4zero}, request(mac, "laptop", netip.Addr{}))
+	bind(t, s, &captureConn{}, mac, "laptop")
 	before, _ := ms.DHCPLeases()
 	if len(before) != 1 {
 		t.Fatalf("setup: persisted %+v, want one laptop lease", before)
@@ -720,7 +741,7 @@ func TestDiscoverDoesNotProbeAReservedClientsAddress(t *testing.T) {
 	const mac = "aa:aa:aa:aa:aa:aa"
 	res := netip.MustParseAddr("192.168.1.11")
 	s.opts.Alloc.SetReservations(map[string]netip.Addr{mac: res})
-	s.handle(&captureConn{}, &net.UDPAddr{IP: net.IPv4zero}, request(mac, "laptop", netip.Addr{}))
+	bind(t, s, &captureConn{}, mac, "laptop")
 	s.opts.Prober = stubProber{inUse: res}
 
 	s.handle(&captureConn{}, &net.UDPAddr{IP: net.IPv4zero}, discover(mac, ""))
@@ -744,7 +765,7 @@ func TestDiscoverDoesNotProbeAReservedClientsAddress(t *testing.T) {
 func TestDiscoverProbesAnExpiredHoldingsAddress(t *testing.T) {
 	s, _, now := newTestServerWithClock(t)
 	c := &captureConn{}
-	s.handle(c, &net.UDPAddr{IP: net.IPv4zero}, request("aa:aa:aa:aa:aa:aa", "laptop", netip.Addr{}))
+	bind(t, s, c, "aa:aa:aa:aa:aa:aa", "laptop")
 	held := c.replies(t)[0].YourIPAddr
 
 	*now = now.Add(24*time.Hour + time.Second) // past the lease's Expires
@@ -795,7 +816,7 @@ func TestProbeHitOnARequestedAddressSkipsAndQuarantines(t *testing.T) {
 func TestDeclineFromAnotherClientLeavesTheLeaseAlone(t *testing.T) {
 	s, ms := newTestServer(t)
 	c := &captureConn{}
-	s.handle(c, &net.UDPAddr{IP: net.IPv4zero}, request("aa:aa:aa:aa:aa:aa", "nas", netip.Addr{}))
+	bind(t, s, c, "aa:aa:aa:aa:aa:aa", "nas")
 	victim := c.replies(t)[0].YourIPAddr
 
 	dec := discover("bb:bb:bb:bb:bb:bb", "")
@@ -875,7 +896,7 @@ func TestAnonymousDeclineQuarantinesNothing(t *testing.T) {
 func TestAnonymousReleaseChangesNothing(t *testing.T) {
 	s, ms := newTestServer(t)
 	c := &captureConn{}
-	s.handle(c, &net.UDPAddr{IP: net.IPv4zero}, request("aa:aa:aa:aa:aa:aa", "nas", netip.Addr{}))
+	bind(t, s, c, "aa:aa:aa:aa:aa:aa", "nas")
 	var rebuilds int
 	s.opts.OnChange = func() { rebuilds++ }
 
@@ -897,7 +918,7 @@ func TestAnonymousReleaseChangesNothing(t *testing.T) {
 func TestLeasesAreOrderedByAddress(t *testing.T) {
 	s, _ := newTestServer(t)
 	for _, mac := range []string{"cc:cc:cc:cc:cc:cc", "aa:aa:aa:aa:aa:aa", "bb:bb:bb:bb:bb:bb"} {
-		s.handle(&captureConn{}, &net.UDPAddr{IP: net.IPv4zero}, request(mac, "h"+mac[:2], netip.Addr{}))
+		bind(t, s, &captureConn{}, mac, "h"+mac[:2])
 	}
 	want := []string{"192.168.1.10", "192.168.1.11", "192.168.1.12"}
 	for i := 0; i < 20; i++ {
@@ -929,7 +950,7 @@ func TestConcurrentRequestsCannotShareAHostname(t *testing.T) {
 			wg.Add(1)
 			go func() {
 				defer wg.Done()
-				s.handle(&captureConn{}, &net.UDPAddr{IP: net.IPv4zero}, request(mac, "laptop", netip.Addr{}))
+				bind(t, s, &captureConn{}, mac, "laptop")
 			}()
 		}
 		wg.Wait()
@@ -948,7 +969,7 @@ func TestConcurrentRequestsCannotShareAHostname(t *testing.T) {
 // different one: the spec's promoted replica NAKs the clients it does not
 // know, and RFC 2131 4.3.2 says the same.
 func TestRequestForAnInSubnetAddressOutsideThePoolIsNaked(t *testing.T) {
-	s, _ := newTestServer(t)
+	s, ms := newTestServer(t)
 	c := &captureConn{}
 	s.handle(c, &net.UDPAddr{IP: net.IPv4zero},
 		request("aa:aa:aa:aa:aa:aa", "laptop", netip.MustParseAddr("192.168.1.50")))
@@ -956,6 +977,13 @@ func TestRequestForAnInSubnetAddressOutsideThePoolIsNaked(t *testing.T) {
 	replies := c.replies(t)
 	if len(replies) != 1 || replies[0].MessageType() != dhcpv4.MessageTypeNak {
 		t.Fatalf("replies = %+v, want one NAK, not an offer of some other address", replies)
+	}
+	// Refused means refused: no lease, and no name in DNS, left behind.
+	if ls := s.opts.Alloc.Leases(); len(ls) != 0 {
+		t.Fatalf("the NAKed client still holds %+v", ls)
+	}
+	if rows, _ := ms.DHCPLeases(); len(rows) != 0 {
+		t.Fatalf("the NAKed client's lease was persisted: %+v", rows)
 	}
 }
 
@@ -976,7 +1004,7 @@ func TestRenewalOfALeaseWeDoNotKnowIsNaked(t *testing.T) {
 func TestRenewalOfALeaseWeDoKnowIsAcked(t *testing.T) {
 	s, _ := newTestServer(t)
 	c := &captureConn{}
-	s.handle(c, &net.UDPAddr{IP: net.IPv4zero}, request("aa:aa:aa:aa:aa:aa", "laptop", netip.Addr{}))
+	bind(t, s, c, "aa:aa:aa:aa:aa:aa", "laptop")
 	held := c.replies(t)[0].YourIPAddr
 
 	m := request("aa:aa:aa:aa:aa:aa", "laptop", netip.Addr{})
@@ -1025,7 +1053,7 @@ func TestDiscoverFromAReservedMACDoesNotEvictTheHolder(t *testing.T) {
 	s, ms := newTestServer(t)
 	const holder, reserved = "aa:aa:aa:aa:aa:aa", "bb:bb:bb:bb:bb:bb"
 	c := &captureConn{}
-	s.handle(c, &net.UDPAddr{IP: net.IPv4zero}, request(holder, "nas", netip.Addr{}))
+	bind(t, s, c, holder, "nas")
 	held := c.replies(t)[0].YourIPAddr
 	before, _ := ms.DHCPLeases()
 	if len(before) != 1 {
@@ -1061,7 +1089,7 @@ func TestDiscoverDoesNotMoveAClientOntoANewReservation(t *testing.T) {
 	s, ms := newTestServer(t)
 	const mac = "aa:aa:aa:aa:aa:aa"
 	c := &captureConn{}
-	s.handle(c, &net.UDPAddr{IP: net.IPv4zero}, request(mac, "nas", netip.Addr{}))
+	bind(t, s, c, mac, "nas")
 	held := c.replies(t)[0].YourIPAddr
 	before, _ := ms.DHCPLeases()
 	res := netip.MustParseAddr("192.168.1.11")
@@ -1094,7 +1122,7 @@ func TestDiscoverDoesNotMoveAClientOntoANewReservation(t *testing.T) {
 func TestRequestMovesAClientOntoItsReservation(t *testing.T) {
 	s, ms := newTestServer(t)
 	const mac = "aa:aa:aa:aa:aa:aa"
-	s.handle(&captureConn{}, &net.UDPAddr{IP: net.IPv4zero}, request(mac, "nas", netip.Addr{}))
+	bind(t, s, &captureConn{}, mac, "nas")
 	res := netip.MustParseAddr("192.168.1.11")
 	s.opts.Alloc.SetReservations(map[string]netip.Addr{mac: res})
 
@@ -1128,7 +1156,7 @@ func TestAReservedClientReachesAHeldAddressThroughRequest(t *testing.T) {
 	s, ms := newTestServer(t)
 	const holder, reserved = "aa:aa:aa:aa:aa:aa", "bb:bb:bb:bb:bb:bb"
 	c := &captureConn{}
-	s.handle(c, &net.UDPAddr{IP: net.IPv4zero}, request(holder, "nas", netip.Addr{}))
+	bind(t, s, c, holder, "nas")
 	held := netip.MustParseAddr(c.replies(t)[0].YourIPAddr.String())
 	s.opts.Alloc.SetReservations(map[string]netip.Addr{reserved: held})
 
@@ -1170,10 +1198,10 @@ func TestDiscoverKeepsALiveLeaseWhenTheReservationRulesBothRefuse(t *testing.T) 
 	const macA, macB, macC = "aa:aa:aa:aa:aa:aa", "bb:bb:bb:bb:bb:bb", "cc:cc:cc:cc:cc:cc"
 	peer := &net.UDPAddr{IP: net.IPv4zero}
 	c := &captureConn{}
-	s.handle(c, peer, request(macA, "nas", netip.Addr{}))
+	bind(t, s, c, macA, "nas")
 	first := netip.MustParseAddr(c.replies(t)[0].YourIPAddr.String())
 	c2 := &captureConn{}
-	s.handle(c2, peer, request(macB, "backup", netip.Addr{}))
+	bind(t, s, c2, macB, "backup")
 	second := netip.MustParseAddr(c2.replies(t)[0].YourIPAddr.String())
 	before, _ := ms.DHCPLeases()
 	s.opts.Alloc.SetReservations(map[string]netip.Addr{macB: first, macC: second})
@@ -1216,7 +1244,7 @@ func TestDeclineForAPromisedReservationTellsTheOperator(t *testing.T) {
 	const mac = "aa:aa:aa:aa:aa:aa"
 	res := netip.MustParseAddr("192.168.1.11")
 	peer := &net.UDPAddr{IP: net.IPv4zero}
-	s.handle(&captureConn{}, peer, request(mac, "nas", netip.Addr{})) // a live lease elsewhere
+	bind(t, s, &captureConn{}, mac, "nas") // a live lease elsewhere
 	s.opts.Alloc.SetReservations(map[string]netip.Addr{mac: res})
 	s.handle(&captureConn{}, peer, discover(mac, "")) // promises res without leasing it
 
@@ -1266,4 +1294,255 @@ func TestDiscoverForAClientOnAProtectedAddressConverges(t *testing.T) {
 	if reply.MessageType() != dhcpv4.MessageTypeAck {
 		t.Fatalf("REQUEST for the offered %v got %v, want an ACK", offered, reply.MessageType())
 	}
+}
+
+// A REQUEST is unauthenticated. One that no DISCOVER preceded, from a MAC we
+// hold nothing for, must not commit a lease: a flood of them with random MACs
+// would otherwise hold the pool for the full term, across a restart.
+func TestRequestFloodWithoutDiscoverDoesNotConsumeThePool(t *testing.T) {
+	s, ms := newTestServer(t)
+	ours := net.IP(testConfig().Host.AsSlice())
+	for i := range 30 {
+		mac := net.HardwareAddr{0x02, 0, 0, 0, 0, byte(i)}.String()
+		pick := netip.MustParseAddr("192.168.1.10")
+		for range i % 3 {
+			pick = pick.Next()
+		}
+		var m *dhcpv4.DHCPv4
+		switch i % 3 {
+		case 0: // names no address at all
+			m = request(mac, "h", netip.Addr{})
+		case 1: // INIT-REBOOT for a free address
+			m = request(mac, "h", pick)
+		case 2: // SELECTING us, with no offer behind it
+			m = request(mac, "h", pick)
+			m.UpdateOption(dhcpv4.OptServerIdentifier(ours))
+		}
+		c := &captureConn{}
+		s.handle(c, &net.UDPAddr{IP: net.IPv4zero}, m)
+		for _, r := range c.replies(t) {
+			if r.MessageType() != dhcpv4.MessageTypeNak {
+				t.Fatalf("unsolicited REQUEST %d drew %v, want NAK", i, r.MessageType())
+			}
+		}
+	}
+	if ls := s.opts.Alloc.Leases(); len(ls) != 0 {
+		t.Fatalf("the flood committed %d leases: %+v", len(ls), ls)
+	}
+	if rows, _ := ms.DHCPLeases(); len(rows) != 0 {
+		t.Fatalf("the flood persisted %d leases", len(rows))
+	}
+	c := &captureConn{}
+	bind(t, s, c, "aa:aa:aa:aa:aa:aa", "laptop")
+	if r := c.replies(t); len(r) != 1 || r[0].MessageType() != dhcpv4.MessageTypeAck || r[0].YourIPAddr.String() != "192.168.1.10" {
+		t.Fatalf("a real client after the flood got %+v, want an ACK for 192.168.1.10", r)
+	}
+}
+
+// RFC 2131 4.3.2: a REQUEST naming another server means the client took that
+// server's offer. It is not ours to answer, and our hold for it is released.
+func TestRequestNamingAnotherServerIsIgnored(t *testing.T) {
+	s, ms := newTestServer(t)
+	const mac = "aa:aa:aa:aa:aa:aa"
+	s.handle(&captureConn{}, &net.UDPAddr{IP: net.IPv4zero}, discover(mac, "laptop"))
+
+	m := request(mac, "laptop", netip.MustParseAddr("192.168.1.10"))
+	m.UpdateOption(dhcpv4.OptServerIdentifier(net.IP{192, 168, 1, 99}))
+	c := &captureConn{}
+	s.handle(c, &net.UDPAddr{IP: net.IPv4zero}, m)
+	if r := c.replies(t); len(r) != 0 {
+		t.Fatalf("a REQUEST for another server drew %+v, want silence", r)
+	}
+	if ls := s.opts.Alloc.Leases(); len(ls) != 0 {
+		t.Fatalf("leases = %+v, want the offer hold released", ls)
+	}
+	if rows, _ := ms.DHCPLeases(); len(rows) != 0 {
+		t.Fatalf("persisted %+v, want nothing", rows)
+	}
+}
+
+// The release covers an offer hold only: a forged REQUEST naming another
+// server must not end a lease the client holds.
+func TestRequestNamingAnotherServerLeavesALeaseAlone(t *testing.T) {
+	s, _ := newTestServer(t)
+	const mac = "aa:aa:aa:aa:aa:aa"
+	bind(t, s, &captureConn{}, mac, "laptop")
+
+	m := request(mac, "laptop", netip.MustParseAddr("192.168.1.10"))
+	m.UpdateOption(dhcpv4.OptServerIdentifier(net.IP{192, 168, 1, 99}))
+	s.handle(&captureConn{}, &net.UDPAddr{IP: net.IPv4zero}, m)
+	if ls, _ := s.Leases(t.Context()); len(ls) != 1 || ls[0].Hostname != "laptop" {
+		t.Fatalf("leases = %+v, want laptop still leased", ls)
+	}
+}
+
+// Relaying is unsupported: a relayed client sits on another segment, and our
+// pool and broadcast reply serve only this one. Logged once, not per packet.
+func TestRelayedPacketsAreDropped(t *testing.T) {
+	s, ms := newTestServer(t)
+	var buf bytes.Buffer
+	s.opts.Logger = slog.New(slog.NewTextHandler(&buf, nil))
+	for _, mt := range []dhcpv4.MessageType{dhcpv4.MessageTypeDiscover, dhcpv4.MessageTypeRequest} {
+		m := discover("aa:aa:aa:aa:aa:aa", "laptop")
+		m.UpdateOption(dhcpv4.OptMessageType(mt))
+		m.GatewayIPAddr = net.IP{10, 0, 0, 1}
+		c := &captureConn{}
+		s.handle(c, &net.UDPAddr{IP: net.IPv4zero}, m)
+		if r := c.replies(t); len(r) != 0 {
+			t.Fatalf("a relayed %v drew %+v, want none", mt, r)
+		}
+	}
+	if ls := s.opts.Alloc.Leases(); len(ls) != 0 {
+		t.Fatalf("relayed packets took %+v", ls)
+	}
+	if rows, _ := ms.DHCPLeases(); len(rows) != 0 {
+		t.Fatalf("relayed packets persisted %+v", rows)
+	}
+	if n := strings.Count(buf.String(), "\n"); n != 1 || !strings.Contains(buf.String(), "relay") {
+		t.Fatalf("logged the relay drop %d times, want once: %s", n, buf.String())
+	}
+}
+
+// One bad packet must not take the process, and DNS with it, down.
+func TestAHandlerPanicIsRecovered(t *testing.T) {
+	s, _ := newTestServer(t)
+	var buf bytes.Buffer
+	s.opts.Logger = slog.New(slog.NewTextHandler(&buf, nil))
+	s.opts.OnChange = func() { panic("boom") }
+
+	bind(t, s, &captureConn{}, "aa:aa:aa:aa:aa:aa", "laptop")
+	if got := buf.String(); !strings.Contains(got, "boom") || !strings.Contains(got, "aa:aa:aa:aa:aa:aa") {
+		t.Fatalf("log = %q, want the panic logged with the MAC", got)
+	}
+}
+
+// RFC 2131 4.3.5: the ACK to an INFORM carries no lease time and goes to
+// ciaddr, the address the client already has.
+func TestInformAckHasNoLeaseTimeAndGoesToTheClient(t *testing.T) {
+	s, _ := newTestServer(t)
+	inf := discover("aa:aa:aa:aa:aa:aa", "")
+	inf.UpdateOption(dhcpv4.OptMessageType(dhcpv4.MessageTypeInform))
+	inf.ClientIPAddr = net.IP{192, 168, 1, 77}
+	c := &captureConn{}
+	s.handle(c, &net.UDPAddr{IP: net.IPv4zero}, inf)
+
+	r := c.replies(t)
+	if len(r) != 1 || r[0].MessageType() != dhcpv4.MessageTypeAck {
+		t.Fatalf("replies = %+v, want one ACK", r)
+	}
+	if r[0].Options.Has(dhcpv4.OptionIPAddressLeaseTime) {
+		t.Fatal("the ACK to an INFORM carries a lease time")
+	}
+	if got := c.to[0].String(); got != "192.168.1.77:68" {
+		t.Fatalf("sent to %s, want ciaddr 192.168.1.77:68", got)
+	}
+}
+
+// Unicast to ciaddr would make us a reflector toward any address a forged
+// INFORM names, so one from outside our subnet is not answered.
+func TestInformFromOutsideTheSubnetIsNotAnswered(t *testing.T) {
+	s, _ := newTestServer(t)
+	inf := discover("aa:aa:aa:aa:aa:aa", "")
+	inf.UpdateOption(dhcpv4.OptMessageType(dhcpv4.MessageTypeInform))
+	inf.ClientIPAddr = net.IP{8, 8, 8, 8}
+	c := &captureConn{}
+	s.handle(c, &net.UDPAddr{IP: net.IPv4zero}, inf)
+	if r := c.replies(t); len(r) != 0 {
+		t.Fatalf("replies = %+v, want none", r)
+	}
+}
+
+// server4 starts a goroutine per packet and a probe can hold one for its whole
+// budget, so past maxInFlight packets are dropped rather than queued.
+func TestPacketsBeyondTheConcurrencyLimitAreDropped(t *testing.T) {
+	s, _ := newTestServer(t)
+	for range cap(s.slots) {
+		s.slots <- struct{}{}
+	}
+	c := &captureConn{}
+	s.handle(c, &net.UDPAddr{IP: net.IPv4zero}, discover("aa:aa:aa:aa:aa:aa", ""))
+	if r := c.replies(t); len(r) != 0 {
+		t.Fatalf("a packet past the limit drew %+v, want none", r)
+	}
+	<-s.slots
+	s.handle(c, &net.UDPAddr{IP: net.IPv4zero}, discover("aa:aa:aa:aa:aa:aa", ""))
+	if r := c.replies(t); len(r) != 1 {
+		t.Fatalf("a packet with a free slot drew %d replies, want 1", len(r))
+	}
+	if n := len(s.slots); n != cap(s.slots)-1 {
+		t.Fatalf("%d slots held after the handler returned, want %d", n, cap(s.slots)-1)
+	}
+}
+
+// A client still on its own expired address answers the probe itself. That is
+// not a conflict, and must not quarantine the address out from under it.
+func TestDiscoverDoesNotQuarantineAClientsOwnExpiredAddress(t *testing.T) {
+	s, _, now := newTestServerWithClock(t)
+	const mac = "aa:aa:aa:aa:aa:aa"
+	c := &captureConn{}
+	bind(t, s, c, mac, "laptop")
+	held := netip.MustParseAddr(c.replies(t)[0].YourIPAddr.String())
+
+	*now = now.Add(24*time.Hour + time.Second)
+	s.opts.Prober = stubProber{inUse: held, by: mac}
+
+	c2 := &captureConn{}
+	s.handle(c2, &net.UDPAddr{IP: net.IPv4zero}, discover(mac, ""))
+	if r := c2.replies(t); len(r) != 1 || r[0].YourIPAddr.String() != held.String() {
+		t.Fatalf("replies = %+v, want %v offered back to its own client", r, held)
+	}
+	if _, ok := s.opts.Alloc.quarantine[held]; ok {
+		t.Fatalf("%v was quarantined by its own client answering the probe", held)
+	}
+}
+
+// Past the quarantine cap a probe hit is not offered anyway: handing out an
+// address something answers for is worse than no offer, and clients retry.
+func TestProbeHitPastTheQuarantineCapDrawsNoOffer(t *testing.T) {
+	s, _ := newTestServer(t)
+	s.opts.Alloc.Quarantine(netip.MustParseAddr("192.168.1.12")) // 1 of 3: the cap
+	hit := netip.MustParseAddr("192.168.1.10")
+	s.opts.Prober = stubProber{inUse: hit}
+
+	c := &captureConn{}
+	s.handle(c, &net.UDPAddr{IP: net.IPv4zero}, discover("aa:aa:aa:aa:aa:aa", ""))
+	if r := c.replies(t); len(r) != 0 {
+		t.Fatalf("replies = %+v, want no offer of %v", r, hit)
+	}
+	if ls := s.opts.Alloc.Leases(); len(ls) != 0 {
+		t.Fatalf("leases = %+v, want the hold on %v released", ls, hit)
+	}
+}
+
+// FuzzHandle drives arbitrary bytes through the path server4.Serve takes,
+// FromBytes then the handler. The handler recovers its own panics, so a
+// logged panic is the failure, not a crash.
+func FuzzHandle(f *testing.F) {
+	ours := net.IP(testConfig().Host.AsSlice())
+	sel := request("aa:aa:aa:aa:aa:aa", "laptop", netip.MustParseAddr("192.168.1.10"))
+	sel.UpdateOption(dhcpv4.OptServerIdentifier(ours))
+	inf := discover("aa:aa:aa:aa:aa:aa", "")
+	inf.UpdateOption(dhcpv4.OptMessageType(dhcpv4.MessageTypeInform))
+	inf.ClientIPAddr = net.IP{192, 168, 1, 77}
+	for _, m := range []*dhcpv4.DHCPv4{discover("aa:aa:aa:aa:aa:aa", "laptop"), sel, inf} {
+		f.Add(m.ToBytes())
+	}
+	f.Fuzz(func(t *testing.T, b []byte) {
+		m, err := dhcpv4.FromBytes(b)
+		if err != nil {
+			return
+		}
+		s, _ := newTestServer(t)
+		var buf bytes.Buffer
+		s.opts.Logger = slog.New(slog.NewTextHandler(&buf, nil))
+		// The same packet as a DISCOVER first, so a fuzzed REQUEST can reach
+		// the committing path.
+		d, _ := dhcpv4.FromBytes(b)
+		d.UpdateOption(dhcpv4.OptMessageType(dhcpv4.MessageTypeDiscover))
+		s.handle(&captureConn{}, &net.UDPAddr{IP: net.IPv4zero}, d)
+		s.handle(&captureConn{}, &net.UDPAddr{IP: net.IPv4zero}, m)
+		if strings.Contains(buf.String(), "panicked") {
+			t.Fatalf("handler panicked: %s", buf.String())
+		}
+	})
 }

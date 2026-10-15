@@ -67,8 +67,8 @@ func ValidateName(name, privateFQDN string) error {
 	if n == "" {
 		return invalid("name", "name_empty", "name is required")
 	}
-	if len(n) > 255 {
-		return invalid("name", "name_length", "name exceeds 255 characters")
+	if len(n) > 254 { // n carries the trailing dot; 253 characters without it
+		return invalid("name", "name_length", "name exceeds 253 characters")
 	}
 	if strings.Contains(n, "*") {
 		return invalid("name", "wildcard_unsupported", "wildcards are not supported")
