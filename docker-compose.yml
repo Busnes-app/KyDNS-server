@@ -115,11 +115,10 @@ volumes:
 #    server KYDNS_REPLICATION_LISTEN or KYDNS_REPLICATION_PRIMARY. A variable
 #    beats the file, and an empty one is ignored.
 #
-#    KyDNS speaks plain HTTP, and the admin UI answers only its own loopback
-#    or a trusted reverse proxy that reached it over HTTPS. Everything else
-#    gets 403; /healthz stays open. So put a TLS-terminating proxy in front
-#    and set KYDNS_TRUSTED_PROXIES in .env to the proxy's address, as KyDNS
-#    sees it:
+#    KyDNS speaks plain HTTP. Put a TLS-terminating proxy in front and use
+#    network controls to restrict port 8053 to that proxy before setup.
+#    KYDNS_TRUSTED_PROXIES trusts forwarded headers; it does not restrict access.
+#    Set it in .env to the proxy's address as KyDNS sees it:
 #
 #      KYDNS_TRUSTED_PROXIES=192.168.1.20
 #
@@ -128,7 +127,7 @@ volumes:
 #
 # 5. docker compose logs kydns | grep setup-token
 #    Open /setup through your proxy's https:// address and complete setup
-#    with that token. http://$KYDNS_IP:8053/ answers 403.
+#    with that token. Block direct access to http://$KYDNS_IP:8053/.
 # 6. Point a client at $KYDNS_IP for DNS and try:
 #      dig @$KYDNS_IP kypost.home.arpa
 #

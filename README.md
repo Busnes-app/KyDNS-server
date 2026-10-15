@@ -216,7 +216,7 @@ start, because KyDNS needs them before it has a database or a web UI:
 |---|---|---|
 | `data_dir` | *required* | Holds the database and the bootstrap/setup tokens. Back it up. |
 | `dns.listen` | `:53` | UDP and TCP. Port 53 needs root or `CAP_NET_BIND_SERVICE`. |
-| `admin.listen` | `127.0.0.1:8053` | Web UI and JSON API. Plain HTTP; answers only loopback or a trusted HTTPS proxy (`KYDNS_TRUSTED_PROXIES`). |
+| `admin.listen` | `127.0.0.1:8053` | Web UI and JSON API. Plain HTTP; use a TLS-terminating proxy and restrict network access when binding beyond loopback. |
 
 Two more are read from the file only if you run more than one server:
 `replication.listen` and `replication.primary`. Setting both is a startup
@@ -573,10 +573,10 @@ ssh -L 8053:127.0.0.1:8053 <this-host>
 ```
 
 then open `http://127.0.0.1:8053/setup` and enter the token to create your
-admin account. The admin listener answers only loopback, or a reverse proxy
-listed in `KYDNS_TRUSTED_PROXIES` that reached it over HTTPS; everything else
-gets 403, except `GET /healthz` and `/api/v1/healthz`. So publishing the UI on
-your LAN means a TLS-terminating reverse proxy: change `admin.listen` in
+admin account. To publish the UI on your LAN, use a TLS-terminating reverse
+proxy and firewall the admin port so only that proxy can reach it.
+`KYDNS_TRUSTED_PROXIES` controls forwarded headers, not network access.
+For a proxy on another host, change `admin.listen` in
 `/etc/kydns/kydns.yaml` to `0.0.0.0:8053` and set `KYDNS_TRUSTED_PROXIES` to the
 proxy's address (comma-separated IPs or CIDRs) with `systemctl edit kydns`.
 
@@ -720,13 +720,12 @@ defaults: `data_dir: /var/lib/kydns`, and `admin.listen: "0.0.0.0:8053"`.
 Leaving admin on `127.0.0.1` would bind the *container's* loopback, reachable
 from nowhere. `dns.listen` is already right at `:53`.
 
-`0.0.0.0` does not open the UI to the LAN. The admin listener answers only the
-container's own loopback, or a reverse proxy listed in `KYDNS_TRUSTED_PROXIES`
-that reached it over HTTPS; anything else gets 403, except `GET /healthz` and
-`/api/v1/healthz`. Put a TLS-terminating reverse proxy in front, set
-`KYDNS_TRUSTED_PROXIES` in `.env` to the proxy's address as KyDNS sees it
-(comma-separated IPs or CIDRs; `/0` is refused), and open `/setup` through the
-proxy's `https://` address. `http://$KYDNS_IP:8053/` answers 403.
+`0.0.0.0` exposes plain HTTP on the container's LAN address. Before setup,
+restrict port 8053 with network controls so only your TLS-terminating reverse
+proxy can connect. Set `KYDNS_TRUSTED_PROXIES` in `.env` to the proxy's address
+as KyDNS sees it (comma-separated IPs or CIDRs; `/0` is refused), and open
+`/setup` through the proxy's `https://` address. This setting trusts forwarded
+headers; it does not block direct access to `http://$KYDNS_IP:8053/`.
 
 The image already has both set, in `kydns.docker.yaml` baked in at
 `/etc/kydns/kydns.yaml`, so a `docker run` with no config mounted at all
