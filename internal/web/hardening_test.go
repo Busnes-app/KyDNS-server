@@ -155,3 +155,33 @@ func TestSSOClientSecretIsNeverRendered(t *testing.T) {
 		t.Fatalf("clear_secret left %q", secret())
 	}
 }
+
+// Reset commits after the old password was read, but before login creates a session.
+func TestResetRejectsOverlappingPasswordLogin(t *testing.T) {
+	h, srv := newWeb(t)
+	setupAndLogin(t, h)
+	newHash, err := auth.HashPassword("a-brand-new-password")
+	if err != nil {
+		t.Fatal(err)
+	}
+	verifyPassword = func(hash, password string) (bool, error) {
+		ok, err := auth.VerifyPassword(hash, password)
+		if resetErr := srv.o.Store.ResetAdmin(newHash, time.Now()); resetErr != nil {
+			t.Fatal(resetErr)
+		}
+		return ok, err
+	}
+	t.Cleanup(func() { verifyPassword = auth.VerifyPassword })
+	c := loginCookie(t, h)
+	if rec := get(t, h, "/settings", c); rec.Code != http.StatusSeeOther {
+		t.Fatalf("overlapping old-password login accessed settings: %d", rec.Code)
+	}
+	verifyPassword = auth.VerifyPassword
+	rec := postForm(t, h, "/login", url.Values{"password": {"a-brand-new-password"}}, nil)
+	for _, cookie := range rec.Result().Cookies() {
+		if cookie.Name == auth.CookieName && get(t, h, "/settings", cookie).Code == http.StatusOK {
+			return
+		}
+	}
+	t.Fatal("new password could not access settings after recovery")
+}

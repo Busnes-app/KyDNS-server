@@ -45,3 +45,18 @@ func TestBackoffIsBoundedAndGroupsIPv6By64(t *testing.T) {
 		t.Fatalf("IPv4 caller inherited a delay: %v", d)
 	}
 }
+
+func TestAuthenticationOverlappingRecoveryIsVoid(t *testing.T) {
+	s := NewSessions(time.Hour, 12*time.Hour)
+	generation := time.UnixMilli(1)
+	s.SetNotBefore(func() time.Time { return generation })
+	s.SetIdentityValidator(func(string, string, uint64) bool { return true })
+	before := s.RecoveryGeneration()
+	generation = generation.Add(time.Millisecond)
+	for _, subject := range []string{"", "managed-admin"} {
+		sess := s.CreateAuthenticated("issuer", subject, 1, before)
+		if _, ok := s.Get(sess.ID); ok {
+			t.Fatalf("overlapping login survived reset: %q", subject)
+		}
+	}
+}

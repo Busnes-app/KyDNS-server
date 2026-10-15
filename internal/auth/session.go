@@ -16,11 +16,12 @@ type Session struct {
 	IdentityIssuer  string
 	IdentitySubject string
 	// IdentityRevision is the directory revision at login; see SetIdentityValidator.
-	IdentityRevision uint64
-	ID               string
-	CSRF             string
-	Created          time.Time
-	LastSeen         time.Time
+	IdentityRevision   uint64
+	ID                 string
+	CSRF               string
+	RecoveryGeneration time.Time
+	Created            time.Time
+	LastSeen           time.Time
 }
 
 // Sessions is an in-memory session store. Restart forces re-login, which is
@@ -60,7 +61,7 @@ func (s *Sessions) SetIdentityValidator(fn func(issuer, subject string, revision
 	s.identityAllowed = fn
 }
 
-// SetNotBefore voids, on every Get, any session created before fn's instant.
+// SetNotBefore supplies the persisted recovery generation checked on every Get.
 // It lets a password reset in another process end this one's sessions.
 func (s *Sessions) SetNotBefore(fn func() time.Time) {
 	s.mu.Lock()
@@ -68,11 +69,27 @@ func (s *Sessions) SetNotBefore(fn func() time.Time) {
 	s.notBefore = fn
 }
 
+// RecoveryGeneration must be captured before reading credentials or exchanging
+// an SSO code. A reset during authentication then invalidates its result too.
+func (s *Sessions) RecoveryGeneration() time.Time {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if s.notBefore != nil {
+		return s.notBefore()
+	}
+	return time.Time{}
+}
+
 func (s *Sessions) CreateSSO(issuer, subject string, revision uint64) *Session {
+	return s.CreateAuthenticated(issuer, subject, revision, s.RecoveryGeneration())
+}
+
+// CreateAuthenticated binds the session to the generation authentication began in.
+func (s *Sessions) CreateAuthenticated(issuer, subject string, revision uint64, generation time.Time) *Session {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	now := s.now()
-	sess := &Session{IdentityIssuer: issuer, IdentitySubject: subject, IdentityRevision: revision, ID: randomHex(32), CSRF: randomHex(32), Created: now, LastSeen: now}
+	sess := &Session{RecoveryGeneration: generation, IdentityIssuer: issuer, IdentitySubject: subject, IdentityRevision: revision, ID: randomHex(32), CSRF: randomHex(32), Created: now, LastSeen: now}
 	s.byID[sess.ID] = sess
 	return sess
 }
@@ -89,7 +106,7 @@ func (s *Sessions) Get(id string) (*Session, bool) {
 	}
 	now := s.now()
 	if now.Sub(sess.LastSeen) > s.idle || now.Sub(sess.Created) > s.absolute ||
-		(s.notBefore != nil && sess.Created.Before(s.notBefore())) || (sess.IdentitySubject != "" && (s.identityAllowed == nil || !s.identityAllowed(sess.IdentityIssuer, sess.IdentitySubject, sess.IdentityRevision))) {
+		(s.notBefore != nil && !sess.RecoveryGeneration.Equal(s.notBefore())) || (sess.IdentitySubject != "" && (s.identityAllowed == nil || !s.identityAllowed(sess.IdentityIssuer, sess.IdentitySubject, sess.IdentityRevision))) {
 		delete(s.byID, id)
 		return nil, false
 	}

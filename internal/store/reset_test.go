@@ -88,3 +88,17 @@ func TestOpenAddsSessionsNotBefore(t *testing.T) {
 		t.Fatalf("SessionsNotBefore() = %v, %v; want the zero instant", nb, err)
 	}
 }
+
+func TestResetGenerationAlwaysAdvances(t *testing.T) {
+	s := open(t)
+	at := time.UnixMilli(1700000000123)
+	for i, when := range []time.Time{at, at, at.Add(-time.Hour)} {
+		if err := s.ResetAdmin("hash", when); err != nil {
+			t.Fatal(err)
+		}
+		generation, err := s.SessionsNotBefore()
+		if err != nil || generation.UnixMilli() != at.UnixMilli()+int64(i) {
+			t.Fatalf("reset %d generation = %v, %v", i, generation, err)
+		}
+	}
+}

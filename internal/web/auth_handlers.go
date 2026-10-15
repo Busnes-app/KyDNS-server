@@ -122,6 +122,7 @@ func (s *Server) postLogin(w http.ResponseWriter, r *http.Request) {
 	if d := s.o.Backoff.Delay(key); d > 0 {
 		time.Sleep(d)
 	}
+	generation := s.o.Sessions.RecoveryGeneration()
 	hash, err := s.o.Store.AdminHash()
 	ok := false
 	if err == nil {
@@ -140,7 +141,7 @@ func (s *Server) postLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.o.Backoff.Reset(key)
-	s.setSessionCookie(w, r, s.o.Sessions.Create())
+	s.setSessionCookie(w, r, s.o.Sessions.CreateAuthenticated("", "", 0, generation))
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
@@ -221,6 +222,7 @@ func (s *Server) startSSO(w http.ResponseWriter, r *http.Request, sso store.SSOS
 }
 
 func (s *Server) getSSOCallback(w http.ResponseWriter, r *http.Request) {
+	generation := s.o.Sessions.RecoveryGeneration()
 	code := r.URL.Query().Get("code")
 	state := r.URL.Query().Get("state")
 
@@ -298,7 +300,7 @@ func (s *Server) getSSOCallback(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "use the explicitly assigned administrator identity", 403)
 			return
 		}
-		s.setSessionCookie(w, r, s.o.Sessions.CreateSSO(claims.Issuer, claims.Sub, authority.Revision))
+		s.setSessionCookie(w, r, s.o.Sessions.CreateAuthenticated(claims.Issuer, claims.Sub, authority.Revision, generation))
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
@@ -339,7 +341,7 @@ func (s *Server) getSSOCallback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	s.o.Logger.Info("sso login successful", "sub", claims.Sub, "username", claims.Username)
-	s.setSessionCookie(w, r, s.o.Sessions.Create())
+	s.setSessionCookie(w, r, s.o.Sessions.CreateAuthenticated("", "", 0, generation))
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 

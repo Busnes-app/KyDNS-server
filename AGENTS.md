@@ -93,6 +93,8 @@ Code, one concern per package:
 - `internal/store` — SQLite schema and migrations, the single write chokepoint.
   `ResetAdmin` atomically revokes all API tokens and browser sessions, unlinks local
   SSO, and disables unmanaged SSO; installer-managed SSO remains unchanged.
+  Sessions bind to the monotonic recovery generation captured before authentication,
+  so an in-flight login using old credentials cannot survive recovery.
   Verify with `go test ./internal/store ./internal/app -run Reset`.
   `PingContext` checks the local database for instance health.
   `SnapshotTo` delegates to `recoveryclient.SQLiteSnapshot`, which binds the

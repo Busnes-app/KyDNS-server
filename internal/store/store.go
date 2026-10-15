@@ -779,7 +779,7 @@ func (s *Store) ResetAdmin(hash string, now time.Time) error {
 		INSERT INTO admin(id, password_hash, sessions_not_before, updated_at) VALUES(1, ?, ?, unixepoch())
 		ON CONFLICT(id) DO UPDATE SET password_hash = excluded.password_hash,
 		       sso_sub = '', sso_username = '', sso_email = '', sso_linked_at = 0,
-		       sessions_not_before = excluded.sessions_not_before, updated_at = excluded.updated_at`,
+		       sessions_not_before = MAX(admin.sessions_not_before + 1, excluded.sessions_not_before), updated_at = excluded.updated_at`,
 		hash, now.UnixMilli()); err != nil {
 		return err
 	}
@@ -794,7 +794,8 @@ func (s *Store) ResetAdmin(hash string, now time.Time) error {
 	return tx.Commit()
 }
 
-// SessionsNotBefore is the instant before which every session is void.
+// SessionsNotBefore returns the recovery generation, encoded as a timestamp.
+// ResetAdmin advances it even when the clock repeats or moves backwards.
 func (s *Store) SessionsNotBefore() (time.Time, error) {
 	var ms int64
 	err := s.db.QueryRow(`SELECT sessions_not_before FROM admin WHERE id = 1`).Scan(&ms)
