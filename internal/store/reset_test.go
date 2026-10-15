@@ -21,9 +21,15 @@ func TestResetAdminUnlinksSSOAndVoidsSessions(t *testing.T) {
 	if err := s.LinkAdminSSO("sub-1", "bob", "bob@example.com"); err != nil {
 		t.Fatal(err)
 	}
+	if _, err := s.PutToken(Token{Label: "old-admin", Hash: "old-token-hash"}); err != nil {
+		t.Fatal(err)
+	}
 	at := time.UnixMilli(1_700_000_000_123)
 	if err := s.ResetAdmin("$argon2id$new", at); err != nil {
 		t.Fatal(err)
+	}
+	if tokens, err := s.Tokens(); err != nil || len(tokens) != 0 {
+		t.Fatalf("tokens after reset = %v, %v; want none", tokens, err)
 	}
 	ident, err := s.AdminIdentity()
 	if err != nil {

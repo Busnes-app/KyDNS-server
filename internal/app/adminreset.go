@@ -67,7 +67,9 @@ func ResetAdminPassword(cfgPath string, read PasswordReader, out io.Writer) erro
 	}
 
 	fmt.Fprintf(out, "Admin password updated in %s.\n", dbPath)
-	fmt.Fprintln(out, "Every signed-in session has ended, and any linked SSO identity was unlinked and SSO switched off.")
+	fmt.Fprintln(out, "Every signed-in session has ended, every API token was revoked, and any linked SSO identity was unlinked.")
+	fmt.Fprintln(out, "SSO is disabled unless managed by the installer; installer-managed SSO remains unchanged.")
+	fmt.Fprintln(out, "Sign in with the new password to create replacement API tokens for your integrations, or restart KyDNS to generate a new bootstrap token.")
 	return nil
 }
 

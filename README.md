@@ -666,8 +666,11 @@ kydns admin reset-password --config /etc/kydns/kydns.yaml
 This is the one command that opens the database directly instead of going
 through the API, because there is otherwise no way back in. It needs write
 access to the database file — anyone who has that can already read every hash
-and token in it, so it is not an extra way in. Restart KyDNS afterwards to end
-any sessions that are still signed in.
+and token in it, so it is not an extra way in. The reset immediately ends existing
+sessions, revokes every API token, unlinks the local SSO identity, and disables
+SSO unless it is installer-managed. Installer-managed SSO remains unchanged.
+Sign in with the new password to create replacement tokens for integrations,
+or restart KyDNS to generate a new bootstrap token.
 
 In Docker, where the image has no shell:
 

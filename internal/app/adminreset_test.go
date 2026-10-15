@@ -71,6 +71,11 @@ func TestResetAdminPasswordReplacesIt(t *testing.T) {
 	if err := ResetAdminPassword(cfg, answers("a-brand-new-password", "a-brand-new-password"), &out); err != nil {
 		t.Fatal(err)
 	}
+	for _, text := range []string{"every API token was revoked", "installer-managed SSO remains unchanged", "replacement API tokens"} {
+		if !strings.Contains(out.String(), text) {
+			t.Errorf("reset output missing %q", text)
+		}
+	}
 	hash := adminHash(t, dir)
 	if !verified(hash, "a-brand-new-password") {
 		t.Error("the new password does not verify")

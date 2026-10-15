@@ -762,8 +762,8 @@ func (s *Store) SetAdminPassword(hash string) error {
 
 // ResetAdmin is the recovery path for a compromised or forgotten admin: it sets
 // the password, removes the linked SSO identity, switches SSO off and voids
-// every session, in one transaction. An installer-owned SSO configuration is
-// left to the installer.
+// every session and API token, in one transaction. An installer-owned SSO
+// configuration is left to the installer.
 func (s *Store) ResetAdmin(hash string, now time.Time) error {
 	_, managed, err := s.InstallerConfiguration()
 	if err != nil {
@@ -781,6 +781,9 @@ func (s *Store) ResetAdmin(hash string, now time.Time) error {
 		       sso_sub = '', sso_username = '', sso_email = '', sso_linked_at = 0,
 		       sessions_not_before = excluded.sessions_not_before, updated_at = excluded.updated_at`,
 		hash, now.UnixMilli()); err != nil {
+		return err
+	}
+	if _, err := tx.Exec(`DELETE FROM tokens`); err != nil {
 		return err
 	}
 	if !managed {
