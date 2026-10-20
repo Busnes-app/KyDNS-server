@@ -38,7 +38,7 @@ do not assign the everyday identity to this OIDC client. Exact verified
 issuer/subject grants authorize management independently of a global provider
 role. Existing local recovery passwords, DNS data and legacy tokens are preserved.
 An instance with no local account receives an empty, disabled password slot;
-no password is generated or reported. Explicit container-local `admin reset`
+no password is generated or reported. Explicit container-local `admin reset-password`
 remains the operator's recovery mechanism.
 
 Setup refuses existing foreign SSO settings and linked local recovery accounts.
