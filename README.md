@@ -1,5 +1,7 @@
 # KyDNS
 
+**Start here:** [Standalone installation](INSTALL.md). Manage private DNS records, service names, filtering and optional replication. A native install can also serve DHCP. KyIdentity and KyRecovery are optional. Verify DNS over both UDP and TCP before changing client resolver settings; the web health page does not test DNS resolution.
+
 KyDNS is a self-hosted local DNS server and service directory for homes,
 homelabs, and small teams.
 
@@ -689,10 +691,11 @@ docker compose run --rm -it kydns admin reset-password
 
 KyDNS uses a **LAN-attached Docker network**, giving the container its own LAN
 address and port 53 without competing with host DNS listeners. `make setup`
-detects interface/subnet/gateway; Compose creates the network if absent. If the
-host already owns a compatible network such as unRAID's `br0`, the existing-network
-path below preserves it. This LAN DNS network is separate from the KyPost-owned
-suite bridge `kypost-net`.
+detects interface/subnet/gateway; Compose creates the configured network if absent,
+and `compose down` can remove a network it created. If the host already owns a
+compatible shared network such as unRAID's `br0`, the existing-network path below
+preserves it. This LAN DNS network is separate from the KyPost-owned suite bridge
+`kypost-net`.
 
 **The built-in DHCP server does not work on this install path.** It has to
 hear client broadcasts, which is why it is supported only on a native install
