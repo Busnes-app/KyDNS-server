@@ -31,7 +31,7 @@ enable/disable; OAuth; MCP resources and prompts; stdio.
 | Tool | Needs | Reuses |
 |---|---|---|
 | `explain_domain` | read | `policy.Service.Explain`: the decision plus every rule and list entry that matches (`Set.MatchedBy`) |
-| `get_stats` | read | `/api/v1/stats` counters; top blocked names carry no client |
+| `get_stats` | read | `/api/v1/stats` counters; the top blocked names only with the query-log grant (they are lookups, even without a client) |
 | `list_sources` | read | list metadata (`last_ok_at`, `last_error`) and rules |
 | `search_queries` | query log | `dnsserver.QueryLog.Each`: client (exact IP), domain (suffix at label boundary), window, `blocked_only`, `limit` ≤ 500 |
 | `query_stats` | query log | per-client counts and top allowed/blocked names over the ring |
@@ -64,6 +64,8 @@ it ends. The Blacklists page shows a pause with **Resume now**.
 
 ## Authentication at `/mcp`
 
+0. A Host outside `localhost`, IP literals and `KYDNS_ADMIN_HOSTNAMES` (`auth.HostAllowed`, the
+   same check as the web gate): 403, checked in `withMCPAuth` itself.
 1. Any `Origin` header: 403. No CORS; the preflight is refused.
 2. Only `Authorization: Bearer`; cookies never authenticate. Missing: 401 with
    `WWW-Authenticate: Bearer`.

@@ -56,12 +56,12 @@ AI agents such as OpenClaw and Hermes Agent reach KyDNS over MCP at
 **Settings → API tokens**, create a token with the access **AI agent** and an access level:
 
 - **Read only** (the default): the agent can explain why a name is blocked ("which list or
-  rule matched"), read the stats and see the block lists with when each last updated.
+  rule matched"), read the totals and see the block lists with when each last updated.
 - **Read and write**: it can also add or remove allow and deny rules, refresh the lists, and
   pause blocking for up to 60 minutes. Blocking resumes on its own.
 - **Can read the query log** is a separate box, off by default, at either level. The query log
-  is your network's browsing history: who looked up what, and when. Tick it only for an agent
-  you would show that to.
+  is your network's browsing history: who looked up what, and when. It also covers the
+  most-blocked names. Tick it only for an agent you would show that to.
 
 The page shows the token once, with config for both agents that reads it from
 `KYDNS_AGENT_TOKEN`, and the command to install the KyDNS skill (served at

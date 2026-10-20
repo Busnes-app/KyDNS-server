@@ -3,39 +3,16 @@ package web
 import (
 	"net"
 	"net/http"
-	"net/netip"
 	"net/url"
-	"slices"
 	"strings"
 
 	"github.com/Busnes-app/kydns-server/internal/auth"
 )
 
-// hostAllowed defeats DNS rebinding: a page on attacker.example whose name is
-// re-pointed at this listener still sends Host: attacker.example. IP literals
-// and localhost cannot be rebound, so they always pass. Otherwise the name must
-// be in KYDNS_ADMIN_HOSTNAMES. With none configured, only a request through a
-// trusted HTTPS proxy passes on its Host: the proxy's certificate is what binds
-// the name there, since a rebound name fails TLS. A direct loopback request
-// must then use localhost or an IP.
+// hostAllowed is auth.HostAllowed with this server's names and proxies; /mcp
+// checks the same function itself.
 func (s *Server) hostAllowed(r *http.Request) bool {
-	host := strings.ToLower(r.Host)
-	if h, _, err := net.SplitHostPort(host); err == nil {
-		host = h
-	}
-	host = strings.TrimSuffix(strings.Trim(host, "[]"), ".")
-	if _, err := netip.ParseAddr(host); err == nil {
-		return true
-	}
-	if host == "localhost" || strings.HasSuffix(host, ".localhost") {
-		return true
-	}
-	names := s.o.Config.Admin.Hostnames
-	if len(names) > 0 {
-		return slices.Contains(names, host)
-	}
-	_, trusted, _ := auth.RequestNetwork(r, s.o.Config.Admin.TrustedProxies)
-	return trusted
+	return auth.HostAllowed(r, s.o.Config.Admin.Hostnames, s.o.Config.Admin.TrustedProxies)
 }
 
 // crossOrigin reports a browser request made from another site. A state change

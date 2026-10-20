@@ -66,5 +66,6 @@ server answers 401, the token was revoked: by the user, or automatically after 9
 | this node is a read-only replica; ... | Rules are managed on the primary | Tell the user which server to connect the agent to |
 | a rule for this domain already exists; remove it first | The domain already has an allow or deny rule | Check `list_sources`; remove the rule first if the user wants the other kind |
 | a rule for a whole top-level domain or public suffix can only be made in the KyDNS web UI | Rules for `com`, `co.uk` and the like are refused | Suggest a rule for the exact domain instead, or tell the user to make it in the web UI |
+| there are already 1000 rules; an agent cannot add more | The rule list is full for agents | Tell the user; they can tidy rules in the web UI |
 | an agent refreshed the lists less than 5 minutes ago; try again later | Refreshes are rate limited | Wait; do not retry in a loop |
 | anything else | Server problem | Report it; do not retry more than once |

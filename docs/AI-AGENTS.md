@@ -15,6 +15,7 @@ listener, behind the same transport gate as the web UI: loopback, or an HTTPS re
   cross-origin request is refused even with both. The API takes an admin bearer token, which
   browsers never attach on their own, and refuses cross-origin requests too.
 - Requests must use a host name in `KYDNS_ADMIN_HOSTNAMES`, `localhost` or an IP address.
+  `/mcp` checks this itself as well as behind the admin listener's gate.
 - The page that shows a new token names the agent and the access it grants, and an agent token
   must have a name.
 
@@ -31,7 +32,7 @@ query-log flag. An admin token can never become an agent token, or the reverse.
 |---|---|
 | `mcp:read` | `explain_domain`, `get_stats`, `list_sources` |
 | `mcp:write` | the above, plus `add_rule`, `remove_rule`, `refresh_lists`, `pause_blocking`, `resume_blocking` |
-| query log flag, at either level | `search_queries`, `query_stats` |
+| query log flag, at either level | `search_queries`, `query_stats`, and the most-blocked names in `get_stats` |
 
 Every tool is listed for every token; a tool the token may not use answers `read-only token`
 or `this token cannot read the query log`, so the agent can tell the user what to change.
@@ -69,7 +70,8 @@ so, and the server's MCP instructions and the skill tell the agent never to act 
 - Rules go through the same validation as the web UI: a domain has one rule, allow or deny. An
   agent cannot make or remove a rule for a public suffix (`co.uk`, `github.io`): an allow there
   would end blocking for every site under it with no time limit, past the bounded pause, and a
-  deny would break them. Make such rules in the web UI.
+  deny would break them. Make such rules in the web UI. An agent cannot add rules once there
+  are 1000.
 - `refresh_lists` downloads one list by name, or every enabled list, at most once per 5 minutes
   across all agents on a node. A failed download keeps the previous copy and is reported in
   that list's `last_error`.

@@ -320,7 +320,7 @@ func Serve(ctx context.Context, cfgPath string, logger *slog.Logger) error {
 		WithReplication(func() adminapi.ReplicaStatus { return replStatus().toAdminAPI() }).
 		WithDHCP(dhcpRun).
 		WithBackupService(backupSvc).
-		WithMCP(dnsSrv, cfg.Admin.TrustedProxies, web.Version).
+		WithMCP(dnsSrv, cfg.Admin.TrustedProxies, cfg.Admin.Hostnames, web.Version).
 		WithReplicaAdmin(&replicaAdmin{st: st, srv: repl.srv}).
 		// Wired on every node: promotion answers "already a primary" rather than
 		// an error, and a replica must never find this endpoint missing.

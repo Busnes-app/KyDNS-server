@@ -49,6 +49,7 @@ type API struct {
 	backup          *backup.Service
 	queries         QuerySource
 	trusted         []netip.Prefix
+	hostnames       []string
 	version         string
 	now             func() time.Time // nil is time.Now; a test steps past the idle limit
 

@@ -42,6 +42,7 @@ const (
 	// or break the network (deny) with no time limit, past the bounded pause.
 	msgSuffix      = "a rule for a whole top-level domain or public suffix can only be made in the KyDNS web UI"
 	msgRefreshSoon = "an agent refreshed the lists less than 5 minutes ago; try again later"
+	msgTooMany     = "there are already 1000 rules; an agent cannot add more"
 )
 
 // agentRefreshEvery bounds how often agents may download lists, so an agent
@@ -56,6 +57,9 @@ const (
 	maxQueryResults = 500
 	maxTop          = 50
 	maxRulesShown   = 1000
+	// maxAgentRules caps the rules an agent may grow the policy to: each add
+	// rebuilds the whole policy, lists included.
+	maxAgentRules = maxRulesShown
 )
 
 var mcpSchemas = mcp.NewSchemaCache()
@@ -69,9 +73,10 @@ type QuerySource interface {
 }
 
 // WithMCP attaches what /mcp needs beyond the admin API: the query log, the
-// reverse proxies whose client address the audit log trusts, and the version.
-func (a *API) WithMCP(q QuerySource, trusted []netip.Prefix, version string) *API {
-	a.queries, a.trusted, a.version = q, trusted, version
+// reverse proxies whose client address the audit log trusts, the host names
+// /mcp answers to (KYDNS_ADMIN_HOSTNAMES), and the version.
+func (a *API) WithMCP(q QuerySource, trusted []netip.Prefix, hostnames []string, version string) *API {
+	a.queries, a.trusted, a.hostnames, a.version = q, trusted, hostnames, version
 	return a
 }
 
@@ -106,8 +111,8 @@ func (a *API) mcpHandler() http.Handler {
 		JSONResponse:        true,
 		MaxRequestBodyBytes: 1 << 20,
 		// The SDK refuses a loopback connection with a public Host, which is
-		// every reverse proxy on the same host. Rebinding needs a browser:
-		// withMCPAuth refuses any Origin and a page cannot know the token.
+		// every reverse proxy on the same host. withMCPAuth does the rebinding
+		// check instead, against the configured names, and refuses any Origin.
 		DisableLocalhostProtection: true,
 	})
 	return a.withMCPAuth(h)
@@ -119,9 +124,14 @@ func mcpChallenge(w http.ResponseWriter) {
 }
 
 // withMCPAuth admits a bearer MCP token, never a browser, a cookie or an admin
-// token.
+// token, and only on this server's own host names. It checks Host itself
+// rather than trusting an outer gate, so /mcp is safe however it is mounted.
 func (a *API) withMCPAuth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if !auth.HostAllowed(r, a.hostnames, a.trusted) {
+			writeErr(w, http.StatusForbidden, "host_refused", "", "this host name is not allowed; add it to KYDNS_ADMIN_HOSTNAMES")
+			return
+		}
 		if r.Header.Get("Origin") != "" {
 			writeErr(w, http.StatusForbidden, "browser_refused", "", "browser requests are not accepted")
 			return
@@ -167,7 +177,7 @@ func (a *API) mcpServer(caller mcpCaller) *mcp.Server {
 		Description: "Explain what KyDNS does with a domain right now and why: the allow or deny rule or the block lists that match it, and whether blocking is off or paused. Names KyDNS answers itself (local services) are never blocked." + untrustedTool,
 	}, t.explainDomain)
 	mcp.AddTool(srv, &mcp.Tool{Name: "get_stats", Annotations: read,
-		Description: "Query totals since start, blocked totals by list, the most-blocked names (no client identity), and the blocking state." + untrustedTool,
+		Description: "Query totals since start, blocked totals by list, and the blocking state. The most-blocked names come from what the network looked up, so they are included only for a token allowed to read the query log." + untrustedTool,
 	}, t.getStats)
 	mcp.AddTool(srv, &mcp.Tool{Name: "list_sources", Annotations: read,
 		Description: "List the block lists with when each last updated and any error, and the allow and deny rules.",
@@ -299,7 +309,10 @@ func (t mcpTools) getStats(_ context.Context, _ *mcp.CallToolRequest, in statsIn
 		}
 		out.Blocking = b
 		out.BlockedTotal, out.BlockedByList = t.a.policy.Counters()
-		out.TopBlocked = t.a.policy.TopBlocked(clampTop(in.Top))
+		// Names the network asked for are browsing history, even without a client.
+		if t.caller.canReadLog() {
+			out.TopBlocked = t.a.policy.TopBlocked(clampTop(in.Top))
+		}
 	}
 	return nil, out, nil
 }
@@ -591,6 +604,11 @@ func (t mcpTools) addRule(_ context.Context, _ *mcp.CallToolRequest, in ruleIn) 
 	if publicSuffix(in.Domain) {
 		return nil, ruleOut{}, errors.New(msgSuffix)
 	}
+	if rules, err := t.a.policy.Rules(); err != nil {
+		return nil, ruleOut{}, toolErr(err)
+	} else if len(rules) >= maxAgentRules {
+		return nil, ruleOut{}, errors.New(msgTooMany)
+	}
 	if _, err := t.a.policy.AddRule(in.Kind, in.Domain); err != nil {
 		return nil, ruleOut{}, toolErr(err)
 	}
@@ -680,6 +698,10 @@ type pauseIn struct {
 func (t mcpTools) pauseBlocking(_ context.Context, _ *mcp.CallToolRequest, in pauseIn) (*mcp.CallToolResult, blockingState, error) {
 	if err := t.writable(true); err != nil {
 		return nil, blockingState{}, err
+	}
+	// Checked before multiplying, so no value can overflow into the range.
+	if in.Minutes < 1 || in.Minutes > int(policy.MaxPause/time.Minute) {
+		return nil, blockingState{}, fmt.Errorf("a pause lasts from 1 to %d minutes", int(policy.MaxPause/time.Minute))
 	}
 	until, err := t.a.policy.Pause(time.Duration(in.Minutes) * time.Minute)
 	if err != nil {

@@ -84,7 +84,7 @@ func newMCPWorld(t *testing.T) *mcpWorld {
 	w.svc = policy.NewService(st, w.holder, policy.NewRefresher(st, policy.NewFetcher(0), w.holder, nil), nil)
 	w.queries = &fakeQueries{log: dnsserver.NewQueryLog(dnsserver.QueryLogSize), queries: true, clientIP: true}
 	w.queries.log.SetOptIns(true, true)
-	w.api = NewAPI(w.reg, nil, nil).WithPolicy(w.svc).WithMCP(w.queries, nil, "test")
+	w.api = NewAPI(w.reg, nil, nil).WithPolicy(w.svc).WithMCP(w.queries, nil, nil, "test")
 	w.api.now = func() time.Time { return w.now }
 	w.mux = http.NewServeMux()
 	w.api.Routes(w.mux)
@@ -111,7 +111,12 @@ func (w *mcpWorld) agentToken(t *testing.T, scope string, queryLog bool) (int64,
 func rawMCP(t *testing.T, h http.Handler, header map[string]string) *httptest.ResponseRecorder {
 	t.Helper()
 	req := httptest.NewRequest("POST", "/mcp", strings.NewReader(`{"jsonrpc":"2.0","id":1,"method":"tools/list"}`))
+	req.Host = "127.0.0.1:8053"
 	req.Header.Set("Content-Type", "application/json")
+	if h := header["Host"]; h != "" {
+		req.Host = h
+		delete(header, "Host")
+	}
 	req.Header.Set("Accept", "application/json, text/event-stream")
 	for k, v := range header {
 		req.Header.Set(k, v)
@@ -658,7 +663,7 @@ func TestAgentSkillNamesEveryToolAndError(t *testing.T) {
 	if !slices.Equal(registered, inSkill) {
 		t.Errorf("skill names %v, server registers %v", inSkill, registered)
 	}
-	for _, msg := range []string{msgReadOnly, msgNoQueryLog, msgNoPolicy, msgNoLog, msgSuffix, msgRefreshSoon, "read-only replica"} {
+	for _, msg := range []string{msgReadOnly, msgNoQueryLog, msgNoPolicy, msgNoLog, msgSuffix, msgRefreshSoon, msgTooMany, "read-only replica"} {
 		if !strings.Contains(skill, msg) {
 			t.Errorf("skill's error table lacks %q", msg)
 		}
@@ -715,5 +720,81 @@ func TestMCPRefreshIsRateLimited(t *testing.T) {
 	w.now = w.now.Add(time.Second)
 	if msg := callTool(t, csB, "refresh_lists", map[string]any{}, nil); msg != "" {
 		t.Errorf("after 5 minutes: %q", msg)
+	}
+}
+
+// /mcp checks Host itself (DNS rebinding), not only behind the web UI's gate:
+// served from API.Handler alone it still refuses a name that is not its own.
+func TestMCPChecksHostItself(t *testing.T) {
+	w := newMCPWorld(t)
+	_, tok := w.agentToken(t, store.ScopeMCPRead, false)
+	bare := w.api.Handler() // no web TransportGate in front
+	for host, want := range map[string]int{"evil.example": 403, "evil.example:8053": 403, "kydns.lan": 403,
+		"127.0.0.1:8053": 200, "localhost": 200, "[::1]:8053": 200} {
+		h := bearerHdr(tok)
+		h["Host"] = host
+		if got := rawMCP(t, bare, h).Code; got != want {
+			t.Errorf("Host %s: got %d, want %d", host, got, want)
+		}
+	}
+	w.api.WithMCP(w.queries, nil, []string{"kydns.lan"}, "test")
+	h := bearerHdr(tok)
+	h["Host"] = "kydns.lan"
+	if got := rawMCP(t, w.api.Handler(), h).Code; got != 200 {
+		t.Errorf("configured name: got %d, want 200", got)
+	}
+}
+
+// The most-blocked names are what the network looked up: browsing history,
+// shown only to a token with the query-log grant.
+func TestMCPTopBlockedNeedsTheQueryLogGrant(t *testing.T) {
+	w := newMCPWorld(t)
+	if _, err := w.svc.AddRule("deny", "secret.example"); err != nil {
+		t.Fatal(err)
+	}
+	w.svc.Decide("secret.example.")
+	for _, grant := range []bool{false, true} {
+		_, tok := w.agentToken(t, store.ScopeMCPRead, grant)
+		var out statsOut
+		if msg := callTool(t, agent(t, w.mux, tok), "get_stats", map[string]any{}, &out); msg != "" {
+			t.Fatal(msg)
+		}
+		if got := len(out.TopBlocked) == 1; got != grant || out.BlockedTotal != 1 {
+			t.Errorf("query_log %t: top_blocked %+v, total %d", grant, out.TopBlocked, out.BlockedTotal)
+		}
+	}
+}
+
+// An agent cannot grow the rules without bound: each add rebuilds the policy.
+func TestMCPRuleCountIsCapped(t *testing.T) {
+	w := newMCPWorld(t)
+	for i := range maxAgentRules {
+		if _, err := w.svc.AddRule("deny", fmt.Sprintf("r%d.example", i)); err != nil {
+			t.Fatal(err)
+		}
+	}
+	_, tok := w.agentToken(t, store.ScopeMCPWrite, false)
+	cs := agent(t, w.mux, tok)
+	if msg := callTool(t, cs, "add_rule", map[string]any{"kind": "deny", "domain": "one-more.example"}, nil); msg != msgTooMany {
+		t.Errorf("rule %d: got %q, want refused", maxAgentRules+1, msg)
+	}
+	if msg := callTool(t, cs, "remove_rule", map[string]any{"domain": "r0.example"}, nil); msg != "" {
+		t.Errorf("removing still works at the cap: %q", msg)
+	}
+}
+
+// minutes is range-checked before it is multiplied: 307445736 minutes would
+// overflow into a one-minute duration.
+func TestMCPPauseMinutesCannotOverflow(t *testing.T) {
+	w := newMCPWorld(t)
+	_, tok := w.agentToken(t, store.ScopeMCPWrite, false)
+	cs := agent(t, w.mux, tok)
+	for _, m := range []int64{307445736, 1 << 40, -307445736} {
+		if msg := callTool(t, cs, "pause_blocking", map[string]any{"minutes": m}, nil); !strings.Contains(msg, "1 to 60 minutes") {
+			t.Errorf("minutes %d: got %q, want refused", m, msg)
+		}
+	}
+	if !w.svc.PausedUntil().IsZero() {
+		t.Error("an overflowing pause took effect")
 	}
 }
