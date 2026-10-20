@@ -47,7 +47,7 @@ is answered by the replica a few seconds later. Writes on the replica are
 refused with the address of the primary to make them on: in the API, in the
 CLI, and in the UI, whose editing controls are disabled with the same reason.
 Its own DHCP settings are the exception, because they are node-local and no
-pull can discard them; see the DHCP section above.
+pull can discard them; see [the DHCP server guide](FEATURES.md#the-built-in-dhcp-server).
 
 The Replication screen in the web UI does all of this too: minting an invite,
 pairing a replica with the primary its config names, listing replicas with
