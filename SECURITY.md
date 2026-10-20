@@ -6,8 +6,22 @@ responsible for securing the host, network, and credentials.
 ## Reporting vulnerabilities
 
 Do not disclose suspected vulnerabilities in a public issue. Report them
-privately to the project maintainer with the affected document or component,
-impact, reproduction steps, and any suggested mitigation.
+privately through GitHub:
+
+1. Open this repository's **Security** tab and choose **Report a vulnerability**.
+2. Describe the affected component and versions, the impact, reproduction
+   steps, and any suggested mitigation.
+3. Do not disclose it publicly until a fix is released.
+
+If you cannot use GitHub, email hello@busnes.app with "Security" in the
+subject.
+
+We acknowledge your report within 2 business days, then send a severity
+assessment and a timeline. Target time to public disclosure is 30 days for
+critical issues (unauthenticated data access, authentication bypass, remote
+code execution), 60 days for high, and 90 days for moderate. The fix is
+released before the advisory is published, and we credit you in the release
+notes unless you would rather stay anonymous.
 
 ## Trust boundaries
 
