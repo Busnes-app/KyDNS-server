@@ -150,3 +150,7 @@ driver is not optional.
 - Managed SSO cannot replace native configuration or link its identities to the independent recovery account. Backup collection includes every protected managed credential and its original destination map; only local recovery authority (password session or unbound token) enrolls the first recovery key, on both pin and pair paths.
 - `KYDNS_TRUSTED_PROXIES` supplies explicit trusted peers and refuses `/0`; public `/api/v1/installer/network`, rate keys, callback scheme and secure cookies share that trust.
 - Verify `go test -race ./internal/store ./internal/registry ./internal/adminapi ./internal/web ./internal/auth ./internal/config ./internal/app ./internal/backup ./cmd/kydns` and `go vet` for those packages. New shared setup code uses the isolated development Go workspace until its release is published.
+
+## Operator documentation
+
+`INSTALL.md` is the root-owned standalone entry point. When installation prerequisites, bootstrap, persistence or verification change, update it together with `README.md` and the linked operator guides.
