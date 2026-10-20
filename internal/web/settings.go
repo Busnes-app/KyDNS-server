@@ -1,11 +1,13 @@
 package web
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
 
 	"github.com/Busnes-app/kydns-server/internal/dnsserver"
+	"github.com/Busnes-app/kydns-server/internal/registry"
 	"github.com/Busnes-app/kydns-server/internal/store"
 )
 
@@ -89,12 +91,20 @@ func (s *Server) settingsData(errMsg, newToken string) map[string]any {
 	}
 
 	toks, _ := s.o.Registry.Tokens()
+	tokRows := make([]tokenRow, 0, len(toks))
+	for _, t := range toks {
+		row := tokenRow{Token: t, Agent: store.IsMCPScope(t.Scope)}
+		if row.Agent {
+			row.RevokeAfter = registry.AgentRevokeAfter(t).UTC().Format("2006-01-02")
+		}
+		tokRows = append(tokRows, row)
+	}
 	ident, _ := s.o.Store.AdminIdentity()
 	sso, _ := s.o.Store.SSOSettings()
 
 	data := map[string]any{
 		"Title": "Settings", "Nav": "settings",
-		"Views": rows, "Tokens": toks, "NewToken": newToken,
+		"Views": rows, "Tokens": tokRows, "NewToken": newToken,
 		"Config": s.configRows(), "RestartNote": restartNote, "Error": errMsg,
 		"Upstreams":     s.upstreams(),
 		"Restart":       s.restartPending(),
@@ -148,20 +158,57 @@ func (s *Server) postViewDelete(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/settings", http.StatusSeeOther)
 }
 
+// tokenRow is a token as the settings page lists it.
+type tokenRow struct {
+	store.Token
+	Agent       bool
+	RevokeAfter string // agent tokens: revoked if unused by this date
+}
+
 // postTokenNew renders the settings page directly rather than redirecting,
-// because the plaintext exists only in this response.
+// because the plaintext exists only in this response. An AI agent token also
+// gets its MCP setup, which only this response can show filled in.
 func (s *Server) postTokenNew(w http.ResponseWriter, r *http.Request) {
 	sess, ok := s.session(r)
 	if !ok {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 	}
-	plaintext, err := s.o.Registry.CreateIdentityTokenAtGeneration(r.PostFormValue("label"), sess.IdentityIssuer, sess.IdentitySubject, sess.RecoveryGeneration)
+	label, scope, queryLog := r.PostFormValue("label"), r.PostFormValue("access"), r.PostFormValue("query_log") == "on"
+	var plaintext string
+	var err error
+	if scope == "" || scope == store.ScopeAdmin {
+		plaintext, err = s.o.Registry.CreateIdentityTokenAtGeneration(label, sess.IdentityIssuer, sess.IdentitySubject, sess.RecoveryGeneration)
+	} else {
+		plaintext, err = s.o.Registry.CreateAgentTokenAtGeneration(label, scope, queryLog, sess.IdentityIssuer, sess.IdentitySubject, sess.RecoveryGeneration)
+	}
 	if err != nil {
 		s.settingsError(w, r, err)
 		return
 	}
-	s.render(w, r, "settings.html", s.settingsData("", plaintext))
+	data := s.settingsData("", plaintext)
+	if store.IsMCPScope(scope) {
+		_ = s.o.Registry.Audit(store.AuditEvent{Actor: "admin", Action: "agent_token.create", Resource: "label:" + label,
+			Details: fmt.Sprintf("scope %s, query_log %t", scope, queryLog), IP: s.sourceKey(r), Outcome: "success"})
+		data["AgentURL"] = "https://" + r.Host
+	}
+	s.render(w, r, "settings.html", data)
+}
+
+// postTokenAccess changes an agent token's access; an admin token is refused.
+func (s *Server) postTokenAccess(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.ParseInt(r.PostFormValue("id"), 10, 64)
+	scope, queryLog := r.PostFormValue("access"), r.PostFormValue("query_log") == "on"
+	if err == nil {
+		err = s.o.Registry.SetAgentAccess(id, scope, queryLog)
+	}
+	if err != nil {
+		s.settingsError(w, r, err)
+		return
+	}
+	_ = s.o.Registry.Audit(store.AuditEvent{Actor: "admin", Action: "agent_token.access_change", Resource: fmt.Sprintf("token:%d", id),
+		Details: fmt.Sprintf("scope %s, query_log %t", scope, queryLog), IP: s.sourceKey(r), Outcome: "success"})
+	http.Redirect(w, r, "/settings", http.StatusSeeOther)
 }
 
 func (s *Server) postTokenDelete(w http.ResponseWriter, r *http.Request) {

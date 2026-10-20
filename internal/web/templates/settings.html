@@ -4,6 +4,28 @@
   <strong>Copy this token now.</strong>
   <p>It is shown once and cannot be recovered.</p>
   <p><code>{{.}}</code></p>
+  {{with $.AgentURL}}
+  <p>Put the token in <code>KYDNS_AGENT_TOKEN</code> where the agent runs, then add the server.
+     OpenClaw:</p>
+<pre>"mcp": { "servers": { "kydns": {
+  "url": "{{.}}/mcp",
+  "transport": "streamable-http",
+  "headers": { "Authorization": "Bearer ${KYDNS_AGENT_TOKEN}" }
+}}}</pre>
+  <p>Hermes Agent:</p>
+<pre>mcp_servers:
+  kydns:
+    url: "{{.}}/mcp"
+    headers:
+      Authorization: "Bearer ${KYDNS_AGENT_TOKEN}"</pre>
+  <p>Install the KyDNS skill, which teaches the agent the tools and when to ask you first:</p>
+<pre># Hermes Agent
+hermes skills install {{.}}/agent/skills/kydns/SKILL.md --category homelab
+
+# OpenClaw
+mkdir -p ~/.agents/skills/kydns
+curl -fsSo ~/.agents/skills/kydns/SKILL.md {{.}}/agent/skills/kydns/SKILL.md</pre>
+  {{end}}
 </div>
 {{end}}
 
@@ -172,11 +194,29 @@
 
 <div class="card">
   <h3>API tokens</h3>
+  <p class="muted">An admin token has full control through the API and the CLI. An AI agent
+     token works only at <code>/mcp</code>, with the access you give it, and is revoked
+     after 90 days unused. The query log is browsing history: give an agent access to it
+     only if you would show it your browsing history.</p>
   <table class="grid">
-    <tr><th>Label</th><th>Created</th><th>Last used</th><th></th></tr>
+    <tr><th>Label</th><th>Access</th><th>Created</th><th>Last used</th><th></th></tr>
     {{range .Tokens}}
     <tr>
-      <td>{{.Label}}</td><td>{{.CreatedAt}}</td>
+      <td>{{.Label}}</td>
+      <td>{{if .Agent}}
+        <form class="address-row" method="post" action="/settings/tokens/access">
+          <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
+          <input type="hidden" name="id" value="{{.ID}}">
+          <select name="access" aria-label="Access for {{.Label}}">
+            <option value="mcp:read"{{if eq .Scope "mcp:read"}} selected{{end}}>AI agent: read only</option>
+            <option value="mcp:write"{{if eq .Scope "mcp:write"}} selected{{end}}>AI agent: read and write</option>
+          </select>
+          <label><input type="checkbox" name="query_log"{{if .QueryLog}} checked{{end}}> query log</label>
+          <button class="ghost" type="submit"{{template "ro" $}}>Save</button>
+        </form>
+        <span class="muted">Revoked if unused by {{.RevokeAfter}}</span>
+      {{else}}Admin{{end}}</td>
+      <td>{{.CreatedAt}}</td>
       <td>{{if .LastUsedAt}}{{.LastUsedAt}}{{else}}<span class="muted">never</span>{{end}}</td>
       <td>
         <form method="post" action="/settings/tokens/delete">
@@ -187,13 +227,22 @@
       </td>
     </tr>
     {{else}}
-      <tr><td colspan="4" class="muted">No API tokens.</td></tr>
+      <tr><td colspan="5" class="muted">No API tokens.</td></tr>
     {{end}}
   </table>
   <form class="stack" method="post" action="/settings/tokens/new">
     <input type="hidden" name="csrf_token" value="{{.CSRF}}">
     <label for="tlabel">Label</label>
     <input id="tlabel" name="label" type="text" placeholder="laptop">
+    <label for="taccess">Access</label>
+    <select id="taccess" name="access">
+      <option value="admin">Admin (API and CLI, full control)</option>
+      <option value="mcp:read">AI agent: read only</option>
+      <option value="mcp:write">AI agent: read and write (rules, list refresh, pause blocking)</option>
+    </select>
+    <label><input type="checkbox" name="query_log"> AI agent can read the query log (browsing history)</label>
+    <p class="muted">Read and write lets anyone who can message the agent try to make it
+       change your rules or pause blocking.</p>
     <button type="submit"{{template "ro" $}}>Create token</button>
   </form>
 </div>

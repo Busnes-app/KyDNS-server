@@ -126,6 +126,10 @@ lookup declines to answer.
 This is domain filtering, not traffic inspection, parental control, or a
 malware guarantee.
 
+An AI agent can explain why a name is blocked, manage allow and deny rules,
+refresh lists and pause blocking for up to an hour over MCP; see
+[AI agents](AI-AGENTS.md).
+
 ## Not yet
 
 - **Automatic failover.** Replication is one primary, chosen by you. Nothing

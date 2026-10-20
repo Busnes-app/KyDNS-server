@@ -374,7 +374,8 @@ func (r *Registry) AuthenticateTokenPrincipal(plaintext string) (string, string,
 		return "", "", false
 	}
 	for _, t := range toks {
-		if subtle.ConstantTimeCompare([]byte(t.Hash), []byte(want)) != 1 {
+		// An agent's token never reaches the admin API.
+		if t.Scope != store.ScopeAdmin || subtle.ConstantTimeCompare([]byte(t.Hash), []byte(want)) != 1 {
 			continue
 		}
 		if t.Issuer != "" || t.Subject != "" {
@@ -390,5 +391,104 @@ func (r *Registry) AuthenticateTokenPrincipal(plaintext string) (string, string,
 }
 
 func (r *Registry) Tokens() ([]store.Token, error) { return r.s.Tokens() }
+
+// AgentIdleLimit is how long an MCP token may go unused before it is revoked.
+// A constant, not a setting.
+const AgentIdleLimit = 90 * 24 * time.Hour
+
+// AgentRevokeAfter is when t is revoked if nobody uses it before then.
+func AgentRevokeAfter(t store.Token) time.Time {
+	return time.Unix(max(t.LastUsedAt, t.CreatedAt), 0).Add(AgentIdleLimit)
+}
+
+// CreateAgentTokenAtGeneration issues an MCP token, fenced against recovery
+// like CreateIdentityTokenAtGeneration. The plaintext format is the admin
+// token's: the scope lives in the row.
+func (r *Registry) CreateAgentTokenAtGeneration(label, scope string, queryLog bool, issuer, subject string, generation time.Time) (string, error) {
+	if !store.IsMCPScope(scope) {
+		return "", Invalid("scope", "scope_invalid", "an agent token's scope is %s or %s", store.ScopeMCPRead, store.ScopeMCPWrite)
+	}
+	plaintext, hash := GenerateToken()
+	t := store.Token{Label: label, Hash: hash, Issuer: issuer, Subject: subject, Scope: scope, QueryLog: queryLog}
+	if _, err := r.s.PutTokenAtGeneration(t, generation); err != nil {
+		return "", err
+	}
+	return plaintext, nil
+}
+
+// SetAgentAccess changes an MCP token between the MCP scopes and its
+// query-log flag. An admin token is not found here: it never becomes an agent's.
+func (r *Registry) SetAgentAccess(id int64, scope string, queryLog bool) error {
+	if !store.IsMCPScope(scope) {
+		return Invalid("scope", "scope_invalid", "an agent token's scope is %s or %s", store.ScopeMCPRead, store.ScopeMCPWrite)
+	}
+	return r.s.SetTokenAccess(id, scope, queryLog)
+}
+
+// AgentAuth is the outcome of presenting a token at /mcp.
+type AgentAuth int
+
+const (
+	AgentUnknown AgentAuth = iota // no token has this hash
+	AgentRefused                  // a real token, but not an agent's, or its authority is gone
+	AgentExpired                  // an agent token idle past AgentIdleLimit, now deleted
+	AgentOK
+)
+
+// AuthenticateAgent checks an MCP token on every request. An idle token is
+// deleted here, so revocation never waits for the daily sweep; the caller
+// answers all three refusals alike.
+func (r *Registry) AuthenticateAgent(plaintext string, now time.Time) (store.Token, AgentAuth) {
+	if !strings.HasPrefix(plaintext, tokenPrefix) {
+		return store.Token{}, AgentUnknown
+	}
+	want := HashToken(plaintext)
+	toks, err := r.s.Tokens()
+	if err != nil {
+		return store.Token{}, AgentUnknown
+	}
+	for _, t := range toks {
+		if subtle.ConstantTimeCompare([]byte(t.Hash), []byte(want)) != 1 {
+			continue
+		}
+		if !store.IsMCPScope(t.Scope) {
+			return t, AgentRefused
+		}
+		if t.Issuer != "" || t.Subject != "" {
+			managed, allowed, err := r.s.InstallerAdministrator(t.Issuer, t.Subject)
+			if err != nil || !managed || !allowed {
+				return t, AgentRefused
+			}
+		}
+		if now.After(AgentRevokeAfter(t)) {
+			if gone, _ := r.s.DeleteIdleAgentTokens(now.Add(-AgentIdleLimit), t.ID); len(gone) == 1 {
+				r.auditExpired(t)
+			}
+			return t, AgentExpired
+		}
+		_ = r.s.TouchToken(t.ID)
+		return t, AgentOK
+	}
+	return store.Token{}, AgentUnknown
+}
+
+// ExpireIdleAgentTokens deletes MCP tokens nobody presented for
+// AgentIdleLimit, so they leave the token list. AuthenticateAgent refuses an
+// idle token on its own; the daemon runs this daily.
+func (r *Registry) ExpireIdleAgentTokens(now time.Time) (int, error) {
+	gone, err := r.s.DeleteIdleAgentTokens(now.Add(-AgentIdleLimit), 0)
+	for _, t := range gone {
+		r.auditExpired(t)
+	}
+	return len(gone), err
+}
+
+// Audit records an administrative event in the node-local audit table.
+func (r *Registry) Audit(e store.AuditEvent) error { return r.s.RecordAudit(e) }
+
+func (r *Registry) auditExpired(t store.Token) {
+	_ = r.s.RecordAudit(store.AuditEvent{Actor: "system", Action: "agent_token.expired",
+		Resource: fmt.Sprintf("token:%d", t.ID), Outcome: "success"})
+}
 
 func (r *Registry) DeleteToken(id int64) error { return r.s.DeleteToken(id) }

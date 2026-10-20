@@ -46,7 +46,34 @@ can always see the terms of what they are running.
 - Private service names, DNS records and per-network views.
 - Blocklist filtering and encrypted upstream resolution.
 - Service discovery and optional linked-node replication.
+- An MCP endpoint so AI agents can explain blocks and manage rules.
 - Optional DHCPv4 on supported native or host-network installations.
+
+## Connect an AI agent
+
+AI agents such as OpenClaw and Hermes Agent reach KyDNS over MCP at
+`https://<your host>/mcp`, on the admin listener and never on the DNS port. Under
+**Settings → API tokens**, create a token with the access **AI agent** and an access level:
+
+- **Read only** (the default): the agent can explain why a name is blocked ("which list or
+  rule matched"), read the stats and see the block lists with when each last updated.
+- **Read and write**: it can also add or remove allow and deny rules, refresh the lists, and
+  pause blocking for up to 60 minutes. Blocking resumes on its own.
+- **Can read the query log** is a separate box, off by default, at either level. The query log
+  is your network's browsing history: who looked up what, and when. Tick it only for an agent
+  you would show that to.
+
+The page shows the token once, with config for both agents that reads it from
+`KYDNS_AGENT_TOKEN`, and the command to install the KyDNS skill (served at
+`/agent/skills/kydns/SKILL.md`), which teaches the agent the tools and when to ask you first.
+You can change an agent's access there later. An agent token unused for 90 days is revoked; an
+agent token never works on the admin API, nor an admin token over MCP. No agent can change
+upstream resolvers or listener settings.
+
+Domain names in the query log and in block lists are chosen by devices, websites and list
+maintainers, and an agent may treat them as instructions. KyDNS labels them as untrusted data,
+but give an agent write access only if you trust everyone who can message it. Details:
+[AI agents](docs/AI-AGENTS.md).
 
 ## Documentation
 
@@ -57,4 +84,5 @@ can always see the terms of what they are running.
 - [Packages](docs/PACKAGES.md) — Install from a package. <a id="install-from-a-package"></a>
 - [Raspberry pi](docs/RASPBERRY-PI.md) — Raspberry Pi SD image. <a id="raspberry-pi-sd-image"></a>
 - [Running](docs/RUNNING.md) — Running it. <a id="running-it"></a><a id="forgot-the-admin-password"></a><a id="docker"></a><a id="unraid"></a><a id="pre-creating-it"></a><a id="four-things-that-bite"></a><a id="upgrading-from-an-image-that-ran-as-root"></a><a id="wifi"></a>
+- [AI agents](docs/AI-AGENTS.md) — MCP tools, access levels, the query log, pausing. <a id="ai-agents"></a>
 - [Security model](docs/SECURITY-MODEL.md) — Security model. <a id="security-model"></a>

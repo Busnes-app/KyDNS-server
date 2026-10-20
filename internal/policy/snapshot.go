@@ -11,6 +11,8 @@ const (
 	PolicyForwarded = "forwarded"
 	PolicyAllow     = "allow"
 	PolicyDeny      = "deny"
+	// PolicyPaused is the policy field while blocking is paused.
+	PolicyPaused = "paused"
 )
 
 // defaultBlockTTL is how long a client should cache a block when settings
@@ -99,3 +101,34 @@ func (s *Snapshot) Decide(name string) Decision {
 	}
 	return Decision{Policy: PolicyForwarded, Name: n}
 }
+
+// Match is one source that matches a name: an allow or deny rule, or a list,
+// with the entry that matched.
+type Match struct {
+	Source string `json:"source"` // "allow", "deny" or a list name
+	Entry  string `json:"entry"`  // the rule or list entry: the name or a parent domain
+}
+
+// Explain is Decide plus every source that matches name, in precedence order,
+// so "why is this blocked" can name the rule and the lists behind it. name must
+// already be normalized. It ignores the enabled switch: the caller reports that.
+func (s *Snapshot) Explain(name string) []Match {
+	if s == nil {
+		return nil
+	}
+	var out []Match
+	for _, src := range []namedSet{{PolicyDeny, s.deny}, {PolicyAllow, s.allow}} {
+		if e, ok := src.set.MatchedBy(name); ok {
+			out = append(out, Match{Source: src.name, Entry: e})
+		}
+	}
+	for _, l := range s.lists {
+		if e, ok := l.set.MatchedBy(name); ok {
+			out = append(out, Match{Source: l.name, Entry: e})
+		}
+	}
+	return out
+}
+
+// Enabled reports the global filtering switch this snapshot was built with.
+func (s *Snapshot) Enabled() bool { return s != nil && s.enabled }

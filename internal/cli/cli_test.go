@@ -334,3 +334,24 @@ func TestViewList(t *testing.T) {
 		t.Errorf("view subnets missing:\n%s", out.String())
 	}
 }
+
+// token add sends the agent access flags as the API's scope and query_log.
+func TestTokenAddAgentFlags(t *testing.T) {
+	var got map[string]any
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_ = json.NewDecoder(r.Body).Decode(&got)
+		json.NewEncoder(w).Encode(map[string]any{"token": "kydns_x"})
+	}))
+	defer srv.Close()
+	c := &Client{BaseURL: srv.URL, Token: "t", HTTP: srv.Client()}
+	var out, errOut bytes.Buffer
+	if code := tokenCmd(c, []string{"add", "hermes", "--agent-write", "--query-log"}, &out, &errOut); code != 0 {
+		t.Fatalf("exit = %d, stderr = %s", code, errOut.String())
+	}
+	if got["scope"] != "mcp:write" || got["query_log"] != true || got["label"] != "hermes" {
+		t.Errorf("request body %v", got)
+	}
+	if code := tokenCmd(c, []string{"add", "x", "--root"}, &out, &errOut); code != 2 {
+		t.Errorf("unknown flag exit = %d, want 2", code)
+	}
+}

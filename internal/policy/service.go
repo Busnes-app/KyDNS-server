@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"net/url"
 	"strings"
+	"time"
 
 	"github.com/Busnes-app/kydns-server/internal/registry"
 	"github.com/Busnes-app/kydns-server/internal/store"
@@ -17,6 +18,8 @@ const (
 	minInterval     = 300
 	defaultInterval = 86400
 	maxBlockTTL     = 3600
+	// MaxPause bounds one pause of blocking; it then resumes on its own.
+	MaxPause = time.Hour
 )
 
 // Service is the blacklist application service both transports call.
@@ -204,6 +207,55 @@ func (s *Service) Test(name string) (Decision, error) {
 	}
 	return s.h.Current().Decide(n), nil
 }
+
+// Explanation is what the live policy does with one name, and why.
+type Explanation struct {
+	Name        string    // normalized
+	Blocked     bool      // what a query for it gets right now
+	Policy      string    // the query log's policy field for it
+	Enabled     bool      // the global filtering switch
+	PausedUntil time.Time // zero unless blocking is paused
+	Matches     []Match   // every rule and list that matches, in precedence order
+}
+
+// Explain answers "why is this blocked": the decision and every source behind
+// it. Like Test it queries nothing and counts nothing.
+func (s *Service) Explain(name string) (Explanation, error) {
+	n, err := Normalize(name)
+	if err != nil {
+		return Explanation{}, registry.Invalid("name", "name_invalid", "%q is not a domain name", name)
+	}
+	snap := s.h.Current()
+	d := snap.Decide(n)
+	e := Explanation{Name: n, Blocked: d.Blocked, Policy: d.Policy, Enabled: snap.Enabled(),
+		PausedUntil: s.h.PausedUntil(), Matches: snap.Explain(n)}
+	if !e.PausedUntil.IsZero() {
+		e.Blocked, e.Policy = false, PolicyPaused
+	}
+	return e, nil
+}
+
+// Pause turns blocking off for d, at most MaxPause, and returns when it
+// resumes on its own. Local names and rules are kept; nothing is written.
+func (s *Service) Pause(d time.Duration) (time.Time, error) {
+	if d < time.Minute || d > MaxPause {
+		return time.Time{}, registry.Invalid("minutes", "pause_range",
+			"a pause lasts from 1 to %d minutes", int(MaxPause/time.Minute))
+	}
+	until := s.h.Now().Add(d).Truncate(time.Second)
+	s.h.Pause(until)
+	s.logger.Info("blacklist blocking paused", "until", until.UTC().Format(time.RFC3339))
+	return until, nil
+}
+
+// Resume ends a pause now.
+func (s *Service) Resume() {
+	s.h.Resume()
+	s.logger.Info("blacklist blocking resumed")
+}
+
+// PausedUntil is when a pause ends, or the zero time when there is none.
+func (s *Service) PausedUntil() time.Time { return s.h.PausedUntil() }
 
 // Decide implements dnsserver.PolicyDecider, so the DNS pipeline consults the
 // same façade the screens do rather than reaching past it to the holder.

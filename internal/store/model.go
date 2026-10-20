@@ -51,7 +51,23 @@ type Token struct {
 	Hash       string
 	CreatedAt  int64
 	LastUsedAt int64
+	// Scope is ScopeAdmin for the admin API, or an MCP scope for an AI agent.
+	// It lives in the row, never in the token, so a token cannot claim one.
+	Scope string
+	// QueryLog lets an MCP token read the query log, which is browsing history.
+	QueryLog bool
 }
+
+// Token scopes. An admin token never authenticates /mcp and an MCP token never
+// authenticates /api/v1.
+const (
+	ScopeAdmin    = "admin"
+	ScopeMCPRead  = "mcp:read"
+	ScopeMCPWrite = "mcp:write"
+)
+
+// IsMCPScope reports whether scope belongs to an AI agent token.
+func IsMCPScope(scope string) bool { return scope == ScopeMCPRead || scope == ScopeMCPWrite }
 
 // BlacklistSettings is the global filtering policy. Filtering is on by
 // default; the toggle disables new blocks without deleting anything.

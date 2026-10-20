@@ -10,8 +10,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/netip"
 	"strconv"
 	"strings"
+	"time"
 
 	suitehealth "github.com/Busnes-app/ky-primitives/health"
 	"github.com/Busnes-app/ky-primitives/logging"
@@ -44,6 +46,10 @@ type API struct {
 	replicaJoiner   ReplicaJoiner
 	replicaPromoter ReplicaPromoter
 	backup          *backup.Service
+	queries         QuerySource
+	trusted         []netip.Prefix
+	version         string
+	now             func() time.Time // nil is time.Now; a test steps past the idle limit
 }
 
 // ReplicaStatus is what GET /api/v1/replica/status renders. It mirrors
@@ -236,7 +242,19 @@ type registrar interface {
 // Routes registers the API on a mux, so the web transport can share one
 // listener with it. The mux is not where writes are refused: wrap the whole
 // server handler in WriteGate.
-func (a *API) Routes(mux *http.ServeMux) { a.routes(mux) }
+//
+// /mcp is registered here rather than in routes: it is outside /api/v1/, so
+// WriteGate never sees it, and its write tools refuse on a replica themselves.
+func (a *API) Routes(mux *http.ServeMux) {
+	a.routes(mux)
+	// Per method: a bare "/mcp" conflicts with the web UI's "GET /". The
+	// stateless SDK answers GET and DELETE with 405, after authentication.
+	h := a.mcpHandler()
+	for _, m := range []string{"POST", "GET", "DELETE"} {
+		mux.Handle(m+" "+PathMCP, h)
+	}
+	mux.HandleFunc("GET "+PathSkill, a.serveSkill)
+}
 
 func (a *API) routes(mux registrar) {
 	lg, err := logging.New(logging.Config{App: "kydns"})
@@ -274,6 +292,7 @@ func (a *API) routes(mux registrar) {
 	mux.HandleFunc("DELETE /api/v1/views/{name}", auth(a.deleteView))
 	mux.HandleFunc("GET /api/v1/tokens", auth(a.listTokens))
 	mux.HandleFunc("POST /api/v1/tokens", auth(a.createToken))
+	mux.HandleFunc("PATCH /api/v1/tokens/{id}", auth(a.patchToken))
 	mux.HandleFunc("DELETE /api/v1/tokens/{id}", auth(a.deleteToken))
 	mux.HandleFunc("GET /api/v1/export", auth(a.export))
 	mux.HandleFunc("POST /api/v1/import", auth(a.importDoc))
@@ -687,19 +706,36 @@ func (a *API) listTokens(w http.ResponseWriter, _ *http.Request) {
 	// Never the hash, never the plaintext: label and metadata only.
 	out := make([]map[string]any, 0, len(toks))
 	for _, t := range toks {
-		out = append(out, map[string]any{
-			"id": t.ID, "label": t.Label,
+		row := map[string]any{
+			"id": t.ID, "label": t.Label, "scope": t.Scope,
 			"created_at": t.CreatedAt, "last_used_at": t.LastUsedAt,
-		})
+		}
+		if store.IsMCPScope(t.Scope) {
+			row["query_log"], row["revoke_after"] = t.QueryLog, registry.AgentRevokeAfter(t).Unix()
+		}
+		out = append(out, row)
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"tokens": out})
 }
 
+// tokenAccess is the access an agent token is created with or changed to.
+// An omitted scope on create is an admin token, as before agent tokens existed.
+type tokenAccess struct {
+	Label    string `json:"label"`
+	Scope    string `json:"scope"`
+	QueryLog bool   `json:"query_log"`
+}
+
 func (a *API) createToken(w http.ResponseWriter, r *http.Request) {
-	var d struct {
-		Label string `json:"label"`
-	}
+	var d tokenAccess
 	if !decode(w, r, &d) {
+		return
+	}
+	if d.Scope == "" {
+		d.Scope = store.ScopeAdmin
+	}
+	if d.Scope == store.ScopeAdmin && d.QueryLog {
+		writeErr(w, http.StatusBadRequest, "query_log_admin", "query_log", "query_log applies only to agent tokens")
 		return
 	}
 	generation, err := a.reg.RecoveryGeneration()
@@ -712,13 +748,42 @@ func (a *API) createToken(w http.ResponseWriter, r *http.Request) {
 		writeErr(w, http.StatusUnauthorized, "unauthenticated", "", "administrator authority unavailable")
 		return
 	}
-	plaintext, err := a.reg.CreateIdentityTokenAtGeneration(d.Label, issuer, subject, generation)
+	var plaintext string
+	if d.Scope == store.ScopeAdmin {
+		plaintext, err = a.reg.CreateIdentityTokenAtGeneration(d.Label, issuer, subject, generation)
+	} else {
+		plaintext, err = a.reg.CreateAgentTokenAtGeneration(d.Label, d.Scope, d.QueryLog, issuer, subject, generation)
+	}
 	if err != nil {
 		writeRegistryErr(w, err)
 		return
 	}
+	if d.Scope != store.ScopeAdmin {
+		_ = a.reg.Audit(store.AuditEvent{Actor: "admin", Action: "agent_token.create", Resource: "label:" + d.Label,
+			Details: fmt.Sprintf("scope %s, query_log %t", d.Scope, d.QueryLog), IP: a.clientIP(r), Outcome: "success"})
+	}
 	// The only time the plaintext is ever returned.
-	writeJSON(w, http.StatusCreated, map[string]any{"token": plaintext, "label": d.Label})
+	writeJSON(w, http.StatusCreated, map[string]any{"token": plaintext, "label": d.Label, "scope": d.Scope, "query_log": d.QueryLog})
+}
+
+// patchToken changes an agent token's access. An admin token is 404 here: it
+// never becomes an agent's, nor an agent's an admin's.
+func (a *API) patchToken(w http.ResponseWriter, r *http.Request) {
+	id, ok := pathID(w, r)
+	if !ok {
+		return
+	}
+	var d tokenAccess
+	if !decode(w, r, &d) {
+		return
+	}
+	if err := a.reg.SetAgentAccess(id, d.Scope, d.QueryLog); err != nil {
+		writeRegistryErr(w, err)
+		return
+	}
+	_ = a.reg.Audit(store.AuditEvent{Actor: "admin", Action: "agent_token.access_change", Resource: fmt.Sprintf("token:%d", id),
+		Details: fmt.Sprintf("scope %s, query_log %t", d.Scope, d.QueryLog), IP: a.clientIP(r), Outcome: "success"})
+	writeJSON(w, http.StatusOK, map[string]any{"id": id, "scope": d.Scope, "query_log": d.QueryLog})
 }
 
 func (a *API) deleteToken(w http.ResponseWriter, r *http.Request) {
