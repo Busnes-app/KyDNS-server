@@ -723,6 +723,41 @@ func TestMCPRefreshIsRateLimited(t *testing.T) {
 	}
 }
 
+// A list URL may carry an access token; no MCP result shows it to an agent.
+func TestMCPHidesListURLs(t *testing.T) {
+	w := newMCPWorld(t)
+	if _, err := w.svc.PutList(store.BlacklistList{Name: "paid", URL: "https://127.0.0.1:1/l.txt?token=sekrit-query", Enabled: true}); err != nil {
+		t.Fatal(err)
+	}
+	// Validation refuses userinfo; a row stored before that rule still must not leak.
+	if _, err := w.st.PutBlacklistList(store.BlacklistList{Name: "legacy", URL: "https://user:sekrit-pass@127.0.0.1:1/l.txt", Format: "domains", Enabled: true, IntervalSeconds: 3600}); err != nil {
+		t.Fatal(err)
+	}
+	_, ro := w.agentToken(t, store.ScopeMCPRead, false)
+	_, rw := w.agentToken(t, store.ScopeMCPWrite, false)
+	for _, c := range []struct {
+		tok, tool string
+		args      map[string]any
+	}{
+		{ro, "list_sources", map[string]any{}},
+		{rw, "refresh_lists", map[string]any{}},
+	} {
+		res, err := agent(t, w.mux, c.tok).CallTool(context.Background(), &mcp.CallToolParams{Name: c.tool, Arguments: c.args})
+		if err != nil || res.IsError {
+			t.Fatalf("%s: %v %+v", c.tool, err, res)
+		}
+		raw, _ := json.Marshal(res) // structured and text content
+		for _, secret := range []string{"sekrit", "l.txt"} {
+			if strings.Contains(string(raw), secret) {
+				t.Errorf("%s exposes %q: %s", c.tool, secret, raw)
+			}
+		}
+		if !strings.Contains(string(raw), `"paid"`) || !strings.Contains(string(raw), `"legacy"`) {
+			t.Errorf("%s: lists missing by name: %s", c.tool, raw)
+		}
+	}
+}
+
 // /mcp checks Host itself (DNS rebinding), not only behind the web UI's gate:
 // served from API.Handler alone it still refuses a name that is not its own.
 func TestMCPChecksHostItself(t *testing.T) {

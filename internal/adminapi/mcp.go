@@ -317,9 +317,9 @@ func (t mcpTools) getStats(_ context.Context, _ *mcp.CallToolRequest, in statsIn
 	return nil, out, nil
 }
 
+// sourceOut has no URL: a list URL may carry an access token in its query.
 type sourceOut struct {
 	Name          string `json:"name"`
-	URL           string `json:"url"`
 	Format        string `json:"format"`
 	Enabled       bool   `json:"enabled"`
 	Builtin       bool   `json:"builtin,omitempty"`
@@ -356,7 +356,7 @@ func (t mcpTools) listSources(_ context.Context, _ *mcp.CallToolRequest, _ struc
 	}
 	out := sourcesOut{Blocking: b, Lists: []sourceOut{}, Allow: []string{}, Deny: []string{}}
 	for _, l := range lists {
-		out.Lists = append(out.Lists, sourceOut{Name: l.Name, URL: l.URL, Format: l.Format, Enabled: l.Enabled,
+		out.Lists = append(out.Lists, sourceOut{Name: l.Name, Format: l.Format, Enabled: l.Enabled,
 			Builtin: l.Builtin, Entries: l.EntryCount, LastUpdated: unixTime(l.LastOKAt),
 			LastAttempt: unixTime(l.LastAttemptAt), LastError: l.LastError, RefreshEveryS: l.IntervalSeconds})
 	}
