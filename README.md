@@ -687,14 +687,12 @@ docker compose run --rm -it kydns admin reset-password
 
 ### Docker
 
-KyDNS joins a **LAN-attached Docker network your host already owns**, so the
-container gets its own IP address on your LAN, binds port 53 there, and never
-contends with systemd-resolved or dnsmasq on the host. unRAID calls that
-network `br0`. If AdGuard Home or Pi-hole already has a LAN address, KyDNS
-joins the same network they are on.
-
-Compose joins the network. It never creates or deletes it — a network handing
-out addresses on your physical LAN outlives any one stack.
+KyDNS uses a **LAN-attached Docker network**, giving the container its own LAN
+address and port 53 without competing with host DNS listeners. `make setup`
+detects interface/subnet/gateway; Compose creates the network if absent. If the
+host already owns a compatible network such as unRAID's `br0`, the existing-network
+path below preserves it. This LAN DNS network is separate from the KyPost-owned
+suite bridge `kypost-net`.
 
 **The built-in DHCP server does not work on this install path.** It has to
 hear client broadcasts, which is why it is supported only on a native install
