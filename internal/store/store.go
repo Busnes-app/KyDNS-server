@@ -112,7 +112,7 @@ CREATE TABLE IF NOT EXISTS sso_settings (
   client_secret TEXT NOT NULL DEFAULT ''
 );
 INSERT OR IGNORE INTO sso_settings(id, enabled, issuer_url, client_id, client_secret)
-  VALUES(1, 0, 'https://auth.urlxl.com', 'kydns', '');
+  VALUES(1, 0, '', 'kydns', '');
 CREATE TABLE IF NOT EXISTS blacklist_settings (
   id        INTEGER PRIMARY KEY CHECK (id = 1),
   enabled   INTEGER NOT NULL DEFAULT 1,
@@ -333,7 +333,7 @@ var migrations = []string{
 	   client_secret TEXT NOT NULL DEFAULT ''
 	 );
 	 INSERT OR IGNORE INTO sso_settings(id, enabled, issuer_url, client_id, client_secret)
-	   VALUES(1, 0, 'https://auth.urlxl.com', 'kydns', '');`,
+	   VALUES(1, 0, '', 'kydns', '');`,
 	`ALTER TABLE settings ADD COLUMN dhcp_enabled INTEGER NOT NULL DEFAULT 0;
 	 ALTER TABLE settings ADD COLUMN dhcp_interface TEXT NOT NULL DEFAULT '';
 	 ALTER TABLE settings ADD COLUMN dhcp_range_start TEXT NOT NULL DEFAULT '';
@@ -356,7 +356,17 @@ var migrations = []string{
 	// Existing rows become admin tokens, so every CLI and script keeps working.
 	`ALTER TABLE tokens ADD COLUMN scope TEXT NOT NULL DEFAULT 'admin';
 	 ALTER TABLE tokens ADD COLUMN query_log INTEGER NOT NULL DEFAULT 0;`,
+	// Older releases seeded a sample issuer the operator never chose. Clear it
+	// only where the row is still exactly that untouched seed; an issuer an
+	// operator entered, or any enabled or secret-bearing row, is left alone.
+	`UPDATE sso_settings SET issuer_url = ''
+	 WHERE id = 1 AND enabled = 0 AND client_secret = '' AND client_id = 'kydns'
+	   AND issuer_url = '` + legacySeedIssuer + `';`,
 }
+
+// legacySeedIssuer is the issuer older releases seeded into sso_settings. It
+// is kept only so the migration above can recognise an untouched seed.
+const legacySeedIssuer = "https://auth.urlxl.com"
 
 // migrate runs against a transaction Open already holds, so a crash
 // partway through - whether mid-ALTER or mid-schema-creation - rolls back
@@ -908,7 +918,7 @@ func (s *Store) ssoSettings(managedSecret bool) (SSOSettings, error) {
 	err = s.db.QueryRow(`SELECT enabled, issuer_url, client_id, client_secret FROM sso_settings WHERE id = 1`).
 		Scan(&enabled, &sso.IssuerURL, &sso.ClientID, &sso.ClientSecret)
 	if errors.Is(err, sql.ErrNoRows) {
-		return SSOSettings{Enabled: false, IssuerURL: "https://auth.urlxl.com", ClientID: "kydns"}, nil
+		return SSOSettings{Enabled: false, ClientID: "kydns"}, nil
 	}
 	sso.Enabled = enabled == 1
 	return sso, err

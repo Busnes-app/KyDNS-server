@@ -83,7 +83,7 @@ func TestGeneratePKCEAndState(t *testing.T) {
 
 func TestSSOAuthURLAndExchangeCode(t *testing.T) {
 	mockServer := testOIDCServer(t, "kydns-client", "nonce123", map[string]any{
-		"sub": "user-uuid-12345", "username": "admin_yoshi", "email": "admin@urlxl.com", "role": "admin",
+		"sub": "user-uuid-12345", "username": "admin_yoshi", "email": "admin@example.com", "role": "admin",
 	})
 
 	client := NewSSOClient(mockServer.URL, "kydns-client", "secret")
@@ -123,9 +123,9 @@ func TestAuthentikOIDCDiscoveryAndGroups(t *testing.T) {
 		case "/.well-known/openid-configuration":
 			w.Header().Set("Content-Type", "application/json")
 			_ = json.NewEncoder(w).Encode(map[string]any{
-				"authorization_endpoint": "https://authentik.urlxl.com/application/o/authorize/",
-				"token_endpoint":         "https://authentik.urlxl.com/application/o/token/",
-				"userinfo_endpoint":      "https://authentik.urlxl.com/application/o/userinfo/",
+				"authorization_endpoint": "https://authentik.example.com/application/o/authorize/",
+				"token_endpoint":         "https://authentik.example.com/application/o/token/",
+				"userinfo_endpoint":      "https://authentik.example.com/application/o/userinfo/",
 			})
 		default:
 			http.NotFound(w, r)
@@ -135,7 +135,7 @@ func TestAuthentikOIDCDiscoveryAndGroups(t *testing.T) {
 
 	client := NewSSOClient(mockServer.URL, "authentik-client", "secret")
 	endpoints := client.DiscoverEndpoints(context.Background())
-	if endpoints.AuthorizationEndpoint != "https://authentik.urlxl.com/application/o/authorize/" {
+	if endpoints.AuthorizationEndpoint != "https://authentik.example.com/application/o/authorize/" {
 		t.Errorf("unexpected discovered auth endpoint: %s", endpoints.AuthorizationEndpoint)
 	}
 
@@ -143,7 +143,7 @@ func TestAuthentikOIDCDiscoveryAndGroups(t *testing.T) {
 	authentikClaims := map[string]any{
 		"sub":                "authentik-sub-123",
 		"preferred_username": "akadmin",
-		"email":              "admin@urlxl.com",
+		"email":              "admin@example.com",
 		"groups":             []string{"authentik default admins", "kydns_admin"},
 	}
 	parsed := parseClaimsMap(authentikClaims)

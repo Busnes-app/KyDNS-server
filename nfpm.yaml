@@ -5,7 +5,7 @@ platform: linux
 version: ${VERSION}
 section: net
 priority: optional
-maintainer: Yoshi <yoshi@urlxl.com>
+maintainer: Busnes.app <hello@busnes.app>
 vendor: KyDNS
 homepage: https://github.com/Busnes-app/kydns-server
 license: MIT

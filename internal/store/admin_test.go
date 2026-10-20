@@ -47,7 +47,7 @@ func TestAdminPasswordRoundTrip(t *testing.T) {
 		t.Errorf("unexpected AdminIdentity: %+v", ident)
 	}
 
-	if err := s.LinkAdminSSO("sso-sub-123", "admin_yoshi", "admin@urlxl.com"); err != nil {
+	if err := s.LinkAdminSSO("sso-sub-123", "admin_yoshi", "admin@example.com"); err != nil {
 		t.Fatalf("LinkAdminSSO() error = %v", err)
 	}
 
@@ -55,7 +55,7 @@ func TestAdminPasswordRoundTrip(t *testing.T) {
 	if err != nil {
 		t.Fatalf("AdminIdentity() error = %v", err)
 	}
-	if ident.SSOSub != "sso-sub-123" || ident.SSOUsername != "admin_yoshi" || ident.SSOEmail != "admin@urlxl.com" || ident.SSOLinkedAt == 0 {
+	if ident.SSOSub != "sso-sub-123" || ident.SSOUsername != "admin_yoshi" || ident.SSOEmail != "admin@example.com" || ident.SSOLinkedAt == 0 {
 		t.Errorf("unexpected linked identity: %+v", ident)
 	}
 
@@ -77,14 +77,14 @@ func TestAdminPasswordRoundTrip(t *testing.T) {
 	}
 
 	sso.Enabled = true
-	sso.IssuerURL = "https://auth.urlxl.com"
+	sso.IssuerURL = "https://auth.example.com"
 	sso.ClientID = "kydns-client"
 	if err := s.SetSSOSettings(sso); err != nil {
 		t.Fatalf("SetSSOSettings error = %v", err)
 	}
 
 	ssoGot, err := s.SSOSettings()
-	if err != nil || !ssoGot.Enabled || ssoGot.IssuerURL != "https://auth.urlxl.com" || ssoGot.ClientID != "kydns-client" {
+	if err != nil || !ssoGot.Enabled || ssoGot.IssuerURL != "https://auth.example.com" || ssoGot.ClientID != "kydns-client" {
 		t.Errorf("unexpected SSOSettings: %+v, err: %v", ssoGot, err)
 	}
 }
