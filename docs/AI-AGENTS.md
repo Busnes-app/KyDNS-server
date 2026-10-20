@@ -50,7 +50,8 @@ or `this token cannot read the query log`, so the agent can tell the user what t
 `search_queries` and `query_stats` read an in-memory ring of the most recent 10,000 answered
 queries on this node. It fills only while **Log queries** is on, records the client address
 only while **Log client IP** is also on, and is emptied when either is turned off and on
-restart. It is never written to disk. Results say whether each opt-in is on and how far back
+restart. It is never written to disk. The opt-ins are checked under the ring's own lock, so a
+query answered while one is being switched off cannot be stored after the clear. Results say whether each opt-in is on and how far back
 the ring reaches, so an agent can explain an empty answer.
 
 The query log is browsing history. That is why it is a separate grant: a read-only agent that
@@ -65,9 +66,13 @@ so, and the server's MCP instructions and the skill tell the agent never to act 
 
 ## Writes
 
-- Rules go through the same validation as the web UI: a domain has one rule, allow or deny.
-- `refresh_lists` downloads one list by name, or every enabled list. A failed download keeps
-  the previous copy and is reported in that list's `last_error`.
+- Rules go through the same validation as the web UI: a domain has one rule, allow or deny. An
+  agent cannot make or remove a rule for a public suffix (`co.uk`, `github.io`): an allow there
+  would end blocking for every site under it with no time limit, past the bounded pause, and a
+  deny would break them. Make such rules in the web UI.
+- `refresh_lists` downloads one list by name, or every enabled list, at most once per 5 minutes
+  across all agents on a node. A failed download keeps the previous copy and is reported in
+  that list's `last_error`.
 - `pause_blocking` turns filtering off for 1 to 60 minutes. The deadline is held in memory and
   compared on every query, so blocking resumes on its own with nothing to run it; a restart
   also resumes it. The Blacklists page shows the pause with **Resume now**.

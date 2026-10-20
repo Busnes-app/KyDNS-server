@@ -3,6 +3,8 @@ package dnsserver
 import (
 	"io"
 	"log/slog"
+	"runtime"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -58,6 +60,7 @@ func TestQueryLogFollowsTheLoggingOptIns(t *testing.T) {
 // The ring keeps the newest entries and filters by suffix at label boundaries.
 func TestQueryLogRingAndFilters(t *testing.T) {
 	l := NewQueryLog(3)
+	l.SetOptIns(true, false)
 	at := time.Unix(1000, 0)
 	for i, name := range []string{"a.example", "b.example", "badexample", "c.example"} {
 		l.Add(QueryEntry{Time: at.Add(time.Duration(i) * time.Second), Name: name})
@@ -69,5 +72,48 @@ func TestQueryLogRingAndFilters(t *testing.T) {
 	}
 	if got := entries(l, QueryFilter{Domain: "Example."}); len(got) != 2 {
 		t.Errorf("suffix filter matched %+v; badexample must not match example", got)
+	}
+}
+
+// The opt-ins are checked under the ring's lock: a query answered while client
+// IP logging is being turned off cannot land with its client after the clear.
+// A writer races the switch; the moment SetOptIns returns, no client remains,
+// though the writer keeps adding entries that carry one.
+func TestQueryLogOptOutCannotRace(t *testing.T) {
+	for range 50 {
+		l := NewQueryLog(64)
+		l.SetOptIns(true, true)
+		stop, done := make(chan struct{}), make(chan struct{})
+		var added atomic.Int64
+		go func() {
+			defer close(done)
+			for {
+				select {
+				case <-stop:
+					return
+				default:
+					l.Add(QueryEntry{Name: "x.example", Client: "192.168.1.5"})
+					added.Add(1)
+				}
+			}
+		}()
+		for added.Load() < 10 { // the writer is running before the switch
+			runtime.Gosched()
+		}
+		l.SetOptIns(true, false)
+		for after := added.Load(); added.Load() < after+100; { // and keeps writing after it
+			runtime.Gosched()
+		}
+		for _, e := range entries(l, QueryFilter{}) {
+			if e.Client != "" {
+				t.Fatalf("a client survived the opt-out: %+v", e)
+			}
+		}
+		l.SetOptIns(false, false)
+		close(stop)
+		<-done
+		if n := len(entries(l, QueryFilter{})); n != 0 {
+			t.Fatalf("%d entries recorded after query logging was turned off", n)
+		}
 	}
 }

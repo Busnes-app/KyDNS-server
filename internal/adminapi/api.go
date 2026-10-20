@@ -13,6 +13,7 @@ import (
 	"net/netip"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	suitehealth "github.com/Busnes-app/ky-primitives/health"
@@ -50,6 +51,9 @@ type API struct {
 	trusted         []netip.Prefix
 	version         string
 	now             func() time.Time // nil is time.Now; a test steps past the idle limit
+
+	refreshMu        sync.Mutex
+	lastAgentRefresh time.Time
 }
 
 // ReplicaStatus is what GET /api/v1/replica/status renders. It mirrors

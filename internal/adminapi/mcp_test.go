@@ -83,6 +83,7 @@ func newMCPWorld(t *testing.T) *mcpWorld {
 	}
 	w.svc = policy.NewService(st, w.holder, policy.NewRefresher(st, policy.NewFetcher(0), w.holder, nil), nil)
 	w.queries = &fakeQueries{log: dnsserver.NewQueryLog(dnsserver.QueryLogSize), queries: true, clientIP: true}
+	w.queries.log.SetOptIns(true, true)
 	w.api = NewAPI(w.reg, nil, nil).WithPolicy(w.svc).WithMCP(w.queries, nil, "test")
 	w.api.now = func() time.Time { return w.now }
 	w.mux = http.NewServeMux()
@@ -361,6 +362,7 @@ func TestMCPAccessMatrix(t *testing.T) {
 		}
 	})
 	for _, l := range levels {
+		w.now = w.now.Add(agentRefreshEvery) // each write level gets its own refresh
 		_, tok := w.agentToken(t, l.scope, l.queryLog)
 		cs := agent(t, w.mux, tok)
 		listed, err := cs.ListTools(context.Background(), nil)
@@ -656,9 +658,62 @@ func TestAgentSkillNamesEveryToolAndError(t *testing.T) {
 	if !slices.Equal(registered, inSkill) {
 		t.Errorf("skill names %v, server registers %v", inSkill, registered)
 	}
-	for _, msg := range []string{msgReadOnly, msgNoQueryLog, msgNoPolicy, msgNoLog, "read-only replica"} {
+	for _, msg := range []string{msgReadOnly, msgNoQueryLog, msgNoPolicy, msgNoLog, msgSuffix, msgRefreshSoon, "read-only replica"} {
 		if !strings.Contains(skill, msg) {
 			t.Errorf("skill's error table lacks %q", msg)
 		}
+	}
+}
+
+// An agent cannot make or remove a rule for a whole TLD or public suffix: an
+// allow there would end blocking with no time limit, a deny would break the
+// network. Rules for a real domain still work.
+func TestMCPRefusesPublicSuffixRules(t *testing.T) {
+	w := newMCPWorld(t)
+	if _, err := w.svc.AddRule("deny", "pages.dev"); err != nil { // the admin's own suffix rule
+		t.Fatal(err)
+	}
+	_, tok := w.agentToken(t, store.ScopeMCPWrite, false)
+	cs := agent(t, w.mux, tok)
+	// Single labels (com, lan) were never valid rules; multi-label suffixes were.
+	for d, want := range map[string]string{"com": "", "lan": "", "co.uk": msgSuffix, "CO.UK.": msgSuffix, "github.io": msgSuffix, "pages.dev": msgSuffix} {
+		for _, kind := range []string{"allow", "deny"} {
+			msg := callTool(t, cs, "add_rule", map[string]any{"kind": kind, "domain": d}, nil)
+			if msg == "" || want != "" && msg != want {
+				t.Errorf("add_rule %s %s: got %q, want refused", kind, d, msg)
+			}
+		}
+	}
+	if msg := callTool(t, cs, "remove_rule", map[string]any{"domain": "pages.dev"}, nil); msg != msgSuffix {
+		t.Errorf("remove_rule pages.dev: got %q, want refused", msg)
+	}
+	for _, d := range []string{"ads.example.com", "tracker.co.uk", "me.github.io"} {
+		if msg := callTool(t, cs, "add_rule", map[string]any{"kind": "deny", "domain": d}, nil); msg != "" {
+			t.Errorf("add_rule deny %s: %q", d, msg)
+		}
+	}
+	rules, _ := w.svc.Rules()
+	if len(rules) != 4 {
+		t.Errorf("rules %+v, want the admin's pages.dev and the three real domains", rules)
+	}
+}
+
+// Agents share one list refresh per five minutes, so a loop cannot hammer
+// list providers.
+func TestMCPRefreshIsRateLimited(t *testing.T) {
+	w := newMCPWorld(t)
+	_, a := w.agentToken(t, store.ScopeMCPWrite, false)
+	_, b := w.agentToken(t, store.ScopeMCPWrite, false)
+	csA, csB := agent(t, w.mux, a), agent(t, w.mux, b)
+	if msg := callTool(t, csA, "refresh_lists", map[string]any{}, nil); msg != "" {
+		t.Fatal(msg)
+	}
+	w.now = w.now.Add(agentRefreshEvery - time.Second)
+	if msg := callTool(t, csB, "refresh_lists", map[string]any{}, nil); msg != msgRefreshSoon {
+		t.Errorf("second agent within 5 minutes: %q, want refused", msg)
+	}
+	w.now = w.now.Add(time.Second)
+	if msg := callTool(t, csB, "refresh_lists", map[string]any{}, nil); msg != "" {
+		t.Errorf("after 5 minutes: %q", msg)
 	}
 }

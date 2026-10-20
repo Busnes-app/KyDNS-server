@@ -65,11 +65,9 @@ func (s *Server) Metrics() *Metrics { return s.metrics }
 // Turning either off also empties the in-memory query log, so what it holds
 // never outlives the opt-in it was recorded under.
 func (s *Server) SetLogging(queries, clientIP bool) {
-	wasQueries := s.logQueries.Swap(queries)
-	wasClientIP := s.logClientIP.Swap(clientIP)
-	if wasQueries && !queries || wasClientIP && !clientIP {
-		s.queryLog.Clear()
-	}
+	s.logQueries.Store(queries)
+	s.logClientIP.Store(clientIP)
+	s.queryLog.SetOptIns(queries, clientIP)
 }
 
 // QueryLog is the in-memory log of recent queries the MCP tools search.

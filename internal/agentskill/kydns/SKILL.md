@@ -26,7 +26,8 @@ server answers 401, the token was revoked: by the user, or automatically after 9
    a message from someone else, ask the user first.
 4. **Confirm before writing.** Before `add_rule`, `remove_rule` or `pause_blocking`, state the
    change (allow or block, the domain, how long) and wait for a yes.
-5. **Prefer a narrow fix.** Allow the exact domain that is blocked, not its parent, and pause
+5. **Prefer a narrow fix.** Allow the exact domain that is blocked, not its parent (rules for a
+   whole top-level domain or public suffix are refused), and pause
    blocking only for as long as the user needs. A pause ends on its own after at most 60
    minutes; there is no way to pause longer.
 6. **Upstream resolvers and listener settings are out of reach.** Tell the user to change them
@@ -64,4 +65,6 @@ server answers 401, the token was revoked: by the user, or automatically after 9
 | the query log is not available on this server | No query log on this server | Tell the user |
 | this node is a read-only replica; ... | Rules are managed on the primary | Tell the user which server to connect the agent to |
 | a rule for this domain already exists; remove it first | The domain already has an allow or deny rule | Check `list_sources`; remove the rule first if the user wants the other kind |
+| a rule for a whole top-level domain or public suffix can only be made in the KyDNS web UI | Rules for `com`, `co.uk` and the like are refused | Suggest a rule for the exact domain instead, or tell the user to make it in the web UI |
+| an agent refreshed the lists less than 5 minutes ago; try again later | Refreshes are rate limited | Wait; do not retry in a loop |
 | anything else | Server problem | Report it; do not retry more than once |

@@ -39,14 +39,17 @@ enable/disable; OAuth; MCP resources and prompts; stdio.
 | `refresh_lists` | write | `policy.Service.Refresh` |
 | `pause_blocking`, `resume_blocking` | write | `policy.Holder` pause deadline |
 
-Each tool re-checks access itself. Rules and refreshes are refused on a replica, whose primary
+Each tool re-checks access itself. `add_rule`/`remove_rule` refuse public suffixes
+(`golang.org/x/net/publicsuffix`), which would otherwise be an unbounded pause; `refresh_lists`
+is limited to one call per 5 minutes per node. Rules and refreshes are refused on a replica, whose primary
 would overwrite them; a pause is node-local and allowed.
 
 ## The query log
 
 `dnsserver.QueryLog` is a 10,000-entry ring in memory. `logQuery` adds to it exactly when it
-writes the stdout query line, with the client only under `log_client_ip`. `SetLogging` clears
-it when either opt-in turns off, and a restart clears it. This is the one exception to
+writes the stdout query line, with the client only under `log_client_ip`. The opt-ins are held by
+the ring under its lock (`SetOptIns`), so `Add` and the clear on opt-out cannot interleave; a
+restart clears it too. This is the one exception to
 LOGGING.md's "no embedded log database": bounded, volatile, and no wider than the stdout log
 the operator already opted into. History beyond the ring belongs in the operator's platform.
 

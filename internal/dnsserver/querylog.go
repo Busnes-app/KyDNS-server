@@ -33,32 +33,51 @@ func (e QueryEntry) Blocked() bool { return e.Source == "blocked" }
 // QueryLog is a bounded ring of recent queries, in memory only. It fills only
 // while query logging is on, and a restart or turning query logging (or the
 // client IP) off empties it, so it never holds more than the stdout log the
-// operator opted into.
+// operator opted into. The opt-ins live here, under the ring's lock, so a
+// query answered while one is being turned off cannot land after the clear.
 type QueryLog struct {
-	mu   sync.Mutex
-	ring []QueryEntry
-	next int
-	full bool
+	mu       sync.Mutex
+	ring     []QueryEntry
+	next     int
+	full     bool
+	on       bool
+	clientIP bool
 }
 
 func NewQueryLog(size int) *QueryLog { return &QueryLog{ring: make([]QueryEntry, size)} }
 
-// Add records one query, overwriting the oldest once the ring is full.
+// SetOptIns follows the two logging opt-ins. Turning either off empties the
+// ring in the same critical section that every Add checks them in.
+func (l *QueryLog) SetOptIns(queries, clientIP bool) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	if l.on && !queries || l.clientIP && !clientIP {
+		l.clearLocked()
+	}
+	l.on, l.clientIP = queries, clientIP
+}
+
+// Add records one query, overwriting the oldest once the ring is full. It
+// drops the entry while query logging is off and the client while client-IP
+// logging is off, whatever the caller saw a moment earlier.
 func (l *QueryLog) Add(e QueryEntry) {
 	if len(e.Name) > maxLoggedName {
 		e.Name = e.Name[:maxLoggedName]
 	}
 	l.mu.Lock()
 	defer l.mu.Unlock()
+	if !l.on {
+		return
+	}
+	if !l.clientIP {
+		e.Client = ""
+	}
 	l.ring[l.next] = e
 	l.next = (l.next + 1) % len(l.ring)
 	l.full = l.full || l.next == 0
 }
 
-// Clear forgets every entry.
-func (l *QueryLog) Clear() {
-	l.mu.Lock()
-	defer l.mu.Unlock()
+func (l *QueryLog) clearLocked() {
 	clear(l.ring)
 	l.next, l.full = 0, false
 }
