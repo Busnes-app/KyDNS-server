@@ -117,7 +117,7 @@ func (s *Store) ApplyInstaller(ctx context.Context, b applysetup.Common, check b
 		} else if err != nil {
 			return report, err
 		}
-		if enabled != 0 || sub != "" || legacySecret != "" || legacyIssuer != "https://auth.urlxl.com" || legacyClient != "kydns" {
+		if enabled != 0 || sub != "" || legacySecret != "" || legacyIssuer != "" || legacyClient != "kydns" {
 			return report, errors.New("installer refuses to adopt existing SSO configuration or a linked recovery account")
 		}
 		if _, err = tx.ExecContext(ctx, "INSERT INTO local_settings(key,value) VALUES(?,?)", installerConfigKey, string(raw)); err != nil {

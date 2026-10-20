@@ -1,6 +1,7 @@
 package web
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -260,8 +261,9 @@ func (s *Server) postSSOSettings(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if issuerURL == "" {
-		issuerURL = "https://auth.urlxl.com"
+	if enabled && issuerURL == "" {
+		s.settingsError(w, r, errors.New("enter an issuer URL to enable single sign-on"))
+		return
 	}
 	if clientID == "" {
 		clientID = "kydns"

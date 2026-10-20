@@ -453,7 +453,7 @@ func TestSSOLoginButtonShownWhenEnabled(t *testing.T) {
 	// Enable SSO
 	_ = srv.o.Store.SetSSOSettings(store.SSOSettings{
 		Enabled:   true,
-		IssuerURL: "https://auth.urlxl.com",
+		IssuerURL: "https://auth.example.com",
 		ClientID:  "kydns",
 	})
 
@@ -468,7 +468,7 @@ func TestSSOGetLoginSetsPKCEAndRedirects(t *testing.T) {
 	setupAndLogin(t, h)
 	_ = srv.o.Store.SetSSOSettings(store.SSOSettings{
 		Enabled:   true,
-		IssuerURL: "https://auth.urlxl.com",
+		IssuerURL: "https://auth.example.com",
 		ClientID:  "kydns",
 	})
 
@@ -480,7 +480,7 @@ func TestSSOGetLoginSetsPKCEAndRedirects(t *testing.T) {
 		t.Fatalf("status = %d, want 303 redirect", rec.Code)
 	}
 	loc := rec.Header().Get("Location")
-	if !strings.HasPrefix(loc, "https://auth.urlxl.com/oauth/authorize") {
+	if !strings.HasPrefix(loc, "https://auth.example.com/oauth/authorize") {
 		t.Errorf("unexpected redirect: %s", loc)
 	}
 
@@ -671,6 +671,29 @@ func TestSSOExchangeErrorIsNotShown(t *testing.T) {
 	}
 }
 
+// With no default issuer, enabling SSO needs one; saving it disabled does not.
+func TestSSOSettingsEnableNeedsIssuer(t *testing.T) {
+	h, srv := newWeb(t)
+	setupAndLogin(t, h)
+	c := loginCookie(t, h)
+	sess, _ := srv.o.Sessions.Get(c.Value)
+
+	rec := postForm(t, h, "/settings/sso", url.Values{"csrf_token": {sess.CSRF}, "enabled": {"1"}, "issuer_url": {" "}}, c)
+	if rec.Code != http.StatusBadRequest {
+		t.Fatalf("enable with no issuer: status = %d, want 400", rec.Code)
+	}
+	if sso, _ := srv.o.Store.SSOSettings(); sso.Enabled {
+		t.Fatalf("SSO enabled with no issuer: %+v", sso)
+	}
+	rec = postForm(t, h, "/settings/sso", url.Values{"csrf_token": {sess.CSRF}, "issuer_url": {""}}, c)
+	if rec.Code != http.StatusSeeOther {
+		t.Fatalf("disabled save: status = %d, want redirect", rec.Code)
+	}
+	if sso, _ := srv.o.Store.SSOSettings(); sso.Enabled || sso.IssuerURL != "" || sso.ClientID != "kydns" {
+		t.Fatalf("disabled save stored %+v", sso)
+	}
+}
+
 func TestSSOSettingsSaveAndUnlink(t *testing.T) {
 	h, srv := newWeb(t)
 	setupAndLogin(t, h)
@@ -681,7 +704,7 @@ func TestSSOSettingsSaveAndUnlink(t *testing.T) {
 	rec := postForm(t, h, "/settings/sso", url.Values{
 		"csrf_token":    {sess.CSRF},
 		"enabled":       {"1"},
-		"issuer_url":    {"https://auth.urlxl.com"},
+		"issuer_url":    {"https://auth.example.com"},
 		"client_id":     {"kydns-prod"},
 		"client_secret": {"sec123"},
 	}, c)
@@ -695,7 +718,7 @@ func TestSSOSettingsSaveAndUnlink(t *testing.T) {
 	}
 
 	// Link admin and then unlink
-	_ = srv.o.Store.LinkAdminSSO("sub-123", "user1", "user1@urlxl.com")
+	_ = srv.o.Store.LinkAdminSSO("sub-123", "user1", "user1@example.com")
 	rec = postForm(t, h, "/settings/sso/unlink", url.Values{"csrf_token": {sess.CSRF}}, c)
 	if rec.Code != http.StatusSeeOther {
 		t.Fatalf("status = %d, want redirect", rec.Code)
@@ -722,7 +745,7 @@ func TestSettingsPageRendersWithLinkedSSO(t *testing.T) {
 	}
 
 	// 2. Link identity and render again
-	_ = srv.o.Store.LinkAdminSSO("sso-sub-xyz", "yoshi_admin", "yoshi@urlxl.com")
+	_ = srv.o.Store.LinkAdminSSO("sso-sub-xyz", "yoshi_admin", "yoshi@example.com")
 	rec = get(t, h, "/settings", c)
 	if rec.Code != http.StatusOK {
 		t.Fatalf("settings page status = %d, want 200", rec.Code)
