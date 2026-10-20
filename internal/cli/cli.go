@@ -14,6 +14,8 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	"github.com/Busnes-app/kydns-server/internal/registry"
 )
 
 type Client struct {
@@ -570,11 +572,15 @@ func tokenCmd(c *Client, args []string, stdout, stderr io.Writer) int {
 			}
 		}
 		var out struct {
-			Token string `json:"token"`
+			Token    string `json:"token"`
+			Label    string `json:"label"`
+			Scope    string `json:"scope"`
+			QueryLog bool   `json:"query_log"`
 		}
 		if err := c.Do("POST", "/api/v1/tokens", body, &out); err != nil {
 			return fail(stderr, err)
 		}
+		fmt.Fprintf(stderr, "token for %q: %s\n", out.Label, registry.AccessText(out.Scope, out.QueryLog))
 		// Shown once; the server keeps only a hash.
 		fmt.Fprintln(stdout, out.Token)
 		return 0

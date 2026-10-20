@@ -88,6 +88,27 @@ impact, reproduction steps, and any suggested mitigation.
   those. The config file seeds those settings on the first run and is ignored
   afterwards, so a file an attacker edits on a running install changes nothing.
 
+## Browser origins
+
+The admin listener assumes a hostile web page in the operator's browser (the
+Joplin Web Clipper leak, GHSA-9728-v7ww-mxjv, was exactly that: wildcard CORS,
+no Origin check, and a consent prompt that did not say who was asking).
+
+- No response carries `Access-Control-Allow-Origin`, wildcard or otherwise.
+  The UI is same-origin and needs no CORS; `/mcp` is for agents, never
+  browsers, and refuses any request with an `Origin` header.
+- Every state-changing request (UI, `/api/v1`, `/mcp`) from another origin,
+  with `Origin: null`, or with `Sec-Fetch-Site: cross-site`/`same-site` is
+  refused, and cross-origin preflights are refused. UI forms also need the
+  session and its CSRF token.
+- The UI, API and `/mcp` answer only to `localhost`, IP literals and the names
+  in `KYDNS_ADMIN_HOSTNAMES`, which defeats DNS rebinding. With no names
+  configured, a request through the trusted HTTPS proxy passes on any name,
+  since a rebound name fails the proxy's TLS handshake; KyDNS warns at start.
+- Tokens are minted only by an administrator, in the UI, the API or the CLI.
+  There is no pairing or approval flow a third party can start, and the screen
+  that shows a new token names who it is for and what it grants.
+
 ## Required protections
 
 - Validate domain names, record types, addresses, and aliases.

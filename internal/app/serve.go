@@ -394,6 +394,10 @@ func Serve(ctx context.Context, cfgPath string, logger *slog.Logger) error {
 			"fix", "put an HTTPS reverse proxy in front and set KYDNS_TRUSTED_PROXIES to its address")
 	}
 
+	if len(cfg.Admin.TrustedProxies) > 0 && len(cfg.Admin.Hostnames) == 0 {
+		logger.Warn("KYDNS_ADMIN_HOSTNAMES is empty, so requests through the trusted proxy are accepted on any host name",
+			"fix", "set KYDNS_ADMIN_HOSTNAMES to the name the admin UI is reached by")
+	}
 	go func() { errs <- dnsSrv.ListenAndServe(cfg.DNS.Listen) }()
 	go func() {
 		if err := adminSrv.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {

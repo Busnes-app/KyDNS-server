@@ -69,6 +69,18 @@ it ends. The Blacklists page shows a pause with **Resume now**.
    grow the audit table. KyDNS's admin API has no failure limiter either; tokens are 256-bit.
 5. 1 MiB request body cap.
 
+## Browser origins
+
+Added after the Joplin Web Clipper advisory (GHSA-9728-v7ww-mxjv): a website minted a
+full-access token through an endpoint with wildcard CORS, no Origin check and an anonymous
+consent prompt. `web.TransportGate` (outermost, covering UI, `/api/v1` and `/mcp`) refuses a
+Host outside `localhost`/IP literals/`KYDNS_ADMIN_HOSTNAMES` (proxied requests pass when none is
+configured: TLS binds the name), any cross-origin preflight, and any cross-origin state change
+(`Origin` mismatch or `null`, `Sec-Fetch-Site` cross-site or same-site). No route sends CORS
+headers. `withMCPAuth` refuses any `Origin`. The token banner and CLI name the agent and spell
+out the access (`registry.AccessText`); agent tokens require a label. Tests:
+`internal/web/origin_test.go`, one per requirement, run through the full handler stack.
+
 ## Testing
 
 `internal/adminapi/mcp_test.go`: authentication (Origin, admin token, Basic, cookie, wrong

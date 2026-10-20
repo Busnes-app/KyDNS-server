@@ -34,6 +34,9 @@ services:
       # or CIDRs. Trusts forwarded headers only; firewall port 8053 to restrict
       # who can connect. See step 2 below.
       KYDNS_TRUSTED_PROXIES: ${KYDNS_TRUSTED_PROXIES:-}
+      # The names the admin UI is reached by, comma-separated, for example
+      # kydns.home.arpa. Any other Host is refused (DNS rebinding).
+      KYDNS_ADMIN_HOSTNAMES: ${KYDNS_ADMIN_HOSTNAMES:-}
       # Backups. The schedule is set in the admin UI; this is
       # only its default. A local backup directory needs a volume mounted at the
       # same path. See README "Backups".
@@ -122,6 +125,7 @@ volumes:
 #    Set it in .env to the proxy's address as KyDNS sees it:
 #
 #      KYDNS_TRUSTED_PROXIES=192.168.1.20
+#      KYDNS_ADMIN_HOSTNAMES=kydns.home.arpa
 #
 # 3. make setup                  fills in your interface, subnet and gateway
 # 4. make up                     builds and starts it, stamping the version

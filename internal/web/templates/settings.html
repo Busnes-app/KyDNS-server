@@ -1,8 +1,9 @@
 {{define "page"}}
 {{with .NewToken}}
 <div class="banner">
-  <strong>Copy this token now.</strong>
-  <p>It is shown once and cannot be recovered.</p>
+  <strong>Token for “{{$.NewTokenFor}}”: {{$.NewTokenAccess}}.</strong>
+  <p>Copy it now. It is shown once and cannot be recovered. If you did not just create a token
+     for “{{$.NewTokenFor}}”, revoke it below.</p>
   <p><code>{{.}}</code></p>
   {{with $.AgentURL}}
   <p>Put the token in <code>KYDNS_AGENT_TOKEN</code> where the agent runs, then add the server.
@@ -232,8 +233,8 @@ curl -fsSo ~/.agents/skills/kydns/SKILL.md {{.}}/agent/skills/kydns/SKILL.md</pr
   </table>
   <form class="stack" method="post" action="/settings/tokens/new">
     <input type="hidden" name="csrf_token" value="{{.CSRF}}">
-    <label for="tlabel">Label</label>
-    <input id="tlabel" name="label" type="text" placeholder="laptop">
+    <label for="tlabel">Label (for an AI agent, the agent's name)</label>
+    <input id="tlabel" name="label" type="text" placeholder="laptop, or hermes on the NAS">
     <label for="taccess">Access</label>
     <select id="taccess" name="access">
       <option value="admin">Admin (API and CLI, full control)</option>

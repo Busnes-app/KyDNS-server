@@ -105,6 +105,8 @@ func TestTransportGate(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			req := httptest.NewRequest("GET", tc.path, nil)
 			req.RemoteAddr = tc.remote
+			// Loopback answers only to loopback names (TestHostHeaderIsChecked).
+			req.Host = "127.0.0.1:8053"
 			if tc.proto != "" {
 				req.Header.Set("X-Forwarded-Proto", tc.proto)
 			}

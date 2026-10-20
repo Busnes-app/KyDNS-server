@@ -187,6 +187,7 @@ func (s *Server) postTokenNew(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	data := s.settingsData("", plaintext)
+	data["NewTokenFor"], data["NewTokenAccess"] = strings.TrimSpace(label), registry.AccessText(scope, queryLog)
 	if store.IsMCPScope(scope) {
 		_ = s.o.Registry.Audit(store.AuditEvent{Actor: "admin", Action: "agent_token.create", Resource: "label:" + label,
 			Details: fmt.Sprintf("scope %s, query_log %t", scope, queryLog), IP: s.sourceKey(r), Outcome: "success"})

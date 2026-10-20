@@ -68,7 +68,9 @@ The page shows the token once, with config for both agents that reads it from
 `/agent/skills/kydns/SKILL.md`), which teaches the agent the tools and when to ask you first.
 You can change an agent's access there later. An agent token unused for 90 days is revoked; an
 agent token never works on the admin API, nor an admin token over MCP. No agent can change
-upstream resolvers or listener settings.
+upstream resolvers or listener settings. The admin UI, API and `/mcp` refuse browser
+cross-origin requests and answer only to `localhost`, IP addresses and the names in
+`KYDNS_ADMIN_HOSTNAMES`; see [Running](docs/RUNNING.md).
 
 Domain names in the query log and in block lists are chosen by devices, websites and list
 maintainers, and an agent may treat them as instructions. KyDNS labels them as untrusted data,

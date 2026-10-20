@@ -112,6 +112,14 @@ as KyDNS sees it (comma-separated IPs or CIDRs; `/0` is refused), and open
 `/setup` through the proxy's `https://` address. This setting trusts forwarded
 headers; it does not block direct access to `http://$KYDNS_IP:8053/`.
 
+Set `KYDNS_ADMIN_HOSTNAMES` to the host names the admin UI is reached by
+(comma-separated, no scheme or port, for example `kydns.home.arpa`). The UI,
+the API and `/mcp` refuse any other `Host`, which stops a web page from
+reaching them by re-pointing its own name at this server (DNS rebinding).
+`localhost` and IP addresses always work. Left empty, a request through the
+trusted HTTPS proxy is accepted on any name, because the proxy's certificate
+already binds it; KyDNS warns about this at startup.
+
 The image already has both set, in `kydns.docker.yaml` baked in at
 `/etc/kydns/kydns.yaml`, so a `docker run` with no config mounted at all
 starts and serves. The compose file mounts your `kydns.yaml` over it, which is

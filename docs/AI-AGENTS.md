@@ -7,6 +7,17 @@ listener, behind the same transport gate as the web UI: loopback, or an HTTPS re
 `KYDNS_TRUSTED_PROXIES`. It is never served on the DNS listener. Design:
 [the MCP spec](superpowers/specs/2026-10-20-kydns-mcp-agent-access-design.md).
 
+## Browser origins
+
+- `/mcp` refuses any request carrying an `Origin` header (403) and sends no CORS headers.
+- Nothing on the admin listener sends `Access-Control-Allow-Origin`.
+- Creating, changing or revoking a token in the UI needs the session and its CSRF token, and a
+  cross-origin request is refused even with both. The API takes an admin bearer token, which
+  browsers never attach on their own, and refuses cross-origin requests too.
+- Requests must use a host name in `KYDNS_ADMIN_HOSTNAMES`, `localhost` or an IP address.
+- The page that shows a new token names the agent and the access it grants, and an agent token
+  must have a name.
+
 ## Tokens
 
 An agent token is a row in the same table as admin API tokens, with an access level stored in

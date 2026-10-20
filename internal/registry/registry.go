@@ -408,6 +408,10 @@ func (r *Registry) CreateAgentTokenAtGeneration(label, scope string, queryLog bo
 	if !store.IsMCPScope(scope) {
 		return "", Invalid("scope", "scope_invalid", "an agent token's scope is %s or %s", store.ScopeMCPRead, store.ScopeMCPWrite)
 	}
+	// Every screen that shows the token names the agent it is for, so it needs a name.
+	if label = strings.TrimSpace(label); label == "" {
+		return "", Invalid("label", "label_required", "name the agent this token is for")
+	}
 	plaintext, hash := GenerateToken()
 	t := store.Token{Label: label, Hash: hash, Issuer: issuer, Subject: subject, Scope: scope, QueryLog: queryLog}
 	if _, err := r.s.PutTokenAtGeneration(t, generation); err != nil {
@@ -423,6 +427,24 @@ func (r *Registry) SetAgentAccess(id int64, scope string, queryLog bool) error {
 		return Invalid("scope", "scope_invalid", "an agent token's scope is %s or %s", store.ScopeMCPRead, store.ScopeMCPWrite)
 	}
 	return r.s.SetTokenAccess(id, scope, queryLog)
+}
+
+// AccessText says in words what a token can do, for every screen that issues
+// or changes one: never a generic "an app wants access".
+func AccessText(scope string, queryLog bool) string {
+	var s string
+	switch scope {
+	case store.ScopeMCPRead:
+		s = "AI agent, read only (explain blocks, stats, block lists)"
+	case store.ScopeMCPWrite:
+		s = "AI agent, read and write (also add and remove rules, refresh lists, pause blocking up to 60 minutes)"
+	default:
+		return "admin: full control of KyDNS through the API and CLI"
+	}
+	if queryLog {
+		return s + ", and can read the query log (browsing history)"
+	}
+	return s + ", without the query log"
 }
 
 // AgentAuth is the outcome of presenting a token at /mcp.

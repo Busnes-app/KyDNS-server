@@ -141,6 +141,10 @@ Code, one concern per package:
   `query_log` grant; they never authenticate `/api/v1`, admin tokens never
   authenticate `/mcp`, and an agent token idle 90 days is revoked. Every tool is
   in `TestMCPAccessMatrix`. Verify with `go test ./internal/adminapi -run 'MCP|Agent'`.
+- `internal/web/origin.go` — browser-origin gate in `TransportGate`: Host must be
+  `localhost`, an IP or in `KYDNS_ADMIN_HOSTNAMES` (DNS rebinding); cross-origin
+  state changes and preflights are refused; no route ever sends CORS headers.
+  Verify with `go test ./internal/web -run 'MCPRefuses|NoCORS|Forged|HostHeader|TokenScreen'`.
 - `internal/agentskill` — the embedded `SKILL.md` served at
   `/agent/skills/kydns/SKILL.md`; see its `AGENTS.md`. The admin API
   serves public `ky.health/1` JSON on `/healthz` and `/api/v1/healthz` from one
