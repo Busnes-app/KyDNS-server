@@ -46,6 +46,24 @@ Do not add an embedded log database or product-specific log viewer. Operators
 should use their existing logging platform for search, alerting, retention, and
 access control.
 
+The one exception is the in-memory query ring the MCP tools search
+(`search_queries`, `query_stats`; see [docs/AI-AGENTS.md](docs/AI-AGENTS.md)). It
+holds the most recent 10,000 answered queries on one node, never touches disk,
+and follows the two opt-ins exactly: it fills only while `log_queries` is on,
+records the client address only while `log_client_ip` is also on, and is
+emptied when either is turned off and on restart. It holds nothing the stdout
+query log does not already carry. Reading it takes an agent token with the
+separate query-log grant, because it is browsing history. It is not a retention
+store: history beyond the ring belongs in the operator's logging platform.
+
+AI agent activity is recorded in the local audit table: `mcp.auth_failed` (a
+real token refused, by token ID), `mcp.rule_add`, `mcp.rule_remove`,
+`mcp.lists_refresh`, `mcp.blocking_pause`, `mcp.blocking_resume`,
+`agent_token.create`, `agent_token.access_change` and `agent_token.expired`. No
+token secret is recorded, nor any query-log content. A pause and a resume are
+also logged as `blacklist blocking paused` (with its end) and `blacklist
+blocking resumed`.
+
 Backup audit events record bounded action, outcome, capsule ID, remote address, and a
 printable error summary. The actions are `backup.paired`, `backup.key_pinned`,
 `backup.unpaired`, `backup.schedule`, `backup.exported`, `backup.export_failed`,

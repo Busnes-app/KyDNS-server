@@ -71,7 +71,9 @@ CREATE TABLE IF NOT EXISTS tokens (
   label        TEXT NOT NULL,
   hash         TEXT NOT NULL UNIQUE,
   created_at   INTEGER NOT NULL DEFAULT (unixepoch()),
-  last_used_at INTEGER NOT NULL DEFAULT 0
+  last_used_at INTEGER NOT NULL DEFAULT 0,
+  scope        TEXT NOT NULL DEFAULT 'admin',
+  query_log    INTEGER NOT NULL DEFAULT 0
 );
 -- Backup pairing, receipts, and audit are node-local. Replication snapshots
 -- deliberately have no representation for either table.
@@ -351,6 +353,9 @@ var migrations = []string{
 	`ALTER TABLE tokens ADD COLUMN issuer TEXT NOT NULL DEFAULT '';
 	 ALTER TABLE tokens ADD COLUMN subject TEXT NOT NULL DEFAULT '';`,
 	`ALTER TABLE admin ADD COLUMN sessions_not_before INTEGER NOT NULL DEFAULT 0;`,
+	// Existing rows become admin tokens, so every CLI and script keeps working.
+	`ALTER TABLE tokens ADD COLUMN scope TEXT NOT NULL DEFAULT 'admin';
+	 ALTER TABLE tokens ADD COLUMN query_log INTEGER NOT NULL DEFAULT 0;`,
 }
 
 // migrate runs against a transaction Open already holds, so a crash
@@ -978,7 +983,15 @@ func (s *Store) PutTokenAtGeneration(t Token, generation time.Time) (int64, erro
 	if beforeTokenInsert != nil {
 		beforeTokenInsert()
 	}
-	res, err := tx.Exec(`INSERT INTO tokens(label, hash, issuer, subject) VALUES(?, ?, ?, ?)`, t.Label, t.Hash, t.Issuer, t.Subject)
+	scope := t.Scope
+	if scope == "" {
+		scope = ScopeAdmin
+	}
+	if scope != ScopeAdmin && !IsMCPScope(scope) || scope == ScopeAdmin && t.QueryLog {
+		return 0, fmt.Errorf("token scope %q with query_log %t is not valid", scope, t.QueryLog)
+	}
+	res, err := tx.Exec(`INSERT INTO tokens(label, hash, issuer, subject, scope, query_log) VALUES(?, ?, ?, ?, ?, ?)`,
+		t.Label, t.Hash, t.Issuer, t.Subject, scope, t.QueryLog)
 	if err != nil {
 		return 0, err
 	}
@@ -990,7 +1003,7 @@ func (s *Store) PutTokenAtGeneration(t Token, generation time.Time) (int64, erro
 }
 
 func (s *Store) Tokens() ([]Token, error) {
-	rows, err := s.db.Query(`SELECT id, label, hash, created_at, last_used_at, issuer, subject FROM tokens ORDER BY id`)
+	rows, err := s.db.Query(`SELECT id, label, hash, created_at, last_used_at, issuer, subject, scope, query_log FROM tokens ORDER BY id`)
 	if err != nil {
 		return nil, err
 	}
@@ -998,7 +1011,7 @@ func (s *Store) Tokens() ([]Token, error) {
 	var out []Token
 	for rows.Next() {
 		var t Token
-		if err := rows.Scan(&t.ID, &t.Label, &t.Hash, &t.CreatedAt, &t.LastUsedAt, &t.Issuer, &t.Subject); err != nil {
+		if err := rows.Scan(&t.ID, &t.Label, &t.Hash, &t.CreatedAt, &t.LastUsedAt, &t.Issuer, &t.Subject, &t.Scope, &t.QueryLog); err != nil {
 			return nil, err
 		}
 		out = append(out, t)
@@ -1009,6 +1022,45 @@ func (s *Store) Tokens() ([]Token, error) {
 func (s *Store) TouchToken(id int64) error {
 	_, err := s.db.Exec(`UPDATE tokens SET last_used_at = unixepoch() WHERE id = ?`, id)
 	return err
+}
+
+// SetTokenAccess changes an MCP token's scope and query-log flag. An admin
+// token never becomes an agent's, nor the reverse: ErrNotFound for both.
+func (s *Store) SetTokenAccess(id int64, scope string, queryLog bool) error {
+	if !IsMCPScope(scope) {
+		return fmt.Errorf("token scope %q is not an MCP scope", scope)
+	}
+	res, err := s.db.Exec(`UPDATE tokens SET scope = ?, query_log = ? WHERE id = ? AND scope IN (?, ?)`,
+		scope, queryLog, id, ScopeMCPRead, ScopeMCPWrite)
+	if err != nil {
+		return err
+	}
+	if n, _ := res.RowsAffected(); n == 0 {
+		return fmt.Errorf("%w: agent token %d", ErrNotFound, id)
+	}
+	return nil
+}
+
+// DeleteIdleAgentTokens deletes MCP tokens last used (or, never used, created)
+// before cutoff, one token when id is non-zero, and returns what it deleted.
+// Admin tokens are never touched.
+func (s *Store) DeleteIdleAgentTokens(cutoff time.Time, id int64) ([]Token, error) {
+	rows, err := s.db.Query(`DELETE FROM tokens
+		WHERE scope IN (?, ?) AND MAX(last_used_at, created_at) < ? AND (? = 0 OR id = ?)
+		RETURNING id, label, issuer, subject`, ScopeMCPRead, ScopeMCPWrite, cutoff.Unix(), id, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var out []Token
+	for rows.Next() {
+		var t Token
+		if err := rows.Scan(&t.ID, &t.Label, &t.Issuer, &t.Subject); err != nil {
+			return nil, err
+		}
+		out = append(out, t)
+	}
+	return out, rows.Err()
 }
 
 func (s *Store) DeleteToken(id int64) error {

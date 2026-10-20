@@ -19,16 +19,23 @@ func NewSet(domains []string) *Set {
 // Match reports whether name, itself already normalized, is in the set or is a
 // subdomain of something in it.
 func (s *Set) Match(name string) bool {
+	_, ok := s.MatchedBy(name)
+	return ok
+}
+
+// MatchedBy is Match that also names the entry that matched: name itself or
+// the closest parent domain in the set.
+func (s *Set) MatchedBy(name string) (string, bool) {
 	if s == nil || len(s.m) == 0 {
-		return false
+		return "", false
 	}
 	for {
 		if _, ok := s.m[name]; ok {
-			return true
+			return name, true
 		}
 		i := strings.IndexByte(name, '.')
 		if i < 0 {
-			return false
+			return "", false
 		}
 		name = name[i+1:]
 	}

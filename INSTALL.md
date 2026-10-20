@@ -49,7 +49,8 @@ chmod 600 .env
 Set `KYDNS_IP` inside your LAN subnet but outside DHCP allocation, and review
 `KYDNS_NETWORK`, interface, gateway and subnet. In `kydns.yaml` set
 `data_dir: /var/lib/kydns` and `admin.listen: "0.0.0.0:8053"`. Set
-`KYDNS_TRUSTED_PROXIES` to your proxy peer address. Restrict direct admin-port access to
+`KYDNS_TRUSTED_PROXIES` to your proxy peer address, and `KYDNS_ADMIN_HOSTNAMES` to the name
+you reach the admin UI by (for example `kydns.home.arpa`). Restrict direct admin-port access to
 that proxy **before** setup; the trust setting alone does not restrict connections.
 
 ```sh

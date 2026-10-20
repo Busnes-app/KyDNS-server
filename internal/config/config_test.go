@@ -486,3 +486,21 @@ func TestBackupEnvRejectsBadValues(t *testing.T) {
 		})
 	}
 }
+
+// KYDNS_ADMIN_HOSTNAMES is bare names, normalized; anything URL-shaped is refused.
+func TestAdminHostnamesEnvironment(t *testing.T) {
+	t.Setenv("KYDNS_ADMIN_HOSTNAMES", " KyDNS.home.arpa. , dns.lan,")
+	c, err := Load(write(t, "data_dir: /var/lib/kydns\n"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(c.Admin.Hostnames, []string{"kydns.home.arpa", "dns.lan"}) {
+		t.Errorf("Hostnames = %q", c.Admin.Hostnames)
+	}
+	for _, bad := range []string{"https://kydns.lan", "kydns.lan:8053", "*.lan"} {
+		t.Setenv("KYDNS_ADMIN_HOSTNAMES", bad)
+		if _, err := Load(write(t, "data_dir: /var/lib/kydns\n")); err == nil {
+			t.Errorf("KYDNS_ADMIN_HOSTNAMES=%q accepted", bad)
+		}
+	}
+}

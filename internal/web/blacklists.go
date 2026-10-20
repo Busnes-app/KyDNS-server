@@ -54,6 +54,9 @@ func (s *Server) blacklistsData(errMsg string, result map[string]any) map[string
 	}
 	data["Enabled"] = set.Enabled
 	data["BlockTTL"] = set.BlockTTL
+	if until := s.o.Policy.PausedUntil(); !until.IsZero() {
+		data["PausedUntil"] = until.Local().Format("15:04")
+	}
 
 	lists, err := s.o.Policy.Lists()
 	if err != nil && errMsg == "" {
@@ -137,6 +140,15 @@ func (s *Server) postBlacklistToggle(w http.ResponseWriter, r *http.Request) {
 		s.blacklistsError(w, r, err)
 		return
 	}
+	http.Redirect(w, r, "/blacklists", http.StatusSeeOther)
+}
+
+// postBlacklistResume ends a pause an AI agent started, before it ends on its own.
+func (s *Server) postBlacklistResume(w http.ResponseWriter, r *http.Request) {
+	if !s.requirePolicy(w) {
+		return
+	}
+	s.o.Policy.Resume()
 	http.Redirect(w, r, "/blacklists", http.StatusSeeOther)
 }
 

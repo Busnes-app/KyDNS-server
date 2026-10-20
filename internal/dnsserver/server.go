@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"net"
 	"net/netip"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -42,6 +43,7 @@ type Server struct {
 	metrics     *Metrics
 	logQueries  atomic.Bool
 	logClientIP atomic.Bool
+	queryLog    *QueryLog
 	mu          sync.Mutex
 	srvs        []*dns.Server
 }
@@ -50,7 +52,7 @@ func New(o Options) *Server {
 	if o.Logger == nil {
 		o.Logger = slog.Default()
 	}
-	s := &Server{o: o, metrics: NewMetrics()}
+	s := &Server{o: o, metrics: NewMetrics(), queryLog: NewQueryLog(QueryLogSize)}
 	s.SetLogging(o.LogQueries, o.LogClientIP)
 	return s
 }
@@ -60,10 +62,16 @@ func (s *Server) Metrics() *Metrics { return s.metrics }
 
 // SetLogging changes both logging opt-ins. The client IP stays a separate
 // choice from query logging: turning on one must never turn on the other.
+// Turning either off also empties the in-memory query log, so what it holds
+// never outlives the opt-in it was recorded under.
 func (s *Server) SetLogging(queries, clientIP bool) {
 	s.logQueries.Store(queries)
 	s.logClientIP.Store(clientIP)
+	s.queryLog.SetOptIns(queries, clientIP)
 }
+
+// QueryLog is the in-memory log of recent queries the MCP tools search.
+func (s *Server) QueryLog() *QueryLog { return s.queryLog }
 
 // LogQueries and LogClientIP report the current logging opt-ins, mirroring
 // Cache.Len and ACL.Stats as the read side of a live-tunable value.
@@ -347,10 +355,14 @@ func (s *Server) logQuery(r, m *dns.Msg, w dns.ResponseWriter, source, view, pol
 		"policy", policy,
 		"duration_ms", d.Milliseconds(),
 	}
+	e := QueryEntry{Time: time.Now(), Name: strings.TrimSuffix(q.Name, "."), Type: dns.TypeToString[q.Qtype],
+		Rcode: dns.RcodeToString[m.Rcode], Source: source, Policy: policy}
 	if s.logClientIP.Load() {
 		args = append(args, "client", w.RemoteAddr().String())
+		e.Client = sourceAddr(w).String()
 	}
 	s.o.Logger.Info("query", args...)
+	s.queryLog.Add(e)
 }
 
 // ListenAndServe starts UDP and TCP listeners on addr and blocks until one

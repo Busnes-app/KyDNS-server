@@ -196,16 +196,35 @@ func (s *Server) WriteGate(next http.Handler) http.Handler {
 // password, session cookie and tokens in cleartext across the LAN. The public
 // health endpoints stay open for monitors; they carry no secrets. As the
 // outermost handler it also forbids framing by other sites, for every response.
+//
+// It is also the browser-origin gate, for the UI, /api/v1 and /mcp alike: a
+// Host that is not this server's (DNS rebinding), a cross-origin preflight, and
+// a cross-origin state change are refused. No response anywhere carries an
+// Access-Control-Allow-Origin header: the UI is same-origin and needs none,
+// and /mcp is for agents, never browsers.
 func (s *Server) TransportGate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Security-Policy", "frame-ancestors 'self'")
 		w.Header().Set("X-Frame-Options", "SAMEORIGIN")
-		if r.URL.Path == "/healthz" || r.URL.Path == "/api/v1/healthz" || s.transportAllowed(r) {
+		if r.URL.Path == "/healthz" || r.URL.Path == "/api/v1/healthz" {
 			next.ServeHTTP(w, r)
 			return
 		}
-		http.Error(w, "KyDNS serves its admin UI only on this host's loopback or through an HTTPS "+
-			"reverse proxy listed in KYDNS_TRUSTED_PROXIES.", http.StatusForbidden)
+		if !s.transportAllowed(r) {
+			http.Error(w, "KyDNS serves its admin UI only on this host's loopback or through an HTTPS "+
+				"reverse proxy listed in KYDNS_TRUSTED_PROXIES.", http.StatusForbidden)
+			return
+		}
+		if !s.hostAllowed(r) {
+			http.Error(w, "KyDNS does not answer to this host name. Add it to KYDNS_ADMIN_HOSTNAMES.", http.StatusForbidden)
+			return
+		}
+		if r.Method == http.MethodOptions && r.Header.Get("Origin") != "" ||
+			unsafeMethod(r.Method) && s.crossOrigin(r) {
+			http.Error(w, "cross-origin request refused", http.StatusForbidden)
+			return
+		}
+		next.ServeHTTP(w, r)
 	})
 }
 

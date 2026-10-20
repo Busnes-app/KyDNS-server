@@ -4,6 +4,7 @@ import (
 	"net"
 	"net/http"
 	"net/netip"
+	"slices"
 	"strings"
 )
 
@@ -106,4 +107,29 @@ func isTrusted(addr netip.Addr, trusted []netip.Prefix) bool {
 		}
 	}
 	return false
+}
+
+// HostAllowed defeats DNS rebinding: a page on attacker.example whose name is
+// re-pointed at this listener still sends Host: attacker.example. IP literals
+// and localhost cannot be rebound, so they always pass. Otherwise the name must
+// be in names (KYDNS_ADMIN_HOSTNAMES). With none configured, only a request
+// through a trusted proxy passes on its Host: the proxy's certificate is what
+// binds the name there, since a rebound name fails TLS.
+func HostAllowed(r *http.Request, names []string, trusted []netip.Prefix) bool {
+	host := strings.ToLower(r.Host)
+	if h, _, err := net.SplitHostPort(host); err == nil {
+		host = h
+	}
+	host = strings.TrimSuffix(strings.Trim(host, "[]"), ".")
+	if _, err := netip.ParseAddr(host); err == nil {
+		return true
+	}
+	if host == "localhost" || strings.HasSuffix(host, ".localhost") {
+		return true
+	}
+	if len(names) > 0 {
+		return slices.Contains(names, host)
+	}
+	_, proxied, _ := RequestNetwork(r, trusted)
+	return proxied
 }
