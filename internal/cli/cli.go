@@ -14,6 +14,8 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	"github.com/Busnes-app/kydns-server/internal/registry"
 )
 
 type Client struct {
@@ -550,17 +552,35 @@ func tokenCmd(c *Client, args []string, stdout, stderr io.Writer) int {
 			return fail(stderr, err)
 		}
 		for _, tk := range out.Tokens {
-			fmt.Fprintf(stdout, "%-6v %s\n", tk["id"], tk["label"])
+			fmt.Fprintf(stdout, "%-6v %-10v %s\n", tk["id"], tk["scope"], tk["label"])
 		}
 		return 0
 	}
-	if len(args) == 2 && args[0] == "add" {
-		var out struct {
-			Token string `json:"token"`
+	if len(args) >= 2 && args[0] == "add" {
+		body := map[string]any{"label": args[1]}
+		for _, f := range args[2:] {
+			switch f {
+			case "--agent-read":
+				body["scope"] = "mcp:read"
+			case "--agent-write":
+				body["scope"] = "mcp:write"
+			case "--query-log":
+				body["query_log"] = true
+			default:
+				fmt.Fprintf(stderr, "unknown flag %q\n", f)
+				return 2
+			}
 		}
-		if err := c.Do("POST", "/api/v1/tokens", map[string]any{"label": args[1]}, &out); err != nil {
+		var out struct {
+			Token    string `json:"token"`
+			Label    string `json:"label"`
+			Scope    string `json:"scope"`
+			QueryLog bool   `json:"query_log"`
+		}
+		if err := c.Do("POST", "/api/v1/tokens", body, &out); err != nil {
 			return fail(stderr, err)
 		}
+		fmt.Fprintf(stderr, "token for %q: %s\n", out.Label, registry.AccessText(out.Scope, out.QueryLog))
 		// Shown once; the server keeps only a hash.
 		fmt.Fprintln(stdout, out.Token)
 		return 0
@@ -572,7 +592,7 @@ func tokenCmd(c *Client, args []string, stdout, stderr io.Writer) int {
 		fmt.Fprintf(stdout, "revoked token %s\n", args[1])
 		return 0
 	}
-	fmt.Fprintln(stderr, "usage: kydns token add <label> | list | rm <id>")
+	fmt.Fprintln(stderr, "usage: kydns token add <label> [--agent-read|--agent-write] [--query-log] | list | rm <id>")
 	return 2
 }
 

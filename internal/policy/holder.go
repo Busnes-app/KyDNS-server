@@ -5,6 +5,7 @@ import (
 	"strings"
 	"sync"
 	"sync/atomic"
+	"time"
 
 	"github.com/Busnes-app/kydns-server/internal/store"
 )
@@ -29,10 +30,36 @@ type Holder struct {
 	mu      sync.Mutex
 	byList  map[string]uint64
 	byName  map[string]uint64
+
+	// pausedUntil is unix nanoseconds; blocking is off before it. Memory only:
+	// a restart resumes blocking. Resuming needs no timer, because Decide
+	// compares against the clock on every query.
+	pausedUntil atomic.Int64
+	// Now is swappable so a test can step past a pause without sleeping.
+	Now func() time.Time
 }
 
 func NewHolder(src Source) *Holder {
-	return &Holder{src: src, byList: map[string]uint64{}, byName: map[string]uint64{}}
+	return &Holder{src: src, byList: map[string]uint64{}, byName: map[string]uint64{}, Now: time.Now}
+}
+
+// Pause turns blocking off until the deadline. A later Pause replaces it.
+func (h *Holder) Pause(until time.Time) { h.pausedUntil.Store(until.UnixNano()) }
+
+// Resume turns blocking back on now.
+func (h *Holder) Resume() { h.pausedUntil.Store(0) }
+
+// PausedUntil is the pause deadline, or the zero time when blocking is not paused.
+func (h *Holder) PausedUntil() time.Time {
+	until := h.pausedUntil.Load()
+	if until == 0 {
+		return time.Time{}
+	}
+	if h.Now().UnixNano() >= until {
+		h.pausedUntil.CompareAndSwap(until, 0) // the hot path stops asking the clock
+		return time.Time{}
+	}
+	return time.Unix(0, until)
 }
 
 // maxTrackedNames caps the per-name breakdown. A random-subdomain flood arrives
@@ -60,6 +87,9 @@ func (h *Holder) Current() *Snapshot { return h.cur.Load() }
 // Counting only ever happens on a block, so the common forwarded path takes no
 // lock at all.
 func (h *Holder) Decide(name string) (bool, string, uint32) {
+	if h.pausedUntil.Load() != 0 && !h.PausedUntil().IsZero() {
+		return false, PolicyPaused, 0
+	}
 	d := h.cur.Load().Decide(name)
 	if d.Blocked {
 		h.blocked.Add(1)

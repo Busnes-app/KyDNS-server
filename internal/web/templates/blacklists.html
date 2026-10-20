@@ -15,6 +15,16 @@
     <p class="error">Filtering is off. Nothing is being blocked. Your lists and
        rules are still here — turning filtering back on restores them at once.</p>
   {{end}}
+  {{with .PausedUntil}}
+  <div class="banner">
+    <strong>Blocking is paused until {{.}}.</strong>
+    <p>An AI agent paused it. It resumes on its own then.</p>
+    <form method="post" action="/blacklists/resume">
+      <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
+      <button type="submit">Resume now</button>
+    </form>
+  </div>
+  {{end}}
   <p class="muted">This is domain filtering. KyDNS does not inspect URLs, TLS,
      page content, or client traffic, and it is not a malware guarantee.</p>
   <div class="address-row">

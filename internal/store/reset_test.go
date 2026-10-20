@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 )
@@ -74,7 +75,7 @@ func TestOpenAddsSessionsNotBefore(t *testing.T) {
 	if _, err := db.Exec(`ALTER TABLE admin DROP COLUMN sessions_not_before`); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := db.Exec(fmt.Sprintf(`PRAGMA user_version = %d`, len(migrations)-1)); err != nil {
+	if _, err := db.Exec(fmt.Sprintf(`PRAGMA user_version = %d`, migrationIndex(t, "sessions_not_before"))); err != nil {
 		t.Fatal(err)
 	}
 	db.Close()
@@ -100,5 +101,69 @@ func TestResetGenerationAlwaysAdvances(t *testing.T) {
 		if err != nil || generation.UnixMilli() != at.UnixMilli()+int64(i) {
 			t.Fatalf("reset %d generation = %v, %v", i, generation, err)
 		}
+	}
+}
+
+// migrationIndex is the position of the one migration mentioning column, so a
+// test can roll user_version back to just before it.
+func migrationIndex(t *testing.T, column string) int {
+	t.Helper()
+	for i, m := range migrations {
+		if strings.Contains(m, column) {
+			return i
+		}
+	}
+	t.Fatalf("no migration mentions %s", column)
+	return 0
+}
+
+// Agent tokens live in the tokens table, so the admin reset revokes them with
+// the admin tokens.
+func TestResetAdminRevokesAgentTokens(t *testing.T) {
+	s := open(t)
+	if _, err := s.PutToken(Token{Label: "agent", Hash: "h1", Scope: ScopeMCPWrite, QueryLog: true}); err != nil {
+		t.Fatal(err)
+	}
+	if err := s.ResetAdmin("$argon2id$x", time.Now()); err != nil {
+		t.Fatal(err)
+	}
+	if toks, err := s.Tokens(); err != nil || len(toks) != 0 {
+		t.Fatalf("after reset: %v %v", toks, err)
+	}
+}
+
+// A database from before token scopes gains them, and its tokens stay admin tokens.
+func TestOpenAddsTokenScope(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "kydns.db")
+	s, err := Open(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := s.PutToken(Token{Label: "cli", Hash: "h1"}); err != nil {
+		t.Fatal(err)
+	}
+	s.Close()
+	db, err := sql.Open("sqlite", path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, stmt := range []string{`ALTER TABLE tokens DROP COLUMN scope`, `ALTER TABLE tokens DROP COLUMN query_log`,
+		fmt.Sprintf(`PRAGMA user_version = %d`, migrationIndex(t, "query_log"))} {
+		if _, err := db.Exec(stmt); err != nil {
+			t.Fatal(err)
+		}
+	}
+	db.Close()
+	s, err = Open(path)
+	if err != nil {
+		t.Fatalf("Open() on a pre-scope database: %v", err)
+	}
+	defer s.Close()
+	toks, err := s.Tokens()
+	if err != nil || len(toks) != 1 || toks[0].Scope != ScopeAdmin || toks[0].QueryLog {
+		t.Fatalf("tokens after migration: %+v %v", toks, err)
+	}
+	if err := s.SetTokenAccess(toks[0].ID, ScopeMCPRead, false); err == nil {
+		t.Error("an admin token was turned into an agent's")
 	}
 }

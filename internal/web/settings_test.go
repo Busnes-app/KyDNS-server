@@ -3,12 +3,15 @@ package web
 import (
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
 
 	"github.com/Busnes-app/kydns-server/internal/config"
 	"github.com/Busnes-app/kydns-server/internal/dnsserver"
+
+	"github.com/Busnes-app/kydns-server/internal/store"
 )
 
 func TestViewCreateAndList(t *testing.T) {
@@ -252,5 +255,54 @@ func TestDiscoveredPlaceholder(t *testing.T) {
 	h, _, c, _ := loggedIn(t)
 	if !strings.Contains(page(t, h, "/discovered", c), "DHCP") {
 		t.Error("discovered placeholder does not explain what will appear here")
+	}
+}
+
+// An AI agent token is created with its access level and shown with its MCP
+// setup; its access can change later between agent levels only.
+func TestAgentTokenCreatedAndChanged(t *testing.T) {
+	h, srv, c, csrf := loggedIn(t)
+	rec := postForm(t, h, "/settings/tokens/new", url.Values{
+		"label": {"hermes"}, "access": {"mcp:read"}, "query_log": {"on"}, "csrf_token": {csrf},
+	}, c)
+	body := rec.Body.String()
+	if rec.Code != http.StatusOK || !strings.Contains(body, "/mcp") || !strings.Contains(body, "/agent/skills/kydns/SKILL.md") {
+		t.Fatalf("create agent token = %d, no MCP setup shown", rec.Code)
+	}
+	toks, _ := srv.o.Registry.Tokens()
+	agent := toks[len(toks)-1]
+	if agent.Scope != store.ScopeMCPRead || !agent.QueryLog {
+		t.Fatalf("created %+v", agent)
+	}
+	if later := page(t, h, "/settings", c); !strings.Contains(later, "Revoked if unused by") {
+		t.Error("the agent token's revocation date is not shown")
+	}
+	id := strconv.FormatInt(agent.ID, 10)
+	if rec := postForm(t, h, "/settings/tokens/access", url.Values{"id": {id}, "access": {"mcp:write"}, "csrf_token": {csrf}}, c); rec.Code != http.StatusSeeOther {
+		t.Fatalf("change access = %d: %s", rec.Code, rec.Body)
+	}
+	toks, _ = srv.o.Registry.Tokens()
+	if got := toks[len(toks)-1]; got.Scope != store.ScopeMCPWrite || got.QueryLog {
+		t.Errorf("after the change %+v, want read and write without the query log", got)
+	}
+	if rec := postForm(t, h, "/settings/tokens/access", url.Values{"id": {id}, "access": {"admin"}, "csrf_token": {csrf}}, c); rec.Code == http.StatusSeeOther {
+		t.Error("an agent token was made an admin token")
+	}
+}
+
+// A pause shows on the blacklists page with a way to end it early.
+func TestPausedBlockingIsShownAndResumable(t *testing.T) {
+	h, srv, c, csrf := loggedIn(t)
+	if _, err := srv.o.Policy.Pause(10 * time.Minute); err != nil {
+		t.Fatal(err)
+	}
+	if body := page(t, h, "/blacklists", c); !strings.Contains(body, "Blocking is paused until") {
+		t.Fatal("the pause is not shown")
+	}
+	if rec := postForm(t, h, "/blacklists/resume", url.Values{"csrf_token": {csrf}}, c); rec.Code != http.StatusSeeOther {
+		t.Fatalf("resume = %d", rec.Code)
+	}
+	if !srv.o.Policy.PausedUntil().IsZero() {
+		t.Error("blocking is still paused")
 	}
 }

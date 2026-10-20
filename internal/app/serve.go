@@ -320,6 +320,7 @@ func Serve(ctx context.Context, cfgPath string, logger *slog.Logger) error {
 		WithReplication(func() adminapi.ReplicaStatus { return replStatus().toAdminAPI() }).
 		WithDHCP(dhcpRun).
 		WithBackupService(backupSvc).
+		WithMCP(dnsSrv, cfg.Admin.TrustedProxies, cfg.Admin.Hostnames, web.Version).
 		WithReplicaAdmin(&replicaAdmin{st: st, srv: repl.srv}).
 		// Wired on every node: promotion answers "already a primary" rather than
 		// an error, and a replica must never find this endpoint missing.
@@ -393,6 +394,10 @@ func Serve(ctx context.Context, cfgPath string, logger *slog.Logger) error {
 			"fix", "put an HTTPS reverse proxy in front and set KYDNS_TRUSTED_PROXIES to its address")
 	}
 
+	if len(cfg.Admin.TrustedProxies) > 0 && len(cfg.Admin.Hostnames) == 0 {
+		logger.Warn("KYDNS_ADMIN_HOSTNAMES is empty, so requests through the trusted proxy are accepted on any host name",
+			"fix", "set KYDNS_ADMIN_HOSTNAMES to the name the admin UI is reached by")
+	}
 	go func() { errs <- dnsSrv.ListenAndServe(cfg.DNS.Listen) }()
 	go func() {
 		if err := adminSrv.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
@@ -403,6 +408,7 @@ func Serve(ctx context.Context, cfgPath string, logger *slog.Logger) error {
 	go checker.Run(ctx)
 	go refresher.Run(ctx)
 	go backupLoop(ctx, backupSvc, logger)
+	go agentTokenSweep(ctx, reg, logger)
 	set, err := policySvc.Settings()
 	if err != nil {
 		return err
@@ -419,6 +425,26 @@ func Serve(ctx context.Context, cfgPath string, logger *slog.Logger) error {
 	shutdown, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	return errors.Join(dnsSrv.Shutdown(shutdown), adminSrv.Shutdown(shutdown))
+}
+
+// agentTokenSweep revokes AI agent tokens unused for 90 days, at start and
+// daily. /mcp refuses an idle token on its own; this clears the ones nobody
+// presents, so they leave the token list.
+func agentTokenSweep(ctx context.Context, reg *registry.Registry, logger *slog.Logger) {
+	ticker := time.NewTicker(24 * time.Hour)
+	defer ticker.Stop()
+	for {
+		if n, err := reg.ExpireIdleAgentTokens(time.Now()); err != nil {
+			logger.Error("agent token sweep failed", "error", err)
+		} else if n > 0 {
+			logger.Info("revoked idle agent tokens", "count", n)
+		}
+		select {
+		case <-ctx.Done():
+			return
+		case <-ticker.C:
+		}
+	}
 }
 
 // backupLoop polls the schedule every minute so an admin's change needs no restart. The

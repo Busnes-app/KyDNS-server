@@ -78,18 +78,50 @@ notes unless you would rather stay anonymous.
   32 MB response body ceiling, a ceiling on parsed entries per list, no code
   execution of list contents, and applied atomically; they must never
   override authoritative local records. Only an authenticated administrator
-  can change blacklist policy (lists, rules, and the filtering toggle).
+  can change blacklist policy (lists, rules, and the filtering toggle), and an
+  administrator can delegate rules, list refreshes and bounded pauses to an AI
+  agent token with write access.
 - The local registry contains private service names and addresses. It also
-  holds the admin password hash and API tokens, so write access to the database
-  file is equivalent to administrative access.
+  holds the admin password hash and API tokens (admin and agent), so write
+  access to the database file is equivalent to administrative access.
 - Query history is sensitive operational data. Query logging is off by default,
   and logging client IPs is a separate opt-in.
+- AI agents use `/mcp` on the admin listener with an agent token: a bearer
+  token whose access level (`mcp:read`, `mcp:write`, plus a separate query-log
+  grant) lives in its database row. Agent tokens never authenticate
+  `/api/v1`, admin tokens never authenticate `/mcp`, any request with an
+  `Origin` header is refused, and a token unused for 90 days is revoked. Agents
+  cannot change upstreams, listeners or other settings. Domain names returned
+  to an agent are untrusted strings and are labelled so; an agent with write
+  access can be steered by anyone who can message it, which is why write access
+  and the query log are each opt-in. See [docs/AI-AGENTS.md](docs/AI-AGENTS.md).
 - Server settings live in the database and are changed only by an authenticated
   administrator, through the web UI, `PATCH /api/v1/settings`, or
   `kydns settings set`. All three go through one validation and write path, and
   a change either validates, persists, and applies in full or does none of
   those. The config file seeds those settings on the first run and is ignored
   afterwards, so a file an attacker edits on a running install changes nothing.
+
+## Browser origins
+
+The admin listener assumes a hostile web page in the operator's browser (the
+Joplin Web Clipper leak, GHSA-9728-v7ww-mxjv, was exactly that: wildcard CORS,
+no Origin check, and a consent prompt that did not say who was asking).
+
+- No response carries `Access-Control-Allow-Origin`, wildcard or otherwise.
+  The UI is same-origin and needs no CORS; `/mcp` is for agents, never
+  browsers, and refuses any request with an `Origin` header.
+- Every state-changing request (UI, `/api/v1`, `/mcp`) from another origin,
+  with `Origin: null`, or with `Sec-Fetch-Site: cross-site`/`same-site` is
+  refused, and cross-origin preflights are refused. UI forms also need the
+  session and its CSRF token.
+- The UI, API and `/mcp` answer only to `localhost`, IP literals and the names
+  in `KYDNS_ADMIN_HOSTNAMES`, which defeats DNS rebinding. With no names
+  configured, a request through the trusted HTTPS proxy passes on any name,
+  since a rebound name fails the proxy's TLS handshake; KyDNS warns at start.
+- Tokens are minted only by an administrator, in the UI, the API or the CLI.
+  There is no pairing or approval flow a third party can start, and the screen
+  that shows a new token names who it is for and what it grants.
 
 ## Required protections
 

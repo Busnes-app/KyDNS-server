@@ -70,6 +70,9 @@ Keep these aligned:
   bringing that integration to the suite spec on `ky-primitives/recoveryclient`: local
   copies, admin schedule, pin by hand, unpair, restore runbook. Phase B is on
   ky-primitives v0.5.0.
+- `docs/superpowers/specs/2026-10-20-kydns-mcp-agent-access-design.md` — MCP
+  endpoint for AI agents: agent token scopes, the query-log grant, the in-memory
+  query ring, bounded pause.
 - `docs/RESTORE.md` — restore runbook; `scripts/restore-drill.sh` proves Step 1.
 - `docs/superpowers/plans/2026-09-05-kydns-recoveryclient-v051.md` — v0.5.1
   drill migration, existing-pairing compatibility, and separate fixture/live proof.
@@ -116,10 +119,14 @@ Code, one concern per package:
   `node_key` (raw 32-byte seed) loads through `keyfile`, so a non-0600 key is
   refused. A replica validates a pulled snapshot (settings and registry) before
   committing it.
-- `internal/dnsserver` — ACL, authoritative answers, cache, forwarding.
+- `internal/dnsserver` — ACL, authoritative answers, cache, forwarding, and the
+  in-memory query ring (`QueryLog`) that fills only under `log_queries`, holds
+  clients only under `log_client_ip`, and empties when either turns off.
 - `internal/upstream` — DoT, DoH, and opt-in plain-UDP upstreams.
 - `internal/policy` — blacklist normalization, list parsing, fetch, refresh,
-  and decision (deny/allow/list) for the DNS pipeline.
+  and decision (deny/allow/list) for the DNS pipeline. `Explain` names every
+  matching source; a pause is an in-memory deadline (at most `MaxPause`) that
+  `Decide` compares on every query, so it resumes with no timer.
 - `internal/discovery`, `internal/health` — DHCP leases and check probes.
   Runtime state only; never persisted unless an operator promotes it.
 - `internal/dhcpd` — the optional built-in DHCPv4 server. It implements
@@ -128,7 +135,18 @@ Code, one concern per package:
   Its leases are the one discovery result that is persisted, so a restart
   cannot re-issue an address that is still in use.
 - `internal/adminapi`, `internal/web`, `internal/auth` — JSON API, server-side
-  rendered UI, sessions, password hashing, and verified OIDC login. The admin API
+  rendered UI, sessions, password hashing, and verified OIDC login.
+  `internal/adminapi/mcp.go` serves `/mcp` for AI agents on the admin listener
+  only. Agent tokens are `tokens` rows with an MCP `scope` and a separate
+  `query_log` grant; they never authenticate `/api/v1`, admin tokens never
+  authenticate `/mcp`, and an agent token idle 90 days is revoked. Every tool is
+  in `TestMCPAccessMatrix`. Verify with `go test ./internal/adminapi -run 'MCP|Agent'`.
+- `internal/web/origin.go` — browser-origin gate in `TransportGate`: Host must be
+  `localhost`, an IP or in `KYDNS_ADMIN_HOSTNAMES` (DNS rebinding); cross-origin
+  state changes and preflights are refused; no route ever sends CORS headers.
+  Verify with `go test ./internal/web -run 'MCPRefuses|NoCORS|Forged|HostHeader|TokenScreen'`.
+- `internal/agentskill` — the embedded `SKILL.md` served at
+  `/agent/skills/kydns/SKILL.md`; see its `AGENTS.md`. The admin API
   serves public `ky.health/1` JSON on `/healthz` and `/api/v1/healthz` from one
   five-second cache. A failed local database check returns 503 with safe status
   codes; service discovery health remains on the authenticated `/api/v1/health`.
@@ -158,4 +176,4 @@ driver is not optional.
 
 ## README and topic guides
 
-Keep `README.md` as the concise product overview and navigation. Detailed procedures live in `docs/BACKUPS.md`, `docs/FEATURES.md`, `docs/CONFIGURATION.md`, `docs/REPLICATION.md`, `docs/PACKAGES.md`, `docs/RASPBERRY-PI.md`, `docs/RUNNING.md`, `docs/SECURITY-MODEL.md`. Update the owning topic guide and preserve README links when a procedure changes. Commands in these guides run from the repository root.
+Keep `README.md` as the concise product overview and navigation. Detailed procedures live in `docs/AI-AGENTS.md`, `docs/BACKUPS.md`, `docs/FEATURES.md`, `docs/CONFIGURATION.md`, `docs/REPLICATION.md`, `docs/PACKAGES.md`, `docs/RASPBERRY-PI.md`, `docs/RUNNING.md`, `docs/SECURITY-MODEL.md`. Update the owning topic guide and preserve README links when a procedure changes. Commands in these guides run from the repository root.

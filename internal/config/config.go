@@ -71,7 +71,12 @@ type DNSConfig struct {
 
 type AdminConfig struct {
 	TrustedProxies []netip.Prefix `yaml:"-"`
-	Listen         string         `yaml:"listen"`
+	// Hostnames are the names the admin UI, API and /mcp answer to
+	// (KYDNS_ADMIN_HOSTNAMES), lowercase, without port. Any other Host is
+	// refused, which defeats DNS rebinding. Loopback names and IP literals are
+	// always accepted.
+	Hostnames []string `yaml:"-"`
+	Listen    string   `yaml:"listen"`
 }
 
 // ReplicationConfig is file-owned because it is needed before the database is
@@ -179,6 +184,16 @@ func Load(path string) (*Config, error) {
 			return nil, errors.New("KYDNS_TRUSTED_PROXIES must not trust every address")
 		}
 		c.Admin.TrustedProxies = append(c.Admin.TrustedProxies, prefix.Masked())
+	}
+	for _, item := range strings.Split(os.Getenv("KYDNS_ADMIN_HOSTNAMES"), ",") {
+		item = strings.ToLower(strings.TrimSuffix(strings.TrimSpace(item), "."))
+		if item == "" {
+			continue
+		}
+		if strings.ContainsAny(item, "/:@ *") {
+			return nil, errors.New("KYDNS_ADMIN_HOSTNAMES takes bare host names, without scheme, port or wildcard")
+		}
+		c.Admin.Hostnames = append(c.Admin.Hostnames, item)
 	}
 	c.overlayEnv()
 	c.applyDefaults()
