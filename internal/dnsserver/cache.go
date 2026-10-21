@@ -135,6 +135,13 @@ func (c *Cache) Put(q dns.Question, do bool, m *dns.Msg) {
 }
 
 func (c *Cache) ttlFor(m *dns.Msg) uint32 {
+	// A SERVFAIL is never cached, even one carrying an SOA. That includes a
+	// DNSSEC-bogus verdict, so the next query asks the validator again.
+	// ponytail: RFC 9520 asks for a short failure cache; the validating
+	// upstream keeps one already. Add one here if bogus names hammer it.
+	if m.Rcode == dns.RcodeServerFailure {
+		return 0
+	}
 	if m.Rcode == dns.RcodeNameError || len(m.Answer) == 0 {
 		for _, rr := range m.Ns {
 			if soa, ok := rr.(*dns.SOA); ok {

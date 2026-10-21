@@ -203,6 +203,15 @@ func (f *Forwarder) exchange(ctx context.Context, q dns.Question, do bool) (*dns
 		attempt, cancel := context.WithTimeout(ctx, f.timeout)
 		resp, err := u.Exchange(attempt, req)
 		cancel()
+		if err == nil && resp != nil && u.Secure() && bogus(resp) {
+			// The upstream validated the answer and rejected it. That verdict
+			// is final: asking the next upstream would let one that does not
+			// validate hand back the very answer that failed. It is not an
+			// outage either, so it is not recorded against u. Like AD, it
+			// counts only from an authenticated channel: on plaintext anyone
+			// on the path could forge one to stop the failover.
+			return verdict(resp), nil
+		}
 		if err == nil && resp != nil && resp.Rcode != dns.RcodeServerFailure {
 			if !u.Secure() {
 				// Cleared here rather than at the response boundary, so a
@@ -230,4 +239,50 @@ func (f *Forwarder) exchange(ctx context.Context, q dns.Question, do bool) (*dns
 		st.record(i, errors.New(reason))
 	}
 	return nil, fmt.Errorf("all upstreams failed: %w", lastErr)
+}
+
+// dnssecEDE are the RFC 8914 Extended DNS Errors that say a SERVFAIL is a
+// DNSSEC validation failure rather than a resolver that could not get an
+// answer. Cloudflare, Quad9 and Google all attach one (9 or 6) to a bogus
+// SERVFAIL.
+var dnssecEDE = map[uint16]bool{
+	dns.ExtendedErrorCodeUnsupportedDNSKEYAlgorithm: true,
+	dns.ExtendedErrorCodeUnsupportedDSDigestType:    true,
+	dns.ExtendedErrorCodeDNSBogus:                   true,
+	dns.ExtendedErrorCodeSignatureExpired:           true,
+	dns.ExtendedErrorCodeSignatureNotYetValid:       true,
+	dns.ExtendedErrorCodeDNSKEYMissing:              true,
+	dns.ExtendedErrorCodeRRSIGsMissing:              true,
+	dns.ExtendedErrorCodeNoZoneKeyBitSet:            true,
+	dns.ExtendedErrorCodeNSECMissing:                true,
+}
+
+// bogus reports a SERVFAIL that carries a DNSSEC Extended DNS Error.
+//
+// ponytail: a validator that sends no EDE is indistinguishable from an outage,
+// so its bogus SERVFAIL still falls through to the next upstream. Closing that
+// needs local validation (trust anchor, chain walking), which KyDNS does not do.
+func bogus(m *dns.Msg) bool {
+	opt := m.IsEdns0()
+	if m.Rcode != dns.RcodeServerFailure || opt == nil {
+		return false
+	}
+	for _, o := range opt.Option {
+		if ede, ok := o.(*dns.EDNS0_EDE); ok && dnssecEDE[ede.InfoCode] {
+			return true
+		}
+	}
+	return false
+}
+
+// verdict keeps only the rcode and the OPT carrying the EDE. Any records a
+// bogus SERVFAIL brings along are the data that failed validation, and must
+// not reach a client or be spliced into a CNAME chain.
+func verdict(m *dns.Msg) *dns.Msg {
+	out := new(dns.Msg)
+	out.MsgHdr = m.MsgHdr
+	out.AuthenticatedData = false
+	out.Question = m.Question
+	out.Extra = []dns.RR{m.IsEdns0()}
+	return out
 }
