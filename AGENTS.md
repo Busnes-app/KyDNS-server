@@ -109,6 +109,7 @@ Code, one concern per package:
   `VACUUM INTO` destination path rather than interpolating it.
   `OpenSnapshot` verifies and opens restored artifacts read-only without migrations.
   Connection pragmas live in the DSN so every pooled connection gets them.
+  `Open` creates the database 0600 (SQLite copies that to `-wal`/`-shm`).
   `ReplicationSnapshot` reads the replicated config in one transaction;
   `ApplySnapshot` runs its check on the merged row before writing anything.
 - `internal/registry`, `internal/zone` — services, records, views, validation,
