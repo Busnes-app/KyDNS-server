@@ -180,6 +180,23 @@ func TestNegativeWithoutSOANotCached(t *testing.T) {
 	}
 }
 
+// A SERVFAIL is never cached, even with an SOA to take a TTL from: a bogus
+// DNSSEC verdict must go back to the validator on the next query.
+func TestServfailWithSOANotCached(t *testing.T) {
+	c := NewCache(10, 5, 3600, 60)
+	m := new(dns.Msg)
+	m.Rcode = dns.RcodeServerFailure
+	m.Ns = []dns.RR{&dns.SOA{
+		Hdr:    dns.RR_Header{Name: "example.com.", Rrtype: dns.TypeSOA, Class: dns.ClassINET, Ttl: 3600},
+		Minttl: 900,
+	}}
+	q := question("forged.example.com.")
+	c.Put(q, false, m)
+	if _, ok := c.Get(q, false); ok {
+		t.Error("cached a SERVFAIL")
+	}
+}
+
 func TestCacheEvictsOldest(t *testing.T) {
 	c := NewCache(2, 5, 3600, 300)
 	for _, n := range []string{"a.example.com.", "b.example.com.", "c.example.com."} {

@@ -46,8 +46,9 @@ func (f *fakeUpstream) Exchange(_ context.Context, m *dns.Msg) (*dns.Msg, error)
 	}
 	resp, err := f.reply(m)
 	// A real EDNS0 upstream echoes the DO bit in its reply; match that so
-	// EDNS0 pass-through has something real to test.
-	if resp != nil {
+	// EDNS0 pass-through has something real to test. A reply that already
+	// carries an OPT (an EDE, say) keeps its own.
+	if resp != nil && resp.IsEdns0() == nil {
 		if opt := m.IsEdns0(); opt != nil {
 			resp.SetEdns0(opt.UDPSize(), opt.Do())
 		}
@@ -120,6 +121,33 @@ func servfailUpstream(name string, secure bool) *fakeUpstream {
 		resp.Rcode = dns.RcodeServerFailure
 		return resp, nil
 	}}
+}
+
+// edeServfailUpstream answers SERVFAIL with one Extended DNS Error. Code 6
+// (DNSSEC Bogus) is what a validating resolver sends for a forged answer.
+func edeServfailUpstream(name string, secure bool, code uint16) *fakeUpstream {
+	return &fakeUpstream{name: name, secure: secure, reply: func(m *dns.Msg) (*dns.Msg, error) {
+		resp := new(dns.Msg)
+		resp.SetReply(m)
+		resp.Rcode = dns.RcodeServerFailure
+		resp.SetEdns0(1232, m.IsEdns0().Do())
+		opt := resp.IsEdns0()
+		opt.Option = append(opt.Option, &dns.EDNS0_EDE{InfoCode: code})
+		return resp, nil
+	}}
+}
+
+func hasEDE(m *dns.Msg, code uint16) bool {
+	opt := m.IsEdns0()
+	if opt == nil {
+		return false
+	}
+	for _, o := range opt.Option {
+		if ede, ok := o.(*dns.EDNS0_EDE); ok && ede.InfoCode == code {
+			return true
+		}
+	}
+	return false
 }
 
 func newForwarder(ups ...upstream.Upstream) *Forwarder {
@@ -227,6 +255,65 @@ func TestForwarderFailsOverOnServfail(t *testing.T) {
 	}
 	if bad.calls.Load() != 1 || good.calls.Load() != 1 {
 		t.Errorf("calls = %d then %d, want 1 each", bad.calls.Load(), good.calls.Load())
+	}
+}
+
+// A validator's DNSSEC rejection is final. Falling through would let a
+// non-validating upstream (here the plaintext fallback) return the forgery
+// the validator refused, and the cache would keep it.
+func TestForwarderStopsOnDNSSECBogus(t *testing.T) {
+	validating := edeServfailUpstream("tls://192.0.2.1:853", true, dns.ExtendedErrorCodeDNSBogus)
+	plain := okUpstream("udp://198.51.100.1:53", false)
+	f := newForwarder(validating, plain)
+	for i := 0; i < 2; i++ {
+		m, err := f.Resolve(context.Background(), question("forged.example.com."), true)
+		if err != nil {
+			t.Fatalf("Resolve() = %v, want the validator's SERVFAIL as the answer", err)
+		}
+		if m.Rcode != dns.RcodeServerFailure || len(m.Answer) != 0 {
+			t.Errorf("rcode = %s with %d answers, want SERVFAIL with none", dns.RcodeToString[m.Rcode], len(m.Answer))
+		}
+		if !hasEDE(m, dns.ExtendedErrorCodeDNSBogus) {
+			t.Error("the validator's EDE was dropped")
+		}
+	}
+	if got := plain.calls.Load(); got != 0 {
+		t.Errorf("non-validating upstream queried %d times, want never", got)
+	}
+	if got := validating.calls.Load(); got != 2 {
+		t.Errorf("validator queried %d times, want 2: a bogus verdict is not cached", got)
+	}
+	if got := f.cache.Len(); got != 0 {
+		t.Errorf("cache holds %d entries, want none", got)
+	}
+}
+
+// An EDE that is not about DNSSEC is an outage like any other SERVFAIL.
+// Pins existing behaviour: the old code passed this too.
+func TestForwarderFailsOverOnNonDNSSECEDE(t *testing.T) {
+	bad := edeServfailUpstream("tls://192.0.2.1:853", true, dns.ExtendedErrorCodeNetworkError)
+	good := okUpstream("tls://192.0.2.2:853", true)
+	f := newForwarder(bad, good)
+	m, err := f.Resolve(context.Background(), question("a.example.com."), false)
+	if err != nil {
+		t.Fatalf("Resolve() = %v, want failover to the healthy upstream", err)
+	}
+	if len(m.Answer) != 1 || good.calls.Load() != 1 {
+		t.Errorf("Answer = %v after %d calls to the second upstream, want its reply", m.Answer, good.calls.Load())
+	}
+}
+
+// A bogus verdict means the upstream works; it must not show as an error.
+func TestForwarderBogusLeavesStatusAlone(t *testing.T) {
+	f := newForwarder(edeServfailUpstream("tls://192.0.2.1:853", true, dns.ExtendedErrorCodeDNSKEYMissing),
+		okUpstream("udp://198.51.100.1:53", false))
+	if _, err := f.Resolve(context.Background(), question("forged.example.com."), false); err != nil {
+		t.Fatal(err)
+	}
+	for _, s := range f.Status() {
+		if s.LastError != "" || !s.LastErrAt.IsZero() || !s.LastOKAt.IsZero() {
+			t.Errorf("%s status = %+v, want untouched", s.Spec, s)
+		}
 	}
 }
 

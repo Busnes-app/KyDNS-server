@@ -303,6 +303,25 @@ func TestServerReadsClientDOBit(t *testing.T) {
 	}
 }
 
+// The validator's verdict reaches the client: SERVFAIL, with its EDE for a
+// client that speaks EDNS0 and without an OPT for one that does not.
+func TestForwardedBogusKeepsEDE(t *testing.T) {
+	addr := forwardOnlyServer(t, edeServfailUpstream("tls://192.0.2.1:853", true, dns.ExtendedErrorCodeDNSBogus))
+	m := new(dns.Msg)
+	m.SetQuestion("forged.example.com.", dns.TypeA)
+	m.SetEdns0(1232, false)
+	resp, _ := udpExchange(t, addr, m)
+	if resp.Rcode != dns.RcodeServerFailure || !hasEDE(resp, dns.ExtendedErrorCodeDNSBogus) {
+		t.Errorf("EDNS0 client got rcode %s, EDE 6 = %t; want SERVFAIL with EDE 6",
+			dns.RcodeToString[resp.Rcode], hasEDE(resp, dns.ExtendedErrorCodeDNSBogus))
+	}
+	plain := queryFrom(t, addr, "127.0.0.1", "forged.example.com.", dns.TypeA)
+	if plain.Rcode != dns.RcodeServerFailure || plain.IsEdns0() != nil {
+		t.Errorf("plain client got rcode %s, OPT = %v; want SERVFAIL without OPT",
+			dns.RcodeToString[plain.Rcode], plain.IsEdns0())
+	}
+}
+
 // forwardOnlyServer holds an empty zone, so every query reaches u.
 func forwardOnlyServer(t *testing.T, u *fakeUpstream) string {
 	t.Helper()

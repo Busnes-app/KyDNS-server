@@ -188,6 +188,12 @@ add it with a confirmation.
 - **KyDNS is not a validating resolver.** It does not verify DNSSEC signatures,
   hold a trust anchor, or walk a chain of trust. An `AD` bit from KyDNS means
   the upstream said it validated, not that KyDNS checked.
+- **Every configured upstream should be a validating resolver.** A DNSSEC
+  rejection from any upstream is final: a `SERVFAIL` carrying a DNSSEC Extended
+  DNS Error (RFC 8914) goes to the client and the next upstream is not asked. A
+  `SERVFAIL` without one is treated as an outage and the next upstream is
+  tried, so a validator that sends no such error can still be bypassed by a
+  later upstream that does not validate.
 - **The admin listener speaks plain HTTP.** It defaults to `127.0.0.1:8053`.
   Beyond loopback, put it behind a TLS-terminating reverse proxy and restrict
   direct access with network controls. Configure `KYDNS_TRUSTED_PROXIES` for
