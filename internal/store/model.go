@@ -143,7 +143,7 @@ type Settings struct {
 	DHCPAllowForeign bool
 }
 
-// AdminIdentity holds the admin credentials and linked KySignOn SSO identity.
+// AdminIdentity holds the admin credentials and linked KyIdentity SSO identity.
 type AdminIdentity struct {
 	PasswordHash string
 	SSOSub       string
@@ -153,7 +153,7 @@ type AdminIdentity struct {
 	UpdatedAt    int64
 }
 
-// SSOSettings holds the KySignOn SSO configuration.
+// SSOSettings holds the KyIdentity SSO configuration.
 type SSOSettings struct {
 	Enabled      bool
 	IssuerURL    string

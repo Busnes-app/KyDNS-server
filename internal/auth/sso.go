@@ -18,7 +18,7 @@ import (
 	"golang.org/x/oauth2"
 )
 
-// SSOTokenClaims represents the verified claims from KySignOn, Authentik, Keycloak, or any OIDC provider.
+// SSOTokenClaims represents the verified claims from KyIdentity, Authentik, Keycloak, or any OIDC provider.
 type SSOTokenClaims struct {
 	Sub               string         `json:"sub"`
 	Username          string         `json:"username"`
