@@ -62,18 +62,6 @@ func carriedOver(keep []upstream.Upstream, u upstream.Upstream) bool {
 	return false
 }
 
-// verdict keeps only the rcode and the OPT carrying the EDE. Any records a
-// bogus SERVFAIL brings along are the data that failed validation, and must
-// not reach a client or be spliced into a CNAME chain.
-func verdict(m *dns.Msg) *dns.Msg {
-	out := new(dns.Msg)
-	out.MsgHdr = m.MsgHdr
-	out.AuthenticatedData = false
-	out.Question = m.Question
-	out.Extra = []dns.RR{m.IsEdns0()}
-	return out
-}
-
 // Forwarder resolves non-authoritative queries through the cache and, on a
 // miss, the upstream list in order.
 type Forwarder struct {
@@ -285,4 +273,16 @@ func bogus(m *dns.Msg) bool {
 		}
 	}
 	return false
+}
+
+// verdict keeps only the rcode and the OPT carrying the EDE. Any records a
+// bogus SERVFAIL brings along are the data that failed validation, and must
+// not reach a client or be spliced into a CNAME chain.
+func verdict(m *dns.Msg) *dns.Msg {
+	out := new(dns.Msg)
+	out.MsgHdr = m.MsgHdr
+	out.AuthenticatedData = false
+	out.Question = m.Question
+	out.Extra = []dns.RR{m.IsEdns0()}
+	return out
 }
