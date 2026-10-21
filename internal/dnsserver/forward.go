@@ -62,6 +62,18 @@ func carriedOver(keep []upstream.Upstream, u upstream.Upstream) bool {
 	return false
 }
 
+// verdict keeps only the rcode and the OPT carrying the EDE. Any records a
+// bogus SERVFAIL brings along are the data that failed validation, and must
+// not reach a client or be spliced into a CNAME chain.
+func verdict(m *dns.Msg) *dns.Msg {
+	out := new(dns.Msg)
+	out.MsgHdr = m.MsgHdr
+	out.AuthenticatedData = false
+	out.Question = m.Question
+	out.Extra = []dns.RR{m.IsEdns0()}
+	return out
+}
+
 // Forwarder resolves non-authoritative queries through the cache and, on a
 // miss, the upstream list in order.
 type Forwarder struct {
@@ -203,12 +215,14 @@ func (f *Forwarder) exchange(ctx context.Context, q dns.Question, do bool) (*dns
 		attempt, cancel := context.WithTimeout(ctx, f.timeout)
 		resp, err := u.Exchange(attempt, req)
 		cancel()
-		if err == nil && resp != nil && bogus(resp) {
+		if err == nil && resp != nil && u.Secure() && bogus(resp) {
 			// The upstream validated the answer and rejected it. That verdict
 			// is final: asking the next upstream would let one that does not
 			// validate hand back the very answer that failed. It is not an
-			// outage either, so it is not recorded against u.
-			return resp, nil
+			// outage either, so it is not recorded against u. Like AD, it
+			// counts only from an authenticated channel: on plaintext anyone
+			// on the path could forge one to stop the failover.
+			return verdict(resp), nil
 		}
 		if err == nil && resp != nil && resp.Rcode != dns.RcodeServerFailure {
 			if !u.Secure() {

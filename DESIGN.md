@@ -74,9 +74,10 @@ that entry answers has its authenticated-data bit cleared.
 
 KyDNS does not validate DNSSEC itself. It makes the path to a resolver that
 does private and tamper-proof, and passes that resolver's verdict through.
-A `SERVFAIL` carrying a DNSSEC Extended DNS Error (RFC 8914) is that verdict, so
-it ends the upstream walk and is never cached; a bare `SERVFAIL` is an outage
-and the next upstream is tried.
+A `SERVFAIL` carrying a DNSSEC Extended DNS Error (RFC 8914) from an encrypted
+upstream is that verdict, so it ends the upstream walk, is never cached, and
+reaches the client stripped of any records; a bare `SERVFAIL`, or one from a
+`udp://` upstream, is an outage and the next upstream is tried.
 
 ## Local data
 

@@ -164,13 +164,14 @@ anchor, or walk a chain of trust. It makes the path to a resolver that does all
 of that private and tamper-proof, and passes that resolver's verdict through.
 
 **Every upstream should be a validating resolver, and a DNSSEC rejection from
-any of them is final.** When an upstream answers `SERVFAIL` with a DNSSEC
-Extended DNS Error (RFC 8914: DNSSEC Bogus, Signature Expired, DNSKEY Missing
-and the like), KyDNS returns that `SERVFAIL` to the client, keeps the error for
-clients that speak EDNS, and does not ask the next upstream. Cloudflare, Quad9
-and Google all send one. A resolver that rejects an answer without sending the
-error looks like an outage, so KyDNS moves on to the next upstream, which may
-not validate.
+any encrypted one is final.** When an upstream answers `SERVFAIL` with a
+DNSSEC Extended DNS Error (RFC 8914: DNSSEC Bogus, Signature Expired, DNSKEY
+Missing and the like), KyDNS returns that `SERVFAIL` to the client, keeps the
+error for clients that speak EDNS, and does not ask the next upstream.
+Cloudflare, Quad9 and Google all send one. A resolver that rejects an answer
+without sending the error looks like an outage, so KyDNS moves on to the next
+upstream, which may not validate. It also moves on after the error from a
+`udp://` upstream, since anyone on that path could forge it.
 
 ### Tailscale
 

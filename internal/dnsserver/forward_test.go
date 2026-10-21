@@ -288,6 +288,47 @@ func TestForwarderStopsOnDNSSECBogus(t *testing.T) {
 	}
 }
 
+// A verdict counts only from an authenticated channel. A plaintext upstream's
+// bogus EDE could be forged by anyone on the path to stop the failover.
+func TestForwarderIgnoresBogusFromPlaintext(t *testing.T) {
+	plain := edeServfailUpstream("udp://198.51.100.1:53", false, dns.ExtendedErrorCodeDNSBogus)
+	good := okUpstream("tls://192.0.2.1:853", true)
+	f := newForwarder(plain, good)
+	m, err := f.Resolve(context.Background(), question("a.example.com."), false)
+	if err != nil {
+		t.Fatalf("Resolve() = %v, want failover to the encrypted upstream", err)
+	}
+	if len(m.Answer) != 1 || good.calls.Load() != 1 {
+		t.Errorf("Answer = %v after %d calls to the encrypted upstream, want its reply", m.Answer, good.calls.Load())
+	}
+}
+
+// Records riding on a bogus SERVFAIL are what failed validation. They must not
+// reach the client or a CNAME chain that finishChain would splice them into.
+func TestForwarderBogusCarriesNoRecords(t *testing.T) {
+	u := edeServfailUpstream("tls://192.0.2.1:853", true, dns.ExtendedErrorCodeDNSBogus)
+	inner := u.reply
+	u.reply = func(m *dns.Msg) (*dns.Msg, error) {
+		resp, err := inner(m)
+		resp.Answer = reply(m.Question[0].Name, 300).Answer
+		resp.Ns = reply(m.Question[0].Name, 300).Answer
+		resp.Extra = append(reply(m.Question[0].Name, 300).Answer, resp.Extra...)
+		resp.AuthenticatedData = true
+		return resp, err
+	}
+	m, err := newForwarder(u).Resolve(context.Background(), question("forged.example.com."), true)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(m.Answer)+len(m.Ns) != 0 || len(m.Extra) != 1 || m.AuthenticatedData {
+		t.Errorf("verdict = %d answer, %d authority, %d additional, AD=%t; want only the OPT",
+			len(m.Answer), len(m.Ns), len(m.Extra), m.AuthenticatedData)
+	}
+	if !hasEDE(m, dns.ExtendedErrorCodeDNSBogus) {
+		t.Error("the validator's EDE was dropped")
+	}
+}
+
 // An EDE that is not about DNSSEC is an outage like any other SERVFAIL.
 // Pins existing behaviour: the old code passed this too.
 func TestForwarderFailsOverOnNonDNSSECEDE(t *testing.T) {
