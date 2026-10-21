@@ -29,6 +29,7 @@ works on the host itself, or from any machine through the trusted HTTPS proxy
 | `kydns record add\|list\|rm` | Manage manual A, AAAA and CNAME records. |
 | `kydns view add\|list\|rm` | Manage per-subnet views. |
 | `kydns token add\|list\|rm` | Manage API tokens. |
+| `kydns blacklist status\|on\|off\|list\|add\|rm\|refresh\|allow\|deny\|rules\|unrule\|test` | Blackhole filtering: switch it on or off, manage block lists and allow/deny rules, refresh lists, and `test` which rule decides a name. |
 | `kydns dhcp status\|leases` | Whether the built-in DHCP server is running, and the leases it has handed out. Read-only. |
 | `kydns settings get` | Print the settings the server is running. |
 | `kydns settings set k=v ...` | Change them. `--confirm-public <cidr>` for a public `allow_query` range. |
