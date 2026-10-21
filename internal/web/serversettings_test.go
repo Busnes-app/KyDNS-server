@@ -177,8 +177,11 @@ func TestPostServerSettingsAcceptsConfirmedPublicRange(t *testing.T) {
 	if body := page(t, h, "/", c); !strings.Contains(body, "open resolver") {
 		t.Error("no standing warning after a public range was allowed")
 	}
-	if body := page(t, h, "/settings", c); !strings.Contains(body, "open resolver") {
-		t.Error("the settings page does not warn about the exposure")
+	// Wherever the operator lands, not only the dashboard and settings.
+	for _, path := range []string{"/settings", "/services", "/records"} {
+		if body := page(t, h, path, c); !strings.Contains(body, "open resolver") {
+			t.Errorf("%s does not warn about the exposure", path)
+		}
 	}
 }
 

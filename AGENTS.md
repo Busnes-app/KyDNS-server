@@ -109,6 +109,7 @@ Code, one concern per package:
   `VACUUM INTO` destination path rather than interpolating it.
   `OpenSnapshot` verifies and opens restored artifacts read-only without migrations.
   Connection pragmas live in the DSN so every pooled connection gets them.
+  `Open` creates the database 0600 (SQLite copies that to `-wal`/`-shm`).
   `ReplicationSnapshot` reads the replicated config in one transaction;
   `ApplySnapshot` runs its check on the merged row before writing anything.
 - `internal/registry`, `internal/zone` — services, records, views, validation,
@@ -121,7 +122,8 @@ Code, one concern per package:
   addresses and authenticates self-signed peers by Ed25519 key fingerprint.
   `node_key` (raw 32-byte seed) loads through `keyfile`, so a non-0600 key is
   refused. A replica validates a pulled snapshot (settings and registry) before
-  committing it.
+  committing it. A peer's `Address` is the host it paired from, for display
+  only; the primary never dials a replica.
 - `internal/dnsserver` — ACL, authoritative answers, cache, forwarding, and the
   in-memory query ring (`QueryLog`) that fills only under `log_queries`, holds
   clients only under `log_client_ip`, and empties when either turns off.
@@ -139,6 +141,8 @@ Code, one concern per package:
   cannot re-issue an address that is still in use.
 - `internal/adminapi`, `internal/web`, `internal/auth` — JSON API, server-side
   rendered UI, sessions, password hashing, and verified OIDC login.
+  `render` fills the chrome every screen shares: replica read-only state and
+  the open-resolver banner (`PublicRanges`), so no page opts in by hand.
   `internal/adminapi/mcp.go` serves `/mcp` for AI agents on the admin listener
   only. Agent tokens are `tokens` rows with an MCP `scope` and a separate
   `query_log` grant; they never authenticate `/api/v1`, admin tokens never

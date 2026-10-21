@@ -40,8 +40,6 @@ curl -fsSo ~/.agents/skills/kydns/SKILL.md {{.}}/agent/skills/kydns/SKILL.md</pr
 </div>
 {{end}}
 
-{{template "exposure" .}}
-
 {{with .Rename}}
 <div class="banner">
   <strong>Saving moves {{.Count}} record{{if ne .Count 1}}s{{end}} into {{.To}}</strong>
@@ -258,7 +256,7 @@ curl -fsSo ~/.agents/skills/kydns/SKILL.md {{.}}/agent/skills/kydns/SKILL.md</pr
 
 <div class="card">
   <h3>Single sign-on</h3>
-  <p class="muted">Connect KySignOn, Authentik, Keycloak, or any standard OpenID Connect provider with PKCE.</p>
+  <p class="muted">Connect KyIdentity, Authentik, Keycloak, or any standard OpenID Connect provider with PKCE.</p>
 
   {{with .AdminIdentity}}
     {{if .SSOSub}}

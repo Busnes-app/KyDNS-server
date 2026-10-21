@@ -148,6 +148,10 @@ func TestValidateRejectsPublicPrefixWithoutConfirmation(t *testing.T) {
 	if !strings.Contains(err.Error(), "0.0.0.0/0") {
 		t.Errorf("the message does not name the offending prefix: %v", err)
 	}
+	// The web UI and the CLI share this message, and the CLI has no field.
+	if !strings.Contains(err.Error(), "--confirm-public") {
+		t.Errorf("the message does not tell a CLI user how to confirm: %v", err)
+	}
 }
 
 // The confirmation is the prefix itself, so muscle memory cannot supply it and

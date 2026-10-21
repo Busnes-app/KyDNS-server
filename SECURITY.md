@@ -36,6 +36,9 @@ notes unless you would rather stay anonymous.
 - The first-run setup token is written to `<data_dir>/setup-token`, mode 0600,
   and logged, including under systemd. Restrict journal and container-log access
   until setup is complete; readers of those logs can obtain the setup token.
+- `<data_dir>/kydns.db` and its `-wal` and `-shm` files are mode 0600, like the
+  keys and tokens beside them; opening tightens a database an older version
+  created more loosely.
 - The container runs as uid 65532 with every capability dropped. Ports below
   1024 come from `net.ipv4.ip_unprivileged_port_start=0` in the container's own
   network namespace, never the host's.

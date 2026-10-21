@@ -3,6 +3,7 @@ package store
 import (
 	"database/sql"
 	"errors"
+	"os"
 	"path/filepath"
 	"testing"
 )
@@ -15,6 +16,27 @@ func open(t *testing.T) *Store {
 	}
 	t.Cleanup(func() { s.Close() })
 	return s
+}
+
+// The database sits beside 0600 keys and tokens and is worth as much, so it and
+// its WAL files must not be world-readable under a 022 umask.
+func TestDatabaseFilesArePrivate(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "kydns.db")
+	s, err := Open(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// Open has already written the schema, so the WAL files exist.
+	defer s.Close()
+	for _, p := range []string{path, path + "-wal", path + "-shm"} {
+		fi, err := os.Stat(p)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if m := fi.Mode().Perm(); m != 0o600 {
+			t.Errorf("%s is %v, want -rw-------", filepath.Base(p), m)
+		}
+	}
 }
 
 func TestMigrationsAreIdempotent(t *testing.T) {

@@ -70,6 +70,8 @@ func (s *Server) render(w http.ResponseWriter, r *http.Request, page string, dat
 	data["ShowReplication"] = s.replicating()
 	data["Version"] = Version
 	data["Year"] = time.Now().Year()
+	// Exposure is standing state, not an event: every screen warns about it.
+	data["PublicRanges"] = s.publicRanges()
 	// Every screen carries the replica chrome: the edit controls explain
 	// themselves wherever the operator landed, not only on the dashboard.
 	if st, isReplica := s.replica(); isReplica {

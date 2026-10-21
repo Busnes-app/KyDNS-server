@@ -109,7 +109,6 @@ func (s *Server) settingsData(errMsg, newToken string) map[string]any {
 		"Config": s.configRows(), "RestartNote": restartNote, "Error": errMsg,
 		"Upstreams":     s.upstreams(),
 		"Restart":       s.restartPending(),
-		"PublicRanges":  s.publicRanges(),
 		"AdminIdentity": ident,
 		"SSOSettings":   sso,
 	}

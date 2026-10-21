@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/Busnes-app/ky-primitives/applysetup"
+	"os"
 	"strings"
 	"time"
 
@@ -406,6 +407,17 @@ func migrate(tx *sql.Tx, freshDB bool) error {
 }
 
 func Open(path string) (*Store, error) {
+	// The database is the trust boundary, so it is 0600 like the keys beside
+	// it, not whatever the umask allows. SQLite gives -wal and -shm the main
+	// file's mode. Chmod tightens a database an older version created; a file
+	// this process may not chmod is left as it is rather than refused.
+	f, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE, 0o600)
+	if err != nil {
+		return nil, fmt.Errorf("open sqlite: %w", err)
+	}
+	_ = f.Chmod(0o600)
+	f.Close()
+
 	// Pragmas live in the DSN so every connection gets them, including one
 	// database/sql opens to replace a bad one.
 	db, err := sql.Open("sqlite", path+"?_pragma=busy_timeout(5000)&_pragma=foreign_keys(1)"+

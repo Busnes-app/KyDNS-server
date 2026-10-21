@@ -301,7 +301,8 @@ func confirmPublicPrefixes(list, prev []string, confirmPublic string) error {
 		}
 		return bad("allow_query",
 			"%s reaches beyond your LAN and would make KyDNS an open resolver. "+
-				"Retype it in the confirmation field to allow it anyway.", c)
+				"Retype it in the confirmation field (--confirm-public on the command "+
+				"line) to allow it anyway.", c)
 	}
 	return nil
 }
