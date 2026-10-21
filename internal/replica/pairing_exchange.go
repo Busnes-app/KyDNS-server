@@ -179,8 +179,12 @@ func (s *Server) handlePair(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "forbidden", http.StatusForbidden)
 		return
 	}
-	// No address: replication is a pull, so the primary never dials this peer.
-	if err := s.peers.PairPeer(store.Peer{NodeID: fp, Label: fp[:12], PairedAt: time.Now().Unix()}); err != nil {
+	// The address it paired from, for the operator to recognise. Never dialled:
+	// replication is a pull. The port is the replica's ephemeral one, so drop it.
+	// ponytail: recorded at pairing only; refresh it in TouchPeer if replicas
+	// that change address turn out to matter.
+	host, _, _ := net.SplitHostPort(r.RemoteAddr)
+	if err := s.peers.PairPeer(store.Peer{NodeID: fp, Label: fp[:12], Address: host, PairedAt: time.Now().Unix()}); err != nil {
 		http.Error(w, "pairing failed", http.StatusInternalServerError)
 		return
 	}

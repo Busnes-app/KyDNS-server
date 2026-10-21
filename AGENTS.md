@@ -121,7 +121,8 @@ Code, one concern per package:
   addresses and authenticates self-signed peers by Ed25519 key fingerprint.
   `node_key` (raw 32-byte seed) loads through `keyfile`, so a non-0600 key is
   refused. A replica validates a pulled snapshot (settings and registry) before
-  committing it.
+  committing it. A peer's `Address` is the host it paired from, for display
+  only; the primary never dials a replica.
 - `internal/dnsserver` — ACL, authoritative answers, cache, forwarding, and the
   in-memory query ring (`QueryLog`) that fills only under `log_queries`, holds
   clients only under `log_client_ip`, and empties when either turns off.

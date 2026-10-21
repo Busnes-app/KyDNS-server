@@ -129,8 +129,13 @@ func TestPairingPinsBothWays(t *testing.T) {
 	if got != primaryFP {
 		t.Fatalf("PairAsReplica returned %q, want the primary's fingerprint %q", got, primaryFP)
 	}
-	if _, err := db.Peer(replica.NodeID); err != nil {
+	p, err := db.Peer(replica.NodeID)
+	if err != nil {
 		t.Fatalf("primary did not pin the replica it just paired with: %v", err)
+	}
+	// Without it the primary's replica list has an empty Address column.
+	if p.Address != "127.0.0.1" {
+		t.Errorf("Address = %q, want the host the replica paired from", p.Address)
 	}
 }
 
