@@ -41,6 +41,7 @@
       <p>{{.Fix}}</p>
     </div>
     {{end}}
+    {{template "exposure" .}}
     {{if .Error}}<p class="error">{{.Error}}</p>{{end}}
     {{template "page" .}}
   </main>

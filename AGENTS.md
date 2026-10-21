@@ -139,6 +139,8 @@ Code, one concern per package:
   cannot re-issue an address that is still in use.
 - `internal/adminapi`, `internal/web`, `internal/auth` — JSON API, server-side
   rendered UI, sessions, password hashing, and verified OIDC login.
+  `render` fills the chrome every screen shares: replica read-only state and
+  the open-resolver banner (`PublicRanges`), so no page opts in by hand.
   `internal/adminapi/mcp.go` serves `/mcp` for AI agents on the admin listener
   only. Agent tokens are `tokens` rows with an MCP `scope` and a separate
   `query_log` grant; they never authenticate `/api/v1`, admin tokens never
