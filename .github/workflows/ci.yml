@@ -188,7 +188,10 @@ jobs:
       contents: read
       packages: write
     steps:
+      # Full history and tags, so git describe can name the last release.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
 
       - uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
         with:
@@ -205,6 +208,14 @@ jobs:
       - id: image
         run: echo "name=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
 
+      # The web UI prints "v" + VERSION, so a bare commit sha showed up as
+      # "v227f557c...". Stamp what make does instead: the last release, the
+      # commits since it, and the short sha, e.g. 0.4.2-35-g227f557.
+      - id: version
+        run: |
+          version=$(git describe --tags 2>/dev/null | sed 's/^v//')
+          echo "version=${version:-0.0.0-dev+${GITHUB_SHA:0:7}}" >> "$GITHUB_OUTPUT"
+
       # arm64 covers the Pi and the ARM NAS boxes KyDNS is small enough to run
       # on. No QEMU: the Dockerfile cross-compiles with GOARCH, and the
       # distroless base runs nothing at build time.
@@ -213,7 +224,7 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           build-args: |
-            VERSION=${{ github.sha }}
+            VERSION=${{ steps.version.outputs.version }}
           push: true
           # The commit tag is what lets an operator pin a known-good image and
           # roll back to it; :latest alone gives them nowhere to go.
