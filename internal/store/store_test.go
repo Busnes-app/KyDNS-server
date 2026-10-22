@@ -3,8 +3,11 @@ package store
 import (
 	"database/sql"
 	"errors"
+	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -633,5 +636,24 @@ func TestServiceMACBumpsConfigVersion(t *testing.T) {
 	}
 	if after <= before {
 		t.Fatalf("config_version = %d after adding a reservation, want more than %d", after, before)
+	}
+}
+
+func TestOpenNamesTheOwnershipFix(t *testing.T) {
+	if os.Getuid() == 0 {
+		t.Skip("root can write anywhere")
+	}
+	dir := t.TempDir()
+	if err := os.Chmod(dir, 0o500); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { os.Chmod(dir, 0o700) })
+	_, err := Open(filepath.Join(dir, "kydns.db"))
+	if !errors.Is(err, fs.ErrPermission) {
+		t.Fatalf("Open() error = %v, want a permission error", err)
+	}
+	want := fmt.Sprintf("chown -R %d:%d", os.Getuid(), os.Getgid())
+	if !strings.Contains(err.Error(), want) || !strings.Contains(err.Error(), dir) {
+		t.Fatalf("Open() error = %q, want the directory and %q", err, want)
 	}
 }

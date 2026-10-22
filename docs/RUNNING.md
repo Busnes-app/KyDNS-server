@@ -155,7 +155,20 @@ Set the container on your `br0` network so it gets its own LAN address, add
 `KYDNS_TRUSTED_PROXIES` as a Variable holding your reverse proxy's address,
 start it, read the setup token from the log, and do everything else —
 upstreams, the private domain, filtering, `allow_query` — from the web UI,
-through that proxy over HTTPS.
+through that proxy over HTTPS. Without that Variable the admin UI answers
+every proxied request with 403; DNS itself keeps working.
+
+The template's data path is a host directory under `appdata`, and Unraid
+creates it owned by someone other than KyDNS's uid 65532, so the first start
+exits with `permission denied`. Give the directory to KyDNS once, from the
+Unraid terminal, with the container stopped:
+
+```sh
+chown -R 65532:65532 /mnt/user/appdata/kydns/data
+```
+
+Use the host path your template maps to `/var/lib/kydns` if it differs. The
+same command fixes an upgrade from an image that ran as root.
 
 #### Pre-creating it
 
@@ -217,8 +230,10 @@ docker run --rm -v kydns-server_kydns-data:/d busybox cat /d/setup-token
 #### Upgrading from an image that ran as root
 
 Images before the move to uid 65532 wrote the volume as root, and the new one
-cannot open that database. Chown it once, with KyDNS stopped; running it again
-is harmless:
+cannot open that database: it exits with `permission denied` and the `chown`
+it needs. Chown it once, with KyDNS stopped; running it again is harmless. On
+Unraid or any other host directory, chown that directory as in
+[Unraid](#unraid); with the compose volume:
 
 ```sh
 docker compose stop kydns
