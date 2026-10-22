@@ -446,7 +446,7 @@ func TestSSOLoginButtonShownWhenEnabled(t *testing.T) {
 
 	// Disabled by default: login page doesn't show SSO button
 	rec := get(t, h, "/login", nil)
-	if strings.Contains(rec.Body.String(), "Sign in with KyIdentity") {
+	if strings.Contains(rec.Body.String(), "Sign in with SSO") {
 		t.Error("SSO button shown when SSO is disabled")
 	}
 
@@ -458,7 +458,7 @@ func TestSSOLoginButtonShownWhenEnabled(t *testing.T) {
 	})
 
 	rec = get(t, h, "/login", nil)
-	if !strings.Contains(rec.Body.String(), "Sign in with KyIdentity") {
+	if !strings.Contains(rec.Body.String(), "Sign in with SSO") {
 		t.Error("SSO button missing when SSO is enabled")
 	}
 }
