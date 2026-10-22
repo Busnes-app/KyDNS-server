@@ -110,6 +110,8 @@ Code, one concern per package:
   `OpenSnapshot` verifies and opens restored artifacts read-only without migrations.
   Connection pragmas live in the DSN so every pooled connection gets them.
   `Open` creates the database 0600 (SQLite copies that to `-wal`/`-shm`).
+  A permission error there names the uid and the `chown` that fixes it. Verify
+  with `go test ./internal/store -run OwnershipFix` as a non-root user.
   `ReplicationSnapshot` reads the replicated config in one transaction;
   `ApplySnapshot` runs its check on the merged row before writing anything.
 - `internal/registry`, `internal/zone` — services, records, views, validation,

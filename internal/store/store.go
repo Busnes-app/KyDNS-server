@@ -8,7 +8,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/Busnes-app/ky-primitives/applysetup"
+	"io/fs"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -411,7 +413,17 @@ func Open(path string) (*Store, error) {
 	// it, not whatever the umask allows. SQLite gives -wal and -shm the main
 	// file's mode. Chmod tightens a database an older version created; a file
 	// this process may not chmod is left as it is rather than refused.
+	//
+	// A directory owned by another user is the usual upgrade from an image
+	// that ran as root, or a host directory mounted in as is, so that error
+	// names the fix rather than a bare "permission denied".
 	f, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE, 0o600)
+	if errors.Is(err, fs.ErrPermission) {
+		return nil, fmt.Errorf("open sqlite: %w\n"+
+			"KyDNS runs as uid %d, gid %d, and the data directory %s and every file in it must belong to that user.\n"+
+			"Stop KyDNS, then chown -R %d:%d that directory (in a container, the host directory or volume mounted there)",
+			err, os.Getuid(), os.Getgid(), filepath.Dir(path), os.Getuid(), os.Getgid())
+	}
 	if err != nil {
 		return nil, fmt.Errorf("open sqlite: %w", err)
 	}
