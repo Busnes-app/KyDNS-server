@@ -1,0 +1,103 @@
+name: dependency release
+
+# Once a day, if Dependabot changes have landed on main since the newest
+# release, publish the next fourth-number release: v0.4.2 -> v0.4.2.1 ->
+# v0.4.2.2. However many Dependabot PRs merged that day, the day gets one
+# release. Running it by hand releases main now, Dependabot or not, so a fix
+# can ship without waiting for the schedule.
+#
+# The line (X.Y.Z) is the newest release's; a new line starts when someone
+# pushes vX.Y.Z by hand. Nothing is committed: the version lives only in the
+# tag, which release.yml stamps into the binaries, packages and image.
+on:
+  schedule:
+    - cron: "0 23 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: dependency-release
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Decide the next release
+        id: next
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EVENT: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          head="$(git rev-parse HEAD)"
+          # A failed lookup must stop here: an empty list would read as "never released".
+          tags="$(gh api --paginate "repos/$GITHUB_REPOSITORY/releases" \
+            --jq '.[] | select(.draft == false and .prerelease == false) | .tag_name')"
+          latest="$(printf '%s\n' "$tags" | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+(\.[1-9][0-9]*)?$' | sort -V | tail -n1 || true)"
+          if [ -z "$latest" ]; then
+            echo "::notice::no vX.Y.Z release yet; publish one by hand first"
+            exit 0
+          fi
+          [[ "$latest" =~ ^v([0-9]+\.[0-9]+\.[0-9]+)(\.([1-9][0-9]*))?$ ]]
+          line="${BASH_REMATCH[1]}"
+          n="${BASH_REMATCH[3]:-0}"
+          if ! git merge-base --is-ancestor "$latest" "$head"; then
+            echo "::error::$latest is not an ancestor of main" >&2
+            exit 1
+          fi
+          if [ -z "$(git rev-list "$latest..$head")" ]; then
+            echo "nothing on main since $latest"
+            exit 0
+          fi
+          if [ "$EVENT" = schedule ] && [ -z "$(git log --format=%H --author='^dependabot\[bot\]' "$latest..$head")" ]; then
+            echo "no Dependabot changes since $latest"
+            exit 0
+          fi
+
+          # release.yml runs the tests but not ci.yml's package, upgrade and
+          # Docker proofs; refuse a commit on which those did not pass. A red
+          # day is skipped and tomorrow retries.
+          ci="$(gh run list --workflow ci.yml --branch main --commit "$head" --event push \
+            --limit 1 --json status,conclusion --jq '.[0] | "\(.status)/\(.conclusion)"')"
+          if [ "$ci" != "completed/success" ]; then
+            echo "::warning::CI on $head is ${ci:-absent}, not completed/success; not releasing"
+            exit 0
+          fi
+
+          next="v$line.$(( n + 1 ))"
+          # A tag without a release is an earlier run whose release.yml failed:
+          # a human decides whether to re-run it or delete the tag.
+          if git rev-parse -q --verify "refs/tags/$next" >/dev/null; then
+            echo "::error::$next is tagged but has no release; re-run release.yml on it with publish, or delete the tag" >&2
+            exit 1
+          fi
+          echo "releasing $next at $head (previous $latest)"
+          printf 'tag=%s\nsha=%s\n' "$next" "$head" >> "$GITHUB_OUTPUT"
+
+      # A tag created with GITHUB_TOKEN raises no push event, so release.yml is
+      # dispatched on the new tag. Its attestation identity stays
+      # release.yml@refs/tags/<tag>, the one docs/PACKAGES.md verifies.
+      - name: Tag the release and run release.yml on it
+        if: steps.next.outputs.tag != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.next.outputs.tag }}
+          SHA: ${{ steps.next.outputs.sha }}
+        run: |
+          set -euo pipefail
+          gh api -X POST "repos/$GITHUB_REPOSITORY/git/refs" -f "ref=refs/tags/$TAG" -f "sha=$SHA" >/dev/null
+          gh workflow run release.yml --repo "$GITHUB_REPOSITORY" --ref "$TAG" -f publish=true
+          echo "Tagged \`$TAG\` at \`$SHA\`; release.yml dispatched on it to publish" >> "$GITHUB_STEP_SUMMARY"

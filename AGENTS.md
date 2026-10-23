@@ -54,6 +54,9 @@ Keep these aligned:
 - `CONTRIBUTING.md` — contribution and verification workflow.
 - `Makefile`, `scripts/build-rpi-image.sh` — release artifacts, including the
   Raspberry Pi OS Lite arm64 SD-image builder.
+- `.github/workflows/release.yml`, `.github/workflows/dependency-release.yml` —
+  tag releases `vX.Y.Z` and the daily Dependabot releases `vX.Y.Z.N`; the tag is
+  the only version source. Described in `CONTRIBUTING.md` "Releases".
 - `docs/superpowers/specs/2026-08-11-kydns-v1-design.md` — approved v1 design.
   Single-node with per-subnet views; replication deferred to a later spec.
 - `docs/superpowers/specs/2026-08-12-kydns-blacklists.md` — approved DNS
