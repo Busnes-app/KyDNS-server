@@ -359,17 +359,11 @@ var migrations = []string{
 	// Existing rows become admin tokens, so every CLI and script keeps working.
 	`ALTER TABLE tokens ADD COLUMN scope TEXT NOT NULL DEFAULT 'admin';
 	 ALTER TABLE tokens ADD COLUMN query_log INTEGER NOT NULL DEFAULT 0;`,
-	// Older releases seeded a sample issuer the operator never chose. Clear it
-	// only where the row is still exactly that untouched seed; an issuer an
-	// operator entered, or any enabled or secret-bearing row, is left alone.
-	`UPDATE sso_settings SET issuer_url = ''
-	 WHERE id = 1 AND enabled = 0 AND client_secret = '' AND client_id = 'kydns'
-	   AND issuer_url = '` + legacySeedIssuer + `';`,
+	// Retired: v0.4.3 cleared a sample SSO issuer that releases up to v0.4.2
+	// seeded. The slot stays, empty, because user_version counts migrations;
+	// dropping it would make the next appended migration look already applied.
+	``,
 }
-
-// legacySeedIssuer is the issuer older releases seeded into sso_settings. It
-// is kept only so the migration above can recognise an untouched seed.
-const legacySeedIssuer = "https://auth.urlxl.com"
 
 // migrate runs against a transaction Open already holds, so a crash
 // partway through - whether mid-ALTER or mid-schema-creation - rolls back

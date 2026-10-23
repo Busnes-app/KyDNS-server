@@ -908,8 +908,8 @@ kydns service add kypost \
   --check http://192.168.1.30:8080/health
 ```
 
-`kypost.urlxl.us` now answers `192.168.1.20`, and so does every alias. The
-reverse record for `192.168.1.30` still names `kypost.urlxl.us`, so several
+`kypost.example.net` now answers `192.168.1.20`, and so does every alias. The
+reverse record for `192.168.1.30` still names `kypost.example.net`, so several
 services behind one proxy each keep a correct PTR.
 
 Point the health check at the service, not the proxy. A proxy returning 502 for

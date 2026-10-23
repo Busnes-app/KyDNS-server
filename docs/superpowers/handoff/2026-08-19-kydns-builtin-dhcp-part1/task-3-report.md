@@ -89,7 +89,7 @@ The brief called `openTestStore(t)` but the actual test helper is `open(t)` at i
 
 ```
 commit ce6fd7c64c9e5a6fdb789c8dbb32ca8a2b04f68b
-Author: Yoshiofthewire <yoshi@urlxl.com>
+Author: Yoshiofthewire <7701793+Yoshiofthewire@users.noreply.github.com>
 Date:   Tue Aug 19 2026
 
     feat(store): persist DHCP leases

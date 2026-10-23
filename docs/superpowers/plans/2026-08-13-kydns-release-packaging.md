@@ -34,7 +34,7 @@ GitHub Actions, `dpkg`.
 - Existing actions pinned in this repo: `actions/checkout@v4`,
   `actions/setup-go@v5`. Match those.
 - License string: `AGPL-3.0-or-later`.
-- Maintainer string: `Yoshi <yoshi@urlxl.com>`.
+- Maintainer string: `Busnes.app <hello@busnes.app>`.
 
 ---
 
@@ -506,7 +506,7 @@ platform: linux
 version: ${VERSION}
 section: net
 priority: optional
-maintainer: Yoshi <yoshi@urlxl.com>
+maintainer: Busnes.app <hello@busnes.app>
 vendor: KyDNS
 homepage: https://github.com/yoshiofthewire/kydns-server
 license: AGPL-3.0-or-later

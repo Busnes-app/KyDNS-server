@@ -105,8 +105,9 @@ Code, one concern per package:
   transaction; a pre-recovery request cannot mint a surviving replacement token.
   Verify with `go test ./internal/store ./internal/app -run Reset`.
   `sso_settings` seeds an empty issuer, and the settings form refuses to enable
-  SSO without one; a migration clears the legacy seeded issuer only from an
-  untouched row. Verify with `go test ./internal/store ./internal/web -run 'LegacySSOIssuer|EnableNeedsIssuer'`.
+  SSO without one. Verify with `go test ./internal/web -run EnableNeedsIssuer`.
+  The last migration slot is an empty placeholder for a retired one-off cleanup;
+  keep it, since `user_version` counts slots.
   `PingContext` checks the local database for instance health.
   `SnapshotTo` delegates to `recoveryclient.SQLiteSnapshot`, which binds the
   `VACUUM INTO` destination path rather than interpolating it.
