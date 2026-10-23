@@ -185,7 +185,7 @@ and unchanged production DNS behavior. Preserve the data volume, issuer, keys,
 pin, and pairing. Retain the previous image for a volume-preserving rollback if
 readiness or DNS checks regress; do not remove volumes or recreate identities.
 
-Use `https://kyrecovery.urlxl.us`; compare the pin fingerprint out of band. An
+Use `https://kyrecovery.example.net`; compare the pin fingerprint out of band. An
 existing pairing must deposit without re-pairing. If previously unpaired, obtain
 a fresh code through the existing admin workflow and label this first-pair proof.
 Record capsule ID, locally computed digest matched to the receipt/dashboard,
