@@ -46,6 +46,25 @@ throwaway data dir and proves pin, run and schedule over the API). They must pre
 legacy password verification, WAL-safe snapshots, token-at-rest encryption, receipt
 verification, recovery URL restrictions, and the stdin-only restore boundary.
 
+## Releases
+
+The version has one source, the git tag; `make` and the Docker build stamp it
+into the binary with `-X main.version`. Push a tag `vX.Y.Z` on `main` to
+release: `release.yml` tests the tagged commit, builds the tarballs, `.deb`,
+`.rpm` and Raspberry Pi image, attests them (identity
+`release.yml@refs/tags/<tag>`), publishes the GitHub release and pushes the
+`:<tag>` and `:<version>` images. A manual run of `release.yml` is a dry run
+unless `publish` is set, and `publish` refuses a branch, a tag that is not
+`vX.Y.Z` or `vX.Y.Z.N`, and a tag that already has a release.
+
+`dependency-release.yml` runs daily at 23:00 UTC. If Dependabot commits landed
+on `main` since the newest release and the push CI run on `main`'s tip
+succeeded, it tags the next `vX.Y.Z.N` (one per day however many PRs merged)
+and dispatches `release.yml` on it with `publish`, since a tag created by
+`GITHUB_TOKEN` raises no push event. Run by hand, it releases `main` without
+the Dependabot condition. The `X.Y.Z` is the newest release's, so a new line
+starts when you push `vX.Y.Z` by hand.
+
 ## AI-assisted contributions
 
 Disclose AI assistance in the commit or pull request. State whether the work

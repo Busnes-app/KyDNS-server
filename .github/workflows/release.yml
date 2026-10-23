@@ -2,10 +2,20 @@ name: Release
 
 # Separate from ci.yml so the write permissions a release needs never apply to
 # a pull request build.
+#
+# A pushed tag vX.Y.Z publishes that release. dependency-release.yml publishes
+# vX.Y.Z.N, but a tag it creates with GITHUB_TOKEN raises no push event, so it
+# dispatches this workflow on the new tag with publish set. Any other manual
+# run is a dry run.
 on:
   push:
     tags: ["v*"]
   workflow_dispatch:
+    inputs:
+      publish:
+        description: "Publish the release for the tag this runs on (it must have none yet). Off: a dry run."
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -22,6 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.version.outputs.version }}
+      publish: ${{ steps.version.outputs.publish }}
     permissions:
       contents: write     # create the release
       id-token: write     # keyless attestation
@@ -38,9 +49,13 @@ jobs:
           cache: true
 
       # Debian versions must start with a digit, so the tag's leading v goes.
-      # A manual run is not a release; it just proves the workflow still works.
+      # A manual run is not a release unless publish is set; without it, it just
+      # proves the workflow still works.
       - name: resolve the version
         id: version
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PUBLISH: ${{ inputs.publish }}
         run: |
           if [ "$GITHUB_REF_TYPE" = "tag" ]; then
             version=${GITHUB_REF_NAME#v}
@@ -56,6 +71,26 @@ jobs:
               echo "refusing to build from tag '$GITHUB_REF_NAME'"; exit 1 ;;
           esac
           echo "version=$version" >> "$GITHUB_OUTPUT"
+
+          # ref_type alone isn't enough: workflow_dispatch can be run against an
+          # existing tag ref, which would satisfy that check and publish a real
+          # release from what an operator thought was a dry run. A dispatch
+          # publishes only when asked, only from a release tag, and only a tag
+          # with no release yet, so it can never replace published assets.
+          publish=false
+          if [ "$GITHUB_EVENT_NAME" = push ] && [ "$GITHUB_REF_TYPE" = tag ]; then
+            publish=true
+          elif [ "$PUBLISH" = true ]; then
+            if [ "$GITHUB_REF_TYPE" != tag ] ||
+              [[ ! "$GITHUB_REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(\.[1-9][0-9]*)?$ ]]; then
+              echo "::error::publish needs a vX.Y.Z or vX.Y.Z.N tag, got $GITHUB_REF_TYPE '$GITHUB_REF_NAME'"; exit 1
+            fi
+            if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+              echo "::error::$GITHUB_REF_NAME already has a release"; exit 1
+            fi
+            publish=true
+          fi
+          echo "publish=$publish" >> "$GITHUB_OUTPUT"
 
       # An attestation only says where an artifact came from. Publishing one
       # for a tag that was never tested lets that signature vouch for code no
@@ -124,11 +159,9 @@ jobs:
             dist/*.img.xz
             dist/SHA256SUMS
 
-      # ref_type alone isn't enough: workflow_dispatch can be run against an
-      # existing tag ref, which would satisfy that check and publish a real
-      # release from what an operator thought was a dry run.
+      # Decided in "resolve the version": a tag push, or a dispatch asked to.
       - name: publish the release
-        if: github.event_name == 'push' && github.ref_type == 'tag'
+        if: steps.version.outputs.publish == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -143,10 +176,8 @@ jobs:
   # that job's `go test ./...` already passed.
   image:
     needs: release
-    # Same guard as publishing the release: workflow_dispatch can be run
-    # against an existing tag ref, which would push a real image from what an
-    # operator thought was a dry run.
-    if: github.event_name == 'push' && github.ref_type == 'tag'
+    # Same guard as publishing the release: a dry run pushes no image.
+    if: needs.release.outputs.publish == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
