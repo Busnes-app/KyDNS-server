@@ -189,4 +189,4 @@ driver is not optional.
 
 ## README and topic guides
 
-Keep `README.md` as the concise product overview and navigation. Detailed procedures live in `docs/AI-AGENTS.md`, `docs/BACKUPS.md`, `docs/FEATURES.md`, `docs/CONFIGURATION.md`, `docs/REPLICATION.md`, `docs/PACKAGES.md`, `docs/RASPBERRY-PI.md`, `docs/RUNNING.md`, `docs/SECURITY-MODEL.md`. Update the owning topic guide and preserve README links when a procedure changes. Commands in these guides run from the repository root.
+Keep `README.md` as the concise product overview and navigation. Detailed procedures live in `docs/AI-AGENTS.md`, `docs/BACKUPS.md`, `docs/FEATURES.md`, `docs/CONFIGURATION.md`, `docs/REPLICATION.md`, `docs/PACKAGES.md`, `docs/RASPBERRY-PI.md`, `docs/RUNNING.md`, `docs/SECURITY-MODEL.md`, `docs/VERIFYING-RELEASES.md`. `docs/ASSURANCE-CASE.md` is the security argument; keep it aligned with `SECURITY.md`. Update the owning topic guide and preserve README links when a procedure changes. Commands in these guides run from the repository root.

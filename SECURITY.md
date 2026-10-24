@@ -255,5 +255,8 @@ pin, the receipts and the local copies stay, and the screen says so. The deposit
 credential itself is dead only when the KyRecovery admin revokes it — KyDNS can forget a
 token, it cannot invalidate one.
 
-See [DESIGN.md](DESIGN.md) for the architecture and
-[LOGGING.md](LOGGING.md) for privacy-safe logging requirements.
+See [DESIGN.md](DESIGN.md) for the architecture,
+[LOGGING.md](LOGGING.md) for privacy-safe logging requirements,
+[docs/ASSURANCE-CASE.md](docs/ASSURANCE-CASE.md) for the threat model and the argument that
+these protections hold, and [docs/VERIFYING-RELEASES.md](docs/VERIFYING-RELEASES.md) to verify
+a release and rebuild its binary.

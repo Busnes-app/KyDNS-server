@@ -42,6 +42,30 @@ jobs:
       - name: go vet
         run: go vet ./...
 
+      # Release binaries must not depend on where they are built. Both release paths run
+      # from two directories: `make dist` in a git checkout (the tarballs, .deb and .rpm carry
+      # that binary) and the Dockerfile's -trimpath build from a tree with no .git (the
+      # image). Each pair must be identical. docs/VERIFYING-RELEASES.md tells users how to
+      # repeat this against a release.
+      - name: release binaries are repeatable
+        run: |
+          set -euo pipefail
+          v=0.0.0-ci
+          for d in "$RUNNER_TEMP/a" "$RUNNER_TEMP/elsewhere/b"; do
+            mkdir -p "$d/src"
+            git clone -q "$GITHUB_WORKSPACE" "$d/checkout"
+            make -C "$d/checkout" dist VERSION="$v"
+            git archive HEAD | tar -x -C "$d/src"
+            for arch in amd64 arm64; do
+              (cd "$d/src" && CGO_ENABLED=0 GOARCH=$arch go build -trimpath \
+                -ldflags="-s -w -X main.version=$v" -o "$d/image-$arch" ./cmd/kydns)
+            done
+          done
+          for f in checkout/dist/kydns_${v}_linux_amd64/kydns checkout/dist/kydns_${v}_linux_arm64/kydns image-amd64 image-arm64; do
+            sha256sum "$RUNNER_TEMP/a/$f" "$RUNNER_TEMP/elsewhere/b/$f"
+            cmp "$RUNNER_TEMP/a/$f" "$RUNNER_TEMP/elsewhere/b/$f"
+          done
+
       - name: go mod tidy is clean
         run: |
           go mod tidy
