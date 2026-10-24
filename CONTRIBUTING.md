@@ -28,9 +28,11 @@ make test    # go test ./...
 make build   # bin/kydns
 ```
 
-CI additionally runs `gofmt -l`, `go vet`, a `go mod tidy` cleanliness check,
-the tests under `-race`, a cgo-free build, and a Docker job that resolves a
-local service name and a public name end to end. The build must stay cgo-free:
+CI additionally runs `gofmt -l`, `go vet`, a check that both release builds
+(`make dist` and the Dockerfile's) give byte-identical binaries from two
+directories, a `go mod tidy` cleanliness check, the tests under `-race`, a
+cgo-free build, and a Docker job that resolves a local service name and a
+public name end to end. The build must stay cgo-free:
 the image is distroless, so the pure-Go SQLite driver is not optional.
 
 For documentation-only changes:
@@ -46,6 +48,21 @@ throwaway data dir and proves pin, run and schedule over the API). They must pre
 legacy password verification, WAL-safe snapshots, token-at-rest encryption, receipt
 verification, recovery URL restrictions, and the stdin-only restore boundary.
 
+## Coding standard
+
+Contributions follow these style guides. CI enforces the parts a tool can
+check, so a style failure is a red build, not a review comment.
+
+| Language | Style guide | Enforced by |
+|---|---|---|
+| Go | [Effective Go](https://go.dev/doc/effective_go) and the [Go Code Review Comments](https://go.dev/wiki/CodeReviewComments) | `gofmt -l .` (must print nothing), `go vet ./...` and the `go mod tidy` check in the `test` job |
+| Shared browser UI (`internal/web/static/ky-ui/`) | Generated from Busnes-app/ky-ui; never hand-edited | `node internal/web/static/ky-ui/check-vendor.mjs` in the `test` job |
+| JavaScript (`internal/web/static/*.js`) and shell (`scripts/`, `packaging/`) | Match the surrounding file | No linter in CI; CodeQL scans the JavaScript |
+
+Beyond what the tools check: the smallest correct change, the standard library
+first, and a `ponytail:` comment on any deliberate shortcut, as
+[AGENTS.md](AGENTS.md) sets out.
+
 ## Releases
 
 The version has one source, the git tag; `make` and the Docker build stamp it
@@ -53,7 +70,8 @@ into the binary with `-X main.version`. Push a tag `vX.Y.Z` on `main` to
 release: `release.yml` tests the tagged commit, builds the tarballs, `.deb`,
 `.rpm` and Raspberry Pi image, attests them (identity
 `release.yml@refs/tags/<tag>`), publishes the GitHub release and pushes the
-`:<tag>` and `:<version>` images. A manual run of `release.yml` is a dry run
+`:<tag>` and `:<version>` images. [docs/VERIFYING-RELEASES.md](docs/VERIFYING-RELEASES.md)
+shows users how to verify them and rebuild the binary. A manual run of `release.yml` is a dry run
 unless `publish` is set, and `publish` refuses a branch, a tag that is not
 `vX.Y.Z` or `vX.Y.Z.N`, and a tag that already has a release.
 
