@@ -33,6 +33,7 @@ of whoever answered before the code is ever sent.
 kydns replica invite                  # on the primary: a code and a fingerprint
 kydns replica join 192.168.1.10:8443 <code> --fingerprint <fingerprint>
 kydns replica list                    # on the primary: lag and last sync per replica
+kydns replica rename <node-id> <name> # on the primary: give a replica a recognisable name
 kydns replica status                  # on a replica: what it follows, and why a poll failed
 ```
 
@@ -51,7 +52,7 @@ pull can discard them; see [the DHCP server guide](FEATURES.md#the-built-in-dhcp
 
 The Replication screen in the web UI does all of this too: minting an invite,
 pairing a replica with the primary its config names, listing replicas with
-their lag, removing one, and promoting. The screen pairs with
+their lag, renaming one, removing one, and promoting. The screen pairs with
 `replication.primary` and never an address you type, because that is the
 address the pull loop dials.
 

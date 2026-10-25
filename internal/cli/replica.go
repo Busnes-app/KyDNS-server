@@ -19,6 +19,7 @@ const replicaUsage = `usage:
   kydns replica list
   kydns replica status
   kydns replica remove <node-id>
+  kydns replica rename <node-id> <label>
   kydns replica join <address> <code> [--fingerprint <fp>] [--yes]
   kydns replica promote [--yes]`
 
@@ -51,6 +52,16 @@ func replicaCmd(c *Client, args []string, stdout, stderr io.Writer) int {
 			return fail(stderr, err)
 		}
 		fmt.Fprintf(stdout, "removed replica %s\n", args[1])
+		return 0
+	case "rename":
+		if len(args) != 3 {
+			fmt.Fprintln(stderr, "usage: kydns replica rename <node-id> <label>")
+			return 2
+		}
+		if err := c.Do("PATCH", "/api/v1/replicas/"+args[1], map[string]string{"label": args[2]}, nil); err != nil {
+			return fail(stderr, err)
+		}
+		fmt.Fprintf(stdout, "renamed replica %s to %q\n", args[1], args[2])
 		return 0
 	}
 	fmt.Fprintf(stderr, "kydns: unknown replica subcommand %q\n", args[0])

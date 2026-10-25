@@ -2,6 +2,7 @@ package adminapi
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"
@@ -35,9 +36,10 @@ func (a *testAdmin) Invite() (string, time.Time, error) {
 	return inv.Code, inv.ExpiresAt, err
 }
 
-func (a *testAdmin) Peers() ([]store.Peer, error)  { return a.st.Peers() }
-func (a *testAdmin) Unpair(nodeID string) error    { return a.st.DeletePeer(nodeID) }
-func (a *testAdmin) ConfigVersion() (int64, error) { return a.st.ConfigVersion() }
+func (a *testAdmin) Peers() ([]store.Peer, error)      { return a.st.Peers() }
+func (a *testAdmin) Unpair(nodeID string) error        { return a.st.DeletePeer(nodeID) }
+func (a *testAdmin) Rename(nodeID, label string) error { return a.st.RenamePeer(nodeID, label) }
+func (a *testAdmin) ConfigVersion() (int64, error)     { return a.st.ConfigVersion() }
 
 // primaryAPI is a node serving replicas: a real store, a real book, and a
 // status reporting this node's own fingerprint.
@@ -317,5 +319,31 @@ func TestRemoveReplicaDeletesThePeer(t *testing.T) {
 	// a node this one does not serve.
 	if rec := do(t, api.Handler(), "DELETE", "/api/v1/replicas/fp-1", tok, ""); rec.Code != http.StatusNotFound {
 		t.Fatalf("DELETE of an unknown replica = %d, want 404", rec.Code)
+	}
+}
+
+// RenameReplica trims and validates the label, delegates to the admin, and
+// reports a missing node and a bad label distinctly.
+func TestRenameReplicaValidatesAndDelegates(t *testing.T) {
+	const nodeID = "aa11bb22cc33dd44ee55ff6600778899aa11bb22cc33dd44ee55ff6600778899"
+	api, admin, _ := primaryAPI(t, nodeID)
+	if err := admin.st.PairPeer(store.Peer{NodeID: nodeID, Label: nodeID[:12], PairedAt: 1}); err != nil {
+		t.Fatal(err)
+	}
+	if err := api.RenameReplica(nodeID, "  Kitchen Pi  "); err != nil {
+		t.Fatalf("RenameReplica = %v", err)
+	}
+	if got, _ := admin.st.Peer(nodeID); got.Label != "Kitchen Pi" {
+		t.Errorf("Label = %q, want trimmed %q", got.Label, "Kitchen Pi")
+	}
+	if err := api.RenameReplica(nodeID, "   "); !errors.Is(err, ErrInvalidLabel) {
+		t.Errorf("empty label = %v, want ErrInvalidLabel", err)
+	}
+	if err := api.RenameReplica(nodeID, strings.Repeat("x", maxReplicaLabel+1)); !errors.Is(err, ErrInvalidLabel) {
+		t.Errorf("overlong label = %v, want ErrInvalidLabel", err)
+	}
+	missing := "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+	if err := api.RenameReplica(missing, "x"); !errors.Is(err, store.ErrNotFound) {
+		t.Errorf("missing node = %v, want store.ErrNotFound", err)
 	}
 }

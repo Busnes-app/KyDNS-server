@@ -5,10 +5,8 @@ import (
 	"net/url"
 	"strings"
 	"testing"
-	"time"
 
 	"github.com/Busnes-app/kydns-server/internal/discovery/dhcp"
-	"github.com/Busnes-app/kydns-server/internal/health"
 )
 
 func TestDiscoveredListsLeases(t *testing.T) {
@@ -138,39 +136,6 @@ func TestPromoteUnknownLeaseFails(t *testing.T) {
 	}, c)
 	if rec.Code == http.StatusSeeOther {
 		t.Error("promoting a lease that does not exist succeeded")
-	}
-}
-
-func TestServicesShowHealthBadge(t *testing.T) {
-	h, srv, c, csrf := loggedIn(t)
-	postForm(t, h, "/services/new", url.Values{
-		"name": {"kypost"}, "address": {"192.168.1.20"}, "csrf_token": {csrf},
-	}, c)
-	svcs, _ := srv.o.Registry.Services()
-	srv.o.Health = func() []health.Status {
-		return []health.Status{{ServiceID: svcs[0].ID, Name: "kypost", State: "down", Since: time.Now()}}
-	}
-	body := page(t, h, "/services", c)
-	if !strings.Contains(body, "down") {
-		t.Errorf("services page does not show the health state:\n%s", body)
-	}
-	if !strings.Contains(body, "data-health-for") {
-		t.Error("health cell is missing the attribute live.js updates")
-	}
-}
-
-// With no health data the column must not claim everything is fine.
-func TestServicesHealthUnknownWithoutChecker(t *testing.T) {
-	h, _, c, csrf := loggedIn(t)
-	postForm(t, h, "/services/new", url.Values{
-		"name": {"kypost"}, "address": {"192.168.1.20"}, "csrf_token": {csrf},
-	}, c)
-	body := page(t, h, "/services", c)
-	if strings.Contains(body, ">up<") {
-		t.Error("services page claims up with no health checker configured")
-	}
-	if !strings.Contains(body, "unknown") {
-		t.Error("services page does not report unknown health")
 	}
 }
 

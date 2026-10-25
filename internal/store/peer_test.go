@@ -190,3 +190,27 @@ func TestPromotionIsRecordedAndCleared(t *testing.T) {
 		t.Fatalf("Promotion() = %d, %v after FollowPrimary, want 0", at, err)
 	}
 }
+
+// RenamePeer changes only the label and refuses a node this one does not serve.
+func TestRenamePeer(t *testing.T) {
+	s := open(t)
+	if err := s.PairPeer(Peer{NodeID: "fp-1", Label: "fp-1", Address: "10.0.0.9:8443", PairedAt: 100}); err != nil {
+		t.Fatal(err)
+	}
+	if err := s.RenamePeer("fp-1", "kitchen pi"); err != nil {
+		t.Fatal(err)
+	}
+	got, err := s.Peer("fp-1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.Label != "kitchen pi" {
+		t.Errorf("Label = %q, want %q", got.Label, "kitchen pi")
+	}
+	if got.Address != "10.0.0.9:8443" || got.PairedAt != 100 {
+		t.Errorf("rename disturbed other fields: %+v", got)
+	}
+	if err := s.RenamePeer("missing", "x"); !errors.Is(err, ErrNotFound) {
+		t.Errorf("RenamePeer(missing) = %v, want ErrNotFound", err)
+	}
+}

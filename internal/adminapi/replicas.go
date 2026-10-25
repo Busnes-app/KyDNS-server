@@ -3,9 +3,12 @@ package adminapi
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
+	"unicode"
+	"unicode/utf8"
 
 	"github.com/Busnes-app/kydns-server/internal/replica"
 	"github.com/Busnes-app/kydns-server/internal/store"
@@ -29,6 +32,9 @@ type ReplicaAdmin interface {
 	Invite() (code string, expiresAt time.Time, err error)
 	Peers() ([]store.Peer, error)
 	Unpair(nodeID string) error
+	// Rename sets the operator-facing label on a paired peer, leaving its
+	// address and sync history alone.
+	Rename(nodeID, label string) error
 	// ConfigVersion is this node's current version, the one a peer's recorded
 	// version lags behind.
 	ConfigVersion() (int64, error)
@@ -300,6 +306,73 @@ func (a *API) RemoveReplica(nodeID string) error {
 		return ErrReplicationDisabled
 	}
 	return a.replicaAdmin.Unpair(nodeID)
+}
+
+// ErrInvalidLabel is a rename whose label a person could not have meant: empty,
+// absurdly long, or carrying control characters. Exported so the web screen and
+// the CLI refuse it in the same words as the JSON path.
+var ErrInvalidLabel = errors.New("invalid label")
+
+// maxReplicaLabel bounds a peer's operator label. It is a name on a screen, not
+// a document; a longer value is a paste accident.
+const maxReplicaLabel = 64
+
+// validReplicaLabel trims and checks an operator-supplied label. It is rendered
+// escaped, so the only rules are that it is present, not absurdly long, and
+// carries no control characters (a newline in a node name is a layout or
+// log-forging accident, never a name).
+func validReplicaLabel(raw string) (string, error) {
+	label := strings.TrimSpace(raw)
+	if label == "" {
+		return "", fmt.Errorf("%w: a label is required", ErrInvalidLabel)
+	}
+	if utf8.RuneCountInString(label) > maxReplicaLabel {
+		return "", fmt.Errorf("%w: at most %d characters", ErrInvalidLabel, maxReplicaLabel)
+	}
+	for _, r := range label {
+		if r == '\n' || r == '\r' || (unicode.IsControl(r) && r != '\t') {
+			return "", fmt.Errorf("%w: no control characters", ErrInvalidLabel)
+		}
+	}
+	return label, nil
+}
+
+// RenameReplica sets the operator label on a paired peer. Exported so the web
+// screen's rename control runs the same validation as the JSON path.
+func (a *API) RenameReplica(nodeID, label string) error {
+	if a.replicaAdmin == nil {
+		return ErrReplicationDisabled
+	}
+	clean, err := validReplicaLabel(label)
+	if err != nil {
+		return err
+	}
+	return a.replicaAdmin.Rename(strings.TrimSpace(nodeID), clean)
+}
+
+type renameReplicaRequest struct {
+	Label string `json:"label"`
+}
+
+// renameReplica sets a peer's operator label. PATCH, because it changes one
+// field of an existing peer and leaves the rest.
+func (a *API) renameReplica(w http.ResponseWriter, r *http.Request) {
+	var req renameReplicaRequest
+	if !decode(w, r, &req) {
+		return
+	}
+	switch err := a.RenameReplica(r.PathValue("node_id"), req.Label); {
+	case errors.Is(err, ErrReplicationDisabled):
+		writeErr(w, http.StatusNotFound, "not_found", "node_id", "this node serves no replicas")
+	case errors.Is(err, ErrInvalidLabel):
+		writeErr(w, http.StatusBadRequest, "invalid_label", "label", err.Error())
+	case errors.Is(err, store.ErrNotFound):
+		writeErr(w, http.StatusNotFound, "not_found", "node_id", err.Error())
+	case err != nil:
+		writeRegistryErr(w, err)
+	default:
+		w.WriteHeader(http.StatusNoContent)
+	}
 }
 
 // thisNodeID is the fingerprint an operator confirms at pairing. It comes from

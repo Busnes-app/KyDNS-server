@@ -65,6 +65,15 @@ func (f *fakeReplicaAdmin) Invite() (string, time.Time, error) {
 }
 func (f *fakeReplicaAdmin) Peers() ([]store.Peer, error)  { return f.peers, nil }
 func (f *fakeReplicaAdmin) ConfigVersion() (int64, error) { return f.version, nil }
+func (f *fakeReplicaAdmin) Rename(nodeID, label string) error {
+	for i := range f.peers {
+		if f.peers[i].NodeID == nodeID {
+			f.peers[i].Label = label
+			return nil
+		}
+	}
+	return store.ErrNotFound
+}
 func (f *fakeReplicaAdmin) Unpair(nodeID string) error {
 	f.unpaired = append(f.unpaired, nodeID)
 	return nil
@@ -668,5 +677,25 @@ func TestDashboardHasNoReplicationLineWhenStandalone(t *testing.T) {
 	c := loginCookie(t, h)
 	if body := get(t, h, "/", c).Body.String(); dashRole.MatchString(body) {
 		t.Errorf("a standalone node shows a replication line:\n%s", body)
+	}
+}
+
+// The rename control relabels exactly that peer and redirects back.
+func TestRenameControlRelabelsThatPeer(t *testing.T) {
+	h, admin, _, c, csrf, _ := primaryWeb(t)
+	rec := postForm(t, h, "/replication/rename", url.Values{
+		"csrf_token": {csrf}, "node_id": {peerTwoID}, "label": {"Kitchen Pi"},
+	}, c)
+	if rec.Code != http.StatusSeeOther {
+		t.Fatalf("POST /replication/rename = %d, want 303:\n%s", rec.Code, rec.Body)
+	}
+	got := ""
+	for _, p := range admin.peers {
+		if p.NodeID == peerTwoID {
+			got = p.Label
+		}
+	}
+	if got != "Kitchen Pi" {
+		t.Errorf("peer %s label = %q, want %q", peerTwoID, got, "Kitchen Pi")
 	}
 }

@@ -33,7 +33,7 @@ works on the host itself, or from any machine through the trusted HTTPS proxy
 | `kydns dhcp status\|leases` | Whether the built-in DHCP server is running, and the leases it has handed out. Read-only. |
 | `kydns settings get` | Print the settings the server is running. |
 | `kydns settings set k=v ...` | Change them. `--confirm-public <cidr>` for a public `allow_query` range. |
-| `kydns replica invite\|list\|remove` | Manage the replicas this node serves. `invite` prints a pairing code and this node's fingerprint; confirm the fingerprint on the replica before entering the code. |
+| `kydns replica invite\|list\|rename\|remove` | Manage the replicas this node serves. `invite` prints a pairing code and this node's fingerprint; confirm the fingerprint on the replica before entering the code. `rename <node-id> <name>` gives a replica a recognisable name instead of the first 12 characters of its node ID. |
 | `kydns export` / `kydns import` | Read or write the registry and settings as YAML or JSON. |
 | `kydns backup-pin-key --public-key-file p --threshold k --total-shares n` | Pin the suite recovery public key by hand, for a suite with no KyRecovery. Write-once: a second, different key is refused. |
 | `kydns backup-unpair` | Forget the KyRecovery URL and sealed token. The key pin stays. |

@@ -346,6 +346,7 @@ func (a *API) routes(mux registrar) {
 	mux.HandleFunc("POST /api/v1/replicas/invite", auth(a.inviteReplica))
 	mux.HandleFunc("GET /api/v1/replicas", auth(a.listReplicas))
 	mux.HandleFunc("DELETE /api/v1/replicas/{node_id}", auth(a.removeReplica))
+	mux.HandleFunc("PATCH /api/v1/replicas/{node_id}", auth(a.renameReplica))
 }
 
 // roleReplica mirrors app.Role's replica value, which adminapi cannot import

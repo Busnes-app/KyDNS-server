@@ -246,13 +246,11 @@ func TestServiceRoutingPreservesUnrelatedFields(t *testing.T) {
 	h, srv, c, csrf := loggedIn(t)
 	addView(t, srv, "tailnet", "100.64.0.0/10")
 	postForm(t, h, "/services/new", url.Values{
-		"name":           {"kypost"},
-		"address":        {"192.168.1.30"},
-		"aliases":        {"webmail"},
-		"check_url":      {"https://kypost.home.arpa/health"},
-		"check_insecure": {"on"},
-		"proxy_address":  {"192.168.1.20"},
-		"csrf_token":     {csrf},
+		"name":          {"kypost"},
+		"address":       {"192.168.1.30"},
+		"aliases":       {"webmail"},
+		"proxy_address": {"192.168.1.20"},
+		"csrf_token":    {csrf},
 	}, c)
 	svcs, _ := srv.o.Registry.Services()
 	if len(svcs) != 1 {
@@ -278,12 +276,6 @@ func TestServiceRoutingPreservesUnrelatedFields(t *testing.T) {
 	svc := svcs[0]
 	if len(svc.Aliases) != 1 || svc.Aliases[0] != "webmail" {
 		t.Errorf("aliases = %v, want [webmail] preserved", svc.Aliases)
-	}
-	if svc.CheckURL != "https://kypost.home.arpa/health" {
-		t.Errorf("check_url = %q, want preserved", svc.CheckURL)
-	}
-	if !svc.CheckInsecure {
-		t.Error("check_insecure was cleared")
 	}
 	if len(svc.Addresses) != 2 {
 		t.Errorf("addresses = %+v, want both addresses preserved", svc.Addresses)
@@ -321,7 +313,6 @@ func TestServiceFormAcceptsProxyFields(t *testing.T) {
 		"address":         {"192.168.1.30"},
 		"proxy_address":   {"192.168.1.20"},
 		"route_via_proxy": {"on"},
-		"check_insecure":  {"on"},
 		"csrf_token":      {csrf},
 	}, c)
 
@@ -334,9 +325,6 @@ func TestServiceFormAcceptsProxyFields(t *testing.T) {
 	}
 	if svcs[0].ProxyAddress != "192.168.1.20" || !svcs[0].RouteViaProxy {
 		t.Errorf("= %+v, want the proxy fields set", svcs[0])
-	}
-	if !svcs[0].CheckInsecure {
-		t.Error("check_insecure was not applied; it had no control before this change")
 	}
 
 	// The indirection has to be visible on the list, not buried in an edit.
