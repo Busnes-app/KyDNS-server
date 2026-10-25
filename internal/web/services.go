@@ -104,8 +104,7 @@ func (s *Server) renderServicesError(w http.ResponseWriter, r *http.Request, msg
 
 func (s *Server) postServiceNew(w http.ResponseWriter, r *http.Request) {
 	svc := store.Service{
-		Name:     r.PostFormValue("name"),
-		CheckURL: r.PostFormValue("check_url"),
+		Name: r.PostFormValue("name"),
 		Addresses: []store.Address{{
 			Address: r.PostFormValue("address"),
 			View:    r.PostFormValue("view"),
@@ -113,7 +112,6 @@ func (s *Server) postServiceNew(w http.ResponseWriter, r *http.Request) {
 	}
 	svc.ProxyAddress = strings.TrimSpace(r.PostFormValue("proxy_address"))
 	svc.RouteViaProxy = r.PostFormValue("route_via_proxy") != ""
-	svc.CheckInsecure = r.PostFormValue("check_insecure") != ""
 	if a := strings.TrimSpace(r.PostFormValue("aliases")); a != "" {
 		for _, al := range strings.Split(a, ",") {
 			if al = strings.TrimSpace(al); al != "" {
