@@ -101,6 +101,12 @@
       <td>{{if eq .Status "in sync"}}<span class="badge">{{.Status}}</span>
           {{else}}<span class="badge warn">{{.Status}}</span>{{end}}</td>
       <td>
+        <form class="address-row" method="post" action="/replication/rename">
+          <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
+          <input type="hidden" name="node_id" value="{{.NodeID}}">
+          <input name="label" type="text" value="{{.Label}}" aria-label="Replica name" maxlength="64">
+          <button type="submit">Rename</button>
+        </form>
         <form method="post" action="/replication/remove">
           <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
           <input type="hidden" name="node_id" value="{{.NodeID}}">

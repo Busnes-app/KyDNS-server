@@ -161,6 +161,20 @@ func (s *Server) postReplicaRemove(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/replication", http.StatusSeeOther)
 }
 
+// postReplicaRename sets a peer's operator label. The same validation runs here
+// and on the JSON path, through adminapi.RenameReplica.
+func (s *Server) postReplicaRename(w http.ResponseWriter, r *http.Request) {
+	if s.o.API == nil {
+		s.renderReplication(w, r, http.StatusConflict, replicationOff)
+		return
+	}
+	if err := s.o.API.RenameReplica(r.PostFormValue("node_id"), r.PostFormValue("label")); err != nil {
+		s.renderReplication(w, r, http.StatusBadRequest, map[string]any{"Error": err.Error()})
+		return
+	}
+	http.Redirect(w, r, "/replication", http.StatusSeeOther)
+}
+
 // inviteErrorText says what to change, matching the sentence the JSON path
 // gives. A bare "not serving replicas" leaves the operator with no key to set.
 func inviteErrorText(err error) string {

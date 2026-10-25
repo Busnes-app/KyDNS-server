@@ -209,9 +209,10 @@ func (a *replicaAdmin) Invite() (string, time.Time, error) {
 	return inv.Code, inv.ExpiresAt, err
 }
 
-func (a *replicaAdmin) Peers() ([]store.Peer, error)  { return a.st.Peers() }
-func (a *replicaAdmin) Unpair(nodeID string) error    { return a.st.DeletePeer(nodeID) }
-func (a *replicaAdmin) ConfigVersion() (int64, error) { return a.st.ConfigVersion() }
+func (a *replicaAdmin) Peers() ([]store.Peer, error)      { return a.st.Peers() }
+func (a *replicaAdmin) Unpair(nodeID string) error        { return a.st.DeletePeer(nodeID) }
+func (a *replicaAdmin) Rename(nodeID, label string) error { return a.st.RenamePeer(nodeID, label) }
+func (a *replicaAdmin) ConfigVersion() (int64, error)     { return a.st.ConfigVersion() }
 
 // replicaPromoter is the operator's escape from being a replica. Every step is
 // ordered so that a crash in the middle leaves a node that comes back a

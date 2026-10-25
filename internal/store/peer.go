@@ -74,6 +74,20 @@ func (s *Store) DeletePeer(nodeID string) error {
 	return nil
 }
 
+// RenamePeer sets the operator label on an existing peer, leaving its address
+// and sync history alone. A peer this node does not serve is ErrNotFound, not a
+// silent insert: renaming a node that is not here is a mistake worth reporting.
+func (s *Store) RenamePeer(nodeID, label string) error {
+	res, err := s.db.Exec(`UPDATE peers SET label = ? WHERE node_id = ?`, label, nodeID)
+	if err != nil {
+		return err
+	}
+	if n, _ := res.RowsAffected(); n == 0 {
+		return fmt.Errorf("%w: peer %s", ErrNotFound, nodeID)
+	}
+	return nil
+}
+
 // ReplicaState is the primary's version this node last applied. It is kept
 // apart from peers because re-pairing rewrites that row, and apart from
 // config_version because applying a snapshot bumps this node's own counter.

@@ -52,6 +52,7 @@ func (s *Server) pageRoutes(mux registrar) {
 	mux.HandleFunc("GET /replication", s.requireSession(s.getReplication))
 	mux.HandleFunc("POST /replication/invite", s.requireCSRF(s.postReplicaInvite))
 	mux.HandleFunc("POST /replication/remove", s.requireCSRF(s.postReplicaRemove))
+	mux.HandleFunc("POST /replication/rename", s.requireCSRF(s.postReplicaRename))
 	// PathPromote, not a path of this file's own choosing: the web write gate
 	// exempts that constant, and a button anywhere else is refused with 409 on
 	// the one node that needs it.
