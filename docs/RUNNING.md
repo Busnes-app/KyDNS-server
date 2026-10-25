@@ -156,7 +156,9 @@ Set the container on your `br0` network so it gets its own LAN address, add
 start it, read the setup token from the log, and do everything else —
 upstreams, the private domain, filtering, `allow_query` — from the web UI,
 through that proxy over HTTPS. Without that Variable the admin UI answers
-every proxied request with 403; DNS itself keeps working.
+every proxied request with 403; DNS itself keeps working. To back up into a KyRecovery on your
+own network, add `KYDNS_BACKUP_ALLOW_PRIVATE_RECOVERY` = `true` as a Variable and a DNS or
+hosts entry under Extra Parameters ([Backups](BACKUPS.md)).
 
 The template's data path is a host directory under `appdata`, and Unraid
 creates it owned by someone other than KyDNS's uid 65532, so the first start
