@@ -238,3 +238,24 @@ A service with both an IPv4 and an IPv6 address behind one proxy answers `A`
 only: `--proxy` takes one address, so the `AAAA` query gets `NODATA` instead of
 the service's own IPv6 address. Give the service just the address family the
 proxy needs, or leave routing off if both must keep resolving.
+
+### Signing in through KyIdentity, set up by hand
+
+Without an installer, connect KyIdentity under **Settings → Single sign-on**:
+
+1. In KyIdentity's admin UI, create a client for KyDNS with the redirect URI
+   `https://<admin host>/auth/sso/callback`.
+2. **Assign the administrator to the KyDNS app**, with the role `kydns.admin`. KyIdentity
+   admits only people assigned to a client. Without the assignment, every sign-in is refused
+   before it reaches KyDNS: KyIdentity logs `oauth.authorize` with outcome `denied` and
+   reason `not_assigned`, and KyDNS logs nothing. KyDNS itself does not check the role at
+   sign-in. It admits the one linked admin identity, but its signed directory treats
+   `kydns.admin` as the administrator (`internal/store/installer_directory.go`).
+3. Under **Settings → Single sign-on**, tick **OpenID Connect provider**. Enter **Issuer URL**
+   (KyIdentity's `https://` address), **Client ID** and **Client secret**, then click **Save SSO
+   settings**. While signed in with the local password, click **Link SSO identity** and sign in
+   as the administrator.
+
+If a node was linked to a different KyIdentity before, unlink it under Settings, or with
+`kydns admin reset-password` ([Running](RUNNING.md)), then link again.
+

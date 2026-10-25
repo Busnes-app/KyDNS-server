@@ -33,3 +33,20 @@ HTTPS is still required and loopback stays refused. Whatever the wire, compare t
 fingerprint Settings shows with the one in the KyRecovery dashboard; a swapped key then fails at
 pairing instead of at restore. In Docker, names that exist only on your LAN need
 `docker-compose.lan-dns.yml` with `KYDNS_DNS` on the command line.
+
+Without that, pairing fails with `lookup recovery.<lan domain> on 127.0.0.11:53: no such
+host`: Docker's resolver inside the container asks the host's resolvers, and records you keep
+in KyDNS itself do not help, because the host usually cannot reach a container on its own
+`br0`/ipvlan address. Unraid has no Compose file. Add the equivalent under the container's
+**Edit → Advanced View → Extra Parameters**, then Apply:
+
+- `--dns=<LAN DNS server>`, the same as the overlay (never KyDNS's own address), or
+- `--add-host=recovery.<lan domain>:<proxy address>` for KyRecovery's name alone.
+
+**One recovery key for life.** The first pairing pins KyRecovery's public key. Pairing with
+a KyRecovery that holds a different key fails with `already pinned to a different recovery
+key`, and unpairing does not clear the pin: it is what stops a hijacked admin session from
+redirecting backups. A node paired with a test or older KyRecovery can only pair with that
+one again. The claim succeeds on KyRecovery's side before KyDNS refuses the key, so the new
+KyRecovery lists KyDNS as paired: revoke that entry there. A supported move to a new key is
+requested in Busnes-app/ky-primitives#40.
