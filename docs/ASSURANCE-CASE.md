@@ -89,6 +89,14 @@ SECURITY.md says), an attacker on the host, and a malicious administrator.
 - **Open design.** Only published algorithms: Argon2id, AES-256-GCM, Ed25519, SHA-256, TLS 1.2 and
   1.3. The code and this argument are public.
 
+## Supported key-strength configuration
+
+[STRONG-CRYPTO.md](STRONG-CRYPTO.md) defines the supported process/edge profile,
+all enabled key/TLS boundaries and data-preserving migration. OIDC always
+refuses RSA signing keys below 2048 bits; the optional process profile filters
+TLS chain keys and refuses unsafe OIDC endpoints/redirects. It is not a claim
+about a live installation or FIPS certification.
+
 ## Common weaknesses and how they are countered
 
 | Weakness | Counter | Where |

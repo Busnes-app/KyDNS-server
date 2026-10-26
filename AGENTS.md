@@ -52,6 +52,7 @@ Keep these aligned:
 - `LOGGING.md` — logging and privacy requirements.
 - `SECURITY.md` — security policy and trust boundaries.
 - `CONTRIBUTING.md` — contribution and verification workflow.
+- `docs/STRONG-CRYPTO.md`, `docker-compose.strong-crypto.yml` — supported process/edge key policy and data-preserving migration; `scripts/check-strong-crypto-compose.py` verifies overlay preservation.
 - `Makefile`, `scripts/build-rpi-image.sh` — release artifacts, including the
   Raspberry Pi OS Lite arm64 SD-image builder.
 - `.github/workflows/release.yml`, `.github/workflows/dependency-release.yml` —
@@ -190,3 +191,10 @@ driver is not optional.
 ## README and topic guides
 
 Keep `README.md` as the concise product overview and navigation. Detailed procedures live in `docs/AI-AGENTS.md`, `docs/BACKUPS.md`, `docs/FEATURES.md`, `docs/CONFIGURATION.md`, `docs/REPLICATION.md`, `docs/PACKAGES.md`, `docs/RASPBERRY-PI.md`, `docs/RUNNING.md`, `docs/SECURITY-MODEL.md`, `docs/VERIFYING-RELEASES.md`. `docs/ASSURANCE-CASE.md` is the security argument; keep it aligned with `SECURITY.md`. Update the owning topic guide and preserve README links when a procedure changes. Commands in these guides run from the repository root.
+
+## Strong-key configuration
+
+- `docs/STRONG-CRYPTO.md` owns the supported `GODEBUG=fips140=on` process/edge profile and migration; the optional Compose overlay adds only that setting. Preserve node/backup keys, database, recovery pin and credential paths.
+- OIDC keeps coreos/go-oidc signature/claim checks. Its private JWKS transport refuses every RSA modulus below 2048 bits, bounded malformed inputs and redirects. Configured-mode discovery/exchange requires direct HTTPS metadata endpoints and returns an explicit login failure. Preserve injected trust roots/timeouts.
+- `internal/upstream/strong_crypto_test.go` runs the TLS peer in a separate ordinary-mode process so the selected client's key policy is what is tested. Keep strong acceptance and weak-leaf/trusted-root refusal evidence for both DoT and DoH.
+- Run full ordinary and `GODEBUG=fips140=on` race suites; `python3 scripts/check-strong-crypto-compose.py` proves overlay preservation. Docker CI reuses its data volume to verify DNS after enabling the profile; review the selected profile's integration tests and local-data/restore checks before rollout. Health certificate opt-out is outside the profile; pinned Ed25519 replication and durable recovery remain supported.

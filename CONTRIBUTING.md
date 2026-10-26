@@ -35,6 +35,12 @@ cgo-free build, and a Docker job that resolves a local service name and a
 public name end to end. The build must stay cgo-free:
 the image is distroless, so the pure-Go SQLite driver is not optional.
 
+The supported [strong-key profile](docs/STRONG-CRYPTO.md) also runs the full race
+suite with `GODEBUG=fips140=on` in CI. Run it for TLS/OIDC/profile changes;
+`python3 scripts/check-strong-crypto-compose.py` verifies the optional overlay
+with synthetic inputs and starts no containers. The Docker smoke reuses its
+existing data volume after enabling the profile and verifies DNS again.
+
 For documentation-only changes:
 
 - check Markdown links and headings;
