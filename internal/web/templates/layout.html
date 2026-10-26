@@ -2,23 +2,23 @@
 <div class="app">
   <nav class="app-nav">
     <div class="brand">{{template "mark"}}<p class="brand-name">KyDNS</p></div>
-    <a class="ky-nav-item" href="/"{{if eq .Nav "dashboard"}} aria-current="page"{{end}}>Dashboard</a>
-    <a class="ky-nav-item" href="/services"{{if eq .Nav "services"}} aria-current="page"{{end}}>Services</a>
-    <a class="ky-nav-item" href="/records"{{if eq .Nav "records"}} aria-current="page"{{end}}>Records</a>
-    <a class="ky-nav-item" href="/discovered"{{if eq .Nav "discovered"}} aria-current="page"{{end}}>Discovered</a>
-    <a class="ky-nav-item" href="/blacklists"{{if eq .Nav "blacklists"}} aria-current="page"{{end}}>Blacklists</a>
-    <a class="ky-nav-item" href="/dhcp"{{if eq .Nav "dhcp"}} aria-current="page"{{end}}>DHCP</a>
-    {{if .ShowReplication}}<a class="ky-nav-item" href="/replication"{{if eq .Nav "replication"}} aria-current="page"{{end}}>Replication</a>{{end}}
-    <a class="ky-nav-item" href="/settings"{{if eq .Nav "settings"}} aria-current="page"{{end}}>Settings</a>
-    <a class="ky-nav-item" href="/appearance"{{if eq .Nav "appearance"}} aria-current="page"{{end}}>Appearance</a>
+    <div class="app-nav-links">
+      <a class="ky-nav-item" href="/"{{if eq .Nav "dashboard"}} aria-current="page"{{end}}>Dashboard</a>
+      <a class="ky-nav-item" href="/services"{{if eq .Nav "services"}} aria-current="page"{{end}}>Services</a>
+      <a class="ky-nav-item" href="/records"{{if eq .Nav "records"}} aria-current="page"{{end}}>Records</a>
+      <a class="ky-nav-item" href="/discovered"{{if eq .Nav "discovered"}} aria-current="page"{{end}}>Discovered</a>
+      <a class="ky-nav-item" href="/blacklists"{{if eq .Nav "blacklists"}} aria-current="page"{{end}}>Blacklists</a>
+      <a class="ky-nav-item" href="/dhcp"{{if eq .Nav "dhcp"}} aria-current="page"{{end}}>DHCP</a>
+      {{if .ShowReplication}}<a class="ky-nav-item" href="/replication"{{if eq .Nav "replication"}} aria-current="page"{{end}}>Replication</a>{{end}}
+      <a class="ky-nav-item" href="/settings"{{if eq .Nav "settings"}} aria-current="page"{{end}}>Settings</a>
+      <a class="ky-nav-item" href="/appearance"{{if eq .Nav "appearance"}} aria-current="page"{{end}}>Appearance</a>
+    </div>
     <footer class="app-footer">
       <form method="post" action="/logout">
         <input type="hidden" name="csrf_token" value="{{.CSRF}}">
         <button class="ghost" type="submit">Sign out</button>
       </form>
-      <button type="button" class="license-link" popovertarget="about">
-        v{{.Version}} &middot; &copy; {{.Year}} &middot; MIT License
-      </button>
+      {{template "legal" .}}
     </footer>
   </nav>
   <div id="about" popover class="license-window">
@@ -45,9 +45,16 @@
     {{template "exposure" .}}
     {{if .Error}}<p class="error">{{.Error}}</p>{{end}}
     {{template "page" .}}
+    {{/* Phones keep the navigation to two rows; the licence moves below the page. */}}
+    <p class="page-legal">{{template "legal" .}}</p>
   </main>
 </div>
+<script src="/static/nav.js" defer></script>
 {{end}}
+
+{{define "legal"}}<button type="button" class="license-link" popovertarget="about">
+        v{{.Version}} &middot; &copy; {{.Year}} &middot; MIT License
+      </button>{{end}}
 
 {{/* "ro" disables an edit control on a replica and says who owns the change.
      Disabled rather than hidden: a control that vanishes reads as a bug. */}}
