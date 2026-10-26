@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Busnes-app/kydns-server/internal/health"
 	"github.com/Busnes-app/kydns-server/internal/store"
 )
 
@@ -21,7 +20,6 @@ type serviceRow struct {
 	Name          string
 	Addresses     []addressRow
 	Aliases       string
-	Health        string
 	ProxyAddress  string
 	RouteViaProxy bool
 }
@@ -35,23 +33,12 @@ func (s *Server) servicesData(errMsg string) map[string]any {
 	if err != nil && errMsg == "" {
 		errMsg = err.Error()
 	}
-	// Absent health data is "unknown", never a claim that everything is fine.
-	states := map[int64]string{}
-	if s.o.Health != nil {
-		for _, st := range s.o.Health() {
-			states[st.ServiceID] = st.State
-		}
-	}
 
 	rows := make([]serviceRow, 0, len(svcs))
 	for _, svc := range svcs {
-		state := states[svc.ID]
-		if state == "" {
-			state = health.StateUnknown
-		}
 		row := serviceRow{
 			ID: svc.ID, Name: svc.Name,
-			Aliases: strings.Join(svc.Aliases, ", "), Health: state,
+			Aliases:      strings.Join(svc.Aliases, ", "),
 			ProxyAddress: svc.ProxyAddress, RouteViaProxy: svc.RouteViaProxy,
 		}
 		for _, a := range svc.Addresses {
@@ -70,9 +57,8 @@ func (s *Server) servicesData(errMsg string) map[string]any {
 	}
 }
 
-// getHealthJSON feeds the health badges on the services page. The same data is
-// on /api/v1/health, but that one takes an API token: the browser has a session
-// cookie and no token, so the page reads it from here instead.
+// getHealthJSON retains the session-authenticated health endpoint for existing
+// clients. The Services page no longer displays or polls health.
 func (s *Server) getHealthJSON(w http.ResponseWriter, _ *http.Request) {
 	type row struct {
 		ServiceID int64  `json:"service_id"`

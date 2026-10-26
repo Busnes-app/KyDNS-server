@@ -1,35 +1,9 @@
-// Refreshes the health badges and the lease table without a full page reload.
-// Deliberately tiny: two timers and one fetch, no framework.
+// Refreshes dashboard stats and the lease table.
 (function () {
-  const HEALTH_MS = 10000;
   const LEASE_MS = 30000;
   const STATS_MS = 5000;
 
-  let healthTimer = null;
   let statsTimer = null;
-
-  async function refreshHealth() {
-    try {
-      const resp = await fetch("/services/health.json", { headers: { Accept: "application/json" } });
-      // A signed-out session will not sign itself back in. Stop polling and let
-      // the next click land on the login page.
-      if (resp.status === 401) {
-        clearInterval(healthTimer);
-        return;
-      }
-      if (!resp.ok) return; // a failed poll is not worth disturbing the page over
-      const data = await resp.json();
-      for (const s of data.health || []) {
-        const cell = document.querySelector('[data-health-for="' + s.service_id + '"]');
-        if (!cell) continue;
-        cell.textContent = s.state;
-        cell.className =
-          "badge " + (s.state === "down" ? "down" : s.state === "up" ? "up" : "");
-      }
-    } catch (e) {
-      /* transient: the next tick tries again */
-    }
-  }
 
   // The dashboard's numbers are already correct when the page renders; this
   // keeps them moving so a working server does not look like a stopped one.
@@ -81,10 +55,6 @@
     statsTimer = setInterval(refreshStats, STATS_MS);
   }
 
-  if (document.querySelector("[data-health-for]")) {
-    refreshHealth();
-    healthTimer = setInterval(refreshHealth, HEALTH_MS);
-  }
   if (document.getElementById("lease-table")) {
     setInterval(function () { location.reload(); }, LEASE_MS);
   }

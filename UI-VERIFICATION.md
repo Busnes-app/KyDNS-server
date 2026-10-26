@@ -29,6 +29,22 @@ go test ./internal/web passed; vendor integrity check passed. Central ky-ui sync
 
 Run the Go server with isolated preview data following its README; run the checks above from the repository root. Use System theme, emulate OS light/dark, and inspect both viewport sizes. Do not point preview instances at production data. For KyVault, use a configured development KyIdentity or explicitly labeled read-only browser fixtures; never bypass backend authentication.
 
+## Services health UI removal — 2026-10-26
+
+Verified the actual Services page on a scratch server with three services, one
+proxy route and one alias, in Busnes Dark at 1280×800 and 390×844 CSS pixels.
+The health column, check URL, self-signed certificate control and health polling
+are absent. Document width matched both viewports; the service table retains
+its existing local horizontal scrolling on mobile. Screenshots were captured
+with the T3 collaborative browser as session artifacts, not committed fixtures.
+Other themes and production deployment were not exercised for this change.
+
+`make test`, `make build`, `go vet ./...`, vendor integrity, JavaScript syntax,
+and the AGENTS.md installer-boundary race checks passed. The targeted Services
+template detector reported no findings. A regression test verifies that the
+Services page neither renders health controls nor reads the health provider;
+existing session/API monitoring endpoints remain available.
+
 ## 2026-10-26 fleet Appearance
 
-ky-ui 0.4.0 (shared runtime `f48e7a0`): the Appearance theme-card picker over the shared catalog, plus shell geometry from shared tokens. Before/after screenshots, capture conditions, hashes, real-browser behaviour checks and the results spreadsheet are in [docs/ui-fleet-2026-10-26](docs/ui-fleet-2026-10-26/README.md). Ratings are set by the independent council, not this record.
+ky-ui 0.4.0 (shared source `4f83f34`): the Appearance theme-card picker over the shared catalog, plus shell geometry from shared tokens. Before/after screenshots, capture conditions, hashes, real-browser behaviour checks and the results spreadsheet are in [docs/ui-fleet-2026-10-26](docs/ui-fleet-2026-10-26/README.md). Ratings are set by the independent council, not this record.

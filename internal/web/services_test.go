@@ -334,9 +334,8 @@ func TestServiceFormAcceptsProxyFields(t *testing.T) {
 	}
 }
 
-// The health badges are polled by live.js, which carries a session cookie and
-// no API token. Before this endpoint existed it polled /api/v1/health and got
-// 401 forever, so the badges never left "unknown" without a page reload.
+// Keep the session endpoint compatible for existing clients after removing
+// health badges from the Services page.
 func TestHealthJSONServesTheBrowserSession(t *testing.T) {
 	h, srv, c, _ := loggedIn(t)
 	srv.o.Health = func() []health.Status {
@@ -378,16 +377,19 @@ func TestHealthJSONRefusesWithoutASession(t *testing.T) {
 	}
 }
 
-// live.js and the route have to name the same path, and nothing else checks it.
-func TestLiveScriptPollsTheSessionEndpoint(t *testing.T) {
-	b, err := staticFS.ReadFile("static/live.js")
-	if err != nil {
-		t.Fatal(err)
+func TestServicesPageOmitsHealth(t *testing.T) {
+	h, srv, c, csrf := loggedIn(t)
+	postForm(t, h, "/services/new", url.Values{
+		"name": {"nas"}, "address": {"192.168.1.30"}, "csrf_token": {csrf},
+	}, c)
+	srv.o.Health = func() []health.Status {
+		t.Fatal("Services page should not read health status")
+		return nil
 	}
-	if !strings.Contains(string(b), "/services/health.json") {
-		t.Error("live.js does not poll /services/health.json")
-	}
-	if strings.Contains(string(b), "/api/v1/health") {
-		t.Error("live.js still polls the token-only API endpoint")
+	body := page(t, h, "/services", c)
+	for _, removed := range []string{"Health", "health", "check_url", "check_insecure", "self-signed", "/static/live.js"} {
+		if strings.Contains(body, removed) {
+			t.Errorf("Services page still contains %q", removed)
+		}
 	}
 }
