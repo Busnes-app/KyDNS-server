@@ -189,6 +189,10 @@ driver is not optional.
 - `KYDNS_TRUSTED_PROXIES` supplies explicit trusted peers and refuses `/0`; public `/api/v1/installer/network`, rate keys, callback scheme and secure cookies share that trust.
 - Verify `go test -race ./internal/store ./internal/registry ./internal/adminapi ./internal/web ./internal/auth ./internal/config ./internal/app ./internal/backup ./cmd/kydns` and `go vet` for those packages. New shared setup code uses the isolated development Go workspace until its release is published.
 
+## Browser verification
+
+- CI and tag releases give dependency installation its own 20-minute budget, followed by the browser suite’s separate 10-minute limit. Keep install/audit/browser execution as required steps; a download delay must not consume the test budget.
+
 ## Backup verification
 
 - CI's `test` job and the tag-release job run `scripts/restore-drill.sh` and `scripts/backup-live-proof.sh` before publishing. They require Go, curl and sqlite3, use disposable data and recovery keys, and do not contact KyRecovery.

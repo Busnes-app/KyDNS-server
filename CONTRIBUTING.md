@@ -48,8 +48,10 @@ npm test
 ```
 
 The existing CI `test` job and tag-release job run this suite and its dependency
-audit before publishing. Only deterministic stats/failure responses are mocked;
-server setup, authentication, templates and record mutations are real. Fixtures
+audit before publishing. Dependency installation has a separate 20-minute budget;
+the browser tests retain their own 10-minute limit. Only deterministic stats and
+failure responses are mocked; server setup, authentication, templates and record
+mutations are real. Fixtures
 use temporary data, synthetic credentials and loopback listeners/upstreams; they
 never target a deployed instance. This is targeted browser coverage, not proof
 that most code branches, inputs or functionality are covered.
