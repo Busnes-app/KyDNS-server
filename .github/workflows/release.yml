@@ -98,6 +98,14 @@ jobs:
       - name: tests pass
         run: go test ./...
 
+      - name: backup and restore proofs
+        timeout-minutes: 5
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq sqlite3
+          scripts/restore-drill.sh
+          scripts/backup-live-proof.sh
+
       # The version reaches these steps through the environment, never spliced
       # into the script body: it comes from a tag name, and a ref may contain
       # ;, $, backticks, and pipes, in a job that holds contents: write.
@@ -139,7 +147,7 @@ jobs:
         run: |
           set -eux
           cd dist
-          sha256sum *.tar.gz *.deb *.rpm *.img.xz > SHA256SUMS
+          sha256sum -- *.tar.gz *.deb *.rpm *.img.xz > SHA256SUMS
           cat SHA256SUMS
 
       # Keyless, free, and verifiable with `gh attestation verify`. Signing
