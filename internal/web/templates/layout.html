@@ -1,7 +1,7 @@
 {{define "body"}}
 <div class="app">
   <nav class="app-nav">
-    <div class="brand">{{template "mark"}}<h1>KyDNS</h1></div>
+    <div class="brand">{{template "mark"}}<p class="brand-name">KyDNS</p></div>
     <a class="ky-nav-item" href="/"{{if eq .Nav "dashboard"}} aria-current="page"{{end}}>Dashboard</a>
     <a class="ky-nav-item" href="/services"{{if eq .Nav "services"}} aria-current="page"{{end}}>Services</a>
     <a class="ky-nav-item" href="/records"{{if eq .Nav "records"}} aria-current="page"{{end}}>Records</a>
@@ -10,11 +10,12 @@
     <a class="ky-nav-item" href="/dhcp"{{if eq .Nav "dhcp"}} aria-current="page"{{end}}>DHCP</a>
     {{if .ShowReplication}}<a class="ky-nav-item" href="/replication"{{if eq .Nav "replication"}} aria-current="page"{{end}}>Replication</a>{{end}}
     <a class="ky-nav-item" href="/settings"{{if eq .Nav "settings"}} aria-current="page"{{end}}>Settings</a>
-    <form method="post" action="/logout">
-      <input type="hidden" name="csrf_token" value="{{.CSRF}}">
-      <button class="ghost" type="submit">Sign out</button>
-    </form>
+    <a class="ky-nav-item" href="/appearance"{{if eq .Nav "appearance"}} aria-current="page"{{end}}>Appearance</a>
     <footer class="app-footer">
+      <form method="post" action="/logout">
+        <input type="hidden" name="csrf_token" value="{{.CSRF}}">
+        <button class="ghost" type="submit">Sign out</button>
+      </form>
       <button type="button" class="license-link" popovertarget="about">
         v{{.Version}} &middot; &copy; {{.Year}} &middot; MIT License
       </button>
@@ -33,7 +34,7 @@
             title="MIT License"></iframe>
   </div>
   <main class="app-main">
-    <h2>{{.Title}}</h2>
+    <h1>{{.Title}}</h1>
     {{with .ReplicaBanner}}
     <div class="banner">
       <strong>{{.Title}}</strong>

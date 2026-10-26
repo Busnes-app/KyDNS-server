@@ -2,19 +2,24 @@
    The marketing theme is not modified; the app re-tunes a few tokens for
    dense data on dark panels and adds its own status colors. */
 
-/* Dark form controls and scrollbars, including inside the license frame. */
+/* Busnes Light/Dark read the shared tokens, which follow the OS until a choice
+   is saved. theme.js sets a named palette's colours inline on <html>, which wins;
+   the tiers below are derived so every palette gets its own. */
 :root {
-  color-scheme: dark;
-  /* theme.js sets the eleven KyPost tokens inline on <html>. Without it the
-     Patina Ky values below apply; the rest are derived so every palette gets
-     its own tiers. */
-  --ink: #94a3b8;
+  --bg: var(--ky-bg);
+  --panel: var(--ky-panel);
+  --ink: var(--ky-ink);
+  --ink-strong: var(--ky-ink-strong);
+  --accent: var(--ky-accent);
+  --accent-soft: var(--ky-accent-soft);
+  --line: var(--ky-line);
+  --line-strong: var(--ky-line-strong);
+  --glow: transparent;
+  --sidebar-start: var(--ky-sidebar-start);
+  --sidebar-end: var(--ky-sidebar-end);
+  --button-text: var(--ky-button-text);
   --ink-dim: color-mix(in srgb, var(--ink) 65%, var(--bg));
-  --line-strong: color-mix(in srgb, var(--line) 70%, var(--ink));
   --raised: color-mix(in srgb, var(--panel) 94%, var(--ink-strong));
-  --sidebar-start: var(--bg);
-  --sidebar-end: var(--panel);
-  --button-text: #04120d;
   /* Status colors are semantic, not themed. light-dark follows the
      color-scheme theme.js picks from the palette's background. */
   --ok: light-dark(#1b7f52, #3fd39b);
@@ -23,7 +28,7 @@
   --warn-soft: rgba(242, 184, 75, .16);
   --danger: light-dark(#b42323, #f47b7b);
   --danger-soft: rgba(244, 123, 123, .14);
-  --r-control: 6px;
+  --r-control: var(--ky-control-radius);
   --r-card: 10px;
 }
 
@@ -35,13 +40,13 @@ body { font-size: 15px; }
 
 /* minmax(0, …): a bare 1fr grows to its widest content, and body clips the
    overflow, so a long node ID would push table columns out of reach. */
-.app { display: grid; grid-template-columns: 220px minmax(0, 1fr); min-height: 100vh; }
+.app { display: grid; grid-template-columns: var(--ky-sidebar-size) minmax(0, 1fr); min-height: 100vh; }
 .app-nav { background: linear-gradient(180deg, var(--sidebar-start), var(--sidebar-end)); border-right: 1px solid var(--line); padding: 1.25rem 0 1rem;
            display: flex; flex-direction: column; position: sticky; top: 0;
            height: 100vh; overflow-y: auto; }
 .brand { display: flex; align-items: center; gap: .6rem; margin: 0 1.25rem 1.5rem; }
 .brand img { width: 28px; height: 28px; flex: none; }
-.brand h1 { font-family: var(--font-display); font-size: 1.15rem; font-weight: 600;
+.brand h1, .brand .brand-name { font-family: var(--font-display); font-size: 1.15rem; font-weight: 600;
             letter-spacing: -.01em; margin: 0; color: var(--ink-strong); }
 .app-nav a { display: flex; align-items: center; gap: .6rem; margin: 0 .6rem; padding: .5rem .65rem;
              border-radius: var(--r-control); color: var(--ink); text-decoration: none;
@@ -49,13 +54,9 @@ body { font-size: 15px; }
              position: relative; transition: color .12s, background .12s; }
 .app-nav a:hover { color: var(--ink-strong); background: var(--raised); text-decoration: none; }
 .app-nav a[aria-current="page"] { color: var(--ink-strong); background: var(--raised); }
-/* The current page is the one with the accent rail on the outer edge. */
-.app-nav a[aria-current="page"]::before { content: ""; position: absolute; left: -.6rem; top: .45rem;
-                                          bottom: .45rem; width: 3px; border-radius: 0 2px 2px 0;
-                                          background: var(--accent); }
-.app-nav form { margin: 1rem .6rem 0; }
-.app-nav form button { width: 100%; }
-.app-footer { margin-top: auto; padding: 1.25rem 1.25rem 0; }
+.app-footer form { margin-bottom: 1rem; }
+.app-footer form button { width: 100%; }
+.app-footer { margin-top: auto; padding: 1.25rem .75rem 0; }
 .license-link { display: block; background: none; border: 0; padding: 0; text-align: left; cursor: pointer;
                 font-family: var(--font-mono); font-size: .7rem; line-height: 1.5; color: var(--ink-dim); }
 .license-link:hover { color: var(--accent); text-decoration: underline; }
@@ -80,8 +81,8 @@ body { font-size: 15px; }
    the whole page instead of scrolling inside its own card. */
 .app > * { min-width: 0; }
 .app-main { padding: 2rem 2.5rem 3rem; max-width: var(--max-width); }
-.app-main h2 { font-family: var(--font-display); color: var(--ink-strong); font-size: 1.6rem;
-               font-weight: 600; letter-spacing: -.02em; margin: 0 0 1.25rem; }
+.app-main h1 { font-family: var(--font-display); color: var(--ink-strong); font-size: var(--ky-type-title);
+               font-weight: 600; line-height: 1.25; margin: 0 0 1.5rem; }
 .app-main h3 { font-family: var(--font-display); color: var(--ink-strong); font-size: 1rem;
                font-weight: 600; margin-top: 0; }
 
@@ -282,21 +283,18 @@ button:focus-visible, .button:focus-visible, a:focus-visible, .license-link:focu
 .sso-linked .muted { font-size: .84rem; margin-top: .2rem; }
 .sso-linked form { margin: 0; }
 
-/* ---------- Appearance ---------- */
+/* ---------- Suite shell: ky-ui type, control and sidebar geometry ---------- */
 
-/* KyPost's picker: one swatch per theme, painted in that theme's own colours. */
-.theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: .75rem;
-              margin-top: 1rem; }
-.theme-swatch { display: block; width: 100%; padding: 6px; border: 2px solid transparent; border-radius: 12px;
-                background: transparent; color: var(--ink-strong); text-align: left; cursor: pointer;
-                font-family: var(--font-display); font-weight: 500; white-space: normal; }
-.theme-swatch:hover { border-color: color-mix(in srgb, var(--accent) 50%, transparent); filter: none; }
-.theme-swatch[aria-pressed="true"] { border-color: var(--accent); }
-.theme-swatch-preview { display: grid; align-content: start; gap: 6px; height: 84px; padding: 12px 12px 12px 42%;
-                        border-radius: 8px; border: 1px solid rgba(0,0,0,.25); }
-.theme-swatch-preview i { display: block; height: 8px; border-radius: 4px; }
-.theme-swatch-preview i:first-child { width: 40%; }
-.theme-swatch-name { display: block; margin-top: 6px; font-size: .85rem; }
+.brand { margin: 0 1.25rem 1rem; }
+.app-nav { gap: 4px; }
+.app-nav a { min-height: var(--ky-control-size); margin: 0 .75rem; padding: 0 .75rem; font-size: var(--ky-type-nav); }
+button, .button, select, input[type=text], input[type=password], input[type=number], input[type=url] { min-height: var(--ky-control-size); }
+input[type=text], input[type=password], input[type=number], input[type=url], textarea, select { border-color: var(--ky-field-border); }
+input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Mono is for data (names, addresses, counts); labels and captions are sans meta text. */
+.stat .label, .chart figcaption, table.grid th, form.stack > label, .fields > label {
+  font-family: var(--font-display); font-size: var(--ky-type-meta); }
 
 /* ---------- Misc ---------- */
 
@@ -320,13 +318,13 @@ a { color: var(--accent); }
              padding: .75rem 1rem; border-right: 0; border-bottom: 1px solid var(--line); }
   .brand { margin: 0 .75rem 0 0; }
   .app-nav a { margin: 0; padding: .4rem .6rem; font-size: .86rem; }
-  .app-nav a[aria-current="page"]::before { left: .6rem; right: .6rem; top: auto; bottom: 0; width: auto;
-                                            height: 2px; border-radius: 2px 2px 0 0; }
-  .app-nav form { margin: 0 0 0 auto; }
-  .app-nav form button { width: auto; }
-  .app-footer { margin: 0; padding: .5rem 0 0; flex-basis: 100%; }
+  /* The nav is horizontal from here, earlier than ky-ui's 720px switch. */
+  .app-nav a.ky-nav-item[aria-current="page"] { box-shadow: inset 0 -3px var(--accent); }
+  .app-footer { display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+                margin: 0; padding: .5rem 0 0; flex-basis: 100%; }
+  .app-footer form { order: 1; margin: 0; }
+  .app-footer form button { width: auto; }
   .app-main { padding: 1.25rem 1rem 2rem; }
-  .app-main h2 { font-size: 1.35rem; }
   .stat { flex-basis: 40%; padding: .5rem 1rem; border-left: 0; }
   .stat .value { font-size: 1.6rem; }
   form.stack, .fields { grid-template-columns: minmax(0, 1fr); gap: .3rem; }

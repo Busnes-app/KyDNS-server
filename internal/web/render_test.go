@@ -49,18 +49,33 @@ func TestThemeScriptIsLinkedAndEmbedded(t *testing.T) {
 	if rec.Code != http.StatusOK {
 		t.Fatalf("GET /static/theme.js = %d, want the script to be embedded", rec.Code)
 	}
-	for _, want := range []string{`"Patina Ky"`, `"kydns-theme"`, `"Polished Ky"`} {
+	for _, want := range []string{`"kydns-theme"`, `from "/static/ky-ui/themes.js"`} {
 		if !strings.Contains(rec.Body.String(), want) {
 			t.Errorf("theme.js missing %s", want)
 		}
 	}
+	if catalog := static(t, srv, "/static/ky-ui/themes.js").Body.String(); !strings.Contains(catalog, `'Polished Ky'`) {
+		t.Error("the shared theme catalog is not embedded")
+	}
 	h, _ := newWeb(t)
-	if body := page(t, h, "/setup", nil); !strings.Contains(body, `<script src="/static/theme.js"></script>`) {
-		t.Error("base.html does not load theme.js from <head>")
+	body := page(t, h, "/setup", nil)
+	for _, want := range []string{`<script type="module" src="/static/theme.js"></script>`, `<link rel="modulepreload" href="/static/ky-ui/themes.js">`} {
+		if !strings.Contains(body, want) {
+			t.Errorf("base.html does not load %s from <head>", want)
+		}
 	}
 	setupAndLogin(t, h)
-	if body := get(t, h, "/settings", loginCookie(t, h)).Body.String(); !strings.Contains(body, `data-theme-grid`) {
-		t.Error("settings has no theme picker")
+	if anon := get(t, h, "/appearance", nil); anon.Code != http.StatusSeeOther {
+		t.Errorf("GET /appearance without a session = %d, want a redirect to sign in", anon.Code)
+	}
+	body = get(t, h, "/appearance", loginCookie(t, h)).Body.String()
+	for _, want := range []string{`<h1>Appearance</h1>`, `data-theme-picker`, `href="/static/ky-ui/appearance.css"`, `href="/static/ky-ui/appearance-themes.css"`, `href="/appearance" aria-current="page"`} {
+		if !strings.Contains(body, want) {
+			t.Errorf("appearance page missing %s", want)
+		}
+	}
+	if strings.Contains(rec.Body.String(), "innerHTML") {
+		t.Error("theme.js builds the picker from markup strings; use DOM calls")
 	}
 }
 

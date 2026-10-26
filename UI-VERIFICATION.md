@@ -44,3 +44,7 @@ and the AGENTS.md installer-boundary race checks passed. The targeted Services
 template detector reported no findings. A regression test verifies that the
 Services page neither renders health controls nor reads the health provider;
 existing session/API monitoring endpoints remain available.
+
+## 2026-10-26 fleet Appearance
+
+ky-ui 0.4.0 (shared source `4f83f34`): the Appearance theme-card picker over the shared catalog, plus shell geometry from shared tokens. Before/after screenshots, capture conditions, hashes, real-browser behaviour checks and the results spreadsheet are in [docs/ui-fleet-2026-10-26](docs/ui-fleet-2026-10-26/README.md). Ratings are set by the independent council, not this record.
