@@ -139,6 +139,11 @@ about a live installation or FIPS certification.
   seed corpus. CI also installs the `.deb` and `.rpm` on real systemd (Ubuntu on amd64 and arm64,
   Fedora, Rocky 9), proves the non-root user, the hardening directives and the `0700`/`0600` modes,
   and runs the container with all capabilities dropped and resolves names end to end.
+- **Backup and restore:** CI's `test` job and tag releases run `scripts/restore-drill.sh`
+  and `scripts/backup-live-proof.sh`. The disposable fixtures prove stdin-only 2-of-3
+  restoration and its refusal paths, write-once key pinning, a local capsule with mode `0600`,
+  audit records, and schedule changes through the real server. They do not test live
+  KyRecovery pairing/deposits or establish most-branches/input/functionality coverage.
 - **Static analysis:** CodeQL (GitHub default setup: Go, JavaScript/TypeScript, Actions) and
   `go vet`.
 - **Dynamic analysis:** the race detector, the DHCP fuzz target's seeds, and the end-to-end
