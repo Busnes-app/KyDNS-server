@@ -11,6 +11,8 @@ Claude Opus 5.5 council; this record claims no score.
 | `00-before` | clean base `d435bae` | main view and the existing theme control, before any change |
 | `01-after` | uncommitted tree, hash in `manifest-01-after.json` | first implementation pass, before the owner's 2026-10-26 corrections (nav selector removed, shared description copy). Kept as the record of that step |
 | `02-after` | final tree, hash in `manifest-02-after.json` | confirmation batch after the owner corrections and shared `4f83f34` |
+| `03-after` | clean `28bf59e` (Appearance head) | F2 baseline: steady-state captures and checks before the first-paint fix. The driver's `after` phase is used because `before` targets the pre-Appearance UI |
+| `04-after` | clean `0949de5` (ky-ui 0.4.1) | F2 fix: theme script back to a classic `<head>` script. Appearance captures match stage 03 byte for byte; dashboard differs only in the live uptime counter |
 
 Each batch is light and dark (OS `prefers-color-scheme`, no saved choice) × 1280×900
 and 390×844 CSS px, device scale 1, full-page PNGs named
@@ -23,7 +25,7 @@ directory excluded), OS, driver, fixture, capture time and each PNG's SHA-256.
 ## Changes
 
 - New `/appearance` page (session only, Appearance nav row): native radio cards for Match system plus every ky-ui catalog theme, built with DOM calls and `textContent` (the old `innerHTML` swatch builder is gone). The Settings Appearance card is removed.
-- `static/theme.js` is a preloaded ES module over `ky-ui/themes.js`. The inline 17-palette copy is removed; saved names under `kydns-theme` resolve unchanged (`Patina Ky` stays the suite palette), new choices save the catalog name and Match system removes the key.
+- `static/theme.js` is a preloaded ES module over `ky-ui/themes.js` (stages 01-03). From stage 04 it is a classic `<head>` script over the generated `ky-ui/themes-browser.js`, so the saved choice applies before first paint (fleet review F2). The inline 17-palette copy is removed; saved names under `kydns-theme` resolve unchanged (`Patina Ky` stays the suite palette), new choices save the catalog name and Match system removes the key.
 - Fixed a pre-existing cascade bug: `app.css` re-set `--ink: #94a3b8`, `--button-text: #04120d` and `color-scheme: dark` after the Busnes fallback, so Busnes Light showed Patina slate secondary text. Local colours now alias the shared tokens, and the default follows the OS before any script runs.
 - Shell: 240px sidebar, 40px navigation and control rows, 8px control radius, 24px/600 page title as the one `h1` (the wordmark is no longer an `h1`), visible input focus, and Sign out moved to the bottom account region. The mobile horizontal navigation stays.
 - Labels, chart captions and table headers use 13px sans; mono stays for DNS data.
@@ -38,7 +40,7 @@ directory excluded), OS, driver, fixture, capture time and each PNG's SHA-256.
 
 ## Known limits and open defects
 
-- A saved named theme now applies when the deferred module runs, not synchronously in `<head>`; a brief Busnes frame before it is possible but unmeasured. Busnes and Match system have no flash, because CSS alone follows the OS. A classic-script global from ky-ui (like `palettes-browser.js`) would restore synchronous application; requested upstream.
+- Stages 01-03 applied a saved choice when the deferred module ran, so a slow fetch painted Busnes first (measured as fleet review F2). Stage 04 restores synchronous `<head>` application through ky-ui's generated `themes-browser.js`; first-paint timing evidence: ky-ui `reviews/2026-10-26-fleet/f2-first-paint/`.
 - Full-page captures show the sticky sidebar ending at the viewport height; real scrolling keeps it pinned.
 - Inputs keep IBM Plex Mono because they hold addresses and names; a full forms pass (field groups, inline errors) was not done.
 - The dashboard stat rows wrap unevenly at 390px (stage 02 mobile); not changed in this pass.

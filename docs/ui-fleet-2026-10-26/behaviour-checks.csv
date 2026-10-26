@@ -19,3 +19,23 @@ kydns-server,02,after,a light named theme keeps light nav hover and selected sur
 kydns-server,02,after,Match system clears the named palette and the saved choice,pass,"body background = rgb(248, 246, 240)",d435baeee5737e20122829f55eaf399e47b5d9f0,a6b6f259c72ae5f8e958c631eee7cfa18552bf41934a5883d3ae358f8fe7cb2a,2026-10-26T11:35:17.261Z
 kydns-server,02,after,the picker is in sync with another tab,pass,forest checked after storage event,d435baeee5737e20122829f55eaf399e47b5d9f0,a6b6f259c72ae5f8e958c631eee7cfa18552bf41934a5883d3ae358f8fe7cb2a,2026-10-26T11:35:17.261Z
 kydns-server,02,after,no console errors or CSP violations,pass,none,d435baeee5737e20122829f55eaf399e47b5d9f0,a6b6f259c72ae5f8e958c631eee7cfa18552bf41934a5883d3ae358f8fe7cb2a,2026-10-26T11:35:17.261Z
+kydns-server,03,after,all catalog themes plus Match system render as native radios,pass,radio count = 23,28bf59e35583bf4e04eb7b21486ea6c1531b2bd8,,2026-10-26T12:55:55.420Z
+kydns-server,03,after,no saved choice checks Match system and follows the OS,pass,data-theme = busnes-light,28bf59e35583bf4e04eb7b21486ea6c1531b2bd8,,2026-10-26T12:55:55.420Z
+kydns-server,03,after,"legacy saved value ""Patina Ky"" resolves to patina-ky unchanged",pass,stored value untouched = Patina Ky,28bf59e35583bf4e04eb7b21486ea6c1531b2bd8,,2026-10-26T12:55:55.420Z
+kydns-server,03,after,"legacy saved value ""Ocean"" resolves to ocean unchanged",pass,stored value untouched = Ocean,28bf59e35583bf4e04eb7b21486ea6c1531b2bd8,,2026-10-26T12:55:55.420Z
+kydns-server,03,after,"legacy saved value ""Busnes Dark"" resolves to busnes-dark unchanged",pass,stored value untouched = Busnes Dark,28bf59e35583bf4e04eb7b21486ea6c1531b2bd8,,2026-10-26T12:55:55.420Z
+kydns-server,03,after,keyboard arrows move the choice and persist it,pass,saved = Coffee,28bf59e35583bf4e04eb7b21486ea6c1531b2bd8,,2026-10-26T12:55:55.420Z
+kydns-server,03,after,a light named theme keeps light nav hover and selected surfaces,pass,"hover color(srgb 0.905098 0.936784 0.955529) / rgb(24, 49, 66); selected rgb(182, 220, 237)",28bf59e35583bf4e04eb7b21486ea6c1531b2bd8,,2026-10-26T12:55:55.420Z
+kydns-server,03,after,Match system clears the named palette and the saved choice,pass,"body background = rgb(248, 246, 240)",28bf59e35583bf4e04eb7b21486ea6c1531b2bd8,,2026-10-26T12:55:55.420Z
+kydns-server,03,after,the picker is in sync with another tab,pass,forest checked after storage event,28bf59e35583bf4e04eb7b21486ea6c1531b2bd8,,2026-10-26T12:55:55.420Z
+kydns-server,03,after,no console errors or CSP violations,pass,none,28bf59e35583bf4e04eb7b21486ea6c1531b2bd8,,2026-10-26T12:55:55.420Z
+kydns-server,04,after,all catalog themes plus Match system render as native radios,pass,radio count = 23,0949de59031709905f1a1e048a1d8139b20d4799,,2026-10-26T13:07:20.898Z
+kydns-server,04,after,no saved choice checks Match system and follows the OS,pass,data-theme = busnes-light,0949de59031709905f1a1e048a1d8139b20d4799,,2026-10-26T13:07:20.898Z
+kydns-server,04,after,"legacy saved value ""Patina Ky"" resolves to patina-ky unchanged",pass,stored value untouched = Patina Ky,0949de59031709905f1a1e048a1d8139b20d4799,,2026-10-26T13:07:20.898Z
+kydns-server,04,after,"legacy saved value ""Ocean"" resolves to ocean unchanged",pass,stored value untouched = Ocean,0949de59031709905f1a1e048a1d8139b20d4799,,2026-10-26T13:07:20.898Z
+kydns-server,04,after,"legacy saved value ""Busnes Dark"" resolves to busnes-dark unchanged",pass,stored value untouched = Busnes Dark,0949de59031709905f1a1e048a1d8139b20d4799,,2026-10-26T13:07:20.898Z
+kydns-server,04,after,keyboard arrows move the choice and persist it,pass,saved = Coffee,0949de59031709905f1a1e048a1d8139b20d4799,,2026-10-26T13:07:20.898Z
+kydns-server,04,after,a light named theme keeps light nav hover and selected surfaces,pass,"hover color(srgb 0.905098 0.936784 0.955529) / rgb(24, 49, 66); selected rgb(182, 220, 237)",0949de59031709905f1a1e048a1d8139b20d4799,,2026-10-26T13:07:20.898Z
+kydns-server,04,after,Match system clears the named palette and the saved choice,pass,"body background = rgb(248, 246, 240)",0949de59031709905f1a1e048a1d8139b20d4799,,2026-10-26T13:07:20.898Z
+kydns-server,04,after,the picker is in sync with another tab,pass,forest checked after storage event,0949de59031709905f1a1e048a1d8139b20d4799,,2026-10-26T13:07:20.898Z
+kydns-server,04,after,no console errors or CSP violations,pass,none,0949de59031709905f1a1e048a1d8139b20d4799,,2026-10-26T13:07:20.898Z
