@@ -147,6 +147,8 @@ Code, one concern per package:
   cannot re-issue an address that is still in use.
 - `internal/adminapi`, `internal/web`, `internal/auth` — JSON API, server-side
   rendered UI, sessions, password hashing, and verified OIDC login.
+  The Services page owns names, addresses, aliases and routing; health-check
+  configuration and status remain available through the CLI/API.
   `render` fills the chrome every screen shares: replica read-only state and
   the open-resolver banner (`PublicRanges`), so no page opts in by hand.
   `internal/adminapi/mcp.go` serves `/mcp` for AI agents on the admin listener

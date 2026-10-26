@@ -11,7 +11,7 @@ KyDNS instance. `GET /api/v1/healthz` is a compatibility alias with the same
 response and five-second cache. The local database check returns HTTP 200 when
 healthy or 503 when unavailable; the response gives status codes and never the
 database error text. This endpoint does not probe DNS or other services. The
-service checks shown in the UI remain separate at authenticated `/api/v1/health`.
+service checks remain separate at authenticated `/api/v1/health`.
 
 - First-class services, each with its own address records and aliases, plus
   derived reverse records. Manual A, AAAA, and CNAME records for anything a
@@ -26,7 +26,9 @@ service checks shown in the UI remain separate at authenticated `/api/v1/health`
   native install or Docker with `network_mode: host`, because DHCP has to
   hear broadcasts. DHCP lease discovery from a dnsmasq lease file still
   works for anyone who already runs their own.
-- Health checks over HTTP, HTTPS, and TCP, with status in the web interface.
+- Optional health checks over HTTP, HTTPS, and TCP, configured through the CLI
+  or API, with status at `/api/v1/health`. The Services page focuses on names,
+  addresses, aliases and proxy routing.
 - Upstream forwarding over DNS-over-TLS and DNS-over-HTTPS, with a cache,
   sequential failover, and single-flight.
 - A web UI, a JSON API, and a CLI that talks to the API.

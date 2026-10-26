@@ -150,7 +150,7 @@ discovery:
 
 health:
   # Health checks run for services that have a check URL, which you set per
-  # service in the UI or with `kydns service add --check`.
+  # service through the API or with `kydns service add --check`.
   # Status is informational only: an unhealthy service is still resolved,
   # so DNS stays deterministic.
   # All three below are seeds; edit them under Settings, where they apply
