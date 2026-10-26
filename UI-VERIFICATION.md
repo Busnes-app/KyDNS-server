@@ -28,3 +28,7 @@ go test ./internal/web passed; vendor integrity check passed. Central ky-ui sync
 ## Reproduce
 
 Run the Go server with isolated preview data following its README; run the checks above from the repository root. Use System theme, emulate OS light/dark, and inspect both viewport sizes. Do not point preview instances at production data. For KyVault, use a configured development KyIdentity or explicitly labeled read-only browser fixtures; never bypass backend authentication.
+
+## 2026-10-26 fleet Appearance
+
+ky-ui 0.4.0 (shared runtime `f48e7a0`): the Appearance theme-card picker over the shared catalog, plus shell geometry from shared tokens. Before/after screenshots, capture conditions, hashes, real-browser behaviour checks and the results spreadsheet are in [docs/ui-fleet-2026-10-26](docs/ui-fleet-2026-10-26/README.md). Ratings are set by the independent council, not this record.
