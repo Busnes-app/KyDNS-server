@@ -144,6 +144,12 @@ about a live installation or FIPS certification.
   restoration and its refusal paths, write-once key pinning, a local capsule with mode `0600`,
   audit records, and schedule changes through the real server. They do not test live
   KyRecovery pairing/deposits or establish most-branches/input/functionality coverage.
+- **Browser behavior:** CI's publication-gating `test` job and tag releases run
+  `browser/` Chromium regressions on desktop and phone viewports, against a current-source
+  loopback server. Real setup/session/record forms, chart geometry and gaps, refresh
+  errors/recovery/401 and Appearance storage/OS/cross-tab behavior are exercised.
+  Stats data and failures are deterministic fixtures; broader branch/input coverage,
+  live SSO, real DHCP and production deployment are outside this suite.
 - **Static analysis:** CodeQL (GitHub default setup: Go, JavaScript/TypeScript, Actions) and
   `go vet`.
 - **Dynamic analysis:** the race detector, the DHCP fuzz target's seeds, and the end-to-end

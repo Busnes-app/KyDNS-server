@@ -21,3 +21,7 @@ dist/
 
 # Playwright MCP browser scratch: console logs, snapshots, screenshots.
 /.playwright-mcp/
+
+/browser/node_modules/
+/browser/test-results/
+/browser/playwright-report/

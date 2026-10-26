@@ -5,6 +5,15 @@ version: 2
 # Cooldown applies to version updates only — a security update still arrives
 # the day it is published.
 updates:
+  - package-ecosystem: npm
+    directory: /browser
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 3
+    commit-message:
+      prefix: "chore(deps)"
+
   - package-ecosystem: gomod
     directory: /
     schedule:
