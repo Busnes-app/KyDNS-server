@@ -48,3 +48,7 @@ existing session/API monitoring endpoints remain available.
 ## 2026-10-26 fleet Appearance
 
 ky-ui 0.4.0 (shared source `4f83f34`): the Appearance theme-card picker over the shared catalog, plus shell geometry from shared tokens. Before/after screenshots, capture conditions, hashes, real-browser behaviour checks and the results spreadsheet are in [docs/ui-fleet-2026-10-26](docs/ui-fleet-2026-10-26/README.md). Ratings are set by the independent council, not this record.
+
+## Fleet visual refinement (2026-10-26)
+
+Phone dashboard: brand and Sign out on one row with a single sideways-scrolling navigation row that keeps the current page in view (203px → 113px); the licence button moves below the page on phones; charts draw in CSS pixels, so axis labels are 12px at every width; phone stats use two shared column edges. Stage 01 shows a class collision with the marketing `.nav-links`, fixed in stage 02. Before/after captures (light/dark × 1280×900/390×844, synthetic fixture, clean commits), manifests with hashes, behaviour checks and CSVs are in [docs/ui-visual-refinement-2026-10-26](docs/ui-visual-refinement-2026-10-26/README.md). No score is self-assigned.

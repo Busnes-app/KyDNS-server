@@ -1,0 +1,143 @@
+{
+  "product": "kydns-server",
+  "stage": "01",
+  "phase": "after",
+  "captured_at": "2026-10-26T16:42:38.609Z",
+  "source_commit": "bd9efcec00a1d285d7816e6fabda90bcb13bc4f0",
+  "uncommitted_source_sha256": null,
+  "os": "Linux 7.2.10-1-cachyos",
+  "driver": "Playwright 1.63.0 Chromium 153.0.8010.12, device scale 1, service workers blocked",
+  "fonts": "self-hosted Space Grotesk and IBM Plex Mono from /static/fonts; Space Grotesk loaded: true; IBM Plex Mono loaded: true",
+  "server": "kydns built from this worktree into a temporary directory; admin UI on 127.0.0.1:5391 and DNS on 127.0.0.1:5393; data removed after capture",
+  "fixture": "synthetic: admin created through /setup; local A records nas.home.arpa 10.0.0.20 and printer.home.arpa 10.0.0.31; twelve loopback queries for those names; no blocklists, DHCP, replication or upstream traffic. Uptime and last-query ages are live and differ between runs",
+  "shots": [
+    {
+      "file": "kydns-01-after-dashboard-desktop-light.png",
+      "sha256": "81754d903603671461a44921ba8ae8101ac2fdbfa313b6274514f4964c069774",
+      "surface": "dashboard",
+      "url": "/",
+      "device": "desktop",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "theme_source": "OS light (prefers-color-scheme), no saved choice"
+    },
+    {
+      "file": "kydns-01-after-appearance-desktop-light.png",
+      "sha256": "9cebee837614659d21bda3b4e00fdff84595300e12076048effbad3c841c353d",
+      "surface": "appearance",
+      "url": "/appearance",
+      "device": "desktop",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "theme_source": "OS light (prefers-color-scheme), no saved choice"
+    },
+    {
+      "file": "kydns-01-after-dashboard-mobile-light.png",
+      "sha256": "0ef76461de9e1910d95980939291569d6c17e12b8ca3f31b60ea59ee41ea4238",
+      "surface": "dashboard",
+      "url": "/",
+      "device": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "theme_source": "OS light (prefers-color-scheme), no saved choice"
+    },
+    {
+      "file": "kydns-01-after-appearance-mobile-light.png",
+      "sha256": "a311424aab5c00d743ff5dd36f0acda355ab6690af2d8877ccbd46551ffa70b2",
+      "surface": "appearance",
+      "url": "/appearance",
+      "device": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "theme_source": "OS light (prefers-color-scheme), no saved choice"
+    },
+    {
+      "file": "kydns-01-after-dashboard-desktop-dark.png",
+      "sha256": "c1ec286094c8252436ce9b1a7acb531480276d28e2e239ee55ae3bc5d34ef2a1",
+      "surface": "dashboard",
+      "url": "/",
+      "device": "desktop",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "theme_source": "OS dark (prefers-color-scheme), no saved choice"
+    },
+    {
+      "file": "kydns-01-after-appearance-desktop-dark.png",
+      "sha256": "704b01927746ddd35285f197b013fb645ca16de004657c95cb931cfb52186fe4",
+      "surface": "appearance",
+      "url": "/appearance",
+      "device": "desktop",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "theme_source": "OS dark (prefers-color-scheme), no saved choice"
+    },
+    {
+      "file": "kydns-01-after-dashboard-mobile-dark.png",
+      "sha256": "782f2f8d017800c13aef9a75dac3aec38c5138a3d61eaf9e9c68f89f345da99a",
+      "surface": "dashboard",
+      "url": "/",
+      "device": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "theme_source": "OS dark (prefers-color-scheme), no saved choice"
+    },
+    {
+      "file": "kydns-01-after-appearance-mobile-dark.png",
+      "sha256": "ccd67fc81eca36054a44f8c3a744a8d8a5ad3f72904e6ffa533177601bfd1983",
+      "surface": "appearance",
+      "url": "/appearance",
+      "device": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "theme_source": "OS dark (prefers-color-scheme), no saved choice"
+    }
+  ],
+  "checks": [
+    {
+      "name": "phone: header height (top of page to bottom of navigation)",
+      "pass": true,
+      "detail": "53px"
+    },
+    {
+      "name": "phone: chart axis labels render at 11px or more",
+      "pass": true,
+      "detail": "label box heights 15-15px"
+    },
+    {
+      "name": "phone: stat values share column edges",
+      "pass": true,
+      "detail": "value left edges per row [[33,207],[33,207]]"
+    },
+    {
+      "name": "phone: the current navigation row is in view on every page",
+      "pass": false,
+      "detail": "{\"label\":\"Appearance\",\"inView\":false,\"y\":0,\"focus\":true}"
+    },
+    {
+      "name": "phone: the version and licence button opens About",
+      "pass": true,
+      "detail": "1 visible trigger; About opened"
+    },
+    {
+      "name": "no console errors or CSP violations",
+      "pass": true,
+      "detail": "none"
+    }
+  ]
+}

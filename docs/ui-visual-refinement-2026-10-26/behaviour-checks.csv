@@ -1,0 +1,19 @@
+product,stage,phase,check,result,detail,source_commit,uncommitted_source_sha256,captured_at
+kydns-server,00,before,phone: header height (top of page to bottom of navigation),pass,203px,5ac679621b26836b30caef9736d35b77b99231a2,,2026-10-26T16:22:56.144Z
+kydns-server,00,before,phone: chart axis labels render at 11px or more,fail,"label box heights [6,6,6,13,13,13,13,13]",5ac679621b26836b30caef9736d35b77b99231a2,,2026-10-26T16:22:56.144Z
+kydns-server,00,before,phone: stat values share column edges,fail,"value left edges per row [[33,211,49],[33,211,49]]",5ac679621b26836b30caef9736d35b77b99231a2,,2026-10-26T16:22:56.144Z
+kydns-server,00,before,phone: the current navigation row is in view on every page,pass,"Dashboard, Appearance in view; page not scrolled; focus on body",5ac679621b26836b30caef9736d35b77b99231a2,,2026-10-26T16:22:56.144Z
+kydns-server,00,before,phone: the version and licence button opens About,pass,1 visible trigger; About opened,5ac679621b26836b30caef9736d35b77b99231a2,,2026-10-26T16:22:56.144Z
+kydns-server,00,before,no console errors or CSP violations,pass,none,5ac679621b26836b30caef9736d35b77b99231a2,,2026-10-26T16:22:56.144Z
+kydns-server,01,after,phone: header height (top of page to bottom of navigation),pass,53px,bd9efcec00a1d285d7816e6fabda90bcb13bc4f0,,2026-10-26T16:42:38.609Z
+kydns-server,01,after,phone: chart axis labels render at 11px or more,pass,label box heights 15-15px,bd9efcec00a1d285d7816e6fabda90bcb13bc4f0,,2026-10-26T16:42:38.609Z
+kydns-server,01,after,phone: stat values share column edges,pass,"value left edges per row [[33,207],[33,207]]",bd9efcec00a1d285d7816e6fabda90bcb13bc4f0,,2026-10-26T16:42:38.609Z
+kydns-server,01,after,phone: the current navigation row is in view on every page,fail,"{""label"":""Appearance"",""inView"":false,""y"":0,""focus"":true}",bd9efcec00a1d285d7816e6fabda90bcb13bc4f0,,2026-10-26T16:42:38.609Z
+kydns-server,01,after,phone: the version and licence button opens About,pass,1 visible trigger; About opened,bd9efcec00a1d285d7816e6fabda90bcb13bc4f0,,2026-10-26T16:42:38.609Z
+kydns-server,01,after,no console errors or CSP violations,pass,none,bd9efcec00a1d285d7816e6fabda90bcb13bc4f0,,2026-10-26T16:42:38.609Z
+kydns-server,02,after,phone: header height (top of page to bottom of navigation),pass,113px,97dd59b28066b61d2833ae57aa4690d1c1cddca8,,2026-10-26T16:47:39.882Z
+kydns-server,02,after,phone: chart axis labels render at 11px or more,pass,label box heights 15-15px,97dd59b28066b61d2833ae57aa4690d1c1cddca8,,2026-10-26T16:47:39.882Z
+kydns-server,02,after,phone: stat values share column edges,pass,"value left edges per row [[33,207],[33,207]]",97dd59b28066b61d2833ae57aa4690d1c1cddca8,,2026-10-26T16:47:39.882Z
+kydns-server,02,after,phone: the current navigation row is in view on every page,pass,"Dashboard, Appearance in view; page not scrolled; focus on body",97dd59b28066b61d2833ae57aa4690d1c1cddca8,,2026-10-26T16:47:39.882Z
+kydns-server,02,after,phone: the version and licence button opens About,pass,1 visible trigger; About opened,97dd59b28066b61d2833ae57aa4690d1c1cddca8,,2026-10-26T16:47:39.882Z
+kydns-server,02,after,no console errors or CSP violations,pass,none,97dd59b28066b61d2833ae57aa4690d1c1cddca8,,2026-10-26T16:47:39.882Z
