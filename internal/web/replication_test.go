@@ -198,10 +198,14 @@ func primaryWeb(t *testing.T) (http.Handler, *fakeReplicaAdmin, *string, *http.C
 	return h, admin, &fp, c, csrf, logs
 }
 
+var csrfValue = regexp.MustCompile(`name="csrf_token" value="[^"]*"`)
+
 // rowFor returns the table row holding needle, so an assertion about one peer
-// cannot be satisfied by another peer's cell.
+// cannot be satisfied by another peer's cell. The random CSRF token is blanked
+// so its hex cannot satisfy a substring check.
 func rowFor(t *testing.T, body, needle string) string {
 	t.Helper()
+	body = csrfValue.ReplaceAllString(body, `name="csrf_token"`)
 	for _, row := range strings.Split(body, "<tr") {
 		if strings.Contains(row, needle) {
 			return row
@@ -238,7 +242,7 @@ func TestPrimaryReplicasScreenListsPeers(t *testing.T) {
 	if strings.Contains(two, strconv.FormatInt(primaryVersion, 10)) {
 		t.Errorf("the %s row shows a version lag for a peer that never synced:\n%s", peerTwoLabel, two)
 	}
-	if strings.Contains(two, "1970") {
+	if strings.Contains(two, "1970-") {
 		t.Errorf("the %s row renders the epoch as a date:\n%s", peerTwoLabel, two)
 	}
 
@@ -269,10 +273,8 @@ func TestReplicaScreenNamesItsPrimaryAndSyncAge(t *testing.T) {
 	st := &ReplicaStatus{Role: roleReplica, PrimaryAddr: replicaPrimaryAddr}
 	h, _, c, _, _ := replicationWeb(t, st, &fp, nil, &fakePromoter{status: st})
 
-	// Set after the fixture is built, not before: .Unix() floors and
-	// shortDuration truncates, so any delay between the two rolls 45s over to
-	// 46s. The closure reads this pointer per request.
-	st.LastSyncUnix = time.Now().Add(-45 * time.Second).Unix()
+	// Minutes, not seconds: .Unix() floors, so a seconds age can read one high.
+	st.LastSyncUnix = time.Now().Add(-45 * time.Minute).Unix()
 	rec := get(t, h, "/replication", c)
 	if rec.Code != http.StatusOK {
 		t.Fatalf("GET /replication on a replica = %d, want 200:\n%s", rec.Code, rec.Body)
@@ -281,10 +283,10 @@ func TestReplicaScreenNamesItsPrimaryAndSyncAge(t *testing.T) {
 	if !strings.Contains(body, replicaPrimaryAddr) {
 		t.Errorf("the replica screen does not name the primary it follows:\n%s", body)
 	}
-	if !strings.Contains(body, "45s ago") {
+	if !strings.Contains(body, "45m ago") {
 		t.Errorf("the replica screen does not say how long since the last sync:\n%s", body)
 	}
-	if strings.Contains(body, "1970") {
+	if strings.Contains(body, "1970-") {
 		t.Errorf("the replica screen renders a timestamp as an epoch date:\n%s", body)
 	}
 	// Minting invites is the primary's job, and a replica that offers it hands
