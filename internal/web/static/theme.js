@@ -1,8 +1,9 @@
-// The suite theme catalog from ky-ui, applied from <head> as a preloaded module.
-// Saved values are catalog names ("Ocean"); older saved names resolve unchanged.
-// With nothing saved, tokens.css follows the OS.
-import { SYSTEM_THEME, THEME_CATALOG, applyThemeVariables, findTheme } from "/static/ky-ui/themes.js";
-
+// The suite theme catalog from ky-ui, applied by a classic <head> script before first
+// paint (after ky-ui/themes-browser.js). Saved values are catalog names ("Ocean"); older
+// saved names resolve unchanged. With nothing saved, tokens.css follows the OS.
+(() => {
+"use strict";
+const { SYSTEM_THEME, THEME_CATALOG, applyThemeVariables, findTheme } = window.kyThemes;
 const KEY = "kydns-theme";
 const media = window.matchMedia("(prefers-color-scheme: dark)");
 
@@ -64,6 +65,9 @@ apply(stored());
 media.addEventListener("change", () => { if (stored().id === "system") apply(stored()); });
 // Another tab, or the license iframe's parent, changed it.
 window.addEventListener("storage", event => { if (event.key === KEY || event.key === null) sync(); });
-const grid = document.querySelector("[data-theme-picker] .ky-appearance-grid");
-if (grid) picker(grid);
-sync();
+document.addEventListener("DOMContentLoaded", () => {
+  const grid = document.querySelector("[data-theme-picker] .ky-appearance-grid");
+  if (grid) picker(grid);
+  sync();
+});
+})();
