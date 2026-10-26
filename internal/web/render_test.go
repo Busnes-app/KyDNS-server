@@ -49,20 +49,23 @@ func TestThemeScriptIsLinkedAndEmbedded(t *testing.T) {
 	if rec.Code != http.StatusOK {
 		t.Fatalf("GET /static/theme.js = %d, want the script to be embedded", rec.Code)
 	}
-	for _, want := range []string{`"kydns-theme"`, `from "/static/ky-ui/themes.js"`} {
+	for _, want := range []string{`"kydns-theme"`, `window.kyThemes`, `"DOMContentLoaded"`} {
 		if !strings.Contains(rec.Body.String(), want) {
 			t.Errorf("theme.js missing %s", want)
 		}
 	}
-	if catalog := static(t, srv, "/static/ky-ui/themes.js").Body.String(); !strings.Contains(catalog, `'Polished Ky'`) {
+	if catalog := static(t, srv, "/static/ky-ui/themes-browser.js").Body.String(); !strings.Contains(catalog, `'Polished Ky'`) {
 		t.Error("the shared theme catalog is not embedded")
 	}
 	h, _ := newWeb(t)
 	body := page(t, h, "/setup", nil)
-	for _, want := range []string{`<script type="module" src="/static/theme.js"></script>`, `<link rel="modulepreload" href="/static/ky-ui/themes.js">`} {
-		if !strings.Contains(body, want) {
-			t.Errorf("base.html does not load %s from <head>", want)
-		}
+	// Classic, in order, in <head>: a module would be deferred past first paint.
+	head, _, _ := strings.Cut(body, "</head>")
+	if !strings.Contains(head, "<script src=\"/static/ky-ui/themes-browser.js\"></script>\n<script src=\"/static/theme.js\"></script>") {
+		t.Error("base.html must load themes-browser.js then theme.js as classic scripts in <head>")
+	}
+	if strings.Contains(head, `type="module"`) {
+		t.Error("base.html defers the theme script; saved themes would apply after first paint")
 	}
 	setupAndLogin(t, h)
 	if anon := get(t, h, "/appearance", nil); anon.Code != http.StatusSeeOther {
