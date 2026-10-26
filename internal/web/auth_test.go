@@ -1,8 +1,11 @@
 package web
 
 import (
+	"crypto/fips140"
 	"crypto/rand"
 	"crypto/rsa"
+	cryptotls "crypto/tls"
+	"crypto/x509"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -431,7 +434,18 @@ func oidcTestServer(t *testing.T, sub, username, email, role string, tls ...bool
 			http.NotFound(w, r)
 		}
 	}))
-	if len(tls) > 0 && tls[0] {
+	if len(tls) == 0 && fips140.Enabled() {
+		srv.StartTLS()
+		// These tests run serially. Give the production client this fixture's CA
+		// without opting out of certificate or hostname verification.
+		previous := http.DefaultTransport
+		transport := previous.(*http.Transport).Clone()
+		roots := x509.NewCertPool()
+		roots.AddCert(srv.Certificate())
+		transport.TLSClientConfig = &cryptotls.Config{RootCAs: roots}
+		http.DefaultTransport = transport
+		t.Cleanup(func() { transport.CloseIdleConnections(); http.DefaultTransport = previous })
+	} else if len(tls) > 0 && tls[0] {
 		srv.StartTLS()
 	} else {
 		srv.Start()
@@ -464,11 +478,12 @@ func TestSSOLoginButtonShownWhenEnabled(t *testing.T) {
 }
 
 func TestSSOGetLoginSetsPKCEAndRedirects(t *testing.T) {
+	idp := oidcTestServer(t, "subject", "admin", "admin@example.invalid", "admin")
 	h, srv := newWeb(t)
 	setupAndLogin(t, h)
 	_ = srv.o.Store.SetSSOSettings(store.SSOSettings{
 		Enabled:   true,
-		IssuerURL: "https://auth.example.com",
+		IssuerURL: idp.URL,
 		ClientID:  "kydns",
 	})
 
@@ -480,7 +495,7 @@ func TestSSOGetLoginSetsPKCEAndRedirects(t *testing.T) {
 		t.Fatalf("status = %d, want 303 redirect", rec.Code)
 	}
 	loc := rec.Header().Get("Location")
-	if !strings.HasPrefix(loc, "https://auth.example.com/oauth/authorize") {
+	if !strings.HasPrefix(loc, idp.URL+"/authorize") {
 		t.Errorf("unexpected redirect: %s", loc)
 	}
 
@@ -759,4 +774,35 @@ func TestSettingsPageRendersWithLinkedSSO(t *testing.T) {
 func verified(encoded, plaintext string) bool {
 	ok, err := auth.VerifyPassword(encoded, plaintext)
 	return err == nil && ok
+}
+
+func TestStrongOIDCStartFailureClearsCookies(t *testing.T) {
+	idp := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_ = json.NewEncoder(w).Encode(map[string]string{"authorization_endpoint": "http://identity.example.invalid/authorize"})
+	}))
+	defer idp.Close()
+	h, srv := newWeb(t)
+	setupAndLogin(t, h)
+	if err := srv.o.Store.SetSSOSettings(store.SSOSettings{Enabled: true, IssuerURL: idp.URL, ClientID: "kydns"}); err != nil {
+		t.Fatal(err)
+	}
+	rec := get(t, h, "/auth/sso/login", nil)
+	if !fips140.Enabled() {
+		if rec.Code != http.StatusSeeOther {
+			t.Fatalf("legacy flow: %d", rec.Code)
+		}
+		return
+	}
+	if rec.Code != http.StatusBadGateway || rec.Header().Get("Location") != "" {
+		t.Fatalf("unsafe login response: %d %s", rec.Code, rec.Header().Get("Location"))
+	}
+	last := map[string]*http.Cookie{}
+	for _, cookie := range rec.Result().Cookies() {
+		last[cookie.Name] = cookie
+	}
+	for _, name := range []string{cookieSSOState, cookieSSOVerifier, cookieSSONonce, cookieSSOLink} {
+		if last[name] == nil || last[name].MaxAge >= 0 {
+			t.Fatalf("failed login retained %s", name)
+		}
+	}
 }

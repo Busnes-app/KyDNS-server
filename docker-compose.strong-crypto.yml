@@ -1,0 +1,6 @@
+# Append to the installation's existing Compose chain; preserves data/network.
+# See docs/STRONG-CRYPTO.md, including endpoint and reverse-proxy requirements.
+services:
+  kydns:
+    environment:
+      GODEBUG: fips140=on

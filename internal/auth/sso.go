@@ -2,12 +2,14 @@ package auth
 
 import (
 	"context"
+	"crypto/fips140"
 	"crypto/rand"
 	"crypto/sha256"
 	"crypto/subtle"
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -58,30 +60,45 @@ func NewSSOClient(issuerURL, clientID, clientSecret string) *SSOClient {
 	}
 }
 
-// DiscoverEndpoints queries OIDC discovery configuration or falls back to standard endpoints.
-func (c *SSOClient) DiscoverEndpoints(ctx context.Context) OIDCEndpoints {
+// DiscoverEndpoints queries OIDC metadata. Legacy mode retains endpoint
+// fallback; the strong profile returns discovery/policy errors to the caller.
+func (c *SSOClient) DiscoverEndpoints(ctx context.Context) (OIDCEndpoints, error) {
 	defaults := OIDCEndpoints{
 		AuthorizationEndpoint: c.IssuerURL + "/oauth/authorize",
 		TokenEndpoint:         c.IssuerURL + "/oauth/token",
 		UserinfoEndpoint:      c.IssuerURL + "/oauth/userinfo",
 	}
 
+	fail := func(err error) (OIDCEndpoints, error) {
+		if fips140.Enabled() {
+			return OIDCEndpoints{}, err
+		}
+		return defaults, nil
+	}
+	if fips140.Enabled() {
+		if err := requireOIDCHTTPS(c.IssuerURL); err != nil {
+			return fail(err)
+		}
+	}
 	wellKnown := c.IssuerURL + "/.well-known/openid-configuration"
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, wellKnown, nil)
 	if err != nil {
-		return defaults
+		return fail(err)
 	}
 	req.Header.Set("Accept", "application/json")
 
-	resp, err := c.HTTPClient.Do(req)
-	if err != nil || resp.StatusCode != http.StatusOK {
-		return defaults
+	resp, err := c.oidcHTTPClient().Do(req)
+	if err != nil {
+		return fail(err)
 	}
 	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return fail(fmt.Errorf("OIDC discovery status %d", resp.StatusCode))
+	}
 
 	var disc OIDCEndpoints
 	if err := json.NewDecoder(resp.Body).Decode(&disc); err != nil {
-		return defaults
+		return fail(err)
 	}
 
 	if disc.AuthorizationEndpoint == "" {
@@ -94,7 +111,17 @@ func (c *SSOClient) DiscoverEndpoints(ctx context.Context) OIDCEndpoints {
 		disc.UserinfoEndpoint = defaults.UserinfoEndpoint
 	}
 
-	return disc
+	if fips140.Enabled() {
+		if err := requireOIDCHTTPS(disc.AuthorizationEndpoint, disc.TokenEndpoint, disc.JWKSURI); err != nil {
+			return fail(err)
+		}
+		if disc.UserinfoEndpoint != "" {
+			if err := requireOIDCHTTPS(disc.UserinfoEndpoint); err != nil {
+				return fail(err)
+			}
+		}
+	}
+	return disc, nil
 }
 
 // GeneratePKCE creates an RFC 7636 code verifier and S256 code challenge.
@@ -119,8 +146,11 @@ func GenerateState() (string, error) {
 }
 
 // AuthURL constructs the authorization URL using OIDC discovery or default paths.
-func (c *SSOClient) AuthURL(redirectURI, state, nonce, codeChallenge string) string {
-	endpoints := c.DiscoverEndpoints(context.Background())
+func (c *SSOClient) AuthURL(redirectURI, state, nonce, codeChallenge string) (string, error) {
+	endpoints, err := c.DiscoverEndpoints(context.Background())
+	if err != nil {
+		return "", err
+	}
 
 	q := url.Values{}
 	q.Set("response_type", "code")
@@ -137,15 +167,35 @@ func (c *SSOClient) AuthURL(redirectURI, state, nonce, codeChallenge string) str
 		sep = "&"
 	}
 
-	return fmt.Sprintf("%s%s%s", endpoints.AuthorizationEndpoint, sep, q.Encode())
+	return fmt.Sprintf("%s%s%s", endpoints.AuthorizationEndpoint, sep, q.Encode()), nil
 }
 
 // ExchangeCode exchanges an authorization code with code_verifier for identity claims.
 func (c *SSOClient) ExchangeCode(ctx context.Context, redirectURI, code, codeVerifier, nonce string) (*SSOTokenClaims, error) {
-	ctx = oidc.ClientContext(ctx, c.HTTPClient)
+	if fips140.Enabled() {
+		if err := requireOIDCHTTPS(c.IssuerURL); err != nil {
+			return nil, err
+		}
+	}
+	client := c.oidcHTTPClient()
+	ctx = oidc.ClientContext(ctx, client)
 	provider, err := oidc.NewProvider(ctx, c.IssuerURL)
 	if err != nil {
 		return nil, fmt.Errorf("discover OIDC provider: %w", err)
+	}
+	var endpoints OIDCEndpoints
+	if err := provider.Claims(&endpoints); err != nil {
+		return nil, fmt.Errorf("OIDC metadata: %w", err)
+	}
+	if fips140.Enabled() {
+		if err := requireOIDCHTTPS(provider.Endpoint().AuthURL, provider.Endpoint().TokenURL, endpoints.JWKSURI); err != nil {
+			return nil, err
+		}
+		if endpoints.UserinfoEndpoint != "" {
+			if err := requireOIDCHTTPS(endpoints.UserinfoEndpoint); err != nil {
+				return nil, err
+			}
+		}
 	}
 	config := oauth2.Config{
 		ClientID: c.ClientID, ClientSecret: c.ClientSecret, Endpoint: provider.Endpoint(),
@@ -159,7 +209,13 @@ func (c *SSOClient) ExchangeCode(ctx context.Context, redirectURI, code, codeVer
 	if !ok || rawIDToken == "" {
 		return nil, fmt.Errorf("token response has no ID token")
 	}
-	idToken, err := provider.Verifier(&oidc.Config{ClientID: c.ClientID}).Verify(ctx, rawIDToken)
+	jwksClient := *client
+	base := client.Transport
+	if base == nil {
+		base = http.DefaultTransport
+	}
+	jwksClient.Transport = strongJWKSTransport{base: base}
+	idToken, err := provider.VerifierContext(oidc.ClientContext(ctx, &jwksClient), &oidc.Config{ClientID: c.ClientID}).Verify(ctx, rawIDToken)
 	if err != nil {
 		return nil, fmt.Errorf("verify ID token: %w", err)
 	}
@@ -264,4 +320,40 @@ func parseClaimsMap(m map[string]any) *SSOTokenClaims {
 	}
 
 	return c
+}
+
+// Preserve injected roots/timeouts. The transport checks each request, including
+// metadata-derived endpoints; the redirect policy prevents HTTPS downgrades.
+func (c *SSOClient) oidcHTTPClient() *http.Client {
+	if !fips140.Enabled() {
+		return c.HTTPClient
+	}
+	client := *c.HTTPClient
+	base := client.Transport
+	if base == nil {
+		base = http.DefaultTransport
+	}
+	client.Transport = httpsOIDCTransport{base: base}
+	client.CheckRedirect = func(*http.Request, []*http.Request) error {
+		return errors.New("OIDC redirects are refused in strong-crypto mode")
+	}
+	return &client
+}
+
+type httpsOIDCTransport struct{ base http.RoundTripper }
+
+func (t httpsOIDCTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	if err := requireOIDCHTTPS(req.URL.String()); err != nil {
+		return nil, err
+	}
+	return t.base.RoundTrip(req)
+}
+func requireOIDCHTTPS(endpoints ...string) error {
+	for _, raw := range endpoints {
+		u, err := url.Parse(raw)
+		if err != nil || u.Scheme != "https" || u.Host == "" || u.User != nil {
+			return errors.New("strong-crypto mode requires HTTPS OIDC issuer and endpoints without URL credentials")
+		}
+	}
+	return nil
 }
