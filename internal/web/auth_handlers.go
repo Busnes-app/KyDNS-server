@@ -217,7 +217,12 @@ func (s *Server) startSSO(w http.ResponseWriter, r *http.Request, sso store.SSOS
 
 	client := auth.NewSSOClient(sso.IssuerURL, sso.ClientID, sso.ClientSecret)
 	redirectURI := s.ssoRedirectURI(r)
-	authURL := client.AuthURL(redirectURI, state, nonce, challenge)
+	authURL, err := client.AuthURL(redirectURI, state, nonce, challenge)
+	if err != nil {
+		s.clearSSOCookies(w, r)
+		http.Error(w, "Identity provider unavailable or incompatible with the configured security policy", http.StatusBadGateway)
+		return
+	}
 	http.Redirect(w, r, authURL, http.StatusSeeOther)
 }
 

@@ -23,7 +23,7 @@ func testOIDCServer(t *testing.T, clientID, nonce string, claims map[string]any,
 		t.Fatal(err)
 	}
 	var srv *httptest.Server
-	srv = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	srv = httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		switch r.URL.Path {
 		case "/.well-known/openid-configuration":
@@ -87,7 +87,11 @@ func TestSSOAuthURLAndExchangeCode(t *testing.T) {
 	})
 
 	client := NewSSOClient(mockServer.URL, "kydns-client", "secret")
-	authURL := client.AuthURL("http://localhost:8053/auth/sso/callback", "state123", "nonce123", "challenge123")
+	client.HTTPClient = mockServer.Client()
+	authURL, err := client.AuthURL("http://localhost:8053/auth/sso/callback", "state123", "nonce123", "challenge123")
+	if err != nil {
+		t.Fatal(err)
+	}
 	if !strings.Contains(authURL, "/oauth/authorize") || !strings.Contains(authURL, "client_id=kydns-client") {
 		t.Errorf("unexpected AuthURL: %s", authURL)
 	}
@@ -104,6 +108,7 @@ func TestSSOAuthURLAndExchangeCode(t *testing.T) {
 func TestExchangeCodeRejectsWrongNonce(t *testing.T) {
 	mockServer := testOIDCServer(t, "kydns-client", "issued-nonce", map[string]any{"sub": "user-1"})
 	client := NewSSOClient(mockServer.URL, "kydns-client", "")
+	client.HTTPClient = mockServer.Client()
 	if _, err := client.ExchangeCode(context.Background(), "http://localhost/callback", "code", "verifier", "different-nonce"); err == nil || !strings.Contains(err.Error(), "nonce mismatch") {
 		t.Fatalf("ExchangeCode error = %v, want nonce mismatch", err)
 	}
@@ -112,17 +117,19 @@ func TestExchangeCodeRejectsWrongNonce(t *testing.T) {
 func TestExchangeCodeRejectsInvalidSignature(t *testing.T) {
 	mockServer := testOIDCServer(t, "kydns-client", "nonce", map[string]any{"sub": "user-1"}, true)
 	client := NewSSOClient(mockServer.URL, "kydns-client", "")
+	client.HTTPClient = mockServer.Client()
 	if _, err := client.ExchangeCode(context.Background(), "http://localhost/callback", "code", "verifier", "nonce"); err == nil || !strings.Contains(err.Error(), "verify ID token") {
 		t.Fatalf("ExchangeCode error = %v, want signature verification failure", err)
 	}
 }
 
 func TestAuthentikOIDCDiscoveryAndGroups(t *testing.T) {
-	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	mockServer := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/.well-known/openid-configuration":
 			w.Header().Set("Content-Type", "application/json")
 			_ = json.NewEncoder(w).Encode(map[string]any{
+				"jwks_uri":               "https://authentik.example.com/application/o/keys/",
 				"authorization_endpoint": "https://authentik.example.com/application/o/authorize/",
 				"token_endpoint":         "https://authentik.example.com/application/o/token/",
 				"userinfo_endpoint":      "https://authentik.example.com/application/o/userinfo/",
@@ -134,7 +141,11 @@ func TestAuthentikOIDCDiscoveryAndGroups(t *testing.T) {
 	defer mockServer.Close()
 
 	client := NewSSOClient(mockServer.URL, "authentik-client", "secret")
-	endpoints := client.DiscoverEndpoints(context.Background())
+	client.HTTPClient = mockServer.Client()
+	endpoints, err := client.DiscoverEndpoints(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
 	if endpoints.AuthorizationEndpoint != "https://authentik.example.com/application/o/authorize/" {
 		t.Errorf("unexpected discovered auth endpoint: %s", endpoints.AuthorizationEndpoint)
 	}

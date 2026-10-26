@@ -186,6 +186,15 @@ the destructive replacement, so a rejected import leaves the existing registry
 and settings exactly as they were. Restore the backup without the prefix, then
 add it with a confirmation.
 
+## Supported strong-key profile
+
+[docs/STRONG-CRYPTO.md](docs/STRONG-CRYPTO.md) inventories supported key/TLS
+boundaries and migration without replacing existing node/backup keys. OIDC
+always refuses newly fetched RSA signing keys below 2048 bits; the optional
+process profile additionally enforces TLS key policy and direct HTTPS OIDC
+endpoints. Health certificate opt-out remains outside that profile. The
+operator's HTTPS proxy is a separate boundary and must be configured too.
+
 ## Known limitations
 
 - **KyDNS is not a validating resolver.** It does not verify DNSSEC signatures,

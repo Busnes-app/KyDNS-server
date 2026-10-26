@@ -76,6 +76,14 @@ jobs:
       - name: test
         run: go test -race -timeout 10m ./...
 
+      - name: test supported strong-crypto profile
+        env:
+          GODEBUG: fips140=on
+        run: go test -race -timeout 10m ./...
+
+      - name: profile preserves Compose configuration
+        run: python3 scripts/check-strong-crypto-compose.py
+
   build:
     runs-on: ubuntu-latest
     steps:
@@ -138,7 +146,7 @@ jobs:
             -v /tmp/ci/kydns.yaml:/etc/kydns/kydns.yaml:ro \
             -v kydns-ci-data:/var/lib/kydns \
             kydns:ci
-          for i in $(seq 1 60); do
+          for _ in $(seq 1 60); do
             curl -sf http://127.0.0.1:18053/api/v1/healthz && break
             sleep 1
           done
@@ -165,9 +173,28 @@ jobs:
             docker logs kydns-ci
             exit 1; }
 
+      - name: existing DNS data survives enabling the profile
+        run: |
+          set -euo pipefail
+          docker stop kydns-ci
+          docker run -d --name kydns-strong-ci --network=host \
+            --cap-drop ALL -e GODEBUG=fips140=on \
+            -v /tmp/ci/kydns.yaml:/etc/kydns/kydns.yaml:ro \
+            -v kydns-ci-data:/var/lib/kydns kydns:ci
+          for _ in $(seq 1 60); do
+            if curl -sf http://127.0.0.1:18053/api/v1/healthz; then break; fi
+            sleep 1
+          done
+          curl -sf http://127.0.0.1:18053/api/v1/healthz
+          answer=$(dig @127.0.0.1 -p 15353 ci.home.arpa A +short)
+          test "$answer" = "192.168.1.20"
+          test -n "$(dig @127.0.0.1 -p 15353 example.com A +short)"
+
       - name: logs on failure
         if: failure()
-        run: docker logs kydns-ci || true
+        run: |
+          docker logs kydns-ci || true
+          docker logs kydns-strong-ci || true
 
       # The Unraid and `docker run` install: nothing prepared on the host, no
       # config mounted. The image's own config has to carry it, including an
@@ -179,7 +206,7 @@ jobs:
             --cap-drop ALL --sysctl net.ipv4.ip_unprivileged_port_start=0 \
             -v kydns-bare-data:/var/lib/kydns \
             kydns:ci
-          for i in $(seq 1 60); do
+          for _ in $(seq 1 60); do
             curl -sf http://127.0.0.1:18054/api/v1/healthz && break
             sleep 1
           done
@@ -198,7 +225,7 @@ jobs:
       - name: clean up
         if: always()
         run: |
-          docker rm -f kydns-ci kydns-bare || true
+          docker rm -f kydns-ci kydns-strong-ci kydns-bare || true
           docker volume rm kydns-ci-data kydns-bare-data || true
 
   # Publishes the image only after the tests, the cgo-free build, and the
@@ -335,7 +362,7 @@ jobs:
         run: |
           set -eux
           sudo systemctl start kydns
-          for i in $(seq 1 60); do
+          for _ in $(seq 1 60); do
             curl -sf http://127.0.0.1:8053/api/v1/healthz && break
             sleep 1
           done
@@ -345,7 +372,7 @@ jobs:
         run: |
           set -eux
           pid=$(systemctl show -p MainPID --value kydns)
-          uid=$(awk '/^Uid:/{print $2}' /proc/$pid/status)
+          uid=$(awk '/^Uid:/{print $2}' "/proc/$pid/status")
           test "$uid" != "0" || { echo "kydns is running as root"; exit 1; }
           test "$(id -nu "$uid")" = "kydns"
 

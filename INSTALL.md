@@ -98,3 +98,9 @@ The startup checks above prove only the checks they perform. Use the README’s 
 section and the repository CI workflow for source/build tests; a passing health response or
 screenshot is not a substitute. Record the revision, commands, environment and skips when
 reporting results. Design plans and dated evidence remain records of their stated scope.
+
+## Strong-key configuration
+
+Before rollout, apply [the supported process and HTTPS-edge profile](docs/STRONG-CRYPTO.md).
+It preserves the installed keys/data and documents certificate/IdP migration,
+health-check verification and the optional Compose overlay.

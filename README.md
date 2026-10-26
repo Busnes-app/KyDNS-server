@@ -90,6 +90,7 @@ but give an agent write access only if you trust everyone who can message it. De
 - [Raspberry pi](docs/RASPBERRY-PI.md) — Raspberry Pi SD image. <a id="raspberry-pi-sd-image"></a>
 - [Running](docs/RUNNING.md) — Running it. <a id="running-it"></a><a id="forgot-the-admin-password"></a><a id="docker"></a><a id="unraid"></a><a id="pre-creating-it"></a><a id="four-things-that-bite"></a><a id="upgrading-from-an-image-that-ran-as-root"></a><a id="wifi"></a>
 - [AI agents](docs/AI-AGENTS.md) — MCP tools, access levels, the query log, pausing. <a id="ai-agents"></a>
+- [Strong-key configuration](docs/STRONG-CRYPTO.md) — Supported TLS/key policy and existing-installation migration.
 - [Security model](docs/SECURITY-MODEL.md) — Security model. <a id="security-model"></a>
 - [Verifying releases](docs/VERIFYING-RELEASES.md) — Check a release file or image's signature and source commit, and rebuild the binary to the same bytes.
 - [Assurance case](docs/ASSURANCE-CASE.md) — Threat model, trust boundaries, and why the security requirements are met.
