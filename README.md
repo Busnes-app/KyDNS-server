@@ -1,5 +1,7 @@
 # KyDNS
 
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/15924/badge)](https://www.bestpractices.dev/projects/15924)
+
 **Start here:** [Standalone installation](INSTALL.md). Manage private DNS records, service names, filtering and optional replication. A native install can also serve DHCP. KyIdentity and KyRecovery are optional. Verify DNS over both UDP and TCP before changing client resolver settings; the web health page does not test DNS resolution.
 
 KyDNS is a self-hosted local DNS server and service directory for homes,
