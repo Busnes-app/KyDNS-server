@@ -47,10 +47,15 @@ For documentation-only changes:
 - search for stale project names or contradictory requirements;
 - inspect the complete diff for unintended changes.
 
-Backup changes additionally run `go test -race ./internal/backup ./internal/store`,
-`scripts/restore-drill.sh` (proves the restore runbook's Step 1 and its refusals against a
-throwaway 2-of-3 key) and `scripts/backup-live-proof.sh` (starts a real server on a
-throwaway data dir and proves pin, run and schedule over the API). They must preserve
+CI's `test` job and tag releases additionally run `scripts/restore-drill.sh`
+(proves the restore runbook's Step 1 and its refusals against a throwaway 2-of-3 key)
+and `scripts/backup-live-proof.sh` (starts a real server on a throwaway data dir and
+proves pin, run, audit records and schedule over the API). Run both locally for backup
+changes, together with `go test -race ./internal/backup ./internal/store`. The scripts
+need Go, curl and sqlite3; neither contacts KyRecovery. The live proof defaults to
+loopback DNS port 15353/admin port 18053; on shared machines select unused ports with
+`KYDNS_LIVE_DNS` and `KYDNS_LIVE_ADMIN`. Leave `KYDNS_LIVE_DIR` unset for a fresh,
+automatically removed directory. These checks must preserve
 legacy password verification, WAL-safe snapshots, token-at-rest encryption, receipt
 verification, recovery URL restrictions, and the stdin-only restore boundary.
 

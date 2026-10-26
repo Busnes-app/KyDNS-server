@@ -187,6 +187,11 @@ driver is not optional.
 - `KYDNS_TRUSTED_PROXIES` supplies explicit trusted peers and refuses `/0`; public `/api/v1/installer/network`, rate keys, callback scheme and secure cookies share that trust.
 - Verify `go test -race ./internal/store ./internal/registry ./internal/adminapi ./internal/web ./internal/auth ./internal/config ./internal/app ./internal/backup ./cmd/kydns` and `go vet` for those packages. New shared setup code uses the isolated development Go workspace until its release is published.
 
+## Backup verification
+
+- CI's `test` job and the tag-release job run `scripts/restore-drill.sh` and `scripts/backup-live-proof.sh` before publishing. They require Go, curl and sqlite3, use disposable data and recovery keys, and do not contact KyRecovery.
+- The live proof defaults to loopback DNS port 15353/admin port 18053; use `KYDNS_LIVE_DNS` and `KYDNS_LIVE_ADMIN` for unused ports on shared machines. Never point `KYDNS_LIVE_DIR` at existing data: the script deletes its owned fixture.
+
 ## Operator documentation
 
 `INSTALL.md` is the root-owned standalone entry point. When installation prerequisites, bootstrap, persistence or verification change, update it together with `README.md` and the linked operator guides.
