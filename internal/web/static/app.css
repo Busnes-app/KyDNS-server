@@ -54,6 +54,8 @@ body { font-size: 15px; }
              position: relative; transition: color .12s, background .12s; }
 .app-nav a:hover { color: var(--ink-strong); background: var(--raised); text-decoration: none; }
 .app-nav a[aria-current="page"] { color: var(--ink-strong); background: var(--raised); }
+.nav-links { display: flex; flex-direction: column; gap: 4px; }
+.page-legal { display: none; }
 .app-footer form { margin-bottom: 1rem; }
 .app-footer form button { width: 100%; }
 .app-footer { margin-top: auto; padding: 1.25rem .75rem 0; }
@@ -115,7 +117,7 @@ body { font-size: 15px; }
 .chart figcaption { font-family: var(--font-mono); font-size: .76rem; color: var(--ink-strong);
                     display: flex; align-items: baseline; gap: .5rem; flex-wrap: wrap; margin-bottom: .5rem; }
 .chart figcaption .muted { color: var(--ink-dim); }
-.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chart svg { display: block; width: 100%; overflow: visible; }
 .chart-pair { display: flex; gap: 1.5rem; flex-wrap: wrap; }
 .chart-pair .chart { flex: 1 1 16rem; margin-bottom: 0; }
 
@@ -128,7 +130,7 @@ body { font-size: 15px; }
 .legend .key[data-series="forwarded"]::before { background: var(--series-2); }
 .legend .key[data-series="blocked"]::before { background: var(--series-3); }
 
-.chart .axis { fill: var(--ink-dim); font-family: var(--font-mono); font-size: 10px; }
+.chart .axis { fill: var(--ink-dim); font-family: var(--font-mono); font-size: 12px; }
 .chart .gridline { stroke: var(--line); stroke-width: 1; }
 .chart .crosshair { stroke: var(--ink); stroke-width: 1; stroke-dasharray: 3 3; }
 .chart .tip { position: absolute; top: 1.5rem; pointer-events: none; z-index: 2;
@@ -312,26 +314,32 @@ p.muted { line-height: 1.55; }
 a { color: var(--accent); }
 
 /* Below the two-column breakpoint the nav rides the top instead of the side. */
+/* Brand and Sign out share the top row; the navigation is one row below that
+   scrolls sideways (nav.js keeps the current page in view). */
 @media (max-width: 860px) {
   .app { grid-template-columns: minmax(0, 1fr); }
-  .app-nav { position: static; height: auto; flex-flow: row wrap; align-items: center; gap: .2rem;
-             padding: .75rem 1rem; border-right: 0; border-bottom: 1px solid var(--line); }
-  .brand { margin: 0 .75rem 0 0; }
-  .app-nav a { margin: 0; padding: .4rem .6rem; font-size: .86rem; }
+  .app-nav { position: static; height: auto; flex-flow: row wrap; align-items: center; gap: 8px 12px;
+             padding: 12px 16px 0; border-right: 0; border-bottom: 1px solid var(--line); }
+  .brand { margin: 0; flex: 1; }
+  .nav-links { order: 2; flex: 1 0 100%; flex-direction: row; overflow-x: auto; scrollbar-width: none;
+               margin: 0 -16px; padding: 4px 16px 8px; }
+  .app-nav a { flex: none; margin: 0; padding: 0 12px; white-space: nowrap; }
   /* The nav is horizontal from here, earlier than ky-ui's 720px switch. */
   .app-nav a.ky-nav-item[aria-current="page"] { box-shadow: inset 0 -3px var(--accent); }
-  .app-footer { display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-                margin: 0; padding: .5rem 0 0; flex-basis: 100%; }
-  .app-footer form { order: 1; margin: 0; }
+  .app-footer { margin: 0; padding: 0; }
+  .app-footer form { margin: 0; }
   .app-footer form button { width: auto; }
+  .app-footer .license-link { display: none; }
+  .page-legal { display: block; margin: 2rem 0 0; }
   .app-main { padding: 1.25rem 1rem 2rem; }
-  .stat { flex-basis: 40%; padding: .5rem 1rem; border-left: 0; }
+  /* Two even columns, so every value starts on one of two edges. */
+  .stat-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 24px; }
+  .stat, .stat:first-child { padding: 0; border-left: 0; }
   .stat .value { font-size: 1.6rem; }
   form.stack, .fields { grid-template-columns: minmax(0, 1fr); gap: .3rem; }
   form.stack > label, .fields > label { grid-column: 1; text-align: left; padding-top: .4rem; }
   form.stack > :not(label), .fields > :not(label) { grid-column: 1; }
   .card { padding: 1rem; }
-  .stat-row { padding: .75rem 1rem; }
   /* The desktop column split squeezes a URL to one word per line here; let
      the table scroll inside its card instead. */
   table.grid.lists td:first-child, table.grid.lists td:nth-child(2) { width: auto; min-width: 12rem; }

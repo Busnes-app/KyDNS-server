@@ -2,7 +2,7 @@
 // shapes, one axis each, drawn straight into the inline SVG the page ships.
 (function () {
   const NS = "http://www.w3.org/2000/svg";
-  const PAD = { l: 34, r: 6, t: 8, b: 16 };
+  const PAD = { l: 40, r: 6, t: 8, b: 16 };
   const SERIES = [
     { key: "authoritative", label: "Local", color: "--series-1" },
     { key: "forwarded", label: "Forwarded", color: "--series-2" },
@@ -31,7 +31,11 @@
   // and hands back the functions that map a sample onto it.
   function plot(fig, max, suffix, exact) {
     const svg = fig.querySelector("svg");
-    const [, , w, h] = svg.getAttribute("viewBox").split(" ").map(Number);
+    // Draw in CSS pixels: the viewBox follows the rendered width, so axis text
+    // keeps its size on a phone instead of shrinking with the drawing.
+    const [, , w0, h] = svg.getAttribute("viewBox").split(" ").map(Number);
+    const w = Math.round(svg.getBoundingClientRect().width) || w0;
+    svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
     while (svg.firstChild) svg.removeChild(svg.firstChild);
 
     const top = exact ? max : niceMax(max);
@@ -48,7 +52,7 @@
       const label = Math.round(top * frac) + suffix;
       if (seen.has(label)) continue;
       seen.add(label);
-      const t = el("text", { class: "axis", x: 0, y: yy + 3 });
+      const t = el("text", { class: "axis", x: 0, y: yy + 4 });
       t.textContent = label;
       svg.appendChild(t);
     }
