@@ -35,6 +35,25 @@ cgo-free build, and a Docker job that resolves a local service name and a
 public name end to end. The build must stay cgo-free:
 the image is distroless, so the pure-Go SQLite driver is not optional.
 
+The `browser/` suite runs Chromium against a fresh loopback server built from this
+source, on desktop and phone viewports. It executes dashboard SVG charts, live
+refresh failure/recovery and session-expiry handling, Appearance persistence/OS/
+cross-tab behavior, and real setup and record forms. Run it with Go and Node 26:
+
+```sh
+cd browser
+npm ci
+npx playwright install --with-deps chromium
+npm test
+```
+
+The existing CI `test` job and tag-release job run this suite and its dependency
+audit before publishing. Only deterministic stats/failure responses are mocked;
+server setup, authentication, templates and record mutations are real. Fixtures
+use temporary data, synthetic credentials and loopback listeners/upstreams; they
+never target a deployed instance. This is targeted browser coverage, not proof
+that most code branches, inputs or functionality are covered.
+
 The supported [strong-key profile](docs/STRONG-CRYPTO.md) also runs the full race
 suite with `GODEBUG=fips140=on` in CI. Run it for TLS/OIDC/profile changes;
 `python3 scripts/check-strong-crypto-compose.py` verifies the optional overlay
