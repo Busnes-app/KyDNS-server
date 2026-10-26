@@ -1,0 +1,110 @@
+{
+  "product": "kydns-server",
+  "stage": "00",
+  "phase": "before",
+  "captured_at": "2026-10-26T10:55:29.662Z",
+  "source_commit": "d435baeee5737e20122829f55eaf399e47b5d9f0",
+  "uncommitted_source_sha256": null,
+  "os": "Linux 7.2.10-1-cachyos",
+  "driver": "Playwright 1.63.0 Chromium 153.0.8010.12, device scale 1, service workers blocked",
+  "server": "kydns built from this worktree into a temporary directory; admin UI and DNS on loopback only; data removed after capture",
+  "fixture": "synthetic: admin created through /setup; local A records nas.home.arpa 10.0.0.20 and printer.home.arpa 10.0.0.31; twelve loopback queries for those names; no blocklists, DHCP, replication or upstream traffic",
+  "shots": [
+    {
+      "file": "kydns-00-before-dashboard-desktop-light.png",
+      "sha256": "4e08923237f1c1e15aeb79a3b24738cc81e95e5b11de8b5b30f6dc205f878890",
+      "surface": "dashboard",
+      "url": "/",
+      "device": "desktop",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "theme_source": "OS light (prefers-color-scheme), no saved choice"
+    },
+    {
+      "file": "kydns-00-before-appearance-desktop-light.png",
+      "sha256": "84cdc68a6fe72bae3ac5e0b05499015ea71c1a2d2b5df373b107176ef400de95",
+      "surface": "appearance",
+      "url": "/settings",
+      "device": "desktop",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "theme_source": "OS light (prefers-color-scheme), no saved choice"
+    },
+    {
+      "file": "kydns-00-before-dashboard-mobile-light.png",
+      "sha256": "8a728f0d4286a78542ee1c756427e3464515556f63edb2ec785d571cc29975ff",
+      "surface": "dashboard",
+      "url": "/",
+      "device": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "theme_source": "OS light (prefers-color-scheme), no saved choice"
+    },
+    {
+      "file": "kydns-00-before-appearance-mobile-light.png",
+      "sha256": "e68d2263cfb61ee533956610e5a70ff73bd8ba3c25e71430121a9b72a2bc8aa9",
+      "surface": "appearance",
+      "url": "/settings",
+      "device": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "theme_source": "OS light (prefers-color-scheme), no saved choice"
+    },
+    {
+      "file": "kydns-00-before-dashboard-desktop-dark.png",
+      "sha256": "04693995925883da8aa1ca6728d56ee05db07b07c9900a18eea5f366b86451cc",
+      "surface": "dashboard",
+      "url": "/",
+      "device": "desktop",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "theme_source": "OS dark (prefers-color-scheme), no saved choice"
+    },
+    {
+      "file": "kydns-00-before-appearance-desktop-dark.png",
+      "sha256": "3407eff029e1df0d8a636f85967d45481859d5f3545a586749a8a576a165daaf",
+      "surface": "appearance",
+      "url": "/settings",
+      "device": "desktop",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "theme_source": "OS dark (prefers-color-scheme), no saved choice"
+    },
+    {
+      "file": "kydns-00-before-dashboard-mobile-dark.png",
+      "sha256": "768e9b62ee7431c708f4de22e417f8c8502a8bd060fca2b8f2e7d996d7da2873",
+      "surface": "dashboard",
+      "url": "/",
+      "device": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "theme_source": "OS dark (prefers-color-scheme), no saved choice"
+    },
+    {
+      "file": "kydns-00-before-appearance-mobile-dark.png",
+      "sha256": "b73845b8afe8b4665f0959f16542b09e4342e4afd31bad9ae2b327ae3b2f7062",
+      "surface": "appearance",
+      "url": "/settings",
+      "device": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "theme_source": "OS dark (prefers-color-scheme), no saved choice"
+    }
+  ]
+}

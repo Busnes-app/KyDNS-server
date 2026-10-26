@@ -1,0 +1,162 @@
+{
+  "product": "kydns-server",
+  "stage": "01",
+  "phase": "after",
+  "captured_at": "2026-10-26T11:24:41.441Z",
+  "source_commit": "d435baeee5737e20122829f55eaf399e47b5d9f0",
+  "uncommitted_source_sha256": "3dca9bc8e1b2d2a786cf3406096ee5a88d09fd8d978d4d5027ca41fe4cb15b81",
+  "os": "Linux 7.2.10-1-cachyos",
+  "driver": "Playwright 1.63.0 Chromium 153.0.8010.12, device scale 1, service workers blocked",
+  "server": "kydns built from this worktree into a temporary directory; admin UI and DNS on loopback only; data removed after capture",
+  "fixture": "synthetic: admin created through /setup; local A records nas.home.arpa 10.0.0.20 and printer.home.arpa 10.0.0.31; twelve loopback queries for those names; no blocklists, DHCP, replication or upstream traffic",
+  "shots": [
+    {
+      "file": "kydns-01-after-dashboard-desktop-light.png",
+      "sha256": "2375bdafdf3c5107a6de9f39232d0fd5733bbdf74e5d4c75b96f3500e5df59a6",
+      "surface": "dashboard",
+      "url": "/",
+      "device": "desktop",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "theme_source": "OS light (prefers-color-scheme), no saved choice"
+    },
+    {
+      "file": "kydns-01-after-appearance-desktop-light.png",
+      "sha256": "2e6d24b8179dae2e844a2a3468d50036779e8a4acc117a3b054b373a9c8cc8db",
+      "surface": "appearance",
+      "url": "/appearance",
+      "device": "desktop",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "theme_source": "OS light (prefers-color-scheme), no saved choice"
+    },
+    {
+      "file": "kydns-01-after-dashboard-mobile-light.png",
+      "sha256": "52f47e7f92b620ede00263821646290027e97e52fea829346645008b6579c7bb",
+      "surface": "dashboard",
+      "url": "/",
+      "device": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "theme_source": "OS light (prefers-color-scheme), no saved choice"
+    },
+    {
+      "file": "kydns-01-after-appearance-mobile-light.png",
+      "sha256": "ba2c5d6c870da05f62ac936d3ea410c76c6eab71fbcbdecce2c763f59de04ff0",
+      "surface": "appearance",
+      "url": "/appearance",
+      "device": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "theme_source": "OS light (prefers-color-scheme), no saved choice"
+    },
+    {
+      "file": "kydns-01-after-dashboard-desktop-dark.png",
+      "sha256": "17be93e3f04401824161f23b3347370d39f3da48fb2f3f300026628d91036472",
+      "surface": "dashboard",
+      "url": "/",
+      "device": "desktop",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "theme_source": "OS dark (prefers-color-scheme), no saved choice"
+    },
+    {
+      "file": "kydns-01-after-appearance-desktop-dark.png",
+      "sha256": "af48322308dbf3a84497b487e5273910f80b070536a1eff6dae3925ebc9ba6a7",
+      "surface": "appearance",
+      "url": "/appearance",
+      "device": "desktop",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "theme_source": "OS dark (prefers-color-scheme), no saved choice"
+    },
+    {
+      "file": "kydns-01-after-dashboard-mobile-dark.png",
+      "sha256": "cc133844cc57a505ee1e33b232fa330bf33229389f7cd3da21513aefc1f74d85",
+      "surface": "dashboard",
+      "url": "/",
+      "device": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "theme_source": "OS dark (prefers-color-scheme), no saved choice"
+    },
+    {
+      "file": "kydns-01-after-appearance-mobile-dark.png",
+      "sha256": "e244d061c20dc333ab57cfc9f8745cac9e0c5fab59c11fc5d9c649896dada643",
+      "surface": "appearance",
+      "url": "/appearance",
+      "device": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "theme_source": "OS dark (prefers-color-scheme), no saved choice"
+    }
+  ],
+  "checks": [
+    {
+      "name": "all catalog themes plus Match system render as native radios",
+      "pass": true,
+      "detail": "radio count = 23"
+    },
+    {
+      "name": "no saved choice checks Match system and follows the OS",
+      "pass": true,
+      "detail": "data-theme = busnes-light"
+    },
+    {
+      "name": "legacy saved value \"Patina Ky\" resolves to patina-ky unchanged",
+      "pass": true,
+      "detail": "stored value untouched = Patina Ky"
+    },
+    {
+      "name": "legacy saved value \"Ocean\" resolves to ocean unchanged",
+      "pass": true,
+      "detail": "stored value untouched = Ocean"
+    },
+    {
+      "name": "legacy saved value \"Busnes Dark\" resolves to busnes-dark unchanged",
+      "pass": true,
+      "detail": "stored value untouched = Busnes Dark"
+    },
+    {
+      "name": "keyboard arrows move the choice and persist it",
+      "pass": true,
+      "detail": "saved = Coffee"
+    },
+    {
+      "name": "a light named theme keeps light nav hover and selected surfaces",
+      "pass": true,
+      "detail": "hover color(srgb 0.905098 0.936784 0.955529) / rgb(24, 49, 66); selected rgb(182, 220, 237)"
+    },
+    {
+      "name": "Match system clears the named palette and the saved choice",
+      "pass": true,
+      "detail": "body background = rgb(248, 246, 240)"
+    },
+    {
+      "name": "the picker is in sync with another tab",
+      "pass": true,
+      "detail": "forest checked after storage event"
+    },
+    {
+      "name": "no console errors or CSP violations",
+      "pass": true,
+      "detail": "none"
+    }
+  ]
+}
