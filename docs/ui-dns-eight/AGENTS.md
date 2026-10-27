@@ -30,6 +30,9 @@ Own fresh synthetic KyDNS captures, independent ratings, provenance and progress
 
 ## Verification
 
+- `python3 docs/ui-dns-eight/build-report.py --current-round N --pr URL` validates preserved review arithmetic/full-vector freezes against canonical inventories and regenerates the spreadsheet, CSV and round history. The XLSX writer reuses the Drive Council's stdlib exporter and checks XML/CRC/data round-trip; no package installation is required.
+- Capture drivers own exact-DPR originals and their manifests. Preserve each driver and original batch; use distinct stage names for later captures. Review input inventories explicitly separate current quality, historical and brand-only images.
+
 ## Child DOX Index
 
 None.

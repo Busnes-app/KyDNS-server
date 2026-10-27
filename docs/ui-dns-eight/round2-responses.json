@@ -1,0 +1,55 @@
+{
+  "access": "ONLY after full current files-array freeze. These responses never alter published round1 raw reviews.",
+  "original_brief": "Uniform Ky suite product identity, one left nav region, shared Appearance and an8.0 progression checkpoint; preserve administrator-only behavior, native fields/forms, roles,security and DNS truth.",
+  "prior_findings_and_responses": [
+    {
+      "finding": "Phone tables put fields/actions beyond initially visible width and Settings fieldsets run beyond their containers.",
+      "response": "Services/Records/Blacklist source rows now label and expose fields in two columns on phones. Native table/header semantics retained. Settings grid bounded to minmax(0,1fr),native fieldsets retained but frames flattened.",
+      "verification": "Final native and formal captures; full browser regression/hostedCI separate."
+    },
+    {
+      "finding": "Discovered phone header stretches on short empty pages.",
+      "response": "Phone app grid reserves auto height for nav and1fr for content. Native final header113px."
+    },
+    {
+      "finding": "Competing orange actions and orange decorative badges.",
+      "response": "One header add-form link is primary per list; row Save,list Enable and filter toggles secondary; descriptive blacklist badges neutral. Add-form actions retain real POST semantics."
+    },
+    {
+      "finding": "Settings nested frames,uneven field grouping and hidden Save.",
+      "response": "Plain group dividers and single-column fieldsets. Existing Save explicitly associated with its form at top;disabled-on-replica semantics retained."
+    },
+    {
+      "finding": "Mono prose,oversized blank chart presentation,weak Remove outlines and shell inconsistency.",
+      "response": "Body face for table prose,mono for technical data,shared section type,flat page sections,shortercharts preserving all data,semantic Remove borders,navline icons and truthful Administrator role. No fabricated signed-in username."
+    },
+    {
+      "finding": "Discovered next action only names Settings.",
+      "response": "Existing guidance preserved and Settings text linked to its actual route."
+    }
+  ],
+  "unresolved_or_declined": [
+    {
+      "finding": "DHCP fields editable while server off.",
+      "response": "Kept editable: configuring an inactive server is existing intended behavior; disabled fields would obstruct its setup. No DHCP operation exercised."
+    },
+    {
+      "finding": "Chart Forwarded hue resembles an action accent.",
+      "response": "Preserved existing documented data-series colors; the forwarding data mark is distinct from the primary-action token. No data or fixture series invented."
+    },
+    {
+      "finding": "Dashboard repeats exactly the same registry/query counts.",
+      "response": "Retained truthful registry and query metrics,which describe different quantities. Reduced framing/chartheight; no functional metrics removed."
+    },
+    {
+      "finding": "Signed-in name missing.",
+      "response": "No fictional username added to password-only local administrator. Shell displays truthful Administrator role; identity plumbing outside this UI pass."
+    },
+    {
+      "finding": "Phone Settings has a below-fold horizontal scroller.",
+      "response": "Recorded residual: one card476pxcontent/358pxclient below initial viewport. Fieldsets and canonical documentfit. Below-fold section remains unscored; complete responsive gate unproven."
+    }
+  ],
+  "current_assurance": "36current screenshots;15served assetmatches;no formal browser errors;no complete accessibility/all-theme/connected-service/production claim.",
+  "raw_audit_note": "A separate disagreement audit records seven descriptive overstatements without rewriting either review. Do not consume peer scores; make own current judgment first."
+}
