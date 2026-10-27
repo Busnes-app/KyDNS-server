@@ -32,6 +32,7 @@ type SSOTokenClaims struct {
 	Groups            []string       `json:"groups"`
 	Issuer            string         `json:"iss"`
 	SID               string         `json:"sid"`
+	IssuedAt          time.Time      `json:"-"` // the ID token's iat: when the provider vouched for this login
 	RawClaims         map[string]any `json:"-"`
 }
 
@@ -258,6 +259,7 @@ func (c *SSOClient) ExchangeCode(ctx context.Context, redirectURI, code, codeVer
 	rawClaims["sub"] = idToken.Subject
 	claims := parseClaimsMap(rawClaims)
 	claims.SID = sid
+	claims.IssuedAt = idToken.IssuedAt
 	return claims, nil
 }
 

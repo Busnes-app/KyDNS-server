@@ -174,7 +174,7 @@ func TestLogoutVerifierRetriesFailedDiscovery(t *testing.T) {
 func TestBackchannelLogoutScopesSessions(t *testing.T) {
 	s := NewSessions(time.Hour, time.Hour)
 	login := func(iss, sub, sid string) *Session {
-		sess, ok := s.CreateSSOLogin(SSOLogin{Issuer: iss, Subject: sub, SID: sid}, "", "", 0, time.Time{})
+		sess, ok := s.CreateSSOLogin(SSOLogin{Issuer: iss, Subject: sub, SID: sid, IssuedAt: time.Now()}, "", "", 0, time.Time{})
 		if !ok {
 			t.Fatalf("login %s/%s/%s refused", iss, sub, sid)
 		}
@@ -196,14 +196,24 @@ func TestBackchannelLogoutScopesSessions(t *testing.T) {
 	}
 	login("https://b", "alice", "x") // the fence is per issuer
 
-	s.EndSSOSubject("https://a", "alice", a2.Created)
+	fence := time.Now().Add(time.Minute)
+	s.EndSSOSubject("https://a", "alice", a2.SSO.IssuedAt, fence)
 	if _, ok := s.Get(a2.ID); !ok {
 		t.Fatal("subject-wide logout ended a login issued after it")
 	}
-	s.EndSSOSubject("https://a", "alice", a2.Created.Add(time.Second))
+	s.EndSSOSubject("https://a", "alice", a2.SSO.IssuedAt.Add(time.Second), fence)
 	if _, ok := s.Get(a2.ID); ok {
 		t.Fatal("subject-wide logout missed a login issued before it")
 	}
+	// The cutoff is fenced, and an older logout arriving late does not move it back.
+	s.EndSSOSubject("https://a", "alice", a2.SSO.IssuedAt.Add(-time.Hour), fence)
+	if _, ok := s.CreateSSOLogin(SSOLogin{Issuer: "https://a", Subject: "alice", SID: "z", IssuedAt: a2.SSO.IssuedAt}, "", "", 0, time.Time{}); ok {
+		t.Fatal("a login issued before the subject-wide logout signed in")
+	}
+	if _, ok := s.CreateSSOLogin(SSOLogin{Issuer: "https://a", Subject: "alice", SID: "z", IssuedAt: a2.SSO.IssuedAt.Add(2 * time.Second)}, "", "", 0, time.Time{}); !ok {
+		t.Fatal("a login issued after the subject-wide logout was refused")
+	}
+	login("https://b", "alice", "z") // the fence is per issuer
 	if _, ok := s.Get(b.ID); !ok {
 		t.Fatal("subject-wide logout reached another issuer")
 	}

@@ -70,7 +70,10 @@ func newFakeKyIdentity(t *testing.T) *fakeKyIdentity {
 func (f *fakeKyIdentity) sign(t *testing.T, typ string, claims map[string]any) string {
 	t.Helper()
 	claims["iss"], claims["aud"] = f.issuer, "kydns"
-	claims["iat"], claims["exp"] = time.Now().Unix(), time.Now().Add(2*time.Minute).Unix()
+	claims["exp"] = time.Now().Add(2 * time.Minute).Unix()
+	if _, ok := claims["iat"]; !ok {
+		claims["iat"] = time.Now().Unix()
+	}
 	header := map[string]string{"alg": "RS256", "kid": "k"}
 	if typ != "" {
 		header["typ"] = typ
@@ -96,8 +99,13 @@ func (f *fakeKyIdentity) logoutToken(t *testing.T, sub, sid string) string {
 
 // login runs the callback for an ID token naming sub and sid.
 func (f *fakeKyIdentity) login(t *testing.T, h http.Handler, sub, sid string) *httptest.ResponseRecorder {
+	return f.loginAt(t, h, sub, sid, time.Now())
+}
+
+// loginAt is login with an ID token the provider issued at iat.
+func (f *fakeKyIdentity) loginAt(t *testing.T, h http.Handler, sub, sid string, iat time.Time) *httptest.ResponseRecorder {
 	t.Helper()
-	f.idToken = f.sign(t, "JWT", map[string]any{"sub": sub, "sid": sid, "nonce": "test_nonce"})
+	f.idToken = f.sign(t, "JWT", map[string]any{"sub": sub, "sid": sid, "nonce": "test_nonce", "iat": iat.Unix()})
 	return ssoCallback(t, h, false, nil)
 }
 
@@ -120,7 +128,8 @@ func TestBackchannelLogoutEndsTheSSOLogin(t *testing.T) {
 	_ = srv.o.Store.LinkAdminSSO("alice", "alice", "a@example.com")
 
 	ended := sessionCookie(f.login(t, h, "alice", "sid-1"))
-	kept := sessionCookie(f.login(t, h, "alice", "sid-2"))
+	keptAt := time.Now()
+	kept := sessionCookie(f.loginAt(t, h, "alice", "sid-2", keptAt))
 	if ended == nil || kept == nil || !signedIn(t, h, ended) || !signedIn(t, h, kept) {
 		t.Fatal("SSO login did not issue working sessions")
 	}
@@ -162,11 +171,29 @@ func TestBackchannelLogoutEndsTheSSOLogin(t *testing.T) {
 	if rec := postLogoutToken(t, h, f.logoutToken(t, "bob", "")); rec.Code != http.StatusOK || !signedIn(t, h, kept) {
 		t.Fatalf("logout for another subject = %d, or it ended alice's login", rec.Code)
 	}
-	if rec := postLogoutToken(t, h, f.logoutToken(t, "alice", "")); rec.Code != http.StatusOK || signedIn(t, h, kept) {
+	// Issued the same second as the login: iat is whole seconds, so that login ends too.
+	aliceLogout := f.sign(t, "logout+jwt", map[string]any{"sub": "alice", "jti": "alice", "iat": keptAt.Unix(),
+		"events": map[string]any{"http://schemas.openid.net/event/backchannel-logout": map[string]any{}}})
+	if rec := postLogoutToken(t, h, aliceLogout); rec.Code != http.StatusOK || signedIn(t, h, kept) {
 		t.Fatalf("subject-wide logout = %d, or alice's login survived it", rec.Code)
 	}
 	if !signedIn(t, h, password) {
 		t.Fatal("back-channel logout ended the password session")
+	}
+
+	// A subject-wide logout fences a callback already holding an ID token issued before
+	// it, even for a subject with no session here yet; a later login still works.
+	_ = srv.o.Store.LinkAdminSSO("carol", "carol", "c@example.com")
+	carolLogout := f.sign(t, "logout+jwt", map[string]any{"sub": "carol", "jti": "carol", "iat": time.Now().Add(-30 * time.Second).Unix(),
+		"events": map[string]any{"http://schemas.openid.net/event/backchannel-logout": map[string]any{}}})
+	if rec := postLogoutToken(t, h, carolLogout); rec.Code != http.StatusOK {
+		t.Fatalf("subject-wide logout of a subject with no session = %d", rec.Code)
+	}
+	if rec := f.loginAt(t, h, "carol", "sid-c1", time.Now().Add(-time.Minute)); rec.Code != http.StatusUnauthorized || sessionCookie(rec) != nil {
+		t.Fatalf("pending callback survived a subject-wide logout: %d", rec.Code)
+	}
+	if c := sessionCookie(f.login(t, h, "carol", "sid-c2")); c == nil || !signedIn(t, h, c) {
+		t.Fatal("login issued after the subject-wide logout was refused")
 	}
 
 	snap := filepath.Join(t.TempDir(), "audit.db")
@@ -179,8 +206,8 @@ func TestBackchannelLogoutEndsTheSSOLogin(t *testing.T) {
 	}
 	defer db.Close()
 	var n int
-	if err := db.QueryRow(`SELECT COUNT(*) FROM audit_events WHERE action = 'auth.sso_backchannel_logout'`).Scan(&n); err != nil || n != 5 {
-		t.Fatalf("audited %d back-channel logouts (%v), want 5", n, err)
+	if err := db.QueryRow(`SELECT COUNT(*) FROM audit_events WHERE action = 'auth.sso_backchannel_logout'`).Scan(&n); err != nil || n != 6 {
+		t.Fatalf("audited %d back-channel logouts (%v), want 6", n, err)
 	}
 }
 

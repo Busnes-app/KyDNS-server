@@ -297,7 +297,7 @@ func (s *Server) getSSOCallback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	signIn := func(issuer, subject string, revision uint64) {
-		login := auth.SSOLogin{Issuer: claims.Issuer, Subject: claims.Sub, SID: claims.SID}
+		login := auth.SSOLogin{Issuer: claims.Issuer, Subject: claims.Sub, SID: claims.SID, IssuedAt: claims.IssuedAt}
 		sess, ok := s.o.Sessions.CreateSSOLogin(login, issuer, subject, revision, generation)
 		if !ok {
 			w.WriteHeader(http.StatusUnauthorized)
@@ -384,11 +384,12 @@ func (s *Server) postBackchannelLogout(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write([]byte(`{"error":"invalid_request"}`))
 		return
 	}
+	fenceUntil := time.Now().Add(ssoLogoutFence)
 	if claims.SID != "" {
-		s.o.Sessions.EndSSOLogin(claims.Issuer, claims.SID, time.Now().Add(ssoLogoutFence))
+		s.o.Sessions.EndSSOLogin(claims.Issuer, claims.SID, fenceUntil)
 	} else {
 		// iat has whole-second precision: a login from that same second ends too.
-		s.o.Sessions.EndSSOSubject(claims.Issuer, claims.Subject, claims.IssuedAt.Add(time.Second))
+		s.o.Sessions.EndSSOSubject(claims.Issuer, claims.Subject, claims.IssuedAt.Add(time.Second), fenceUntil)
 	}
 	_ = s.o.Store.RecordAudit(store.AuditEvent{Actor: "sso", Action: "auth.sso_backchannel_logout",
 		Resource: "session", IP: s.sourceKey(r), Outcome: "success"})
