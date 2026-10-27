@@ -64,6 +64,9 @@ token secret is recorded, nor any query-log content. A pause and a resume are
 also logged as `blacklist blocking paused` (with its end) and `blacklist
 blocking resumed`.
 
+Each accepted SSO back-channel logout is audited as `auth.sso_backchannel_logout`
+with the provider's address; the token, subject and `sid` are not recorded.
+
 Backup audit events record bounded action, outcome, capsule ID, remote address, and a
 printable error summary. The actions are `backup.paired`, `backup.key_pinned`,
 `backup.unpaired`, `backup.schedule`, `backup.exported`, `backup.export_failed`,

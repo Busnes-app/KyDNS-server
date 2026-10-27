@@ -383,8 +383,8 @@ func TestEveryPostRouteRequiresSessionAndCSRF(t *testing.T) {
 	h, srv := newWeb(t)
 	setupAndLogin(t, h)
 	c := loginCookie(t, h)
-	// Directory events authenticate their signed body, not a browser session.
-	preSession := map[string]bool{PathSetup: true, PathLogin: true, "/api/v1/installer/directory": true}
+	// Directory events and back-channel logouts authenticate their signed body, not a browser session.
+	preSession := map[string]bool{PathSetup: true, PathLogin: true, "/api/v1/installer/directory": true, "/auth/sso/backchannel-logout": true}
 	for _, path := range registeredPostRoutes(t, srv) {
 		if preSession[path] {
 			continue

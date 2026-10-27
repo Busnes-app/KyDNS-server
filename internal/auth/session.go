@@ -22,7 +22,13 @@ type Session struct {
 	RecoveryGeneration time.Time
 	Created            time.Time
 	LastSeen           time.Time
+	// SSO is the provider login behind the session; zero for a password login.
+	SSO SSOLogin
 }
+
+// SSOLogin is what a back-channel logout matches. The issuer scopes the sid and
+// subject, so one provider's logout cannot end another provider's logins.
+type SSOLogin struct{ Issuer, Subject, SID string }
 
 // Sessions is an in-memory session store. Restart forces re-login, which is
 // the deliberate trade: session state never touches the database or backups,
@@ -35,11 +41,13 @@ type Sessions struct {
 	now             func() time.Time
 	identityAllowed func(issuer, subject string, revision uint64) bool
 	notBefore       func() time.Time
+	// ended fences logged-out sids (issuer, sid) until the time stored.
+	ended map[[2]string]time.Time
 }
 
 func NewSessions(idle, absolute time.Duration) *Sessions {
 	return &Sessions{
-		byID: map[string]*Session{}, idle: idle, absolute: absolute, now: time.Now,
+		byID: map[string]*Session{}, idle: idle, absolute: absolute, now: time.Now, ended: map[[2]string]time.Time{},
 	}
 }
 
@@ -86,12 +94,53 @@ func (s *Sessions) CreateSSO(issuer, subject string, revision uint64) *Session {
 
 // CreateAuthenticated binds the session to the generation authentication began in.
 func (s *Sessions) CreateAuthenticated(issuer, subject string, revision uint64, generation time.Time) *Session {
+	sess, _ := s.CreateSSOLogin(SSOLogin{}, issuer, subject, revision, generation)
+	return sess
+}
+
+// CreateSSOLogin is CreateAuthenticated for a provider login. It refuses a login
+// whose sid a back-channel logout already ended; the check and the insert share
+// the lock, so a logout racing the callback either is seen here or sees the session.
+func (s *Sessions) CreateSSOLogin(login SSOLogin, issuer, subject string, revision uint64, generation time.Time) (*Session, bool) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	now := s.now()
-	sess := &Session{RecoveryGeneration: generation, IdentityIssuer: issuer, IdentitySubject: subject, IdentityRevision: revision, ID: randomHex(32), CSRF: randomHex(32), Created: now, LastSeen: now}
+	if login.SID != "" && now.Before(s.ended[[2]string{login.Issuer, login.SID}]) {
+		return nil, false
+	}
+	sess := &Session{RecoveryGeneration: generation, IdentityIssuer: issuer, IdentitySubject: subject, IdentityRevision: revision, SSO: login, ID: randomHex(32), CSRF: randomHex(32), Created: now, LastSeen: now}
 	s.byID[sess.ID] = sess
-	return sess
+	return sess, true
+}
+
+// EndSSOLogin ends every session of the issuer's sid and fences the sid until
+// fenceUntil, so a callback still in flight for it cannot sign in.
+func (s *Sessions) EndSSOLogin(issuer, sid string, fenceUntil time.Time) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	now := s.now()
+	for k, until := range s.ended {
+		if !now.Before(until) {
+			delete(s.ended, k)
+		}
+	}
+	s.ended[[2]string{issuer, sid}] = fenceUntil
+	for id, sess := range s.byID {
+		if sess.SSO.Issuer == issuer && sess.SSO.SID == sid {
+			delete(s.byID, id)
+		}
+	}
+}
+
+// EndSSOSubject ends the issuer's subject's sessions created before before.
+func (s *Sessions) EndSSOSubject(issuer, subject string, before time.Time) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	for id, sess := range s.byID {
+		if sess.SSO.Issuer == issuer && sess.SSO.Subject == subject && sess.Created.Before(before) {
+			delete(s.byID, id)
+		}
+	}
 }
 
 // Get returns a live session and slides its idle window. Both the idle and

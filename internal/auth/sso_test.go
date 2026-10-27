@@ -46,7 +46,9 @@ func testOIDCServer(t *testing.T, clientID, nonce string, claims map[string]any,
 			raw, _ := jwt.Signed(signer).Claims(base).Serialize()
 			if len(tamper) != 0 && tamper[0] {
 				parts := strings.Split(raw, ".")
-				parts[2] = "x" + parts[2][1:]
+				// Flip the first character; a fixed replacement is a no-op 1 time in 64.
+				flip := map[bool]string{true: "y", false: "x"}[parts[2][0] == 'x']
+				parts[2] = flip + parts[2][1:]
 				raw = strings.Join(parts, ".")
 			}
 			_ = json.NewEncoder(w).Encode(map[string]any{"access_token": "mock-access-token", "id_token": raw, "token_type": "Bearer"})

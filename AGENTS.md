@@ -154,6 +154,12 @@ Code, one concern per package:
   rendered UI, sessions, password hashing, and verified OIDC login.
   The Services page owns names, addresses, aliases and routing; health-check
   configuration and status remain available through the CLI/API.
+  `POST /auth/sso/backchannel-logout` is the anonymous OpenID Connect Back-Channel
+  Logout receiver: the provider-signed `logout_token` is its authority, and it is not
+  rate limited (a KyIdentity restore sends a burst; a refusal spends a retry). Sessions
+  record the login's issuer, subject and ID-token `sid`; a logout ends the issuer's
+  `sid` and fences it for ten minutes so an in-flight callback answers 401, all under
+  the session store's one lock. Verify with `go test ./internal/auth ./internal/web -run 'Logout'`.
   `render` fills the chrome every screen shares: replica read-only state and
   the open-resolver banner (`PublicRanges`), so no page opts in by hand.
   `internal/adminapi/mcp.go` serves `/mcp` for AI agents on the admin listener

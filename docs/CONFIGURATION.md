@@ -244,7 +244,10 @@ proxy needs, or leave routing off if both must keep resolving.
 Without an installer, connect KyIdentity under **Settings → Single sign-on**:
 
 1. In KyIdentity's admin UI, create a client for KyDNS with the redirect URI
-   `https://<admin host>/auth/sso/callback`.
+   `https://<admin host>/auth/sso/callback` and the back-channel logout URI
+   `https://<admin host>/auth/sso/backchannel-logout`. With it, signing out of
+   KyIdentity, or an administrator ending that login there, ends the KyDNS session
+   too; without it the session lasts until it expires.
 2. **Assign the administrator to the KyDNS app**, with the role `kydns.admin`. KyIdentity
    admits only people assigned to a client. Without the assignment, every sign-in is refused
    before it reaches KyDNS: KyIdentity logs `oauth.authorize` with outcome `denied` and

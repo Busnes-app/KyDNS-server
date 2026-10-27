@@ -46,6 +46,13 @@ notes unless you would rather stay anonymous.
   signature, issuer, audience, expiry, non-empty subject, and per-login nonce.
   Userinfo may enrich profile and role claims only when its subject matches the
   verified ID token.
+- `POST /auth/sso/backchannel-logout` accepts OpenID Connect Back-Channel Logout
+  tokens. Anyone can reach it; only a token the configured provider signed for this
+  client, unexpired, with `iat`, a `sub` or `sid`, the logout event and no `nonce`
+  (and `typ` `logout+jwt` when present) ends anything. It ends the sessions of that
+  issuer's `sid`, or that subject's sessions issued by `iat`, never a password
+  session or another issuer's. It is not rate limited, so the provider's retries
+  are never refused.
 - Upstream resolvers are reached over DNS-over-TLS or DNS-over-HTTPS with
   certificate verification always on. Plain `udp://` is per-upstream opt-in and
   clears the authenticated-data bit on anything it answers.

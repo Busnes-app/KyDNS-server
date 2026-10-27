@@ -31,6 +31,7 @@ type SSOTokenClaims struct {
 	Roles             []string       `json:"roles"`
 	Groups            []string       `json:"groups"`
 	Issuer            string         `json:"iss"`
+	SID               string         `json:"sid"`
 	RawClaims         map[string]any `json:"-"`
 }
 
@@ -170,32 +171,48 @@ func (c *SSOClient) AuthURL(redirectURI, state, nonce, codeChallenge string) (st
 	return fmt.Sprintf("%s%s%s", endpoints.AuthorizationEndpoint, sep, q.Encode()), nil
 }
 
-// ExchangeCode exchanges an authorization code with code_verifier for identity claims.
-func (c *SSOClient) ExchangeCode(ctx context.Context, redirectURI, code, codeVerifier, nonce string) (*SSOTokenClaims, error) {
+// providerVerifier discovers the provider and builds the ID-token verifier that
+// login and back-channel logout share. The returned context carries the client.
+func (c *SSOClient) providerVerifier(ctx context.Context) (context.Context, *oidc.Provider, *oidc.IDTokenVerifier, error) {
 	if fips140.Enabled() {
 		if err := requireOIDCHTTPS(c.IssuerURL); err != nil {
-			return nil, err
+			return nil, nil, nil, err
 		}
 	}
 	client := c.oidcHTTPClient()
 	ctx = oidc.ClientContext(ctx, client)
 	provider, err := oidc.NewProvider(ctx, c.IssuerURL)
 	if err != nil {
-		return nil, fmt.Errorf("discover OIDC provider: %w", err)
+		return nil, nil, nil, fmt.Errorf("discover OIDC provider: %w", err)
 	}
 	var endpoints OIDCEndpoints
 	if err := provider.Claims(&endpoints); err != nil {
-		return nil, fmt.Errorf("OIDC metadata: %w", err)
+		return nil, nil, nil, fmt.Errorf("OIDC metadata: %w", err)
 	}
 	if fips140.Enabled() {
 		if err := requireOIDCHTTPS(provider.Endpoint().AuthURL, provider.Endpoint().TokenURL, endpoints.JWKSURI); err != nil {
-			return nil, err
+			return nil, nil, nil, err
 		}
 		if endpoints.UserinfoEndpoint != "" {
 			if err := requireOIDCHTTPS(endpoints.UserinfoEndpoint); err != nil {
-				return nil, err
+				return nil, nil, nil, err
 			}
 		}
+	}
+	jwksClient := *client
+	base := client.Transport
+	if base == nil {
+		base = http.DefaultTransport
+	}
+	jwksClient.Transport = strongJWKSTransport{base: base}
+	return ctx, provider, provider.VerifierContext(oidc.ClientContext(ctx, &jwksClient), &oidc.Config{ClientID: c.ClientID}), nil
+}
+
+// ExchangeCode exchanges an authorization code with code_verifier for identity claims.
+func (c *SSOClient) ExchangeCode(ctx context.Context, redirectURI, code, codeVerifier, nonce string) (*SSOTokenClaims, error) {
+	ctx, provider, verifier, err := c.providerVerifier(ctx)
+	if err != nil {
+		return nil, err
 	}
 	config := oauth2.Config{
 		ClientID: c.ClientID, ClientSecret: c.ClientSecret, Endpoint: provider.Endpoint(),
@@ -209,13 +226,7 @@ func (c *SSOClient) ExchangeCode(ctx context.Context, redirectURI, code, codeVer
 	if !ok || rawIDToken == "" {
 		return nil, fmt.Errorf("token response has no ID token")
 	}
-	jwksClient := *client
-	base := client.Transport
-	if base == nil {
-		base = http.DefaultTransport
-	}
-	jwksClient.Transport = strongJWKSTransport{base: base}
-	idToken, err := provider.VerifierContext(oidc.ClientContext(ctx, &jwksClient), &oidc.Config{ClientID: c.ClientID}).Verify(ctx, rawIDToken)
+	idToken, err := verifier.Verify(ctx, rawIDToken)
 	if err != nil {
 		return nil, fmt.Errorf("verify ID token: %w", err)
 	}
@@ -229,6 +240,8 @@ func (c *SSOClient) ExchangeCode(ctx context.Context, redirectURI, code, codeVer
 	if idToken.Subject == "" {
 		return nil, fmt.Errorf("verify ID token: subject is empty")
 	}
+	// sid comes from the ID token only: back-channel logout names logins by it.
+	sid, _ := rawClaims["sid"].(string)
 	if userInfo, err := provider.UserInfo(ctx, oauth2.StaticTokenSource(token)); err == nil {
 		if userInfo.Subject != idToken.Subject {
 			return nil, fmt.Errorf("verify userinfo: subject mismatch")
@@ -243,7 +256,9 @@ func (c *SSOClient) ExchangeCode(ctx context.Context, redirectURI, code, codeVer
 	// Userinfo cannot replace the verified ID-token identity binding.
 	rawClaims["iss"] = idToken.Issuer
 	rawClaims["sub"] = idToken.Subject
-	return parseClaimsMap(rawClaims), nil
+	claims := parseClaimsMap(rawClaims)
+	claims.SID = sid
+	return claims, nil
 }
 
 func parseClaimsMap(m map[string]any) *SSOTokenClaims {
