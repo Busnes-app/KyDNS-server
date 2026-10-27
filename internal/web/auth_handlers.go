@@ -33,6 +33,7 @@ func (s *Server) routes(mux registrar) {
 	mux.HandleFunc("POST "+PathLogout, s.requireCSRF(s.postLogout))
 	mux.HandleFunc("GET /auth/sso/login", s.getSSOLogin)
 	mux.HandleFunc("GET /auth/sso/callback", s.getSSOCallback)
+	mux.HandleFunc("POST /auth/sso/backchannel-logout", s.postBackchannelLogout)
 	s.pageRoutes(mux)
 }
 
@@ -295,6 +296,17 @@ func (s *Server) getSSOCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	signIn := func(issuer, subject string, revision uint64) {
+		login := auth.SSOLogin{Issuer: claims.Issuer, Subject: claims.Sub, SID: claims.SID, IssuedAt: claims.IssuedAt}
+		sess, ok := s.o.Sessions.CreateSSOLogin(login, issuer, subject, revision, generation)
+		if !ok {
+			w.WriteHeader(http.StatusUnauthorized)
+			s.renderLogin(w, "This sign-in was ended at the identity provider. Sign in again.")
+			return
+		}
+		s.setSessionCookie(w, r, sess)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+	}
 	managed, authority, e := s.o.Store.InstallerAuthority(claims.Issuer, claims.Sub)
 	if e != nil {
 		http.Error(w, "administrator binding unavailable", 500)
@@ -305,8 +317,7 @@ func (s *Server) getSSOCallback(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "use the explicitly assigned administrator identity", 403)
 			return
 		}
-		s.setSessionCookie(w, r, s.o.Sessions.CreateAuthenticated(claims.Issuer, claims.Sub, authority.Revision, generation))
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		signIn(claims.Issuer, claims.Sub, authority.Revision)
 		return
 	}
 	ident, err := s.o.Store.AdminIdentity()
@@ -346,8 +357,43 @@ func (s *Server) getSSOCallback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	s.o.Logger.Info("sso login successful", "sub", claims.Sub, "username", claims.Username)
-	s.setSessionCookie(w, r, s.o.Sessions.CreateAuthenticated("", "", 0, generation))
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	signIn("", "", 0)
+}
+
+// ssoLogoutFence outlives the five-minute login cookies, so a logout that lands
+// while the browser is still finishing that login also ends it.
+const ssoLogoutFence = 10 * time.Minute
+
+// postBackchannelLogout is the OpenID Connect Back-Channel Logout receiver: the
+// provider POSTs a signed logout_token when a login ends there. It is anonymous,
+// since the signature is its authority, and deliberately not rate limited: a
+// KyIdentity restore sends a burst, and every refusal spends one of its retries.
+// s.logout reuses one discovered verifier, so a POST costs the provider nothing.
+func (s *Server) postBackchannelLogout(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Cache-Control", "no-store")
+	r.Body = http.MaxBytesReader(w, r.Body, 16<<10)
+	sso, err := s.o.Store.SSOSettings()
+	if err != nil {
+		http.Error(w, "failed to load SSO settings", http.StatusInternalServerError)
+		return
+	}
+	claims, err := s.logout.Verify(r.Context(), auth.NewSSOClient(sso.IssuerURL, sso.ClientID, ""), r.PostFormValue("logout_token"))
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = w.Write([]byte(`{"error":"invalid_request"}`))
+		return
+	}
+	fenceUntil := time.Now().Add(ssoLogoutFence)
+	if claims.SID != "" {
+		s.o.Sessions.EndSSOLogin(claims.Issuer, claims.SID, fenceUntil)
+	} else {
+		// iat has whole-second precision: a login from that same second ends too.
+		s.o.Sessions.EndSSOSubject(claims.Issuer, claims.Subject, claims.IssuedAt.Add(time.Second), fenceUntil)
+	}
+	_ = s.o.Store.RecordAudit(store.AuditEvent{Actor: "sso", Action: "auth.sso_backchannel_logout",
+		Resource: "session", IP: s.sourceKey(r), Outcome: "success"})
+	w.WriteHeader(http.StatusOK)
 }
 
 func (s *Server) ssoRedirectURI(r *http.Request) string {

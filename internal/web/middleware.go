@@ -241,7 +241,10 @@ func (s *Server) transportAllowed(r *http.Request) bool {
 	return err == nil && ip.Unmap().IsLoopback()
 }
 
-type Server struct{ o Options }
+type Server struct {
+	o      Options
+	logout auth.LogoutVerifier
+}
 
 func New(o Options) *Server {
 	if o.Config == nil {

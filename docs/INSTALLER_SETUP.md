@@ -27,6 +27,9 @@ The protected bundle uses the shared `ky-primitives/applysetup` contract:
 }
 ```
 
+Register `https://<admin host>/auth/sso/backchannel-logout` as the client's
+back-channel logout URI in KyIdentity, so a login ended there ends here too.
+
 Bundle and credential files must be private, bounded, regular, owned by the
 runtime user and referenced by absolute paths. Credentials never appear in the
 report, installer configuration row or settings page; only the OIDC exchange reads
