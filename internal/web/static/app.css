@@ -85,6 +85,8 @@ body { font-size: 15px; }
 .app-main { padding: 2rem 2.5rem 3rem; max-width: var(--max-width); }
 .app-main h1 { font-family: var(--font-display); color: var(--ink-strong); font-size: var(--ky-type-title);
                font-weight: 600; line-height: 1.25; margin: 0 0 1.5rem; }
+.page-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
+.page-heading h1 { margin: 0; }
 .app-main h3 { font-family: var(--font-display); color: var(--ink-strong); font-size: var(--ky-type-section);
                font-weight: 600; margin-top: 0; }
 
@@ -349,14 +351,18 @@ a { color: var(--accent); }
   /* Preserve the table and its headers; expose every row field on phones. */
   table.responsive, table.responsive tbody { display: block; }
   table.responsive .column-headings { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-  table.responsive tr:not(.column-headings) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem 1rem; padding: 1rem 0; border-bottom: 1px solid var(--line); }
+  table.responsive tr:not(.column-headings) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem 1rem; padding: .75rem 0; border-bottom: 1px solid var(--line); }
   table.responsive tr:last-child { border-bottom: 0; }
   table.responsive td { display: block; padding: 0; border: 0; min-width: 0; overflow-wrap: anywhere; }
-  table.responsive td::before { content: attr(data-label); display: block; margin-bottom: .25rem; color: var(--ink); font: 400 var(--ky-type-meta)/1.5 var(--font-display); }
+  table.responsive td::before { content: attr(data-label); display: inline; margin-right: .5rem; color: var(--ink); font: 400 var(--ky-type-meta)/1.5 var(--font-display); }
   table.responsive td:first-child, table.responsive td[colspan], table.responsive td.wide, table.responsive td:has(details[open]) { grid-column: 1 / -1; }
   table.responsive td:first-child { font-weight: 600; }
+  table.responsive td:first-child.technical { font-size: var(--ky-type-body); }
+  table.responsive td .muted { font-weight: 400; }
+  table.responsive td:has(details) { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
   table.responsive td:first-child::before, table.responsive td.actions::before, table.responsive td[colspan]::before { display: none; }
-  table.responsive td.actions { display: flex; flex-wrap: wrap; gap: .5rem; align-items: end; justify-content: flex-end; }
+  table.responsive td.actions { grid-column: 2; display: flex; flex-wrap: wrap; gap: .5rem; align-items: end; justify-content: flex-end; }
+  table.responsive td.actions.wide { grid-column: 1 / -1; }
   table.responsive td:last-child:has(form) { width: auto; white-space: normal; }
   table.responsive.lists td:first-child, table.responsive.lists td:nth-child(2) { width: auto; min-width: 0; }
   table.responsive.lists td:nth-child(5) { white-space: normal; }

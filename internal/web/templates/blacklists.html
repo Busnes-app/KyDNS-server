@@ -91,7 +91,7 @@
 </div>
 
 <div class="card">
-  <h3>Add a list</h3>
+  <h3 id="add-list" tabindex="-1">Add a list</h3>
   <p class="muted">A list URL is a trust decision: KyDNS downloads and applies
      whatever it says. Only https sources are accepted, and no query names,
      client addresses, or identifying headers are ever sent to the host.</p>
@@ -109,7 +109,7 @@
     </select>
     <label for="bl-interval">Refresh every (seconds)</label>
     <input id="bl-interval" name="interval" type="text" value="86400">
-    <button type="submit"{{template "ro" $}}>Add list</button>
+    <button class="ghost" type="submit"{{template "ro" $}}>Add list</button>
   </form>
 </div>
 

@@ -35,7 +35,12 @@
             title="MIT License"></iframe>
   </div>
   <main class="app-main">
-    <h1>{{.Title}}</h1>
+    <header class="page-heading">
+      <h1>{{.Title}}</h1>
+      {{if eq .Nav "services"}}<a class="button" href="#add-service">Add service</a>{{end}}
+      {{if eq .Nav "records"}}<a class="button" href="#add-record">Add record</a>{{end}}
+      {{if eq .Nav "blacklists"}}<a class="button" href="#add-list">Add list</a>{{end}}
+    </header>
     {{with .ReplicaBanner}}
     <div class="banner">
       <strong>{{.Title}}</strong>
