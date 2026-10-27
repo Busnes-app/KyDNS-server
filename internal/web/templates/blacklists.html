@@ -50,12 +50,12 @@
 <div class="card">
   <h3>Lists</h3>
   <table class="grid lists responsive" aria-label="Blacklist sources">
-    <tr class="column-headings"><th scope="col">Name</th><th>Source</th><th>Format</th><th>Entries</th><th>Last update</th><th>State</th><th></th></tr>
+    <tr class="column-headings"><th scope="col" colspan="2">Name and source</th><th>Format</th><th>Entries</th><th>Last update</th><th>State</th><th></th></tr>
     {{range .Lists}}
     <tr>
-      <td data-label="Name">{{.Name}}{{if .Builtin}} <span class="badge">built-in</span>{{end}}
-          {{if .Description}}<br><span class="muted">{{.Description}}</span>{{end}}</td>
-      <td class="technical wide" data-label="Source"><span class="muted">{{.URL}}</span></td>
+      <td colspan="2" data-label="Name and source">{{.Name}}{{if .Builtin}} <span class="badge">built-in</span>{{end}}
+          {{if .Description}}<br><span class="muted">{{.Description}}</span>{{end}}
+          <span class="technical source-url">{{.URL}}</span></td>
       <td data-label="Format">{{.Format}}</td>
       <td data-label="Entries">{{.Entries}}{{if .Skipped}} <span class="muted">({{.Skipped}} skipped)</span>{{end}}</td>
       <td data-label="Last update">{{.LastOK}}<br><span class="muted">every {{.Interval}}</span></td>
@@ -109,7 +109,7 @@
     </select>
     <label for="bl-interval">Refresh every (seconds)</label>
     <input id="bl-interval" name="interval" type="text" value="86400">
-    <button class="ghost" type="submit"{{template "ro" $}}>Add list</button>
+    <button type="submit"{{template "ro" $}}>Add list</button>
   </form>
 </div>
 

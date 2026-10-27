@@ -161,7 +161,7 @@ def workbook(sheets):
 
 workbook(book)
 with (root / 'ratings.csv').open('w', newline='') as output:
-    csv.writer(output).writerows(book['Quality evidence'])
+    csv.writer(output, lineterminator='\n').writerows(book['Quality evidence'])
 lines = ['# KyDNS Council', '', 'Current-round Opus alone controls progression. Exact raw scores and separate brand judgments remain in the linked JSON and workbook. Coverage summaries are not competitive rankings.', '', '| Round | Reviewer | Status | n | Exact quality mean | Half-up | Progression |', '|---|---|---|---:|---|---:|---|']
 for row in book['Rounds'][1:]:
     lines.append('| ' + ' | '.join(str(row[index] or '—') for index in [0, 1, 2, 3, 5, 7, 8]) + ' |')

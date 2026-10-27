@@ -87,6 +87,8 @@ body { font-size: 15px; }
                font-weight: 600; line-height: 1.25; margin: 0 0 1.5rem; }
 .page-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
 .page-heading h1 { margin: 0; }
+.page-heading a { display: inline-flex; align-items: center; min-height: var(--ky-control-size); text-decoration: underline; text-underline-offset: 3px; font-size: var(--ky-type-nav); }
+.nav-scroll-hint { display: none; }
 .app-main h3 { font-family: var(--font-display); color: var(--ink-strong); font-size: var(--ky-type-section);
                font-weight: 600; margin-top: 0; }
 
@@ -95,6 +97,7 @@ body { font-size: 15px; }
 .card { margin-bottom: 2rem; min-width: 0; overflow-x: auto; }
 .section-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: .5rem; }
 .section-heading h3 { margin: 0; }
+.server-settings .section-heading { max-width: 46rem; }
 .card > p { max-width: 72ch; }
 .card > h3 { margin-bottom: .5rem; }
 .card > h3 + p.muted { margin-top: 0; }
@@ -104,7 +107,8 @@ body { font-size: 15px; }
 
 /* ---------- Stats ---------- */
 
-.stat-row { display: flex; gap: 0; flex-wrap: wrap; padding: 1rem 1.4rem; }
+.stat-row { display: flex; gap: 0; flex-wrap: wrap; padding: 0; }
+.stat-row.metrics { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); }
 .stat { flex: 1 1 8rem; padding: .25rem 1.5rem; border-left: 1px solid var(--line); }
 .stat:first-child { border-left: 0; padding-left: 0; }
 .stat .value { font-family: var(--font-display); font-size: 2.1rem; font-weight: 500;
@@ -164,10 +168,10 @@ table.grid td:last-child:has(form) { text-align: right; white-space: nowrap; wid
 table.grid td:last-child:has(form) form { display: inline-flex; gap: .4rem; margin: .25rem 0; }
 /* A list carries a paragraph of description and a URL that does not wrap on
    its own. Give the prose room and let the URL break. */
-table.grid.lists td:first-child { width: 18%; }
-table.grid.lists td:nth-child(2) { width: 28%; overflow-wrap: anywhere; }
+table.grid.lists td:first-child { width: 44%; }
+.source-url { display: block; margin-top: .5rem; overflow-wrap: anywhere; font-weight: 400; }
 /* The timestamp and its interval already carry their own line break. */
-table.grid.lists td:nth-child(5) { white-space: nowrap; }
+table.grid.lists td:nth-child(4) { white-space: nowrap; }
 table.grid.lists td:first-child .muted { display: block; margin-top: .2rem; font-size: var(--ky-type-meta);
                                          line-height: 1.5; }
 
@@ -216,11 +220,10 @@ input:hover, select:hover, textarea:hover { border-color: var(--ink-dim); }
 textarea { resize: vertical; line-height: 1.5; }
 /* Numbers are short. A full-width box for "60" reads as a mistake. */
 input[type=number] { max-width: 9rem; }
-/* A checkbox is a switch, not a full-width text box. It carries its own label,
-   so it spans both columns rather than leaving an empty label cell. */
+/* Checkbox rows and help share the input column; phones use one column. */
 form.stack > label:has(input[type=checkbox]), .fields > label:has(input[type=checkbox]) {
   display: flex; gap: .55rem; align-items: center; color: var(--ink-strong); font-family: var(--font-display);
-  grid-column: 1 / -1; text-align: left; padding-top: .2rem; font-size: .88rem; }
+  grid-column: 2; text-align: left; padding-top: .2rem; font-size: .88rem; }
 input[type=checkbox] { width: 1rem; height: 1rem; accent-color: var(--accent); flex: none; }
 
 /* Keep native fieldset grouping and replica disabling without nested frames. */
@@ -299,7 +302,10 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px
   font-family: var(--font-display); font-size: var(--ky-type-meta); }
 
 /* Native disclosures keep optional routing edits out of the scan path. */
-.row-routing summary { cursor: pointer; min-height: var(--ky-control-size); display: list-item; align-content: center; font: 500 var(--ky-type-nav)/1.5 var(--font-display); }
+.row-routing summary { cursor: pointer; min-height: var(--ky-control-size); display: flex; align-items: center; gap: .5rem; list-style: none; font: 500 var(--ky-type-nav)/1.5 var(--font-display); }
+.row-routing summary::-webkit-details-marker { display: none; }
+.row-routing summary::before { content: ""; width: 6px; height: 6px; flex: none; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg); }
+.row-routing[open] summary::before { transform: rotate(45deg); }
 .row-routing[open] { min-width: 18rem; }
 .row-routing .address-row { margin: .5rem 0; }
 .row-routing .address-row label { font-family: var(--font-display); }
@@ -318,6 +324,7 @@ table.grid .address-row input[type=text] { min-width: 8rem; }
 table.grid .address-row label { display: inline-flex; align-items: center; gap: .35rem; font-size: .8rem; }
 .muted { color: var(--ink); }
 p.muted { line-height: 1.55; }
+.app-main p a { text-decoration: underline; text-underline-offset: 3px; }
 a { color: var(--accent); }
 
 /* Below the two-column breakpoint the nav rides the top instead of the side. */
@@ -328,6 +335,7 @@ a { color: var(--accent); }
   .app-nav { position: static; height: auto; flex-flow: row wrap; align-items: center; gap: 8px 12px;
              padding: 12px 16px 0; border-right: 0; border-bottom: 1px solid var(--line); }
   .brand { margin: 0; flex: 1; }
+  .nav-scroll-hint { display: block; color: var(--ink); font: 400 var(--ky-type-meta)/1.3 var(--font-display); letter-spacing: normal; }
   .app-nav-links { order: 2; flex: 1 0 100%; flex-direction: row; overflow-x: auto; scrollbar-width: none;
                margin: 0 -16px; padding: 4px 16px 8px; }
   .app-nav a { flex: none; margin: 0; padding: 0 12px; white-space: nowrap; }
@@ -340,12 +348,14 @@ a { color: var(--accent); }
   .page-legal { display: block; margin: 2rem 0 0; }
   .app-main { padding: 1.25rem 1rem 2rem; }
   /* Two even columns, so every value starts on one of two edges. */
-  .stat-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 24px; }
+  .stat-row, .stat-row.metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 24px; }
+  .stat-row.metrics .stat:last-child:nth-child(odd) { grid-column: 1 / -1; }
   .stat, .stat:first-child { padding: 0; border-left: 0; }
   .stat .value { font-size: 1.6rem; }
   form.stack, .fields { grid-template-columns: minmax(0, 1fr); gap: .3rem; }
   form.stack > label, .fields > label { grid-column: 1; text-align: left; padding-top: .4rem; }
   form.stack > :not(label), .fields > :not(label) { grid-column: 1; }
+  form.stack > label:has(input[type=checkbox]), .fields > label:has(input[type=checkbox]) { grid-column: 1; }
   .app-footer .account-role { display: none; }
   .card.centered { padding: 1.5rem; }
   /* Preserve the table and its headers; expose every row field on phones. */
@@ -365,7 +375,8 @@ a { color: var(--accent); }
   table.responsive td.actions.wide { grid-column: 1 / -1; }
   table.responsive td:last-child:has(form) { width: auto; white-space: normal; }
   table.responsive.lists td:first-child, table.responsive.lists td:nth-child(2) { width: auto; min-width: 0; }
-  table.responsive.lists td:nth-child(5) { white-space: normal; }
+  table.responsive.lists td:nth-child(4) { white-space: normal; }
+  table.responsive td.actions button.danger { border-color: transparent; padding-inline: .25rem; }
   table.responsive td .badge { width: fit-content; }
   .row-routing[open] { min-width: 0; }
   .row-routing .address-row { flex-wrap: wrap; }

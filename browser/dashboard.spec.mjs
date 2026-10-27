@@ -282,8 +282,21 @@ test('admin layouts retain reachable fields and routing actions at shipped sizes
   await page.goto('/discovered');
   const phone = page.viewportSize().width < 860;
   const nav = await page.locator('nav').boundingBox();
-  if (phone) expect(nav.height).toBeLessThan(160);
-  else expect(nav.width).toBe(240);
+  if (phone) {
+    expect(nav.height).toBeLessThan(160);
+    await expect(page.locator('.nav-scroll-hint')).toBeVisible();
+  } else expect(nav.width).toBe(240);
+
+  await page.goto('/');
+  const metricRows = page.locator('.stat-row.metrics');
+  const upper = await metricRows.first().locator('.stat').all();
+  const lower = await metricRows.last().locator('.stat').all();
+  for (let index = 0; index < (phone ? 2 : lower.length); index++) {
+    const a = await upper[index].boundingBox();
+    const b = await lower[index].boundingBox();
+    expect(Math.abs(a.x - b.x)).toBeLessThan(1);
+  }
+  if (phone) expect((await upper[0].boundingBox()).x).toBe(16);
 
   await page.goto('/settings');
   for (const group of await page.locator('.field-set').all()) {

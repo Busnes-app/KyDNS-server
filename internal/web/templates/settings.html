@@ -54,7 +54,7 @@ curl -fsSo ~/.agents/skills/kydns/SKILL.md {{.}}/agent/skills/kydns/SKILL.md</pr
 {{end}}
 
 {{with .Server}}
-<div class="card">
+<div class="card server-settings">
   <div class="section-heading">
     <h3>Server settings</h3>
     <button type="submit" form="server-settings-form"{{template "ro" $}}>{{if $.Rename}}Save and rename{{else}}Save settings{{end}}</button>

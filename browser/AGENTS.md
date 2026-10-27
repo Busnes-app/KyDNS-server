@@ -19,7 +19,7 @@ Chromium regressions for the shipped KyDNS dashboard, live refresh, Appearance, 
 ## Work Guidance
 
 - Use Playwright's assertions and clock; no fixed sleeps or retries hiding failures.
-- The responsive administrator regression checks short-page navigation, Settings containment and top Save, then opens service routing by keyboard and persists a real edit. Keep the owned service cleanup in its `finally` block.
+- The responsive administrator regression checks short-page navigation and its scroll cue, Dashboard metric alignment, Settings containment and top Save, then opens service routing by keyboard and persists a real edit. Keep the owned service cleanup in its `finally` block.
 - Keep the package private and the browser tool dependency exactly pinned.
 
 ## Verification

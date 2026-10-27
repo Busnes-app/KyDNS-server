@@ -14,7 +14,7 @@
 </div>
 {{end}}
 
-<div class="card stat-row">
+<div class="card stat-row metrics">
   <div class="stat"><div class="value" data-stat="total">{{.Queries.Total}}</div><div class="label">Queries</div></div>
   <div class="stat"><div class="value" data-stat="blocked">{{.Queries.Blocked}}</div><div class="label">Blocked</div></div>
   <div class="stat"><div class="value"><span data-stat="hit_rate">{{.CacheHitRate}}</span>%</div><div class="label">Cache hit rate</div></div>
@@ -47,7 +47,7 @@
   </div>
 </div>
 
-<div class="card stat-row">
+<div class="card stat-row metrics">
   <div class="stat"><div class="value">{{.Services}}</div><div class="label">Services</div></div>
   <div class="stat"><div class="value">{{.Records}}</div><div class="label">Records</div></div>
   <div class="stat"><div class="value">{{.Views}}</div><div class="label">Views</div></div>
