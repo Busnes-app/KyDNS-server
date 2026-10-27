@@ -1,0 +1,71 @@
+{
+  "verified_at": "2026-10-27T23:50:57.410283+00:00",
+  "source": "fde2314fde061ea9c094feab960da9d8ac6d28ce",
+  "current_originals_verified": 36,
+  "all_hash_bytes_dims_matrix": true,
+  "duplicate_pair_coverage": 306,
+  "duplicate_pixel_metrics": "Worker measured306;parent verifiedmembership/logic,notrepeatpixelcalculations.",
+  "served_asset_hashes_pass": 15,
+  "authority_objects_pass": 5,
+  "brand_refs_pass": 4,
+  "historical_exact_matches": [
+    {
+      "current": "screenshots/kydns-02-after-appearance-desktop-dark.png",
+      "prior": "screenshots/kydns-01-after-appearance-desktop-dark.png",
+      "sha256": "3c442f4218b6d1d0deef8a61d4bd75fda5f50fd373c2ded5e0ac9c47496b19d6",
+      "surface": "appearance",
+      "device": "desktop",
+      "theme": "dark"
+    },
+    {
+      "current": "screenshots/kydns-02-after-appearance-desktop-light.png",
+      "prior": "screenshots/kydns-01-after-appearance-desktop-light.png",
+      "sha256": "b1796624b59ce3350dfd6deda938a45a680b692af2efff1fccb2c7f2bc091aad",
+      "surface": "appearance",
+      "device": "desktop",
+      "theme": "light"
+    },
+    {
+      "current": "screenshots/kydns-02-after-login-desktop-dark.png",
+      "prior": "screenshots/kydns-01-after-login-desktop-dark.png",
+      "sha256": "852570f11b84974f69b8701cdd9fd48782983fa4ded9c46747ae19415ac749a0",
+      "surface": "login",
+      "device": "desktop",
+      "theme": "dark"
+    },
+    {
+      "current": "screenshots/kydns-02-after-login-desktop-light.png",
+      "prior": "screenshots/kydns-01-after-login-desktop-light.png",
+      "sha256": "28ccbf2e360abcb8aa2f22d7b814f362d5dc23ec8c9b07d1d341c473a8bfa39d",
+      "surface": "login",
+      "device": "desktop",
+      "theme": "light"
+    },
+    {
+      "current": "screenshots/kydns-02-after-login-mobile-dark.png",
+      "prior": "screenshots/kydns-01-after-login-mobile-dark.png",
+      "sha256": "eb18df452965f9cbf21eddbc6103774cfbc516ec0894f33ee24dfd110f1ec471",
+      "surface": "login",
+      "device": "mobile",
+      "theme": "dark"
+    },
+    {
+      "current": "screenshots/kydns-02-after-login-mobile-light.png",
+      "prior": "screenshots/kydns-01-after-login-mobile-light.png",
+      "sha256": "3813c7603cbc757bbbba1ced377cc6989166e5d804859d292798abb052f919f4",
+      "surface": "login",
+      "device": "mobile",
+      "theme": "light"
+    }
+  ],
+  "worker_individual_original_inspection": 36,
+  "parent_spot_checks": [
+    "services-desktop-light",
+    "blacklists-desktop-dark",
+    "dashboard-mobile-light",
+    "settings-desktop-light"
+  ],
+  "pre_existing_source_and_evidence_unchanged_during_capture": true,
+  "residual": "BelowfoldSettings476/358horizontal scroller persists;no fullbehaviorclaim.",
+  "dox_pass": "Existingcapture/review/reportcontracts covermetadata;nonearestAGENTSchange needed."
+}

@@ -1,0 +1,7017 @@
+{
+  "product": "KyDNS",
+  "stage": "02",
+  "phase": "after",
+  "frozen_head": "fde2314fde061ea9c094feab960da9d8ac6d28ce",
+  "product_source": "fde2314fde061ea9c094feab960da9d8ac6d28ce",
+  "started_at": "2026-10-27T23:43:43.344Z",
+  "completed_at": "2026-10-27T23:44:05.742Z",
+  "matrix": {
+    "viewports": [
+      [
+        1280,
+        900
+      ],
+      [
+        390,
+        844
+      ]
+    ],
+    "dpr": 1,
+    "schemes": [
+      "light",
+      "dark"
+    ],
+    "locale": "en-US",
+    "timezone": "America/New_York",
+    "full_page": false,
+    "service_workers": "allow",
+    "saved_kydns_theme": null,
+    "settling_ms": 500,
+    "pointer": [
+      0,
+      0
+    ]
+  },
+  "count": 36,
+  "unavailable": [
+    {
+      "surface": "replication",
+      "path": "/replication",
+      "reason": "Standalone role hides nav and sends 303 to /. No peers or pairing attempted.",
+      "excluded_combinations": 4
+    }
+  ],
+  "fixture": "fixture-round3.json",
+  "capture_provenance": "capture-provenance-r3.json",
+  "source_provenance": "source-provenance-r3.json",
+  "limits": [
+    "Initial viewport only. Below-fold controls are unscored.",
+    "Live ages, uptime, minute positions and latency drift naturally.",
+    "No quality scores, acceptance, exhaustive behavior, accessibility, integration or production claims."
+  ],
+  "shots": [
+    {
+      "file": "screenshots/kydns-02-after-login-desktop-light.png",
+      "surface": "login",
+      "path": "/login",
+      "device": "desktop",
+      "theme": "light",
+      "account": "signed-out",
+      "sha256": "28ccbf2e360abcb8aa2f22d7b814f362d5dc23ec8c9b07d1d341c473a8bfa39d",
+      "bytes": 14837,
+      "width": 1280,
+      "height": 900,
+      "captured_at": "2026-10-27T23:43:44.042Z",
+      "state": {
+        "path": "/login",
+        "title": "Sign in — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": false,
+        "theme": "busnes-light",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 1280,
+          "viewport_width": 1280,
+          "document_height": 900,
+          "viewport_height": 900
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "INPUT",
+          "id": "password"
+        },
+        "password_fields": 1,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 0,
+        "nav": null,
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [],
+        "fieldsets": [],
+        "list_headers": [],
+        "settings_save": [],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-dashboard-desktop-light.png",
+      "surface": "dashboard",
+      "path": "/",
+      "device": "desktop",
+      "theme": "light",
+      "account": "local-recovery-administrator",
+      "sha256": "17871d203b3483372d63969b59e7b94f8ae8852df06aaac294adcf9d2a33982f",
+      "bytes": 68815,
+      "width": 1280,
+      "height": 900,
+      "captured_at": "2026-10-27T23:43:44.850Z",
+      "state": {
+        "path": "/",
+        "title": "Dashboard — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": false,
+        "theme": "busnes-light",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 1280,
+          "viewport_width": 1280,
+          "document_height": 1271,
+          "viewport_height": 900
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 0,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 240,
+            "height": 900
+          },
+          "scroll_left": 0,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": "page",
+              "bounds": {
+                "x": 12,
+                "y": 68.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 112.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 156.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 200.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 244.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 288.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 332.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 376.515625,
+                "width": 215,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [
+          {
+            "text": "Dashboard",
+            "bounds": {
+              "x": 280,
+              "y": 32,
+              "width": 126,
+              "height": 30
+            }
+          },
+          {
+            "text": "Most blocked names",
+            "bounds": {
+              "x": 280,
+              "y": 1035.46875,
+              "width": 960,
+              "height": 26.34375
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [],
+        "fieldsets": [],
+        "list_headers": [],
+        "settings_save": [],
+        "chart_ready": true,
+        "chart_legend": "Queries per minute\n— last hour\nLocal\n18\nForwarded\n0\nBlocked\n6",
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-services-desktop-light.png",
+      "surface": "services",
+      "path": "/services",
+      "device": "desktop",
+      "theme": "light",
+      "account": "local-recovery-administrator",
+      "sha256": "863d95d2169e5fdf97947c9b69ec60fea1e03f41a0ef2e3fed375ef300abd2d5",
+      "bytes": 81679,
+      "width": 1280,
+      "height": 900,
+      "captured_at": "2026-10-27T23:43:45.453Z",
+      "state": {
+        "path": "/services",
+        "title": "Services — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": false,
+        "theme": "busnes-light",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 1280,
+          "viewport_width": 1280,
+          "document_height": 1088,
+          "viewport_height": 900
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 0,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 240,
+            "height": 900
+          },
+          "scroll_left": 0,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 68.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": "page",
+              "bounds": {
+                "x": 12,
+                "y": 112.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 156.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 200.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 244.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 288.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 332.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 376.515625,
+                "width": 215,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [
+          {
+            "text": "Services",
+            "bounds": {
+              "x": 280,
+              "y": 37,
+              "width": 98,
+              "height": 30
+            }
+          },
+          {
+            "text": "Add a service",
+            "bounds": {
+              "x": 280,
+              "y": 366.296875,
+              "width": 960,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Add an address to an existing service",
+            "bounds": {
+              "x": 280,
+              "y": 769.84375,
+              "width": 960,
+              "height": 26.34375
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [
+          {
+            "label": "Direct",
+            "open": false
+          },
+          {
+            "label": "Direct",
+            "open": false
+          },
+          {
+            "label": "Direct",
+            "open": false
+          }
+        ],
+        "fieldsets": [],
+        "list_headers": [
+          {
+            "text": "Add service",
+            "href": "#add-service",
+            "target_exists": true
+          }
+        ],
+        "settings_save": [],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-records-desktop-light.png",
+      "surface": "records",
+      "path": "/records",
+      "device": "desktop",
+      "theme": "light",
+      "account": "local-recovery-administrator",
+      "sha256": "9fbdc2f0f6f670b4fcb0354b26035f8331fb998e4833a7cc6cbed6a7bb5e7809",
+      "bytes": 62749,
+      "width": 1280,
+      "height": 900,
+      "captured_at": "2026-10-27T23:43:46.065Z",
+      "state": {
+        "path": "/records",
+        "title": "Records — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": false,
+        "theme": "busnes-light",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 1280,
+          "viewport_width": 1280,
+          "document_height": 900,
+          "viewport_height": 900
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 0,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 240,
+            "height": 900
+          },
+          "scroll_left": 0,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 68.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 112.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": "page",
+              "bounds": {
+                "x": 12,
+                "y": 156.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 200.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 244.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 288.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 332.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 376.515625,
+                "width": 215,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [
+          {
+            "text": "Records",
+            "bounds": {
+              "x": 280,
+              "y": 37,
+              "width": 95,
+              "height": 30
+            }
+          },
+          {
+            "text": "Add a record",
+            "bounds": {
+              "x": 280,
+              "y": 366.296875,
+              "width": 960,
+              "height": 26.34375
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [],
+        "fieldsets": [],
+        "list_headers": [
+          {
+            "text": "Add record",
+            "href": "#add-record",
+            "target_exists": true
+          }
+        ],
+        "settings_save": [],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-discovered-desktop-light.png",
+      "surface": "discovered",
+      "path": "/discovered",
+      "device": "desktop",
+      "theme": "light",
+      "account": "local-recovery-administrator",
+      "sha256": "d97c166cf5581f84b4300df803de5e4703cf215c0a7213aecccfdd57d90855ed",
+      "bytes": 38339,
+      "width": 1280,
+      "height": 900,
+      "captured_at": "2026-10-27T23:43:46.660Z",
+      "state": {
+        "path": "/discovered",
+        "title": "Discovered — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": false,
+        "theme": "busnes-light",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 1280,
+          "viewport_width": 1280,
+          "document_height": 900,
+          "viewport_height": 900
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 0,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 240,
+            "height": 900
+          },
+          "scroll_left": 0,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 68.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 112.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 156.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": "page",
+              "bounds": {
+                "x": 12,
+                "y": 200.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 244.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 288.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 332.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 376.515625,
+                "width": 215,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [
+          {
+            "text": "Discovered",
+            "bounds": {
+              "x": 280,
+              "y": 32,
+              "width": 129,
+              "height": 30
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [],
+        "fieldsets": [],
+        "list_headers": [],
+        "settings_save": [],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-blacklists-desktop-light.png",
+      "surface": "blacklists",
+      "path": "/blacklists",
+      "device": "desktop",
+      "theme": "light",
+      "account": "local-recovery-administrator",
+      "sha256": "b45c2ff66bfeb841f40cd8a9065061accc4f863343ae2a37a476b23a3fd5bcf2",
+      "bytes": 97183,
+      "width": 1280,
+      "height": 900,
+      "captured_at": "2026-10-27T23:43:47.256Z",
+      "state": {
+        "path": "/blacklists",
+        "title": "Blacklists — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": false,
+        "theme": "busnes-light",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 1280,
+          "viewport_width": 1280,
+          "document_height": 1670,
+          "viewport_height": 900
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 0,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 240,
+            "height": 900
+          },
+          "scroll_left": 0,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 68.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 112.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 156.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 200.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": "page",
+              "bounds": {
+                "x": 12,
+                "y": 244.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 288.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 332.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 376.515625,
+                "width": 215,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [
+          {
+            "text": "Blacklists",
+            "bounds": {
+              "x": 280,
+              "y": 37,
+              "width": 112,
+              "height": 30
+            }
+          },
+          {
+            "text": "Filtering",
+            "bounds": {
+              "x": 280,
+              "y": 96,
+              "width": 960,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Lists",
+            "bounds": {
+              "x": 280,
+              "y": 386.921875,
+              "width": 960,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Add a list",
+            "bounds": {
+              "x": 280,
+              "y": 647.328125,
+              "width": 960,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "One-off rules",
+            "bounds": {
+              "x": 280,
+              "y": 1038.40625,
+              "width": 960,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Test a name",
+            "bounds": {
+              "x": 280,
+              "y": 1455.40625,
+              "width": 960,
+              "height": 26.34375
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [],
+        "fieldsets": [],
+        "list_headers": [
+          {
+            "text": "Add list",
+            "href": "#add-list",
+            "target_exists": true
+          }
+        ],
+        "settings_save": [],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-dhcp-desktop-light.png",
+      "surface": "dhcp",
+      "path": "/dhcp",
+      "device": "desktop",
+      "theme": "light",
+      "account": "local-recovery-administrator",
+      "sha256": "794b841d14612c83ff48591a795c8c34340da81e3a1bc9f54902370256576d79",
+      "bytes": 66340,
+      "width": 1280,
+      "height": 900,
+      "captured_at": "2026-10-27T23:43:47.848Z",
+      "state": {
+        "path": "/dhcp",
+        "title": "DHCP — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": false,
+        "theme": "busnes-light",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 1280,
+          "viewport_width": 1280,
+          "document_height": 968,
+          "viewport_height": 900
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 0,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 240,
+            "height": 900
+          },
+          "scroll_left": 0,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 68.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 112.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 156.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 200.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 244.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": "page",
+              "bounds": {
+                "x": 12,
+                "y": 288.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 332.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 376.515625,
+                "width": 215,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [
+          {
+            "text": "DHCP",
+            "bounds": {
+              "x": 280,
+              "y": 32,
+              "width": 61,
+              "height": 30
+            }
+          },
+          {
+            "text": "Status",
+            "bounds": {
+              "x": 280,
+              "y": 86,
+              "width": 960,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Settings",
+            "bounds": {
+              "x": 280,
+              "y": 260.421875,
+              "width": 960,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Leases",
+            "bounds": {
+              "x": 280,
+              "y": 815.671875,
+              "width": 960,
+              "height": 26.34375
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [],
+        "fieldsets": [],
+        "list_headers": [],
+        "settings_save": [],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-settings-desktop-light.png",
+      "surface": "settings",
+      "path": "/settings",
+      "device": "desktop",
+      "theme": "light",
+      "account": "local-recovery-administrator",
+      "sha256": "b903652771c3e706cefca41f8448049e3537f16b92b3232502245022e7467131",
+      "bytes": 66172,
+      "width": 1280,
+      "height": 900,
+      "captured_at": "2026-10-27T23:43:48.448Z",
+      "state": {
+        "path": "/settings",
+        "title": "Settings — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": false,
+        "theme": "busnes-light",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 1280,
+          "viewport_width": 1280,
+          "document_height": 5061,
+          "viewport_height": 900
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 1,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 240,
+            "height": 900
+          },
+          "scroll_left": 0,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 68.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 112.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 156.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 200.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 244.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 288.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": "page",
+              "bounds": {
+                "x": 12,
+                "y": 332.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 376.515625,
+                "width": 215,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [
+          {
+            "text": "Settings",
+            "bounds": {
+              "x": 280,
+              "y": 32,
+              "width": 97,
+              "height": 30
+            }
+          },
+          {
+            "text": "Server settings",
+            "bounds": {
+              "x": 280,
+              "y": 92.828125,
+              "width": 123,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Views",
+            "bounds": {
+              "x": 280,
+              "y": 1697.84375,
+              "width": 960,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "API tokens",
+            "bounds": {
+              "x": 280,
+              "y": 2011.3125,
+              "width": 960,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Single sign-on",
+            "bounds": {
+              "x": 280,
+              "y": 2525.234375,
+              "width": 960,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Backup and maintenance",
+            "bounds": {
+              "x": 280,
+              "y": 3034.5625,
+              "width": 960,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Disaster recovery",
+            "bounds": {
+              "x": 280,
+              "y": 3224.40625,
+              "width": 960,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Upstreams",
+            "bounds": {
+              "x": 280,
+              "y": 4450.234375,
+              "width": 960,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Configuration",
+            "bounds": {
+              "x": 280,
+              "y": 4715.21875,
+              "width": 960,
+              "height": 26.34375
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [],
+        "fieldsets": [
+          {
+            "bounds": {
+              "x": 280,
+              "y": 188.25,
+              "width": 736,
+              "height": 225.078125
+            },
+            "client_width": 736,
+            "scroll_width": 736
+          },
+          {
+            "bounds": {
+              "x": 280,
+              "y": 437.328125,
+              "width": 736,
+              "height": 271.4375
+            },
+            "client_width": 736,
+            "scroll_width": 736
+          },
+          {
+            "bounds": {
+              "x": 280,
+              "y": 732.765625,
+              "width": 736,
+              "height": 141.90625
+            },
+            "client_width": 736,
+            "scroll_width": 736
+          },
+          {
+            "bounds": {
+              "x": 280,
+              "y": 898.671875,
+              "width": 736,
+              "height": 234.703125
+            },
+            "client_width": 736,
+            "scroll_width": 736
+          },
+          {
+            "bounds": {
+              "x": 280,
+              "y": 1157.375,
+              "width": 736,
+              "height": 143.078125
+            },
+            "client_width": 736,
+            "scroll_width": 736
+          },
+          {
+            "bounds": {
+              "x": 280,
+              "y": 1324.453125,
+              "width": 736,
+              "height": 191.875
+            },
+            "client_width": 736,
+            "scroll_width": 736
+          },
+          {
+            "bounds": {
+              "x": 280,
+              "y": 1540.328125,
+              "width": 736,
+              "height": 101.515625
+            },
+            "client_width": 736,
+            "scroll_width": 736
+          },
+          {
+            "bounds": {
+              "x": 280,
+              "y": 2661.828125,
+              "width": 736,
+              "height": 276.734375
+            },
+            "client_width": 736,
+            "scroll_width": 736
+          }
+        ],
+        "list_headers": [],
+        "settings_save": [
+          {
+            "bounds": {
+              "x": 892,
+              "y": 86,
+              "width": 124,
+              "height": 40
+            },
+            "form_id": "server-settings-form",
+            "action": "/settings/server"
+          }
+        ],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-appearance-desktop-light.png",
+      "surface": "appearance",
+      "path": "/appearance",
+      "device": "desktop",
+      "theme": "light",
+      "account": "local-recovery-administrator",
+      "sha256": "b1796624b59ce3350dfd6deda938a45a680b692af2efff1fccb2c7f2bc091aad",
+      "bytes": 73519,
+      "width": 1280,
+      "height": 900,
+      "captured_at": "2026-10-27T23:43:49.068Z",
+      "state": {
+        "path": "/appearance",
+        "title": "Appearance — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": false,
+        "theme": "busnes-light",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 1280,
+          "viewport_width": 1280,
+          "document_height": 900,
+          "viewport_height": 900
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 0,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 240,
+            "height": 900
+          },
+          "scroll_left": 0,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 68.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 112.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 156.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 200.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 244.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 288.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 332.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": "page",
+              "bounds": {
+                "x": 12,
+                "y": 376.515625,
+                "width": 215,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 23,
+        "checked_theme": "system",
+        "headings": [
+          {
+            "text": "Appearance",
+            "bounds": {
+              "x": 280,
+              "y": 32,
+              "width": 139,
+              "height": 30
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": false
+        },
+        "routing_disclosures": [],
+        "fieldsets": [
+          {
+            "bounds": {
+              "x": 280,
+              "y": 155,
+              "width": 960,
+              "height": 682.109375
+            },
+            "client_width": 960,
+            "scroll_width": 960
+          }
+        ],
+        "list_headers": [],
+        "settings_save": [],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-login-mobile-light.png",
+      "surface": "login",
+      "path": "/login",
+      "device": "mobile",
+      "theme": "light",
+      "account": "signed-out",
+      "sha256": "3813c7603cbc757bbbba1ced377cc6989166e5d804859d292798abb052f919f4",
+      "bytes": 11874,
+      "width": 390,
+      "height": 844,
+      "captured_at": "2026-10-27T23:43:49.711Z",
+      "state": {
+        "path": "/login",
+        "title": "Sign in — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": false,
+        "theme": "busnes-light",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 390,
+          "viewport_width": 390,
+          "document_height": 844,
+          "viewport_height": 844
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "INPUT",
+          "id": "password"
+        },
+        "password_fields": 1,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 0,
+        "nav": null,
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [],
+        "fieldsets": [],
+        "list_headers": [],
+        "settings_save": [],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-dashboard-mobile-light.png",
+      "surface": "dashboard",
+      "path": "/",
+      "device": "mobile",
+      "theme": "light",
+      "account": "local-recovery-administrator",
+      "sha256": "77f884974ec45f4f98bb9c517681107b252fdf5958dac2e4e827eeecc27a8c80",
+      "bytes": 36319,
+      "width": 390,
+      "height": 844,
+      "captured_at": "2026-10-27T23:43:50.464Z",
+      "state": {
+        "path": "/",
+        "title": "Dashboard — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": false,
+        "theme": "busnes-light",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 390,
+          "viewport_width": 390,
+          "document_height": 1843,
+          "viewport_height": 844
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 0,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 118.40625
+          },
+          "scroll_left": 0,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": "page",
+              "bounds": {
+                "x": 16,
+                "y": 69.40625,
+                "width": 122.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": null,
+              "bounds": {
+                "x": 142.59375,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": null,
+              "bounds": {
+                "x": 253.1875,
+                "y": 69.40625,
+                "width": 104.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": null,
+              "bounds": {
+                "x": 361.78125,
+                "y": 69.40625,
+                "width": 124.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": null,
+              "bounds": {
+                "x": 490.375,
+                "y": 69.40625,
+                "width": 114.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": null,
+              "bounds": {
+                "x": 608.96875,
+                "y": 69.40625,
+                "width": 84.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": null,
+              "bounds": {
+                "x": 697.5625,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": null,
+              "bounds": {
+                "x": 808.15625,
+                "y": 69.40625,
+                "width": 130.59375,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [
+          {
+            "text": "Dashboard",
+            "bounds": {
+              "x": 16,
+              "y": 138.40625,
+              "width": 126,
+              "height": 30
+            }
+          },
+          {
+            "text": "Most blocked names",
+            "bounds": {
+              "x": 16,
+              "y": 1560.21875,
+              "width": 358,
+              "height": 26.34375
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [],
+        "fieldsets": [],
+        "list_headers": [],
+        "settings_save": [],
+        "chart_ready": true,
+        "chart_legend": "Queries per minute\n— last hour\nLocal\n18\nForwarded\n0\nBlocked\n6",
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-services-mobile-light.png",
+      "surface": "services",
+      "path": "/services",
+      "device": "mobile",
+      "theme": "light",
+      "account": "local-recovery-administrator",
+      "sha256": "d9464adfd4d851a54899e5817330a7b914e2e99f7d30957fd7f4a752a855d9cc",
+      "bytes": 41450,
+      "width": 390,
+      "height": 844,
+      "captured_at": "2026-10-27T23:43:51.048Z",
+      "state": {
+        "path": "/services",
+        "title": "Services — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": false,
+        "theme": "busnes-light",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 390,
+          "viewport_width": 390,
+          "document_height": 1692,
+          "viewport_height": 844
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 0,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 118.40625
+          },
+          "scroll_left": 0,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": null,
+              "bounds": {
+                "x": 16,
+                "y": 69.40625,
+                "width": 122.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": "page",
+              "bounds": {
+                "x": 142.59375,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": null,
+              "bounds": {
+                "x": 253.1875,
+                "y": 69.40625,
+                "width": 104.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": null,
+              "bounds": {
+                "x": 361.78125,
+                "y": 69.40625,
+                "width": 124.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": null,
+              "bounds": {
+                "x": 490.375,
+                "y": 69.40625,
+                "width": 114.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": null,
+              "bounds": {
+                "x": 608.96875,
+                "y": 69.40625,
+                "width": 84.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": null,
+              "bounds": {
+                "x": 697.5625,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": null,
+              "bounds": {
+                "x": 808.15625,
+                "y": 69.40625,
+                "width": 130.59375,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [
+          {
+            "text": "Services",
+            "bounds": {
+              "x": 16,
+              "y": 143.40625,
+              "width": 98,
+              "height": 30
+            }
+          },
+          {
+            "text": "Add a service",
+            "bounds": {
+              "x": 16,
+              "y": 778.3125,
+              "width": 358,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Add an address to an existing service",
+            "bounds": {
+              "x": 16,
+              "y": 1275.359375,
+              "width": 358,
+              "height": 26.34375
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [
+          {
+            "label": "Direct",
+            "open": false
+          },
+          {
+            "label": "Direct",
+            "open": false
+          },
+          {
+            "label": "Direct",
+            "open": false
+          }
+        ],
+        "fieldsets": [],
+        "list_headers": [
+          {
+            "text": "Add service",
+            "href": "#add-service",
+            "target_exists": true
+          }
+        ],
+        "settings_save": [],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-records-mobile-light.png",
+      "surface": "records",
+      "path": "/records",
+      "device": "mobile",
+      "theme": "light",
+      "account": "local-recovery-administrator",
+      "sha256": "375852b00f8a4b5eba0720c3ae518a03bc3899f3230784ceed7e4e966a46a62d",
+      "bytes": 41140,
+      "width": 390,
+      "height": 844,
+      "captured_at": "2026-10-27T23:43:51.636Z",
+      "state": {
+        "path": "/records",
+        "title": "Records — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": false,
+        "theme": "busnes-light",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 390,
+          "viewport_width": 390,
+          "document_height": 1224,
+          "viewport_height": 844
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 0,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 118.40625
+          },
+          "scroll_left": 0,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": null,
+              "bounds": {
+                "x": 16,
+                "y": 69.40625,
+                "width": 122.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": null,
+              "bounds": {
+                "x": 142.59375,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": "page",
+              "bounds": {
+                "x": 253.1875,
+                "y": 69.40625,
+                "width": 104.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": null,
+              "bounds": {
+                "x": 361.78125,
+                "y": 69.40625,
+                "width": 124.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": null,
+              "bounds": {
+                "x": 490.375,
+                "y": 69.40625,
+                "width": 114.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": null,
+              "bounds": {
+                "x": 608.96875,
+                "y": 69.40625,
+                "width": 84.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": null,
+              "bounds": {
+                "x": 697.5625,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": null,
+              "bounds": {
+                "x": 808.15625,
+                "y": 69.40625,
+                "width": 130.59375,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [
+          {
+            "text": "Records",
+            "bounds": {
+              "x": 16,
+              "y": 143.40625,
+              "width": 95,
+              "height": 30
+            }
+          },
+          {
+            "text": "Add a record",
+            "bounds": {
+              "x": 16,
+              "y": 638.296875,
+              "width": 358,
+              "height": 26.34375
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [],
+        "fieldsets": [],
+        "list_headers": [
+          {
+            "text": "Add record",
+            "href": "#add-record",
+            "target_exists": true
+          }
+        ],
+        "settings_save": [],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-discovered-mobile-light.png",
+      "surface": "discovered",
+      "path": "/discovered",
+      "device": "mobile",
+      "theme": "light",
+      "account": "local-recovery-administrator",
+      "sha256": "f6a9c3d309158d66b19f52dc14c63f54d90c63ccd1571558c3aba007b8002202",
+      "bytes": 26208,
+      "width": 390,
+      "height": 844,
+      "captured_at": "2026-10-27T23:43:52.214Z",
+      "state": {
+        "path": "/discovered",
+        "title": "Discovered — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": false,
+        "theme": "busnes-light",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 390,
+          "viewport_width": 390,
+          "document_height": 844,
+          "viewport_height": 844
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 0,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 118.40625
+          },
+          "scroll_left": 96,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": null,
+              "bounds": {
+                "x": -80,
+                "y": 69.40625,
+                "width": 122.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": null,
+              "bounds": {
+                "x": 46.59375,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": null,
+              "bounds": {
+                "x": 157.1875,
+                "y": 69.40625,
+                "width": 104.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": "page",
+              "bounds": {
+                "x": 265.78125,
+                "y": 69.40625,
+                "width": 124.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": null,
+              "bounds": {
+                "x": 394.375,
+                "y": 69.40625,
+                "width": 114.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": null,
+              "bounds": {
+                "x": 512.96875,
+                "y": 69.40625,
+                "width": 84.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": null,
+              "bounds": {
+                "x": 601.5625,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": null,
+              "bounds": {
+                "x": 712.15625,
+                "y": 69.40625,
+                "width": 130.59375,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [
+          {
+            "text": "Discovered",
+            "bounds": {
+              "x": 16,
+              "y": 138.40625,
+              "width": 129,
+              "height": 30
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [],
+        "fieldsets": [],
+        "list_headers": [],
+        "settings_save": [],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-blacklists-mobile-light.png",
+      "surface": "blacklists",
+      "path": "/blacklists",
+      "device": "mobile",
+      "theme": "light",
+      "account": "local-recovery-administrator",
+      "sha256": "bd6e02b0c3e2a0128334e5aefa1a57711ace61ca09301467cf50eac377615387",
+      "bytes": 56898,
+      "width": 390,
+      "height": 844,
+      "captured_at": "2026-10-27T23:43:52.801Z",
+      "state": {
+        "path": "/blacklists",
+        "title": "Blacklists — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": false,
+        "theme": "busnes-light",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 390,
+          "viewport_width": 390,
+          "document_height": 2249,
+          "viewport_height": 844
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 0,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 118.40625
+          },
+          "scroll_left": 215,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": null,
+              "bounds": {
+                "x": -199,
+                "y": 69.40625,
+                "width": 122.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": null,
+              "bounds": {
+                "x": -72.40625,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": null,
+              "bounds": {
+                "x": 38.1875,
+                "y": 69.40625,
+                "width": 104.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": null,
+              "bounds": {
+                "x": 146.78125,
+                "y": 69.40625,
+                "width": 124.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": "page",
+              "bounds": {
+                "x": 275.375,
+                "y": 69.40625,
+                "width": 114.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": null,
+              "bounds": {
+                "x": 393.96875,
+                "y": 69.40625,
+                "width": 84.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": null,
+              "bounds": {
+                "x": 482.5625,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": null,
+              "bounds": {
+                "x": 593.15625,
+                "y": 69.40625,
+                "width": 130.59375,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [
+          {
+            "text": "Blacklists",
+            "bounds": {
+              "x": 16,
+              "y": 143.40625,
+              "width": 112,
+              "height": 30
+            }
+          },
+          {
+            "text": "Filtering",
+            "bounds": {
+              "x": 16,
+              "y": 202.40625,
+              "width": 358,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Lists",
+            "bounds": {
+              "x": 16,
+              "y": 563.078125,
+              "width": 358,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Add a list",
+            "bounds": {
+              "x": 16,
+              "y": 932.375,
+              "width": 358,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "One-off rules",
+            "bounds": {
+              "x": 16,
+              "y": 1471.453125,
+              "width": 358,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Test a name",
+            "bounds": {
+              "x": 16,
+              "y": 1985.703125,
+              "width": 358,
+              "height": 26.34375
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [],
+        "fieldsets": [],
+        "list_headers": [
+          {
+            "text": "Add list",
+            "href": "#add-list",
+            "target_exists": true
+          }
+        ],
+        "settings_save": [],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-dhcp-mobile-light.png",
+      "surface": "dhcp",
+      "path": "/dhcp",
+      "device": "mobile",
+      "theme": "light",
+      "account": "local-recovery-administrator",
+      "sha256": "bd00189f30962ccd0855ebb4dceddadafbf8c5496002f6766cfd86e9096d3f9e",
+      "bytes": 36884,
+      "width": 390,
+      "height": 844,
+      "captured_at": "2026-10-27T23:43:53.382Z",
+      "state": {
+        "path": "/dhcp",
+        "title": "DHCP — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": false,
+        "theme": "busnes-light",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 390,
+          "viewport_width": 390,
+          "document_height": 1279,
+          "viewport_height": 844
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 0,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 118.40625
+          },
+          "scroll_left": 304,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": null,
+              "bounds": {
+                "x": -288,
+                "y": 69.40625,
+                "width": 122.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": null,
+              "bounds": {
+                "x": -161.40625,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": null,
+              "bounds": {
+                "x": -50.8125,
+                "y": 69.40625,
+                "width": 104.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": null,
+              "bounds": {
+                "x": 57.78125,
+                "y": 69.40625,
+                "width": 124.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": null,
+              "bounds": {
+                "x": 186.375,
+                "y": 69.40625,
+                "width": 114.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": "page",
+              "bounds": {
+                "x": 304.96875,
+                "y": 69.40625,
+                "width": 84.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": null,
+              "bounds": {
+                "x": 393.5625,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": null,
+              "bounds": {
+                "x": 504.15625,
+                "y": 69.40625,
+                "width": 130.59375,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [
+          {
+            "text": "DHCP",
+            "bounds": {
+              "x": 16,
+              "y": 138.40625,
+              "width": 61,
+              "height": 30
+            }
+          },
+          {
+            "text": "Status",
+            "bounds": {
+              "x": 16,
+              "y": 192.40625,
+              "width": 358,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Settings",
+            "bounds": {
+              "x": 16,
+              "y": 390.078125,
+              "width": 358,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Leases",
+            "bounds": {
+              "x": 16,
+              "y": 1079.609375,
+              "width": 358,
+              "height": 26.34375
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [],
+        "fieldsets": [],
+        "list_headers": [],
+        "settings_save": [],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-settings-mobile-light.png",
+      "surface": "settings",
+      "path": "/settings",
+      "device": "mobile",
+      "theme": "light",
+      "account": "local-recovery-administrator",
+      "sha256": "816ed0da2af913756719fc83c656c81d3d948927df094f14fc84a2f058807ca2",
+      "bytes": 37705,
+      "width": 390,
+      "height": 844,
+      "captured_at": "2026-10-27T23:43:53.982Z",
+      "state": {
+        "path": "/settings",
+        "title": "Settings — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": false,
+        "theme": "busnes-light",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 390,
+          "viewport_width": 390,
+          "document_height": 6384,
+          "viewport_height": 844
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [
+          {
+            "tag": "DIV",
+            "class": "card",
+            "scrollWidth": 476,
+            "clientWidth": 358,
+            "scrollLeft": 0
+          }
+        ],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 1,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 118.40625
+          },
+          "scroll_left": 414,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": null,
+              "bounds": {
+                "x": -398,
+                "y": 69.40625,
+                "width": 122.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": null,
+              "bounds": {
+                "x": -271.40625,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": null,
+              "bounds": {
+                "x": -160.8125,
+                "y": 69.40625,
+                "width": 104.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": null,
+              "bounds": {
+                "x": -52.21875,
+                "y": 69.40625,
+                "width": 124.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": null,
+              "bounds": {
+                "x": 76.375,
+                "y": 69.40625,
+                "width": 114.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": null,
+              "bounds": {
+                "x": 194.96875,
+                "y": 69.40625,
+                "width": 84.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": "page",
+              "bounds": {
+                "x": 283.5625,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": null,
+              "bounds": {
+                "x": 394.15625,
+                "y": 69.40625,
+                "width": 130.59375,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [
+          {
+            "text": "Settings",
+            "bounds": {
+              "x": 16,
+              "y": 138.40625,
+              "width": 97,
+              "height": 30
+            }
+          },
+          {
+            "text": "Server settings",
+            "bounds": {
+              "x": 16,
+              "y": 199.234375,
+              "width": 123,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Views",
+            "bounds": {
+              "x": 16,
+              "y": 2182.34375,
+              "width": 358,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "API tokens",
+            "bounds": {
+              "x": 16,
+              "y": 2563.84375,
+              "width": 358,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Single sign-on",
+            "bounds": {
+              "x": 16,
+              "y": 3222.53125,
+              "width": 358,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Backup and maintenance",
+            "bounds": {
+              "x": 16,
+              "y": 3821.265625,
+              "width": 358,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Disaster recovery",
+            "bounds": {
+              "x": 16,
+              "y": 4034.359375,
+              "width": 358,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Upstreams",
+            "bounds": {
+              "x": 16,
+              "y": 5539.3125,
+              "width": 358,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Configuration",
+            "bounds": {
+              "x": 16,
+              "y": 5874.171875,
+              "width": 358,
+              "height": 26.34375
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [],
+        "fieldsets": [
+          {
+            "bounds": {
+              "x": 16,
+              "y": 317.90625,
+              "width": 358,
+              "height": 299.234375
+            },
+            "client_width": 358,
+            "scroll_width": 358
+          },
+          {
+            "bounds": {
+              "x": 16,
+              "y": 641.140625,
+              "width": 358,
+              "height": 316.21875
+            },
+            "client_width": 358,
+            "scroll_width": 358
+          },
+          {
+            "bounds": {
+              "x": 16,
+              "y": 981.359375,
+              "width": 358,
+              "height": 171.28125
+            },
+            "client_width": 358,
+            "scroll_width": 358
+          },
+          {
+            "bounds": {
+              "x": 16,
+              "y": 1176.640625,
+              "width": 358,
+              "height": 334.234375
+            },
+            "client_width": 358,
+            "scroll_width": 358
+          },
+          {
+            "bounds": {
+              "x": 16,
+              "y": 1534.875,
+              "width": 358,
+              "height": 185.890625
+            },
+            "client_width": 358,
+            "scroll_width": 358
+          },
+          {
+            "bounds": {
+              "x": 16,
+              "y": 1744.765625,
+              "width": 358,
+              "height": 260.0625
+            },
+            "client_width": 358,
+            "scroll_width": 358
+          },
+          {
+            "bounds": {
+              "x": 16,
+              "y": 2028.828125,
+              "width": 358,
+              "height": 97.515625
+            },
+            "client_width": 358,
+            "scroll_width": 358
+          },
+          {
+            "bounds": {
+              "x": 16,
+              "y": 3382.375,
+              "width": 358,
+              "height": 342.890625
+            },
+            "client_width": 358,
+            "scroll_width": 358
+          }
+        ],
+        "list_headers": [],
+        "settings_save": [
+          {
+            "bounds": {
+              "x": 250,
+              "y": 192.40625,
+              "width": 124,
+              "height": 40
+            },
+            "form_id": "server-settings-form",
+            "action": "/settings/server"
+          }
+        ],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-appearance-mobile-light.png",
+      "surface": "appearance",
+      "path": "/appearance",
+      "device": "mobile",
+      "theme": "light",
+      "account": "local-recovery-administrator",
+      "sha256": "a5311fac55631cfe4cbd0b5a54cd0395be8f0fea33e64019cfbbc1f980eee941",
+      "bytes": 40467,
+      "width": 390,
+      "height": 844,
+      "captured_at": "2026-10-27T23:43:54.566Z",
+      "state": {
+        "path": "/appearance",
+        "title": "Appearance — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": false,
+        "theme": "busnes-light",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 390,
+          "viewport_width": 390,
+          "document_height": 1991,
+          "viewport_height": 844
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 0,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 118.40625
+          },
+          "scroll_left": 549,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": null,
+              "bounds": {
+                "x": -533,
+                "y": 69.40625,
+                "width": 122.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": null,
+              "bounds": {
+                "x": -406.40625,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": null,
+              "bounds": {
+                "x": -295.8125,
+                "y": 69.40625,
+                "width": 104.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": null,
+              "bounds": {
+                "x": -187.21875,
+                "y": 69.40625,
+                "width": 124.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": null,
+              "bounds": {
+                "x": -58.625,
+                "y": 69.40625,
+                "width": 114.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": null,
+              "bounds": {
+                "x": 59.96875,
+                "y": 69.40625,
+                "width": 84.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": null,
+              "bounds": {
+                "x": 148.5625,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": "page",
+              "bounds": {
+                "x": 259.15625,
+                "y": 69.40625,
+                "width": 130.59375,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 23,
+        "checked_theme": "system",
+        "headings": [
+          {
+            "text": "Appearance",
+            "bounds": {
+              "x": 16,
+              "y": 138.40625,
+              "width": 139,
+              "height": 30
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": false
+        },
+        "routing_disclosures": [],
+        "fieldsets": [
+          {
+            "bounds": {
+              "x": 16,
+              "y": 283.90625,
+              "width": 358,
+              "height": 1603.265625
+            },
+            "client_width": 358,
+            "scroll_width": 358
+          }
+        ],
+        "list_headers": [],
+        "settings_save": [],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-login-desktop-dark.png",
+      "surface": "login",
+      "path": "/login",
+      "device": "desktop",
+      "theme": "dark",
+      "account": "signed-out",
+      "sha256": "852570f11b84974f69b8701cdd9fd48782983fa4ded9c46747ae19415ac749a0",
+      "bytes": 14652,
+      "width": 1280,
+      "height": 900,
+      "captured_at": "2026-10-27T23:43:55.241Z",
+      "state": {
+        "path": "/login",
+        "title": "Sign in — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": true,
+        "theme": "busnes-dark",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 1280,
+          "viewport_width": 1280,
+          "document_height": 900,
+          "viewport_height": 900
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "INPUT",
+          "id": "password"
+        },
+        "password_fields": 1,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 0,
+        "nav": null,
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [],
+        "fieldsets": [],
+        "list_headers": [],
+        "settings_save": [],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-dashboard-desktop-dark.png",
+      "surface": "dashboard",
+      "path": "/",
+      "device": "desktop",
+      "theme": "dark",
+      "account": "local-recovery-administrator",
+      "sha256": "d4f6f7edaaed356dd28806d90959b9dd92df9215a5501230c91890b94eba5968",
+      "bytes": 68960,
+      "width": 1280,
+      "height": 900,
+      "captured_at": "2026-10-27T23:43:56.026Z",
+      "state": {
+        "path": "/",
+        "title": "Dashboard — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": true,
+        "theme": "busnes-dark",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 1280,
+          "viewport_width": 1280,
+          "document_height": 1271,
+          "viewport_height": 900
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 0,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 240,
+            "height": 900
+          },
+          "scroll_left": 0,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": "page",
+              "bounds": {
+                "x": 12,
+                "y": 68.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 112.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 156.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 200.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 244.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 288.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 332.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 376.515625,
+                "width": 215,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [
+          {
+            "text": "Dashboard",
+            "bounds": {
+              "x": 280,
+              "y": 32,
+              "width": 126,
+              "height": 30
+            }
+          },
+          {
+            "text": "Most blocked names",
+            "bounds": {
+              "x": 280,
+              "y": 1035.46875,
+              "width": 960,
+              "height": 26.34375
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [],
+        "fieldsets": [],
+        "list_headers": [],
+        "settings_save": [],
+        "chart_ready": true,
+        "chart_legend": "Queries per minute\n— last hour\nLocal\n18\nForwarded\n0\nBlocked\n6",
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-services-desktop-dark.png",
+      "surface": "services",
+      "path": "/services",
+      "device": "desktop",
+      "theme": "dark",
+      "account": "local-recovery-administrator",
+      "sha256": "600e0a5bb1a58348f38efdba1d8740cb3dfd0e3f704fe3068b220891d75fffe8",
+      "bytes": 81887,
+      "width": 1280,
+      "height": 900,
+      "captured_at": "2026-10-27T23:43:56.626Z",
+      "state": {
+        "path": "/services",
+        "title": "Services — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": true,
+        "theme": "busnes-dark",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 1280,
+          "viewport_width": 1280,
+          "document_height": 1088,
+          "viewport_height": 900
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 0,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 240,
+            "height": 900
+          },
+          "scroll_left": 0,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 68.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": "page",
+              "bounds": {
+                "x": 12,
+                "y": 112.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 156.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 200.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 244.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 288.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 332.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 376.515625,
+                "width": 215,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [
+          {
+            "text": "Services",
+            "bounds": {
+              "x": 280,
+              "y": 37,
+              "width": 98,
+              "height": 30
+            }
+          },
+          {
+            "text": "Add a service",
+            "bounds": {
+              "x": 280,
+              "y": 366.296875,
+              "width": 960,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Add an address to an existing service",
+            "bounds": {
+              "x": 280,
+              "y": 769.84375,
+              "width": 960,
+              "height": 26.34375
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [
+          {
+            "label": "Direct",
+            "open": false
+          },
+          {
+            "label": "Direct",
+            "open": false
+          },
+          {
+            "label": "Direct",
+            "open": false
+          }
+        ],
+        "fieldsets": [],
+        "list_headers": [
+          {
+            "text": "Add service",
+            "href": "#add-service",
+            "target_exists": true
+          }
+        ],
+        "settings_save": [],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-records-desktop-dark.png",
+      "surface": "records",
+      "path": "/records",
+      "device": "desktop",
+      "theme": "dark",
+      "account": "local-recovery-administrator",
+      "sha256": "da94dec616e3bf7ff4a599c02677deda44c9539801b3b841572847d98d242ff4",
+      "bytes": 62637,
+      "width": 1280,
+      "height": 900,
+      "captured_at": "2026-10-27T23:43:57.208Z",
+      "state": {
+        "path": "/records",
+        "title": "Records — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": true,
+        "theme": "busnes-dark",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 1280,
+          "viewport_width": 1280,
+          "document_height": 900,
+          "viewport_height": 900
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 0,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 240,
+            "height": 900
+          },
+          "scroll_left": 0,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 68.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 112.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": "page",
+              "bounds": {
+                "x": 12,
+                "y": 156.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 200.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 244.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 288.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 332.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 376.515625,
+                "width": 215,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [
+          {
+            "text": "Records",
+            "bounds": {
+              "x": 280,
+              "y": 37,
+              "width": 95,
+              "height": 30
+            }
+          },
+          {
+            "text": "Add a record",
+            "bounds": {
+              "x": 280,
+              "y": 366.296875,
+              "width": 960,
+              "height": 26.34375
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [],
+        "fieldsets": [],
+        "list_headers": [
+          {
+            "text": "Add record",
+            "href": "#add-record",
+            "target_exists": true
+          }
+        ],
+        "settings_save": [],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-discovered-desktop-dark.png",
+      "surface": "discovered",
+      "path": "/discovered",
+      "device": "desktop",
+      "theme": "dark",
+      "account": "local-recovery-administrator",
+      "sha256": "5f4c16be5aa4c8cc35665d458ed03bea781962517810854be060a8910b95be28",
+      "bytes": 38118,
+      "width": 1280,
+      "height": 900,
+      "captured_at": "2026-10-27T23:43:57.789Z",
+      "state": {
+        "path": "/discovered",
+        "title": "Discovered — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": true,
+        "theme": "busnes-dark",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 1280,
+          "viewport_width": 1280,
+          "document_height": 900,
+          "viewport_height": 900
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 0,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 240,
+            "height": 900
+          },
+          "scroll_left": 0,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 68.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 112.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 156.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": "page",
+              "bounds": {
+                "x": 12,
+                "y": 200.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 244.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 288.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 332.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 376.515625,
+                "width": 215,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [
+          {
+            "text": "Discovered",
+            "bounds": {
+              "x": 280,
+              "y": 32,
+              "width": 129,
+              "height": 30
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [],
+        "fieldsets": [],
+        "list_headers": [],
+        "settings_save": [],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-blacklists-desktop-dark.png",
+      "surface": "blacklists",
+      "path": "/blacklists",
+      "device": "desktop",
+      "theme": "dark",
+      "account": "local-recovery-administrator",
+      "sha256": "36b665b1347eef4232e5c4157c054949f90ec85b137df069d50790a9203c86c9",
+      "bytes": 97304,
+      "width": 1280,
+      "height": 900,
+      "captured_at": "2026-10-27T23:43:58.380Z",
+      "state": {
+        "path": "/blacklists",
+        "title": "Blacklists — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": true,
+        "theme": "busnes-dark",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 1280,
+          "viewport_width": 1280,
+          "document_height": 1670,
+          "viewport_height": 900
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 0,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 240,
+            "height": 900
+          },
+          "scroll_left": 0,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 68.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 112.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 156.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 200.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": "page",
+              "bounds": {
+                "x": 12,
+                "y": 244.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 288.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 332.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 376.515625,
+                "width": 215,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [
+          {
+            "text": "Blacklists",
+            "bounds": {
+              "x": 280,
+              "y": 37,
+              "width": 112,
+              "height": 30
+            }
+          },
+          {
+            "text": "Filtering",
+            "bounds": {
+              "x": 280,
+              "y": 96,
+              "width": 960,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Lists",
+            "bounds": {
+              "x": 280,
+              "y": 386.921875,
+              "width": 960,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Add a list",
+            "bounds": {
+              "x": 280,
+              "y": 647.328125,
+              "width": 960,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "One-off rules",
+            "bounds": {
+              "x": 280,
+              "y": 1038.40625,
+              "width": 960,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Test a name",
+            "bounds": {
+              "x": 280,
+              "y": 1455.40625,
+              "width": 960,
+              "height": 26.34375
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [],
+        "fieldsets": [],
+        "list_headers": [
+          {
+            "text": "Add list",
+            "href": "#add-list",
+            "target_exists": true
+          }
+        ],
+        "settings_save": [],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-dhcp-desktop-dark.png",
+      "surface": "dhcp",
+      "path": "/dhcp",
+      "device": "desktop",
+      "theme": "dark",
+      "account": "local-recovery-administrator",
+      "sha256": "c882c2e6dcd4507f373f5061a8e764b2d7203cfd942bcab99f39b927c501355d",
+      "bytes": 66502,
+      "width": 1280,
+      "height": 900,
+      "captured_at": "2026-10-27T23:43:58.983Z",
+      "state": {
+        "path": "/dhcp",
+        "title": "DHCP — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": true,
+        "theme": "busnes-dark",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 1280,
+          "viewport_width": 1280,
+          "document_height": 968,
+          "viewport_height": 900
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 0,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 240,
+            "height": 900
+          },
+          "scroll_left": 0,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 68.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 112.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 156.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 200.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 244.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": "page",
+              "bounds": {
+                "x": 12,
+                "y": 288.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 332.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 376.515625,
+                "width": 215,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [
+          {
+            "text": "DHCP",
+            "bounds": {
+              "x": 280,
+              "y": 32,
+              "width": 61,
+              "height": 30
+            }
+          },
+          {
+            "text": "Status",
+            "bounds": {
+              "x": 280,
+              "y": 86,
+              "width": 960,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Settings",
+            "bounds": {
+              "x": 280,
+              "y": 260.421875,
+              "width": 960,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Leases",
+            "bounds": {
+              "x": 280,
+              "y": 815.671875,
+              "width": 960,
+              "height": 26.34375
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [],
+        "fieldsets": [],
+        "list_headers": [],
+        "settings_save": [],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-settings-desktop-dark.png",
+      "surface": "settings",
+      "path": "/settings",
+      "device": "desktop",
+      "theme": "dark",
+      "account": "local-recovery-administrator",
+      "sha256": "34ea4e27673aa04011f7669e98cc40987ec6d992cea953bc1027492b986c2ff4",
+      "bytes": 66141,
+      "width": 1280,
+      "height": 900,
+      "captured_at": "2026-10-27T23:43:59.582Z",
+      "state": {
+        "path": "/settings",
+        "title": "Settings — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": true,
+        "theme": "busnes-dark",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 1280,
+          "viewport_width": 1280,
+          "document_height": 5061,
+          "viewport_height": 900
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 1,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 240,
+            "height": 900
+          },
+          "scroll_left": 0,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 68.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 112.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 156.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 200.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 244.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 288.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": "page",
+              "bounds": {
+                "x": 12,
+                "y": 332.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 376.515625,
+                "width": 215,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [
+          {
+            "text": "Settings",
+            "bounds": {
+              "x": 280,
+              "y": 32,
+              "width": 97,
+              "height": 30
+            }
+          },
+          {
+            "text": "Server settings",
+            "bounds": {
+              "x": 280,
+              "y": 92.828125,
+              "width": 123,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Views",
+            "bounds": {
+              "x": 280,
+              "y": 1697.84375,
+              "width": 960,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "API tokens",
+            "bounds": {
+              "x": 280,
+              "y": 2011.3125,
+              "width": 960,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Single sign-on",
+            "bounds": {
+              "x": 280,
+              "y": 2525.234375,
+              "width": 960,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Backup and maintenance",
+            "bounds": {
+              "x": 280,
+              "y": 3034.5625,
+              "width": 960,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Disaster recovery",
+            "bounds": {
+              "x": 280,
+              "y": 3224.40625,
+              "width": 960,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Upstreams",
+            "bounds": {
+              "x": 280,
+              "y": 4450.234375,
+              "width": 960,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Configuration",
+            "bounds": {
+              "x": 280,
+              "y": 4715.21875,
+              "width": 960,
+              "height": 26.34375
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [],
+        "fieldsets": [
+          {
+            "bounds": {
+              "x": 280,
+              "y": 188.25,
+              "width": 736,
+              "height": 225.078125
+            },
+            "client_width": 736,
+            "scroll_width": 736
+          },
+          {
+            "bounds": {
+              "x": 280,
+              "y": 437.328125,
+              "width": 736,
+              "height": 271.4375
+            },
+            "client_width": 736,
+            "scroll_width": 736
+          },
+          {
+            "bounds": {
+              "x": 280,
+              "y": 732.765625,
+              "width": 736,
+              "height": 141.90625
+            },
+            "client_width": 736,
+            "scroll_width": 736
+          },
+          {
+            "bounds": {
+              "x": 280,
+              "y": 898.671875,
+              "width": 736,
+              "height": 234.703125
+            },
+            "client_width": 736,
+            "scroll_width": 736
+          },
+          {
+            "bounds": {
+              "x": 280,
+              "y": 1157.375,
+              "width": 736,
+              "height": 143.078125
+            },
+            "client_width": 736,
+            "scroll_width": 736
+          },
+          {
+            "bounds": {
+              "x": 280,
+              "y": 1324.453125,
+              "width": 736,
+              "height": 191.875
+            },
+            "client_width": 736,
+            "scroll_width": 736
+          },
+          {
+            "bounds": {
+              "x": 280,
+              "y": 1540.328125,
+              "width": 736,
+              "height": 101.515625
+            },
+            "client_width": 736,
+            "scroll_width": 736
+          },
+          {
+            "bounds": {
+              "x": 280,
+              "y": 2661.828125,
+              "width": 736,
+              "height": 276.734375
+            },
+            "client_width": 736,
+            "scroll_width": 736
+          }
+        ],
+        "list_headers": [],
+        "settings_save": [
+          {
+            "bounds": {
+              "x": 892,
+              "y": 86,
+              "width": 124,
+              "height": 40
+            },
+            "form_id": "server-settings-form",
+            "action": "/settings/server"
+          }
+        ],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-appearance-desktop-dark.png",
+      "surface": "appearance",
+      "path": "/appearance",
+      "device": "desktop",
+      "theme": "dark",
+      "account": "local-recovery-administrator",
+      "sha256": "3c442f4218b6d1d0deef8a61d4bd75fda5f50fd373c2ded5e0ac9c47496b19d6",
+      "bytes": 74291,
+      "width": 1280,
+      "height": 900,
+      "captured_at": "2026-10-27T23:44:00.184Z",
+      "state": {
+        "path": "/appearance",
+        "title": "Appearance — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": true,
+        "theme": "busnes-dark",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 1280,
+          "viewport_width": 1280,
+          "document_height": 900,
+          "viewport_height": 900
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 0,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 240,
+            "height": 900
+          },
+          "scroll_left": 0,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 68.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 112.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 156.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 200.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 244.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 288.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": null,
+              "bounds": {
+                "x": 12,
+                "y": 332.515625,
+                "width": 215,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": "page",
+              "bounds": {
+                "x": 12,
+                "y": 376.515625,
+                "width": 215,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 23,
+        "checked_theme": "system",
+        "headings": [
+          {
+            "text": "Appearance",
+            "bounds": {
+              "x": 280,
+              "y": 32,
+              "width": 139,
+              "height": 30
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": false
+        },
+        "routing_disclosures": [],
+        "fieldsets": [
+          {
+            "bounds": {
+              "x": 280,
+              "y": 155,
+              "width": 960,
+              "height": 682.109375
+            },
+            "client_width": 960,
+            "scroll_width": 960
+          }
+        ],
+        "list_headers": [],
+        "settings_save": [],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-login-mobile-dark.png",
+      "surface": "login",
+      "path": "/login",
+      "device": "mobile",
+      "theme": "dark",
+      "account": "signed-out",
+      "sha256": "eb18df452965f9cbf21eddbc6103774cfbc516ec0894f33ee24dfd110f1ec471",
+      "bytes": 11801,
+      "width": 390,
+      "height": 844,
+      "captured_at": "2026-10-27T23:44:00.827Z",
+      "state": {
+        "path": "/login",
+        "title": "Sign in — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": true,
+        "theme": "busnes-dark",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 390,
+          "viewport_width": 390,
+          "document_height": 844,
+          "viewport_height": 844
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "INPUT",
+          "id": "password"
+        },
+        "password_fields": 1,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 0,
+        "nav": null,
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [],
+        "fieldsets": [],
+        "list_headers": [],
+        "settings_save": [],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-dashboard-mobile-dark.png",
+      "surface": "dashboard",
+      "path": "/",
+      "device": "mobile",
+      "theme": "dark",
+      "account": "local-recovery-administrator",
+      "sha256": "af6b4adb1edfa6ac05805d7cbf128fb03b26abcc6604d7e97265e31087ab4dca",
+      "bytes": 36420,
+      "width": 390,
+      "height": 844,
+      "captured_at": "2026-10-27T23:44:01.582Z",
+      "state": {
+        "path": "/",
+        "title": "Dashboard — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": true,
+        "theme": "busnes-dark",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 390,
+          "viewport_width": 390,
+          "document_height": 1843,
+          "viewport_height": 844
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 0,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 118.40625
+          },
+          "scroll_left": 0,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": "page",
+              "bounds": {
+                "x": 16,
+                "y": 69.40625,
+                "width": 122.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": null,
+              "bounds": {
+                "x": 142.59375,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": null,
+              "bounds": {
+                "x": 253.1875,
+                "y": 69.40625,
+                "width": 104.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": null,
+              "bounds": {
+                "x": 361.78125,
+                "y": 69.40625,
+                "width": 124.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": null,
+              "bounds": {
+                "x": 490.375,
+                "y": 69.40625,
+                "width": 114.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": null,
+              "bounds": {
+                "x": 608.96875,
+                "y": 69.40625,
+                "width": 84.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": null,
+              "bounds": {
+                "x": 697.5625,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": null,
+              "bounds": {
+                "x": 808.15625,
+                "y": 69.40625,
+                "width": 130.59375,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [
+          {
+            "text": "Dashboard",
+            "bounds": {
+              "x": 16,
+              "y": 138.40625,
+              "width": 126,
+              "height": 30
+            }
+          },
+          {
+            "text": "Most blocked names",
+            "bounds": {
+              "x": 16,
+              "y": 1560.21875,
+              "width": 358,
+              "height": 26.34375
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [],
+        "fieldsets": [],
+        "list_headers": [],
+        "settings_save": [],
+        "chart_ready": true,
+        "chart_legend": "Queries per minute\n— last hour\nLocal\n18\nForwarded\n0\nBlocked\n6",
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-services-mobile-dark.png",
+      "surface": "services",
+      "path": "/services",
+      "device": "mobile",
+      "theme": "dark",
+      "account": "local-recovery-administrator",
+      "sha256": "83e11d7b328997d0b3b9ae506fcb788d3f0bfc07c011159c388bdaf6a7c02c04",
+      "bytes": 41450,
+      "width": 390,
+      "height": 844,
+      "captured_at": "2026-10-27T23:44:02.168Z",
+      "state": {
+        "path": "/services",
+        "title": "Services — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": true,
+        "theme": "busnes-dark",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 390,
+          "viewport_width": 390,
+          "document_height": 1692,
+          "viewport_height": 844
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 0,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 118.40625
+          },
+          "scroll_left": 0,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": null,
+              "bounds": {
+                "x": 16,
+                "y": 69.40625,
+                "width": 122.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": "page",
+              "bounds": {
+                "x": 142.59375,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": null,
+              "bounds": {
+                "x": 253.1875,
+                "y": 69.40625,
+                "width": 104.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": null,
+              "bounds": {
+                "x": 361.78125,
+                "y": 69.40625,
+                "width": 124.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": null,
+              "bounds": {
+                "x": 490.375,
+                "y": 69.40625,
+                "width": 114.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": null,
+              "bounds": {
+                "x": 608.96875,
+                "y": 69.40625,
+                "width": 84.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": null,
+              "bounds": {
+                "x": 697.5625,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": null,
+              "bounds": {
+                "x": 808.15625,
+                "y": 69.40625,
+                "width": 130.59375,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [
+          {
+            "text": "Services",
+            "bounds": {
+              "x": 16,
+              "y": 143.40625,
+              "width": 98,
+              "height": 30
+            }
+          },
+          {
+            "text": "Add a service",
+            "bounds": {
+              "x": 16,
+              "y": 778.3125,
+              "width": 358,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Add an address to an existing service",
+            "bounds": {
+              "x": 16,
+              "y": 1275.359375,
+              "width": 358,
+              "height": 26.34375
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [
+          {
+            "label": "Direct",
+            "open": false
+          },
+          {
+            "label": "Direct",
+            "open": false
+          },
+          {
+            "label": "Direct",
+            "open": false
+          }
+        ],
+        "fieldsets": [],
+        "list_headers": [
+          {
+            "text": "Add service",
+            "href": "#add-service",
+            "target_exists": true
+          }
+        ],
+        "settings_save": [],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-records-mobile-dark.png",
+      "surface": "records",
+      "path": "/records",
+      "device": "mobile",
+      "theme": "dark",
+      "account": "local-recovery-administrator",
+      "sha256": "3da8586321d12f65c0222694e0348e1aefa6841256a5e2576581bd6bea158aa0",
+      "bytes": 41325,
+      "width": 390,
+      "height": 844,
+      "captured_at": "2026-10-27T23:44:02.750Z",
+      "state": {
+        "path": "/records",
+        "title": "Records — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": true,
+        "theme": "busnes-dark",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 390,
+          "viewport_width": 390,
+          "document_height": 1224,
+          "viewport_height": 844
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 0,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 118.40625
+          },
+          "scroll_left": 0,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": null,
+              "bounds": {
+                "x": 16,
+                "y": 69.40625,
+                "width": 122.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": null,
+              "bounds": {
+                "x": 142.59375,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": "page",
+              "bounds": {
+                "x": 253.1875,
+                "y": 69.40625,
+                "width": 104.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": null,
+              "bounds": {
+                "x": 361.78125,
+                "y": 69.40625,
+                "width": 124.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": null,
+              "bounds": {
+                "x": 490.375,
+                "y": 69.40625,
+                "width": 114.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": null,
+              "bounds": {
+                "x": 608.96875,
+                "y": 69.40625,
+                "width": 84.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": null,
+              "bounds": {
+                "x": 697.5625,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": null,
+              "bounds": {
+                "x": 808.15625,
+                "y": 69.40625,
+                "width": 130.59375,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [
+          {
+            "text": "Records",
+            "bounds": {
+              "x": 16,
+              "y": 143.40625,
+              "width": 95,
+              "height": 30
+            }
+          },
+          {
+            "text": "Add a record",
+            "bounds": {
+              "x": 16,
+              "y": 638.296875,
+              "width": 358,
+              "height": 26.34375
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [],
+        "fieldsets": [],
+        "list_headers": [
+          {
+            "text": "Add record",
+            "href": "#add-record",
+            "target_exists": true
+          }
+        ],
+        "settings_save": [],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-discovered-mobile-dark.png",
+      "surface": "discovered",
+      "path": "/discovered",
+      "device": "mobile",
+      "theme": "dark",
+      "account": "local-recovery-administrator",
+      "sha256": "9b3215634cc241ee2bd76a34d10660d08f961583b6124d1be67244bd6f6c4177",
+      "bytes": 26292,
+      "width": 390,
+      "height": 844,
+      "captured_at": "2026-10-27T23:44:03.330Z",
+      "state": {
+        "path": "/discovered",
+        "title": "Discovered — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": true,
+        "theme": "busnes-dark",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 390,
+          "viewport_width": 390,
+          "document_height": 844,
+          "viewport_height": 844
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 0,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 118.40625
+          },
+          "scroll_left": 96,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": null,
+              "bounds": {
+                "x": -80,
+                "y": 69.40625,
+                "width": 122.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": null,
+              "bounds": {
+                "x": 46.59375,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": null,
+              "bounds": {
+                "x": 157.1875,
+                "y": 69.40625,
+                "width": 104.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": "page",
+              "bounds": {
+                "x": 265.78125,
+                "y": 69.40625,
+                "width": 124.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": null,
+              "bounds": {
+                "x": 394.375,
+                "y": 69.40625,
+                "width": 114.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": null,
+              "bounds": {
+                "x": 512.96875,
+                "y": 69.40625,
+                "width": 84.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": null,
+              "bounds": {
+                "x": 601.5625,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": null,
+              "bounds": {
+                "x": 712.15625,
+                "y": 69.40625,
+                "width": 130.59375,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [
+          {
+            "text": "Discovered",
+            "bounds": {
+              "x": 16,
+              "y": 138.40625,
+              "width": 129,
+              "height": 30
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [],
+        "fieldsets": [],
+        "list_headers": [],
+        "settings_save": [],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-blacklists-mobile-dark.png",
+      "surface": "blacklists",
+      "path": "/blacklists",
+      "device": "mobile",
+      "theme": "dark",
+      "account": "local-recovery-administrator",
+      "sha256": "beea4ebdf6cdd5c2e586418d4f890e79246ef7c124c861a64d6a0372edbf985e",
+      "bytes": 56702,
+      "width": 390,
+      "height": 844,
+      "captured_at": "2026-10-27T23:44:03.918Z",
+      "state": {
+        "path": "/blacklists",
+        "title": "Blacklists — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": true,
+        "theme": "busnes-dark",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 390,
+          "viewport_width": 390,
+          "document_height": 2249,
+          "viewport_height": 844
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 0,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 118.40625
+          },
+          "scroll_left": 215,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": null,
+              "bounds": {
+                "x": -199,
+                "y": 69.40625,
+                "width": 122.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": null,
+              "bounds": {
+                "x": -72.40625,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": null,
+              "bounds": {
+                "x": 38.1875,
+                "y": 69.40625,
+                "width": 104.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": null,
+              "bounds": {
+                "x": 146.78125,
+                "y": 69.40625,
+                "width": 124.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": "page",
+              "bounds": {
+                "x": 275.375,
+                "y": 69.40625,
+                "width": 114.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": null,
+              "bounds": {
+                "x": 393.96875,
+                "y": 69.40625,
+                "width": 84.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": null,
+              "bounds": {
+                "x": 482.5625,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": null,
+              "bounds": {
+                "x": 593.15625,
+                "y": 69.40625,
+                "width": 130.59375,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [
+          {
+            "text": "Blacklists",
+            "bounds": {
+              "x": 16,
+              "y": 143.40625,
+              "width": 112,
+              "height": 30
+            }
+          },
+          {
+            "text": "Filtering",
+            "bounds": {
+              "x": 16,
+              "y": 202.40625,
+              "width": 358,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Lists",
+            "bounds": {
+              "x": 16,
+              "y": 563.078125,
+              "width": 358,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Add a list",
+            "bounds": {
+              "x": 16,
+              "y": 932.375,
+              "width": 358,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "One-off rules",
+            "bounds": {
+              "x": 16,
+              "y": 1471.453125,
+              "width": 358,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Test a name",
+            "bounds": {
+              "x": 16,
+              "y": 1985.703125,
+              "width": 358,
+              "height": 26.34375
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [],
+        "fieldsets": [],
+        "list_headers": [
+          {
+            "text": "Add list",
+            "href": "#add-list",
+            "target_exists": true
+          }
+        ],
+        "settings_save": [],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-dhcp-mobile-dark.png",
+      "surface": "dhcp",
+      "path": "/dhcp",
+      "device": "mobile",
+      "theme": "dark",
+      "account": "local-recovery-administrator",
+      "sha256": "017f799337af412bb13e913afcc380072f5c09ced70f93fe0fe7351f430a012b",
+      "bytes": 36976,
+      "width": 390,
+      "height": 844,
+      "captured_at": "2026-10-27T23:44:04.499Z",
+      "state": {
+        "path": "/dhcp",
+        "title": "DHCP — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": true,
+        "theme": "busnes-dark",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 390,
+          "viewport_width": 390,
+          "document_height": 1279,
+          "viewport_height": 844
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 0,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 118.40625
+          },
+          "scroll_left": 304,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": null,
+              "bounds": {
+                "x": -288,
+                "y": 69.40625,
+                "width": 122.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": null,
+              "bounds": {
+                "x": -161.40625,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": null,
+              "bounds": {
+                "x": -50.8125,
+                "y": 69.40625,
+                "width": 104.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": null,
+              "bounds": {
+                "x": 57.78125,
+                "y": 69.40625,
+                "width": 124.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": null,
+              "bounds": {
+                "x": 186.375,
+                "y": 69.40625,
+                "width": 114.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": "page",
+              "bounds": {
+                "x": 304.96875,
+                "y": 69.40625,
+                "width": 84.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": null,
+              "bounds": {
+                "x": 393.5625,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": null,
+              "bounds": {
+                "x": 504.15625,
+                "y": 69.40625,
+                "width": 130.59375,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [
+          {
+            "text": "DHCP",
+            "bounds": {
+              "x": 16,
+              "y": 138.40625,
+              "width": 61,
+              "height": 30
+            }
+          },
+          {
+            "text": "Status",
+            "bounds": {
+              "x": 16,
+              "y": 192.40625,
+              "width": 358,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Settings",
+            "bounds": {
+              "x": 16,
+              "y": 390.078125,
+              "width": 358,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Leases",
+            "bounds": {
+              "x": 16,
+              "y": 1079.609375,
+              "width": 358,
+              "height": 26.34375
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [],
+        "fieldsets": [],
+        "list_headers": [],
+        "settings_save": [],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-settings-mobile-dark.png",
+      "surface": "settings",
+      "path": "/settings",
+      "device": "mobile",
+      "theme": "dark",
+      "account": "local-recovery-administrator",
+      "sha256": "ef39220b4990261ecf3f55a0bcc657bfacb6ab85614dd68ddff66d189b1a7708",
+      "bytes": 38139,
+      "width": 390,
+      "height": 844,
+      "captured_at": "2026-10-27T23:44:05.099Z",
+      "state": {
+        "path": "/settings",
+        "title": "Settings — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": true,
+        "theme": "busnes-dark",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 390,
+          "viewport_width": 390,
+          "document_height": 6384,
+          "viewport_height": 844
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [
+          {
+            "tag": "DIV",
+            "class": "card",
+            "scrollWidth": 476,
+            "clientWidth": 358,
+            "scrollLeft": 0
+          }
+        ],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 1,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 118.40625
+          },
+          "scroll_left": 414,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": null,
+              "bounds": {
+                "x": -398,
+                "y": 69.40625,
+                "width": 122.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": null,
+              "bounds": {
+                "x": -271.40625,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": null,
+              "bounds": {
+                "x": -160.8125,
+                "y": 69.40625,
+                "width": 104.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": null,
+              "bounds": {
+                "x": -52.21875,
+                "y": 69.40625,
+                "width": 124.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": null,
+              "bounds": {
+                "x": 76.375,
+                "y": 69.40625,
+                "width": 114.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": null,
+              "bounds": {
+                "x": 194.96875,
+                "y": 69.40625,
+                "width": 84.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": "page",
+              "bounds": {
+                "x": 283.5625,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": null,
+              "bounds": {
+                "x": 394.15625,
+                "y": 69.40625,
+                "width": 130.59375,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 0,
+        "checked_theme": null,
+        "headings": [
+          {
+            "text": "Settings",
+            "bounds": {
+              "x": 16,
+              "y": 138.40625,
+              "width": 97,
+              "height": 30
+            }
+          },
+          {
+            "text": "Server settings",
+            "bounds": {
+              "x": 16,
+              "y": 199.234375,
+              "width": 123,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Views",
+            "bounds": {
+              "x": 16,
+              "y": 2182.34375,
+              "width": 358,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "API tokens",
+            "bounds": {
+              "x": 16,
+              "y": 2563.84375,
+              "width": 358,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Single sign-on",
+            "bounds": {
+              "x": 16,
+              "y": 3222.53125,
+              "width": 358,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Backup and maintenance",
+            "bounds": {
+              "x": 16,
+              "y": 3821.265625,
+              "width": 358,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Disaster recovery",
+            "bounds": {
+              "x": 16,
+              "y": 4034.359375,
+              "width": 358,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Upstreams",
+            "bounds": {
+              "x": 16,
+              "y": 5539.3125,
+              "width": 358,
+              "height": 26.34375
+            }
+          },
+          {
+            "text": "Configuration",
+            "bounds": {
+              "x": 16,
+              "y": 5874.171875,
+              "width": 358,
+              "height": 26.34375
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": true
+        },
+        "routing_disclosures": [],
+        "fieldsets": [
+          {
+            "bounds": {
+              "x": 16,
+              "y": 317.90625,
+              "width": 358,
+              "height": 299.234375
+            },
+            "client_width": 358,
+            "scroll_width": 358
+          },
+          {
+            "bounds": {
+              "x": 16,
+              "y": 641.140625,
+              "width": 358,
+              "height": 316.21875
+            },
+            "client_width": 358,
+            "scroll_width": 358
+          },
+          {
+            "bounds": {
+              "x": 16,
+              "y": 981.359375,
+              "width": 358,
+              "height": 171.28125
+            },
+            "client_width": 358,
+            "scroll_width": 358
+          },
+          {
+            "bounds": {
+              "x": 16,
+              "y": 1176.640625,
+              "width": 358,
+              "height": 334.234375
+            },
+            "client_width": 358,
+            "scroll_width": 358
+          },
+          {
+            "bounds": {
+              "x": 16,
+              "y": 1534.875,
+              "width": 358,
+              "height": 185.890625
+            },
+            "client_width": 358,
+            "scroll_width": 358
+          },
+          {
+            "bounds": {
+              "x": 16,
+              "y": 1744.765625,
+              "width": 358,
+              "height": 260.0625
+            },
+            "client_width": 358,
+            "scroll_width": 358
+          },
+          {
+            "bounds": {
+              "x": 16,
+              "y": 2028.828125,
+              "width": 358,
+              "height": 97.515625
+            },
+            "client_width": 358,
+            "scroll_width": 358
+          },
+          {
+            "bounds": {
+              "x": 16,
+              "y": 3382.375,
+              "width": 358,
+              "height": 342.890625
+            },
+            "client_width": 358,
+            "scroll_width": 358
+          }
+        ],
+        "list_headers": [],
+        "settings_save": [
+          {
+            "bounds": {
+              "x": 250,
+              "y": 192.40625,
+              "width": 124,
+              "height": 40
+            },
+            "form_id": "server-settings-form",
+            "action": "/settings/server"
+          }
+        ],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    },
+    {
+      "file": "screenshots/kydns-02-after-appearance-mobile-dark.png",
+      "surface": "appearance",
+      "path": "/appearance",
+      "device": "mobile",
+      "theme": "dark",
+      "account": "local-recovery-administrator",
+      "sha256": "70ed830cf877fe5f797bf6b20eda4be0b12b167bbd5e0e023278ae46f7f5ef27",
+      "bytes": 41121,
+      "width": 390,
+      "height": 844,
+      "captured_at": "2026-10-27T23:44:05.686Z",
+      "state": {
+        "path": "/appearance",
+        "title": "Appearance — KyDNS",
+        "dpr": 1,
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "os_dark": true,
+        "theme": "busnes-dark",
+        "saved_choice": null,
+        "scroll": {
+          "x": 0,
+          "y": 0,
+          "document_width": 390,
+          "viewport_width": 390,
+          "document_height": 1991,
+          "viewport_height": 844
+        },
+        "horizontal_overflow_px": 0,
+        "internal_horizontal_scrollers": [],
+        "hovered_controls": [],
+        "active_element": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "password_fields": 0,
+        "nonempty_password_fields": 0,
+        "setup_token_fields": 0,
+        "nav_regions": 1,
+        "nav": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 118.40625
+          },
+          "scroll_left": 549,
+          "links": [
+            {
+              "label": "Dashboard",
+              "href": "/",
+              "current": null,
+              "bounds": {
+                "x": -533,
+                "y": 69.40625,
+                "width": 122.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Services",
+              "href": "/services",
+              "current": null,
+              "bounds": {
+                "x": -406.40625,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Records",
+              "href": "/records",
+              "current": null,
+              "bounds": {
+                "x": -295.8125,
+                "y": 69.40625,
+                "width": 104.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Discovered",
+              "href": "/discovered",
+              "current": null,
+              "bounds": {
+                "x": -187.21875,
+                "y": 69.40625,
+                "width": 124.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Blacklists",
+              "href": "/blacklists",
+              "current": null,
+              "bounds": {
+                "x": -58.625,
+                "y": 69.40625,
+                "width": 114.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "DHCP",
+              "href": "/dhcp",
+              "current": null,
+              "bounds": {
+                "x": 59.96875,
+                "y": 69.40625,
+                "width": 84.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Settings",
+              "href": "/settings",
+              "current": null,
+              "bounds": {
+                "x": 148.5625,
+                "y": 69.40625,
+                "width": 106.59375,
+                "height": 40
+              }
+            },
+            {
+              "label": "Appearance",
+              "href": "/appearance",
+              "current": "page",
+              "bounds": {
+                "x": 259.15625,
+                "y": 69.40625,
+                "width": 130.59375,
+                "height": 40
+              }
+            }
+          ]
+        },
+        "theme_cards": 23,
+        "checked_theme": "system",
+        "headings": [
+          {
+            "text": "Appearance",
+            "bounds": {
+              "x": 16,
+              "y": 138.40625,
+              "width": 139,
+              "height": 30
+            }
+          }
+        ],
+        "fonts": {
+          "space_grotesk": true,
+          "ibm_plex_mono": false
+        },
+        "routing_disclosures": [],
+        "fieldsets": [
+          {
+            "bounds": {
+              "x": 16,
+              "y": 283.90625,
+              "width": 358,
+              "height": 1603.265625
+            },
+            "client_width": 358,
+            "scroll_width": 358
+          }
+        ],
+        "list_headers": [],
+        "settings_save": [],
+        "chart_ready": false,
+        "chart_legend": null,
+        "visible_errors": []
+      },
+      "errors": [],
+      "http_ge_400": [],
+      "request_failures": []
+    }
+  ],
+  "checks": [
+    {
+      "device": "desktop",
+      "theme": "light",
+      "requested": "/replication",
+      "final_path": "/",
+      "initial_status": 303,
+      "final_status": 200,
+      "nav_present": 0,
+      "result": "N/A: standalone hides Replication and redirects to Dashboard"
+    },
+    {
+      "device": "desktop",
+      "theme": "light",
+      "console_errors": [],
+      "http_ge_400": [],
+      "request_failures": [],
+      "external_requests": []
+    },
+    {
+      "device": "mobile",
+      "theme": "light",
+      "requested": "/replication",
+      "final_path": "/",
+      "initial_status": 303,
+      "final_status": 200,
+      "nav_present": 0,
+      "result": "N/A: standalone hides Replication and redirects to Dashboard"
+    },
+    {
+      "device": "mobile",
+      "theme": "light",
+      "console_errors": [],
+      "http_ge_400": [],
+      "request_failures": [],
+      "external_requests": []
+    },
+    {
+      "device": "desktop",
+      "theme": "dark",
+      "requested": "/replication",
+      "final_path": "/",
+      "initial_status": 303,
+      "final_status": 200,
+      "nav_present": 0,
+      "result": "N/A: standalone hides Replication and redirects to Dashboard"
+    },
+    {
+      "device": "desktop",
+      "theme": "dark",
+      "console_errors": [],
+      "http_ge_400": [],
+      "request_failures": [],
+      "external_requests": []
+    },
+    {
+      "device": "mobile",
+      "theme": "dark",
+      "requested": "/replication",
+      "final_path": "/",
+      "initial_status": 303,
+      "final_status": 200,
+      "nav_present": 0,
+      "result": "N/A: standalone hides Replication and redirects to Dashboard"
+    },
+    {
+      "device": "mobile",
+      "theme": "dark",
+      "console_errors": [],
+      "http_ge_400": [],
+      "request_failures": [],
+      "external_requests": []
+    }
+  ]
+}

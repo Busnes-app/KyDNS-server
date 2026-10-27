@@ -1,0 +1,97 @@
+{
+  "access": "AFTER entirecurrentfilesarray freeze only. Prior numeric ratings are in your OWN round2pair; peerpair remainsoutofscope.",
+  "original_brief": "Uniform Ky suite product identity,oneleftnavigationregion,sharedAppearance,8.0roundedOpusoverallprogression checkpoint;preserve administrator-only behavior,nativeforms,roles,securityandDNStruth.",
+  "prior_findings_and_responses": [
+    {
+      "finding": "Header add links resemble primary commits while actual form submits are secondary.",
+      "response": "Headerjumps nowunderlinedquiettextlinks;actual Addservice/Addrecord/Addlist submits primary. Same labels/routes/POSTdata retained."
+    },
+    {
+      "finding": "Phone navigation clips neighboring labels without a scroll cue.",
+      "response": "Neutral Scrollnavigation hint added inphonewordmark. Stillonehorizontalnavregion;header118.4px,desktop240pxsidebar."
+    },
+    {
+      "finding": "Metricgriddividers differ andphonevalues retain formercardinset.",
+      "response": "Query/registrymetricrows share192pxdesktoptracks;phonefirstvaluex16andpairedcolumnx207;oddlastmetricspansphonegrid. Other quantitiesretained."
+    },
+    {
+      "finding": "Checkboxhelp differs frominputcolumn;native disclosuremarker resemblesplay.",
+      "response": "Checkboxlabels/help alignwithinputcolumnondesktopandx16onphone;nativeSUMMARYusesthinCSSchevronwithunchangedkeyboard/disclosurebehavior."
+    },
+    {
+      "finding": "Blacklist description andsourceURL cramped.",
+      "response": "Name,fulldescriptionandfullURL sharecombinedcolumn,withotherfields/actionsretained. Nativecombinedcell374.9pxdesktop/358phone fits. URLstillwrapsatsomeinteriorcharacters;no claimallbreaksareonlyslashes."
+    },
+    {
+      "finding": "SettingsSaveendsbeyondeditablefieldedge;empty-stateSettingslinksubtle.",
+      "response": "Saveendsat1016,matchingeditablefieldarea,and374phone. Inlinecontentlinksunderlined."
+    },
+    {
+      "finding": "DHCP quote glyph looked wrong.",
+      "response": "Frozenprior source usedASCIIquotes,notmistakenU+201D. CurrentusesexplicitU+201C/U+201D as optionaldirectionaltypography;notrepair ofprovenliteraltypo."
+    },
+    {
+      "finding": "PhoneRemoveactionsvisuallydominant.",
+      "response": "Phone rowRemovebuttonsnowquietdestructivetextwithnativebuttonrole/touchtarget/focuspreserved;desktopdestructiveoutlinesretained."
+    }
+  ],
+  "retained_limits": [
+    "BelowfoldphoneSettings token-card476pxcontent/358client horizontal scroller;unscored,fullresponsivegateunproven.",
+    "No fictionalusernameaddedtopassword-onlyadmin.",
+    "KeptDHCPeditablewhilestopped,allowingconfiguration.",
+    "Retaineddistinctqueryandregistrymetricsanddocumenteddata-serieshues;no inventedforwarding/cacheactivity.",
+    "Completekeyboard/contrast/alltheme/security/production/integrationassuranceoutsidecapturetask."
+  ],
+  "unchanged_images": [
+    {
+      "current": "screenshots/kydns-02-after-appearance-desktop-dark.png",
+      "prior": "screenshots/kydns-01-after-appearance-desktop-dark.png",
+      "sha256": "3c442f4218b6d1d0deef8a61d4bd75fda5f50fd373c2ded5e0ac9c47496b19d6",
+      "surface": "appearance",
+      "device": "desktop",
+      "theme": "dark"
+    },
+    {
+      "current": "screenshots/kydns-02-after-appearance-desktop-light.png",
+      "prior": "screenshots/kydns-01-after-appearance-desktop-light.png",
+      "sha256": "b1796624b59ce3350dfd6deda938a45a680b692af2efff1fccb2c7f2bc091aad",
+      "surface": "appearance",
+      "device": "desktop",
+      "theme": "light"
+    },
+    {
+      "current": "screenshots/kydns-02-after-login-desktop-dark.png",
+      "prior": "screenshots/kydns-01-after-login-desktop-dark.png",
+      "sha256": "852570f11b84974f69b8701cdd9fd48782983fa4ded9c46747ae19415ac749a0",
+      "surface": "login",
+      "device": "desktop",
+      "theme": "dark"
+    },
+    {
+      "current": "screenshots/kydns-02-after-login-desktop-light.png",
+      "prior": "screenshots/kydns-01-after-login-desktop-light.png",
+      "sha256": "28ccbf2e360abcb8aa2f22d7b814f362d5dc23ec8c9b07d1d341c473a8bfa39d",
+      "surface": "login",
+      "device": "desktop",
+      "theme": "light"
+    },
+    {
+      "current": "screenshots/kydns-02-after-login-mobile-dark.png",
+      "prior": "screenshots/kydns-01-after-login-mobile-dark.png",
+      "sha256": "eb18df452965f9cbf21eddbc6103774cfbc516ec0894f33ee24dfd110f1ec471",
+      "surface": "login",
+      "device": "mobile",
+      "theme": "dark"
+    },
+    {
+      "current": "screenshots/kydns-02-after-login-mobile-light.png",
+      "prior": "screenshots/kydns-01-after-login-mobile-light.png",
+      "sha256": "3813c7603cbc757bbbba1ced377cc6989166e5d804859d292798abb052f919f4",
+      "surface": "login",
+      "device": "mobile",
+      "theme": "light"
+    }
+  ],
+  "drift_limit": "Sixexactunchangedimagescannotproveimplementationimprovement;scorevariationonunchangedpixelsisreviewervariation. Numericattributionofscoregainsisjudgmentbookkeeping,notcausallyisolatedmeasurement.",
+  "current_checks": "RealnativeComputerUse,oneformal36imagebatch,0formalerrors,15servedassetsmatchfde2314,x/net0.62.0;no recapture. No scores/acceptance inferred."
+}
