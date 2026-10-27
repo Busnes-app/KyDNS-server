@@ -49,6 +49,8 @@ Non-trivial logic must include one runnable check (unit test or minimal self-che
 
 Keep these aligned:
 
+- `docs/ui-dns-eight/AGENTS.md` — fresh Council captures, independent raw reviews and visual progression evidence.
+
 - `browser/AGENTS.md` — real-server Chromium regressions for dashboard, refresh,
   Appearance and record forms; CI and tag releases run them before publishing.
 - `README.md` — product scope and user-facing capabilities.

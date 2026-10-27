@@ -1,0 +1,40 @@
+{
+  "product_source": "5d27478",
+  "branch": "ui/dns-eight",
+  "baseline": "Fresh current UI; historical7.4 is not current acceptance.",
+  "matrix": {
+    "viewports": [
+      [
+        1280,
+        900
+      ],
+      [
+        390,
+        844
+      ]
+    ],
+    "dpr": 1,
+    "themes": [
+      "OSlight",
+      "OSdark"
+    ],
+    "locale": "en-US",
+    "timezone": "America/New_York",
+    "full_page": false
+  },
+  "fixture_scope": "Actual local recovery administrator; KyDNS administrator-only. Loopback DNS/admin/replication,disabledDHCP,owned syntheticservices/records/queries. No production/hostresolverchanges.",
+  "proposed_surfaces": [
+    "login",
+    "dashboard",
+    "services",
+    "records",
+    "discovered",
+    "blacklists",
+    "dhcp",
+    "settings",
+    "backup",
+    "appearance"
+  ],
+  "coverage": "Worker may record additional visible destinations separately or mark conditional/connected flows absent; do not fabricate live replication/SSO/recovery.",
+  "rules": "No full local tests after hardlock; minimalcappedGo build andonebrowser,fullCIhosted. KnownMySlop401 no retry. No merge/deploy."
+}
