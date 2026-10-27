@@ -52,7 +52,10 @@ notes unless you would rather stay anonymous.
   (and `typ` `logout+jwt` when present) ends anything. It ends the sessions of that
   issuer's `sid`, or that subject's sessions issued by `iat`, never a password
   session or another issuer's. It is not rate limited, so the provider's retries
-  are never refused.
+  are never refused. Discovery runs once per configured issuer and client ID (a
+  failure is retried after 30 seconds) and the key set stays cached; only a token
+  whose signature fails the cached keys refetches the key set, one fetch at a time,
+  which is go-oidc's key-rotation path.
 - Upstream resolvers are reached over DNS-over-TLS or DNS-over-HTTPS with
   certificate verification always on. Plain `udp://` is per-upstream opt-in and
   clears the authenticated-data bit on anything it answers.

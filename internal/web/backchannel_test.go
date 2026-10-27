@@ -13,6 +13,7 @@ import (
 	"net/url"
 	"path/filepath"
 	"strings"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -24,6 +25,8 @@ type fakeKyIdentity struct {
 	key     *rsa.PrivateKey
 	issuer  string
 	idToken string
+	// discoveries and keyFetches count the requests KyDNS made to the provider.
+	discoveries, keyFetches atomic.Int32
 }
 
 func newFakeKyIdentity(t *testing.T) *fakeKyIdentity {
@@ -37,12 +40,14 @@ func newFakeKyIdentity(t *testing.T) *fakeKyIdentity {
 		w.Header().Set("Content-Type", "application/json")
 		switch r.URL.Path {
 		case "/.well-known/openid-configuration":
+			f.discoveries.Add(1)
 			_ = json.NewEncoder(w).Encode(map[string]any{
 				"issuer": f.issuer, "authorization_endpoint": f.issuer + "/authorize",
 				"token_endpoint": f.issuer + "/token", "jwks_uri": f.issuer + "/keys",
 				"id_token_signing_alg_values_supported": []string{"RS256"},
 			})
 		case "/keys":
+			f.keyFetches.Add(1)
 			_ = json.NewEncoder(w).Encode(map[string]any{"keys": []any{map[string]any{
 				"kty": "RSA", "alg": "RS256", "kid": "k",
 				"n": base64.RawURLEncoding.EncodeToString(key.N.Bytes()), "e": "AQAB",
@@ -176,5 +181,54 @@ func TestBackchannelLogoutEndsTheSSOLogin(t *testing.T) {
 	var n int
 	if err := db.QueryRow(`SELECT COUNT(*) FROM audit_events WHERE action = 'auth.sso_backchannel_logout'`).Scan(&n); err != nil || n != 5 {
 		t.Fatalf("audited %d back-channel logouts (%v), want 5", n, err)
+	}
+}
+
+// An anonymous POST must not make KyDNS call the provider: discovery and the key
+// set are fetched once per (issuer, client ID), whatever strangers send.
+func TestBackchannelLogoutDiscoversOncePerSettings(t *testing.T) {
+	f := newFakeKyIdentity(t)
+	h, srv := newWeb(t)
+	setupAndLogin(t, h)
+	_ = srv.o.Store.SetSSOSettings(store.SSOSettings{Enabled: true, IssuerURL: f.issuer, ClientID: "kydns"})
+
+	for i := 0; i < 5; i++ {
+		if rec := postLogoutToken(t, h, f.logoutToken(t, "alice", "sid-1")); rec.Code != http.StatusOK {
+			t.Fatalf("valid logout = %d", rec.Code)
+		}
+		for _, bad := range []string{"garbage", "", "a.b.c"} {
+			if rec := postLogoutToken(t, h, bad); rec.Code != http.StatusBadRequest {
+				t.Fatalf("logout %q = %d, want 400", bad, rec.Code)
+			}
+		}
+	}
+	if d, k := f.discoveries.Load(), f.keyFetches.Load(); d != 1 || k != 1 {
+		t.Fatalf("20 logout POSTs made %d discoveries and %d key fetches, want 1 and 1", d, k)
+	}
+
+	// A new client ID rebuilds the verifier: the old audience no longer verifies.
+	_ = srv.o.Store.SetSSOSettings(store.SSOSettings{Enabled: true, IssuerURL: f.issuer, ClientID: "other"})
+	for i := 0; i < 3; i++ {
+		if rec := postLogoutToken(t, h, f.logoutToken(t, "alice", "sid-1")); rec.Code != http.StatusBadRequest {
+			t.Fatalf("logout for the old client = %d, want 400", rec.Code)
+		}
+	}
+	if d := f.discoveries.Load(); d != 2 {
+		t.Fatalf("client change made %d discoveries in all, want 2", d)
+	}
+
+	// A new issuer is discovered once, and its tokens verify.
+	g := newFakeKyIdentity(t)
+	_ = srv.o.Store.SetSSOSettings(store.SSOSettings{Enabled: true, IssuerURL: g.issuer, ClientID: "kydns"})
+	for i := 0; i < 3; i++ {
+		if rec := postLogoutToken(t, h, g.logoutToken(t, "alice", "sid-1")); rec.Code != http.StatusOK {
+			t.Fatalf("logout from the new issuer = %d", rec.Code)
+		}
+		if rec := postLogoutToken(t, h, "garbage"); rec.Code != http.StatusBadRequest {
+			t.Fatalf("garbage logout = %d, want 400", rec.Code)
+		}
+	}
+	if d, k := g.discoveries.Load(), g.keyFetches.Load(); d != 1 || k != 1 || f.discoveries.Load() != 2 {
+		t.Fatalf("issuer change made %d discoveries and %d key fetches, want 1 and 1", d, k)
 	}
 }

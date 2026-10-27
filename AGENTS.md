@@ -156,7 +156,9 @@ Code, one concern per package:
   configuration and status remain available through the CLI/API.
   `POST /auth/sso/backchannel-logout` is the anonymous OpenID Connect Back-Channel
   Logout receiver: the provider-signed `logout_token` is its authority, and it is not
-  rate limited (a KyIdentity restore sends a burst; a refusal spends a retry). Sessions
+  rate limited (a KyIdentity restore sends a burst; a refusal spends a retry), so
+  `auth.LogoutVerifier` discovers once per (issuer, client ID), keeps the key set, and
+  retries a failed discovery after 30s; never build a verifier per request. Sessions
   record the login's issuer, subject and ID-token `sid`; a logout ends the issuer's
   `sid` and fences it for ten minutes so an in-flight callback answers 401, all under
   the session store's one lock. Verify with `go test ./internal/auth ./internal/web -run 'Logout'`.

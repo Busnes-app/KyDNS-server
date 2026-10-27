@@ -6,7 +6,10 @@ import (
 	"encoding/json"
 	"errors"
 	"strings"
+	"sync"
 	"time"
+
+	"github.com/coreos/go-oidc/v3/oidc"
 )
 
 const backchannelLogoutEvent = "http://schemas.openid.net/event/backchannel-logout"
@@ -21,12 +24,42 @@ type LogoutClaims struct {
 	IssuedAt             time.Time
 }
 
-// VerifyLogoutToken checks a logout token per OpenID Connect Back-Channel Logout 1.0
-// §2.6: the ID-token checks (signature, issuer, audience, expiry), then the claims
-// that keep an ID token from being replayed as one.
-func (c *SSOClient) VerifyLogoutToken(ctx context.Context, raw string) (*LogoutClaims, error) {
-	ctx, _, verifier, err := c.providerVerifier(ctx)
+// logoutDiscoveryRetry is how long a failed discovery is answered from cache.
+const logoutDiscoveryRetry = 30 * time.Second
+
+// LogoutVerifier keeps one discovered verifier for the anonymous logout receiver,
+// so strangers' POSTs do not become calls to the provider: discovery runs once per
+// (issuer, client ID), the key set stays cached, and a failed discovery is retried
+// at most every logoutDiscoveryRetry. The zero value is ready to use.
+type LogoutVerifier struct {
+	mu               sync.Mutex
+	issuer, clientID string
+	verifier         *oidc.IDTokenVerifier
+	at               time.Time
+}
+
+func (v *LogoutVerifier) current(c *SSOClient) *oidc.IDTokenVerifier {
+	v.mu.Lock()
+	defer v.mu.Unlock()
+	if v.issuer == c.IssuerURL && v.clientID == c.ClientID && (v.verifier != nil || time.Since(v.at) < logoutDiscoveryRetry) {
+		return v.verifier
+	}
+	// Not the request's context: one caller hanging up must not fail discovery for
+	// the callers after it. The client's timeout bounds it.
+	_, _, verifier, err := c.providerVerifier(context.Background())
 	if err != nil {
+		verifier = nil
+	}
+	v.issuer, v.clientID, v.verifier, v.at = c.IssuerURL, c.ClientID, verifier, time.Now()
+	return verifier
+}
+
+// Verify checks a logout token per OpenID Connect Back-Channel Logout 1.0 §2.6:
+// the ID-token checks (signature, issuer, audience, expiry), then the claims that
+// keep an ID token from being replayed as one.
+func (v *LogoutVerifier) Verify(ctx context.Context, c *SSOClient, raw string) (*LogoutClaims, error) {
+	verifier := v.current(c)
+	if verifier == nil {
 		return nil, ErrInvalidLogoutToken
 	}
 	token, err := verifier.Verify(ctx, raw)

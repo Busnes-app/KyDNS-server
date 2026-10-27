@@ -11,6 +11,7 @@ import (
 	"errors"
 	"net/http"
 	"net/http/httptest"
+	"sync/atomic"
 	"testing"
 	"time"
 )
@@ -67,6 +68,7 @@ func TestVerifyLogoutToken(t *testing.T) {
 	client := NewSSOClient(issuer, "kydns", "")
 	client.HTTPClient = idp.Client()
 	ctx := context.Background()
+	var verifier LogoutVerifier
 
 	valid := func() map[string]any {
 		return map[string]any{
@@ -77,13 +79,13 @@ func TestVerifyLogoutToken(t *testing.T) {
 	}
 	header := func() map[string]string { return map[string]string{"alg": "RS256", "kid": "k", "typ": "logout+jwt"} }
 
-	got, err := client.VerifyLogoutToken(ctx, signJWT(t, key, header(), valid()))
+	got, err := verifier.Verify(ctx, client, signJWT(t, key, header(), valid()))
 	if err != nil || got.SID != "sid-1" || got.Subject != "subject" || got.Issuer != issuer || got.IssuedAt.IsZero() {
 		t.Fatalf("valid token: claims=%+v error=%v", got, err)
 	}
 	subOnly := valid()
 	delete(subOnly, "sid")
-	if got, err := client.VerifyLogoutToken(ctx, signJWT(t, key, map[string]string{"alg": "RS256", "kid": "k"}, subOnly)); err != nil || got.SID != "" || got.Subject != "subject" {
+	if got, err := verifier.Verify(ctx, client, signJWT(t, key, map[string]string{"alg": "RS256", "kid": "k"}, subOnly)); err != nil || got.SID != "" || got.Subject != "subject" {
 		t.Fatalf("untyped subject-wide token: claims=%+v error=%v", got, err)
 	}
 
@@ -136,10 +138,36 @@ func TestVerifyLogoutToken(t *testing.T) {
 	}
 	for name, token := range raw {
 		t.Run(name, func(t *testing.T) {
-			if got, err := client.VerifyLogoutToken(ctx, token); !errors.Is(err, ErrInvalidLogoutToken) || got != nil {
+			if got, err := verifier.Verify(ctx, client, token); !errors.Is(err, ErrInvalidLogoutToken) || got != nil {
 				t.Fatalf("accepted: claims=%+v error=%v", got, err)
 			}
 		})
+	}
+}
+
+// A failed discovery is answered from cache for a while, then retried.
+func TestLogoutVerifierRetriesFailedDiscovery(t *testing.T) {
+	var discoveries atomic.Int32
+	idp := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		discoveries.Add(1)
+		http.Error(w, "down", http.StatusServiceUnavailable)
+	}))
+	defer idp.Close()
+	client := NewSSOClient(idp.URL, "kydns", "")
+	client.HTTPClient = idp.Client()
+	var verifier LogoutVerifier
+	for i := 0; i < 5; i++ {
+		if _, err := verifier.Verify(context.Background(), client, "a.b.c"); !errors.Is(err, ErrInvalidLogoutToken) {
+			t.Fatalf("verify with the provider down = %v", err)
+		}
+	}
+	if n := discoveries.Load(); n != 1 {
+		t.Fatalf("5 POSTs during an outage made %d discoveries, want 1", n)
+	}
+	verifier.at = verifier.at.Add(-logoutDiscoveryRetry)
+	_, _ = verifier.Verify(context.Background(), client, "a.b.c")
+	if n := discoveries.Load(); n != 2 {
+		t.Fatalf("after the retry interval: %d discoveries, want 2", n)
 	}
 }
 

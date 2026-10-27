@@ -368,6 +368,7 @@ const ssoLogoutFence = 10 * time.Minute
 // provider POSTs a signed logout_token when a login ends there. It is anonymous,
 // since the signature is its authority, and deliberately not rate limited: a
 // KyIdentity restore sends a burst, and every refusal spends one of its retries.
+// s.logout reuses one discovered verifier, so a POST costs the provider nothing.
 func (s *Server) postBackchannelLogout(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Cache-Control", "no-store")
 	r.Body = http.MaxBytesReader(w, r.Body, 16<<10)
@@ -376,7 +377,7 @@ func (s *Server) postBackchannelLogout(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "failed to load SSO settings", http.StatusInternalServerError)
 		return
 	}
-	claims, err := auth.NewSSOClient(sso.IssuerURL, sso.ClientID, "").VerifyLogoutToken(r.Context(), r.PostFormValue("logout_token"))
+	claims, err := s.logout.Verify(r.Context(), auth.NewSSOClient(sso.IssuerURL, sso.ClientID, ""), r.PostFormValue("logout_token"))
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
