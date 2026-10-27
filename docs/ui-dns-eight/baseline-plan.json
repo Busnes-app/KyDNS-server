@@ -31,10 +31,10 @@
     "discovered",
     "blacklists",
     "dhcp",
+    "replication",
     "settings",
-    "backup",
     "appearance"
   ],
-  "coverage": "Worker may record additional visible destinations separately or mark conditional/connected flows absent; do not fabricate live replication/SSO/recovery.",
+  "coverage": "All nine navigation destinations plus login where reachable. Recovery/SSO/token controls are sections within Settings, not invented standalone routes; offscreen/connected states are explicitly unscored.",
   "rules": "No full local tests after hardlock; minimalcappedGo build andonebrowser,fullCIhosted. KnownMySlop401 no retry. No merge/deploy."
 }
