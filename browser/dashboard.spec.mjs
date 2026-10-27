@@ -277,3 +277,50 @@ test('signed-out visitors cannot read the dashboard or Appearance', async ({ bro
     expect((await context.request.get(instance.url + '/stats.json')).status()).toBe(401);
   } finally { await context.close(); }
 });
+
+test('admin layouts retain reachable fields and routing actions at shipped sizes', async ({ page }) => {
+  await page.goto('/discovered');
+  const phone = page.viewportSize().width < 860;
+  const nav = await page.locator('nav').boundingBox();
+  if (phone) expect(nav.height).toBeLessThan(160);
+  else expect(nav.width).toBe(240);
+
+  await page.goto('/settings');
+  for (const group of await page.locator('.field-set').all()) {
+    const bounds = await group.boundingBox();
+    expect(bounds.x).toBeGreaterThanOrEqual(0);
+    expect(bounds.x + bounds.width).toBeLessThanOrEqual(page.viewportSize().width);
+  }
+  await expect(page.getByRole('button', { name: 'Save settings', exact: true })).toBeInViewport();
+
+  await page.goto('/services');
+  await page.locator('#name').fill('layout-check');
+  await page.locator('#address').fill('192.0.2.42');
+  await page.getByRole('button', { name: 'Add service', exact: true }).click();
+  const row = page.getByRole('row').filter({ hasText: 'layout-check' });
+  try {
+    await expect(row.getByRole('button', { name: 'Remove', exact: true })).toBeVisible();
+    const disclosure = row.locator('summary');
+    await disclosure.focus();
+    await disclosure.press('Enter');
+    const proxy = row.getByRole('textbox', { name: 'Proxy address for layout-check', exact: true });
+    await expect(proxy).toBeVisible();
+    await proxy.fill('192.0.2.43');
+    await row.getByRole('checkbox', { name: 'Route', exact: true }).check();
+    await row.getByRole('button', { name: 'Save', exact: true }).click();
+    await expect(row.locator('summary')).toHaveText('Via proxy');
+    await row.locator('summary').click();
+    await expect(proxy).toHaveValue('192.0.2.43');
+    await expect(row.getByRole('checkbox', { name: 'Route', exact: true })).toBeChecked();
+    if (phone) {
+      for (const control of await row.locator('input:not([type=hidden]),button,summary').all()) {
+        const bounds = await control.boundingBox();
+        expect(bounds.x).toBeGreaterThanOrEqual(0);
+        expect(bounds.x + bounds.width).toBeLessThanOrEqual(page.viewportSize().width);
+      }
+    }
+  } finally {
+    await row.getByRole('button', { name: 'Remove', exact: true }).click();
+    await expect(row).toHaveCount(0);
+  }
+});

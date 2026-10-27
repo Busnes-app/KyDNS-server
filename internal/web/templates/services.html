@@ -1,25 +1,28 @@
 {{define "page"}}
 <div class="card">
-  <table class="grid">
-    <tr><th>Name</th><th>Address</th><th>View</th><th>Aliases</th><th>Routing</th><th></th></tr>
+  <table class="grid responsive" aria-label="Services">
+    <tr class="column-headings"><th scope="col">Name</th><th>Address</th><th>View</th><th>Aliases</th><th>Routing</th><th></th></tr>
     {{range .Services}}
       {{$svc := .}}
       {{range $i, $a := .Addresses}}
       <tr>
-        <td>{{if eq $i 0}}{{$svc.Name}}{{end}}</td>
-        <td>{{$a.Address}}{{if and (eq $i 0) $svc.RouteViaProxy}} <span class="badge warn">&rarr; {{$svc.ProxyAddress}}</span>{{end}}</td>
-        <td>{{if $a.Tagged}}<span class="badge accent">{{$a.View}}</span>
+        <td class="technical" data-label="Name">{{if eq $i 0}}{{$svc.Name}}{{end}}</td>
+        <td class="technical" data-label="Address">{{$a.Address}}{{if and (eq $i 0) $svc.RouteViaProxy}} <span class="badge warn">&rarr; {{$svc.ProxyAddress}}</span>{{end}}</td>
+        <td data-label="View">{{if $a.Tagged}}<span class="badge accent">{{$a.View}}</span>
             {{else}}<span class="muted nowrap">{{$a.View}}</span>{{end}}</td>
-        <td>{{if eq $i 0}}{{$svc.Aliases}}{{end}}</td>
-        <td>{{if eq $i 0}}
+        <td class="technical" data-label="Aliases">{{if eq $i 0}}{{$svc.Aliases}}{{end}}</td>
+        <td data-label="Routing">{{if eq $i 0}}
+          <details class="row-routing">
+          <summary>{{if $svc.RouteViaProxy}}Via proxy{{else}}Direct{{end}}</summary>
           <form class="address-row" method="post" action="/services/routing">
             <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
             <input type="hidden" name="id" value="{{$svc.ID}}">
-            <input name="proxy_address" type="text" placeholder="192.168.1.20" value="{{$svc.ProxyAddress}}">
+            <input name="proxy_address" type="text" aria-label="Proxy address for {{$svc.Name}}" placeholder="192.168.1.20" value="{{$svc.ProxyAddress}}">
             <label><input name="route_via_proxy" type="checkbox" {{if $svc.RouteViaProxy}}checked{{end}}> Route</label>
-            <button type="submit"{{template "ro" $}}>Save</button>
-          </form>{{end}}</td>
-        <td>{{if eq $i 0}}
+            <button class="ghost" type="submit"{{template "ro" $}}>Save</button>
+          </form>
+          </details>{{end}}</td>
+        <td class="actions" data-label="Actions">{{if eq $i 0}}
           <form method="post" action="/services/delete">
             <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
             <input type="hidden" name="id" value="{{$svc.ID}}">
@@ -77,7 +80,7 @@
         {{range .Views}}<option value="{{.Name}}">{{.Name}}</option>{{end}}
       </select>
     </div>
-    <button type="submit"{{template "ro" $}}>Add address</button>
+    <button class="ghost" type="submit"{{template "ro" $}}>Add address</button>
   </form>
 </div>
 {{end}}

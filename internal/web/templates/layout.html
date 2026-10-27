@@ -3,17 +3,18 @@
   <nav class="app-nav">
     <div class="brand">{{template "mark"}}<p class="brand-name">KyDNS</p></div>
     <div class="app-nav-links">
-      <a class="ky-nav-item" href="/"{{if eq .Nav "dashboard"}} aria-current="page"{{end}}>Dashboard</a>
-      <a class="ky-nav-item" href="/services"{{if eq .Nav "services"}} aria-current="page"{{end}}>Services</a>
-      <a class="ky-nav-item" href="/records"{{if eq .Nav "records"}} aria-current="page"{{end}}>Records</a>
-      <a class="ky-nav-item" href="/discovered"{{if eq .Nav "discovered"}} aria-current="page"{{end}}>Discovered</a>
-      <a class="ky-nav-item" href="/blacklists"{{if eq .Nav "blacklists"}} aria-current="page"{{end}}>Blacklists</a>
-      <a class="ky-nav-item" href="/dhcp"{{if eq .Nav "dhcp"}} aria-current="page"{{end}}>DHCP</a>
-      {{if .ShowReplication}}<a class="ky-nav-item" href="/replication"{{if eq .Nav "replication"}} aria-current="page"{{end}}>Replication</a>{{end}}
-      <a class="ky-nav-item" href="/settings"{{if eq .Nav "settings"}} aria-current="page"{{end}}>Settings</a>
-      <a class="ky-nav-item" href="/appearance"{{if eq .Nav "appearance"}} aria-current="page"{{end}}>Appearance</a>
+      <a class="ky-nav-item" href="/"{{if eq .Nav "dashboard"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
+      <a class="ky-nav-item" href="/services"{{if eq .Nav "services"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="7" rx="2"/><rect x="3" y="14" width="18" height="7" rx="2"/><path d="M7 6.5h.01M7 17.5h.01"/></svg>Services</a>
+      <a class="ky-nav-item" href="/records"{{if eq .Nav "records"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3h8l4 4v14H4V3h4zm8 0v5h4M8 12h8M8 16h6"/></svg>Records</a>
+      <a class="ky-nav-item" href="/discovered"{{if eq .Nav "discovered"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg>Discovered</a>
+      <a class="ky-nav-item" href="/blacklists"{{if eq .Nav "blacklists"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3zM8 12h8"/></svg>Blacklists</a>
+      <a class="ky-nav-item" href="/dhcp"{{if eq .Nav "dhcp"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="3" width="8" height="6" rx="1"/><path d="M12 9v5M4 18v-4h16v4"/><path d="M2 18h4v3H2zM10 18h4v3h-4zM18 18h4v3h-4z"/></svg>DHCP</a>
+      {{if .ShowReplication}}<a class="ky-nav-item" href="/replication"{{if eq .Nav "replication"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h15l-4-4M20 17H5l4 4M20 7l-4 4M4 17l4-4"/></svg>Replication</a>{{end}}
+      <a class="ky-nav-item" href="/settings"{{if eq .Nav "settings"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3"/><circle cx="15" cy="17" r="3"/></svg>Settings</a>
+      <a class="ky-nav-item" href="/appearance"{{if eq .Nav "appearance"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/></svg>Appearance</a>
     </div>
     <footer class="app-footer">
+      <p class="account-role">Administrator</p>
       <form method="post" action="/logout">
         <input type="hidden" name="csrf_token" value="{{.CSRF}}">
         <button class="ghost" type="submit">Sign out</button>

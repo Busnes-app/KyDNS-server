@@ -8,7 +8,7 @@
 <div class="card">
   <h3>Filtering</h3>
   {{if .Enabled}}
-    <p>Filtering is <span class="badge accent">on</span>. Blocked names are
+    <p>Filtering is <span class="badge">on</span>. Blocked names are
        answered locally with NXDOMAIN and never sent to an upstream. Blocks are
        cached by clients for {{.BlockTTL}} seconds.</p>
   {{else}}
@@ -30,7 +30,7 @@
   <div class="address-row">
     <form method="post" action="/blacklists/toggle">
       <input type="hidden" name="csrf_token" value="{{.CSRF}}">
-      <button type="submit"{{template "ro" $}}>{{if .Enabled}}Turn filtering off{{else}}Turn filtering on{{end}}</button>
+      <button class="ghost" type="submit"{{template "ro" $}}>{{if .Enabled}}Turn filtering off{{else}}Turn filtering on{{end}}</button>
     </form>
     <form method="post" action="/blacklists/refresh">
       <input type="hidden" name="csrf_token" value="{{.CSRF}}">
@@ -49,26 +49,26 @@
 
 <div class="card">
   <h3>Lists</h3>
-  <table class="grid lists">
-    <tr><th>Name</th><th>Source</th><th>Format</th><th>Entries</th><th>Last update</th><th>State</th><th></th></tr>
+  <table class="grid lists responsive" aria-label="Blacklist sources">
+    <tr class="column-headings"><th scope="col">Name</th><th>Source</th><th>Format</th><th>Entries</th><th>Last update</th><th>State</th><th></th></tr>
     {{range .Lists}}
     <tr>
-      <td>{{.Name}}{{if .Builtin}} <span class="badge accent">built-in</span>{{end}}
+      <td data-label="Name">{{.Name}}{{if .Builtin}} <span class="badge">built-in</span>{{end}}
           {{if .Description}}<br><span class="muted">{{.Description}}</span>{{end}}</td>
-      <td><span class="muted">{{.URL}}</span></td>
-      <td>{{.Format}}</td>
-      <td>{{.Entries}}{{if .Skipped}} <span class="muted">({{.Skipped}} skipped)</span>{{end}}</td>
-      <td>{{.LastOK}}<br><span class="muted">every {{.Interval}}</span></td>
-      <td>
-        {{if .Enabled}}<span class="badge accent">on</span>{{else}}<span class="badge">off</span>{{end}}
+      <td class="technical wide" data-label="Source"><span class="muted">{{.URL}}</span></td>
+      <td data-label="Format">{{.Format}}</td>
+      <td data-label="Entries">{{.Entries}}{{if .Skipped}} <span class="muted">({{.Skipped}} skipped)</span>{{end}}</td>
+      <td data-label="Last update">{{.LastOK}}<br><span class="muted">every {{.Interval}}</span></td>
+      <td data-label="State">
+        {{if .Enabled}}<span class="badge">on</span>{{else}}<span class="badge">off</span>{{end}}
         {{if .NeverLoaded}}<br><span class="badge warn">never loaded</span>{{end}}
         {{if .Stale}}<br><span class="badge warn">stale</span><br><span class="muted">{{.LastError}}</span>{{end}}
       </td>
-      <td>
+      <td class="actions wide" data-label="Actions">
         <form class="address-row" method="post" action="/blacklists/lists/toggle">
           <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
           <input type="hidden" name="id" value="{{.ID}}">
-          <button type="submit"{{template "ro" $}}>{{if .Enabled}}Disable{{else}}Enable{{end}}</button>
+          <button class="ghost" type="submit"{{template "ro" $}}>{{if .Enabled}}Disable{{else}}Enable{{end}}</button>
         </form>
         <form class="address-row" method="post" action="/blacklists/refresh">
           <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
@@ -129,7 +129,7 @@
       </form></td></tr>
     {{end}}
     {{range .Allow}}
-    <tr><td><span class="badge accent">allow</span></td><td>{{.Domain}}</td>
+    <tr><td><span class="badge">allow</span></td><td>{{.Domain}}</td>
       <td><form method="post" action="/blacklists/rules/delete">
         <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
         <input type="hidden" name="id" value="{{.ID}}">
@@ -149,7 +149,7 @@
       <option value="deny">Deny — always block</option>
       <option value="allow">Allow — never block</option>
     </select>
-    <button type="submit"{{template "ro" $}}>Add rule</button>
+    <button class="ghost" type="submit"{{template "ro" $}}>Add rule</button>
   </form>
 </div>
 
@@ -166,7 +166,7 @@
     <input type="hidden" name="csrf_token" value="{{.CSRF}}">
     <label for="test-name">Domain</label>
     <input id="test-name" name="name" type="text" placeholder="ads.example">
-    <button type="submit"{{template "ro" $}}>Test</button>
+    <button class="ghost" type="submit"{{template "ro" $}}>Test</button>
   </form>
 </div>
 
