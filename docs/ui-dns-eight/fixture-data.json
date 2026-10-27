@@ -1,0 +1,383 @@
+{
+  "schema_version": 1,
+  "account": {
+    "role": "local-recovery-administrator",
+    "login": "local password only; no username field",
+    "created": "native T3 real /setup; subsequent native logout/login succeeded",
+    "credentials": "private outside repository; never in evidence"
+  },
+  "services": [
+    {
+      "id": 1,
+      "name": "atlas",
+      "fqdn": "atlas.home.arpa.",
+      "addresses": [
+        "127.0.0.21"
+      ],
+      "aliases": [
+        "files"
+      ],
+      "view": "all views",
+      "check_url": "",
+      "proxy_address": "",
+      "route_via_proxy": false,
+      "mac": ""
+    },
+    {
+      "id": 2,
+      "name": "beacon",
+      "fqdn": "beacon.home.arpa.",
+      "addresses": [
+        "127.0.0.22"
+      ],
+      "aliases": [
+        "status"
+      ],
+      "view": "all views",
+      "check_url": "",
+      "proxy_address": "",
+      "route_via_proxy": false,
+      "mac": ""
+    },
+    {
+      "id": 3,
+      "name": "cedar",
+      "fqdn": "cedar.home.arpa.",
+      "addresses": [
+        "127.0.0.23"
+      ],
+      "aliases": [
+        "notes"
+      ],
+      "view": "all views",
+      "check_url": "",
+      "proxy_address": "",
+      "route_via_proxy": false,
+      "mac": ""
+    }
+  ],
+  "records": [
+    {
+      "id": 1,
+      "name": "archive.home.arpa.",
+      "type": "A",
+      "value": "127.0.0.31",
+      "view": "all views"
+    },
+    {
+      "id": 2,
+      "name": "printer.home.arpa.",
+      "type": "A",
+      "value": "127.0.0.32",
+      "view": "all views"
+    },
+    {
+      "id": 3,
+      "name": "router.home.arpa.",
+      "type": "A",
+      "value": "127.0.0.33",
+      "view": "all views"
+    }
+  ],
+  "policy": {
+    "enabled": true,
+    "block_ttl": 60,
+    "lists": [
+      {
+        "id": 1,
+        "name": "steven-black",
+        "url": "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts",
+        "format": "hosts",
+        "builtin": true,
+        "enabled": false,
+        "entries": 0,
+        "last_ok": 0,
+        "last_error": "download failed: Fixture blocks external traffic",
+        "state": "disabled, never loaded; no external connection"
+      }
+    ],
+    "rules": [
+      {
+        "id": 1,
+        "kind": "deny",
+        "domain": "ads.example"
+      }
+    ],
+    "startup_proxy_refusals": [
+      {
+        "time": 1793140620.5894763,
+        "method": "CONNECT",
+        "destination": "raw.githubusercontent.com:443",
+        "result": 403
+      }
+    ]
+  },
+  "listeners": {
+    "admin": "127.0.0.1:5880 TCP/HTTP",
+    "dns": "127.0.0.1:15880 UDP+TCP",
+    "replication": "none: standalone; no key/listener/peers",
+    "upstream": "tls://127.0.0.1:15881; unused, no listener",
+    "refusing_http_proxy": "127.0.0.1:15883; CONNECT returns403, never dials remote"
+  },
+  "settings": {
+    "private_domain": "home.arpa",
+    "allow_query": [
+      "127.0.0.0/8"
+    ],
+    "allow_tailscale": false,
+    "reverse_zones": [],
+    "ttl": 60,
+    "cache_min_ttl": 5,
+    "cache_max_ttl": 3600,
+    "negative_max_ttl": 300,
+    "cache_entries": 10000,
+    "log_queries": true,
+    "log_client_ip": false,
+    "discovery_dhcp_lease_file": "",
+    "discovery_interval": 30,
+    "health_interval": 30,
+    "health_timeout": 5,
+    "health_workers": 1,
+    "dhcp_enabled": false,
+    "dhcp_interface": "",
+    "dhcp_lease_seconds": 86400,
+    "backup_deposit_interval": "0",
+    "backup_key": "not pinned",
+    "backup_pairing": "none",
+    "sso": "disabled/unconfigured",
+    "views": []
+  },
+  "tokens": "Only product automatic first-start bootstrap token exists privately; no UI/API/agent tokens minted or used. Token values/hash never published.",
+  "queries": [
+    {
+      "sequence": 1,
+      "name": "atlas.home.arpa",
+      "type": "A",
+      "transport": "UDP",
+      "rcode": 0,
+      "answers": 1,
+      "time": 1793140715.9049072
+    },
+    {
+      "sequence": 2,
+      "name": "beacon.home.arpa",
+      "type": "A",
+      "transport": "UDP",
+      "rcode": 0,
+      "answers": 1,
+      "time": 1793140715.9049935
+    },
+    {
+      "sequence": 3,
+      "name": "cedar.home.arpa",
+      "type": "A",
+      "transport": "UDP",
+      "rcode": 0,
+      "answers": 1,
+      "time": 1793140715.905028
+    },
+    {
+      "sequence": 4,
+      "name": "archive.home.arpa",
+      "type": "A",
+      "transport": "UDP",
+      "rcode": 0,
+      "answers": 1,
+      "time": 1793140715.9050553
+    },
+    {
+      "sequence": 5,
+      "name": "printer.home.arpa",
+      "type": "A",
+      "transport": "UDP",
+      "rcode": 0,
+      "answers": 1,
+      "time": 1793140715.905087
+    },
+    {
+      "sequence": 6,
+      "name": "router.home.arpa",
+      "type": "A",
+      "transport": "UDP",
+      "rcode": 0,
+      "answers": 1,
+      "time": 1793140715.905111
+    },
+    {
+      "sequence": 7,
+      "name": "ads.example",
+      "type": "A",
+      "transport": "UDP",
+      "rcode": 3,
+      "answers": 0,
+      "time": 1793140715.905145
+    },
+    {
+      "sequence": 8,
+      "name": "ads.example",
+      "type": "A",
+      "transport": "UDP",
+      "rcode": 3,
+      "answers": 0,
+      "time": 1793140715.905173
+    },
+    {
+      "sequence": 9,
+      "name": "atlas.home.arpa",
+      "type": "A",
+      "transport": "UDP",
+      "rcode": 0,
+      "answers": 1,
+      "time": 1793140715.9052064
+    },
+    {
+      "sequence": 10,
+      "name": "beacon.home.arpa",
+      "type": "A",
+      "transport": "UDP",
+      "rcode": 0,
+      "answers": 1,
+      "time": 1793140715.9052463
+    },
+    {
+      "sequence": 11,
+      "name": "cedar.home.arpa",
+      "type": "A",
+      "transport": "UDP",
+      "rcode": 0,
+      "answers": 1,
+      "time": 1793140715.9052708
+    },
+    {
+      "sequence": 12,
+      "name": "archive.home.arpa",
+      "type": "A",
+      "transport": "UDP",
+      "rcode": 0,
+      "answers": 1,
+      "time": 1793140715.9052947
+    },
+    {
+      "sequence": 13,
+      "name": "printer.home.arpa",
+      "type": "A",
+      "transport": "UDP",
+      "rcode": 0,
+      "answers": 1,
+      "time": 1793140715.9053185
+    },
+    {
+      "sequence": 14,
+      "name": "router.home.arpa",
+      "type": "A",
+      "transport": "UDP",
+      "rcode": 0,
+      "answers": 1,
+      "time": 1793140715.9053402
+    },
+    {
+      "sequence": 15,
+      "name": "ads.example",
+      "type": "A",
+      "transport": "UDP",
+      "rcode": 3,
+      "answers": 0,
+      "time": 1793140715.905364
+    },
+    {
+      "sequence": 16,
+      "name": "ads.example",
+      "type": "A",
+      "transport": "UDP",
+      "rcode": 3,
+      "answers": 0,
+      "time": 1793140715.905386
+    },
+    {
+      "sequence": 17,
+      "name": "atlas.home.arpa",
+      "type": "A",
+      "transport": "UDP",
+      "rcode": 0,
+      "answers": 1,
+      "time": 1793140715.9054074
+    },
+    {
+      "sequence": 18,
+      "name": "beacon.home.arpa",
+      "type": "A",
+      "transport": "UDP",
+      "rcode": 0,
+      "answers": 1,
+      "time": 1793140715.9054306
+    },
+    {
+      "sequence": 19,
+      "name": "cedar.home.arpa",
+      "type": "A",
+      "transport": "TCP",
+      "rcode": 0,
+      "answers": 1,
+      "time": 1793140715.9055603
+    },
+    {
+      "sequence": 20,
+      "name": "archive.home.arpa",
+      "type": "A",
+      "transport": "TCP",
+      "rcode": 0,
+      "answers": 1,
+      "time": 1793140715.905643
+    },
+    {
+      "sequence": 21,
+      "name": "printer.home.arpa",
+      "type": "A",
+      "transport": "TCP",
+      "rcode": 0,
+      "answers": 1,
+      "time": 1793140715.9057002
+    },
+    {
+      "sequence": 22,
+      "name": "router.home.arpa",
+      "type": "A",
+      "transport": "TCP",
+      "rcode": 0,
+      "answers": 1,
+      "time": 1793140715.9057386
+    },
+    {
+      "sequence": 23,
+      "name": "ads.example",
+      "type": "A",
+      "transport": "TCP",
+      "rcode": 3,
+      "answers": 0,
+      "time": 1793140715.9057786
+    },
+    {
+      "sequence": 24,
+      "name": "ads.example",
+      "type": "A",
+      "transport": "TCP",
+      "rcode": 3,
+      "answers": 0,
+      "time": 1793140715.905829
+    }
+  ],
+  "query_summary": {
+    "total": 24,
+    "UDP": 18,
+    "TCP": 6,
+    "authoritative_answers": 18,
+    "policy_NXDOMAIN": 6,
+    "forwarded": 0,
+    "refused": 0,
+    "SERVFAIL": 0,
+    "source": "owned 127.0.0.1 socket; A questions only; actual DNS wire responses asserted"
+  },
+  "capture_state": "Same server/data across all36 originals. No queries or fixture mutations during capture. Uptime, ages, minute positions, latency drift naturally.",
+  "seed_method": "Real native UI forms only for all three services, three records, list disable and deny rule; read-only SQLite confirms IDs after seeding.",
+  "automatic_local_backup_sealer": "Normal product startup created data/backup_key privately (0600), not a suite recovery key or pin; no ceremony/pairing."
+}

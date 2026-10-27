@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "product": "KyDNS",
+  "round": 1,
+  "product_source": "5d274783d2277c3a44be2cfe11cf068a6df49580",
+  "capture_frozen_head": "8e41fae3559c6c6e0e7a5dac7536754d855643e8",
+  "product_source_changes": false,
+  "authority": "authority.json",
+  "inventory": "inventory-v1.json",
+  "artifacts": "artifacts-v1.json",
+  "duplicates": "near-duplicate-audit-v1.json",
+  "brands": "brand-references.json",
+  "quality_set": 36,
+  "quality_unscored_brand_references": 4,
+  "capture_conditions": {
+    "viewports": [
+      [
+        1280,
+        900
+      ],
+      [
+        390,
+        844
+      ]
+    ],
+    "dpr": 1,
+    "schemes": [
+      "light",
+      "dark"
+    ],
+    "locale": "en-US",
+    "timezone": "America/New_York",
+    "full_page": false,
+    "service_workers": "allow",
+    "saved_kydns_theme": null,
+    "settling_ms": 500,
+    "pointer": [
+      0,
+      0
+    ]
+  },
+  "runtime": {
+    "playwright": "1.64.1",
+    "browser": "156.0.8078.4",
+    "headless": true
+  },
+  "capture_scope": "Initial viewport of nine surfaces, two sizes and two OS themes. Signed-out login and real local-recovery-administrator session. Administrator-only product.",
+  "missing_unscored": [
+    {
+      "surface": "replication",
+      "reason": "Standalone fixture hides navigation link and redirects /replication with303 to Dashboard. Four combinations N/A, excluded from counts and means."
+    },
+    "Below-fold settings API tokens, SSO, backup/recovery, upstream and configuration sections.",
+    "Real replication, live SSO/recovery and external forwarding.",
+    "Full behavior, keyboard, all-theme contrast and accessibility gates."
+  ],
+  "fixture_facts": [
+    "Three services and three manual A records; no view restrictions.",
+    "Discovered legitimately empty: DHCP lease discovery off. DHCP disabled.",
+    "Built-in list disabled, zero entries and honest never-loaded/error state; owned proxy refused outbound fetch.",
+    "Exactly24 actual local DNS questions:18 authoritative successes and6 policy NXDOMAIN.",
+    "No mocks, auth injection or credential snapshots. No further DNS queries during capture. Real uptime/chart-minute positions drift."
+  ],
+  "blind_input_allowlist": [
+    "AGENTS.md",
+    "docs/ui-dns-eight/AGENTS.md",
+    "authority.json",
+    "authority/**",
+    "inventory-v1.json",
+    "artifacts-v1.json",
+    "near-duplicate-audit-v1.json",
+    "review-inputs-v1.json",
+    "brand-references.json",
+    "brand-references/*.png",
+    "screenshots/kydns-00-before-*.png"
+  ],
+  "blind_input_rule": "Only listed files before full-array score/observation freeze. Baseline plan, setup findings, source/capture provenance body, old fleet evidence, parent findings, galleries, exports and peer files are outside the blind allowlist. No prior current-round KyDNS review exists.",
+  "behavior_gates": "Untested as complete gates. Score only pixels; do not turn static quality into behavior, integration or production acceptance."
+}
