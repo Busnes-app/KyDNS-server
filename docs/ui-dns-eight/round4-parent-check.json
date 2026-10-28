@@ -1,0 +1,28 @@
+{
+  "verified_at": "2026-10-28T00:30:55.592469+00:00",
+  "source": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+  "manifest_sha256": "9a45cd691d302ae07303437193ea634bd77132e702de6d60768dad5add3a99a7",
+  "current_matrix": 36,
+  "artifact_hashes_bytes_dimensions_verified": 148,
+  "prior_tracked_files_preserved": 698,
+  "prior_evidence_files_preserved": 176,
+  "served_assets_verified": 15,
+  "same_size_duplicate_pairs_membership_and_threshold_verified": 306,
+  "cross_round_exact_matches": 20,
+  "synthetic_questions": {
+    "total": 24,
+    "authoritative": 18,
+    "policy_nxdomain": 6,
+    "forwarded": 0,
+    "servfail": 0,
+    "refused_total": 0
+  },
+  "capture_errors": 0,
+  "password_byte_scan_outputs": 46,
+  "process_ownership_reverified": true,
+  "embedded_source_hashes_verified": 85,
+  "build_caveat": "Actual dirty build at4e25354; all85embedded source bytes match2eb750d. No clean-build claim.",
+  "worker_verifier_correction": "Worker redundant verifier used nonexistent query_totals.refused. Correct field is refused_total, present and0 in all four Dashboard records. Parent completed remaining offline checks; no browser reopening, recapture, reseed or product change.",
+  "dox": "Parent-owned evidence under existing docs/ui-dns-eight contract; no instruction/ownership change.",
+  "gates": "Complete behavior,all-theme contrast,states,live integrations and production remain unproven."
+}
