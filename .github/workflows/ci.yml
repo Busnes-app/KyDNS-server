@@ -9,20 +9,45 @@ on:
 permissions:
   contents: read
 
+# A newer push to a PR supersedes its run. Every other run gets a group of its own: main's
+# push runs publish and are what dependency-release.yml reads, so none is ever cancelled.
 concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  group: ci-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  # The name the ruleset requires and publish needs: green only when both legs passed.
   test:
+    needs: [go, browser]
+    if: always()
     runs-on: ubuntu-latest
+    steps:
+      - run: test "${{ !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') && !contains(needs.*.result, 'skipped') }}" = true
+
+  browser:
+    runs-on: ubuntu-latest
+    # Playwright's own image, browsers and their system libraries included. Its version must
+    # be the lockfile's; the first step fails on drift.
+    container:
+      image: mcr.microsoft.com/playwright:v1.64.1-noble@sha256:47b510dd9230bf0b9bfc9b20102241e577ea7a99334ab4c3ca19f19770e9b8ea
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      - name: Playwright image matches the lockfile
+        run: |
+          want="$(node -p 'require("./browser/package-lock.json").packages["node_modules/@playwright/test"].version')"
+          have="$(grep -o 'mcr.microsoft.com/playwright:v[0-9.]*' .github/workflows/ci.yml | head -n1)"
+          if [ "${have#*:v}" != "$want" ]; then
+            echo "::error::browser/package-lock.json pins Playwright $want; ci.yml's browser container is ${have}. Update the image tag and digest."
+            exit 1
+          fi
+
+      # The browser suite builds kydns itself. No cache: inside the container its paths differ,
+      # and saving under the go job's key would race it.
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
-          cache: true
+          cache: false
 
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
@@ -38,7 +63,6 @@ jobs:
         run: |
           npm ci
           npm audit --audit-level=low
-          npx playwright install --with-deps chromium
       - name: browser regressions
         working-directory: browser
         timeout-minutes: 10
@@ -50,6 +74,16 @@ jobs:
           path: browser/test-results
           if-no-files-found: ignore
           retention-days: 7
+
+  go:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache: true
 
       - name: gofmt
         run: |
@@ -93,14 +127,18 @@ jobs:
           git diff --exit-code go.mod go.sum
 
       # The race detector needs cgo, so this run cannot also prove the
-      # cgo-free build. The build job below does that.
-      - name: test
-        run: go test -race -timeout 10m ./...
-
-      - name: test supported strong-crypto profile
-        env:
-          GODEBUG: fips140=on
-        run: go test -race -timeout 10m ./...
+      # cgo-free build. The build job below does that. The default and the
+      # supported strong-crypto profile (GODEBUG=fips140=on) run side by side,
+      # each to its own log; the step fails if either does.
+      - name: test (default and strong-crypto profiles)
+        run: |
+          set +e
+          go test -race -count=1 -timeout 10m ./... > "$RUNNER_TEMP/default.log" 2>&1 & d=$!
+          GODEBUG=fips140=on go test -race -count=1 -timeout 10m ./... > "$RUNNER_TEMP/strong.log" 2>&1 & s=$!
+          wait "$d"; dx=$?; wait "$s"; sx=$?
+          echo "::group::default profile: exit $dx"; cat "$RUNNER_TEMP/default.log"; echo "::endgroup::"
+          echo "::group::strong-crypto profile: exit $sx"; cat "$RUNNER_TEMP/strong.log"; echo "::endgroup::"
+          [ "$dx" = 0 ] && [ "$sx" = 0 ]
 
       - name: profile preserves Compose configuration
         run: python3 scripts/check-strong-crypto-compose.py
