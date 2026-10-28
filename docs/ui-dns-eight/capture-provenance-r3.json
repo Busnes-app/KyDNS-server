@@ -1,0 +1,3692 @@
+{
+  "driver": {
+    "file": "capture-round3.mjs",
+    "sha256": "1b4b54dc4cd1f08dfefa09378c932b064bf67abece48710214a505a62497f5b0"
+  },
+  "runtime": {
+    "node": "v24.22.0",
+    "os": "Linux",
+    "release": "7.2.10-1-cachyos",
+    "platform": "linux",
+    "arch": "x64",
+    "playwright_module": "/home/yoshi/git/busnes.app/KyDrive-server/.claude/worktrees/drive-eight/web/node_modules/@playwright/test/index.mjs",
+    "playwright": "1.64.1",
+    "browser": "156.0.8078.4",
+    "chromium_executable": "/home/yoshi/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+    "chromium_sha256": "377a9fc07b495c3b8d0ab8ec1fdfd153641759f9756fea34d8dfce4de82f5025",
+    "package_json_sha256": "8a1442670473c614959ef40861670d169d1fb29240d21e3c739fc80a4f5b7400",
+    "package_lock_sha256": "d535ae94755b431e17ce0916fb3c1726ed28ffd49a7cd5dcb274e8f834d140be",
+    "headless": true
+  },
+  "auth": "Real browser form password login in each fresh scheme/viewport context; no storageState, cookies, storage/auth injection or security bypass.",
+  "interception": false,
+  "dom_style_content_mutation": false,
+  "native_closed_before_formal": true,
+  "native_probe": {
+    "started_at": "2026-10-27T23:41:54.986Z",
+    "product_source": "fde2314fde061ea9c094feab960da9d8ac6d28ce",
+    "login": "Real password form login succeeded with selector #password; no empty submission, no filled/pending-secret snapshots.",
+    "probes": [
+      {
+        "path": "/services",
+        "dpr": 2,
+        "viewport": [
+          1280,
+          900
+        ],
+        "theme": "busnes-light",
+        "saved_theme": null,
+        "nav_regions": 1,
+        "nav": {
+          "x": 0,
+          "y": 0,
+          "right": 240,
+          "width": 240,
+          "height": 900
+        },
+        "nav_hint": [
+          {
+            "text": "",
+            "display": "block",
+            "bounds": {
+              "x": 20,
+              "y": 20.2578125,
+              "right": 48,
+              "width": 28,
+              "height": 28
+            }
+          },
+          {
+            "text": "KyDNSScroll navigation",
+            "display": "block",
+            "bounds": {
+              "x": 57.59375,
+              "y": 20,
+              "right": 115.1796875,
+              "width": 57.5859375,
+              "height": 28.515625
+            }
+          },
+          {
+            "text": "Scroll navigation",
+            "display": "none",
+            "bounds": {
+              "x": 0,
+              "y": 0,
+              "right": 0,
+              "width": 0,
+              "height": 0
+            }
+          }
+        ],
+        "body_overflow": 0,
+        "secrets": {
+          "nonempty_password": 0,
+          "setup": 0
+        },
+        "details": [
+          {
+            "open": false,
+            "summary": "Direct",
+            "marker": "\"\"",
+            "bounds": {
+              "x": 975.703125,
+              "y": 144.3359375,
+              "right": 1117.5,
+              "width": 141.796875,
+              "height": 40
+            }
+          },
+          {
+            "open": false,
+            "summary": "Direct",
+            "marker": "\"\"",
+            "bounds": {
+              "x": 975.703125,
+              "y": 212.5234375,
+              "right": 1117.5,
+              "width": 141.796875,
+              "height": 40
+            }
+          },
+          {
+            "open": false,
+            "summary": "Direct",
+            "marker": "\"\"",
+            "bounds": {
+              "x": 975.703125,
+              "y": 280.7109375,
+              "right": 1117.5,
+              "width": 141.796875,
+              "height": 40
+            }
+          }
+        ],
+        "headers": [
+          {
+            "text": "Add service",
+            "href": "#add-service",
+            "class": "",
+            "background": "rgba(0, 0, 0, 0)",
+            "form_action": "/services/new",
+            "bounds": {
+              "x": 1160,
+              "y": 32,
+              "right": 1240,
+              "width": 80,
+              "height": 40
+            }
+          }
+        ],
+        "checkboxes": [
+          {
+            "id": "",
+            "name": "route_via_proxy",
+            "bounds": {
+              "x": 979.703125,
+              "y": 252.3359375,
+              "right": 995.703125,
+              "width": 16,
+              "height": 16
+            },
+            "label_bounds": {
+              "x": 975.703125,
+              "y": 249.3359375,
+              "right": 1041.796875,
+              "width": 66.09375,
+              "height": 22
+            },
+            "label_class": "",
+            "parent_bounds": {
+              "x": 975.703125,
+              "y": 249.3359375,
+              "right": 1041.796875,
+              "width": 66.09375,
+              "height": 22
+            },
+            "help": "Save",
+            "help_bounds": {
+              "x": 1049.796875,
+              "y": 240.3359375,
+              "right": 1115.296875,
+              "width": 65.5,
+              "height": 40
+            }
+          },
+          {
+            "id": "",
+            "name": "route_via_proxy",
+            "bounds": {
+              "x": 979.703125,
+              "y": 320.5234375,
+              "right": 995.703125,
+              "width": 16,
+              "height": 16
+            },
+            "label_bounds": {
+              "x": 975.703125,
+              "y": 317.5234375,
+              "right": 1041.796875,
+              "width": 66.09375,
+              "height": 22
+            },
+            "label_class": "",
+            "parent_bounds": {
+              "x": 975.703125,
+              "y": 317.5234375,
+              "right": 1041.796875,
+              "width": 66.09375,
+              "height": 22
+            },
+            "help": "Save",
+            "help_bounds": {
+              "x": 1049.796875,
+              "y": 308.5234375,
+              "right": 1115.296875,
+              "width": 65.5,
+              "height": 40
+            }
+          },
+          {
+            "id": "",
+            "name": "route_via_proxy",
+            "bounds": {
+              "x": 979.703125,
+              "y": 388.7109375,
+              "right": 995.703125,
+              "width": 16,
+              "height": 16
+            },
+            "label_bounds": {
+              "x": 975.703125,
+              "y": 385.7109375,
+              "right": 1041.796875,
+              "width": 66.09375,
+              "height": 22
+            },
+            "label_class": "",
+            "parent_bounds": {
+              "x": 975.703125,
+              "y": 385.7109375,
+              "right": 1041.796875,
+              "width": 66.09375,
+              "height": 22
+            },
+            "help": "Save",
+            "help_bounds": {
+              "x": 1049.796875,
+              "y": 376.7109375,
+              "right": 1115.296875,
+              "width": 65.5,
+              "height": 40
+            }
+          },
+          {
+            "id": "",
+            "name": "route_via_proxy",
+            "bounds": {
+              "x": 474.3984375,
+              "y": 608.4296875,
+              "right": 490.3984375,
+              "width": 16,
+              "height": 16
+            },
+            "label_bounds": {
+              "x": 470.3984375,
+              "y": 602.234375,
+              "right": 1016,
+              "width": 545.6015625,
+              "height": 25.1953125
+            },
+            "label_class": "",
+            "parent_bounds": {
+              "x": 470.3984375,
+              "y": 602.234375,
+              "right": 1016,
+              "width": 545.6015625,
+              "height": 25.1953125
+            },
+            "help": "When routing is on, clients resolve to the proxy address\n       instead of the service's own address.",
+            "help_bounds": {
+              "x": 470.3984375,
+              "y": 637.8203125,
+              "right": 1016,
+              "width": 545.6015625,
+              "height": 41.65625
+            }
+          }
+        ],
+        "metrics": [],
+        "fieldsets": [],
+        "scrollers": [],
+        "save": [],
+        "quotes": [],
+        "blacklist_cells": [],
+        "buttons": [
+          {
+            "text": "Save",
+            "class": "ghost",
+            "action": "/services/routing",
+            "bounds": {
+              "x": 1049.796875,
+              "y": 240.3359375,
+              "right": 1115.296875,
+              "width": 65.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Remove",
+            "class": "danger",
+            "action": "/services/delete",
+            "bounds": {
+              "x": 1141.5,
+              "y": 144.3359375,
+              "right": 1228,
+              "width": 86.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Save",
+            "class": "ghost",
+            "action": "/services/routing",
+            "bounds": {
+              "x": 1049.796875,
+              "y": 308.5234375,
+              "right": 1115.296875,
+              "width": 65.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Remove",
+            "class": "danger",
+            "action": "/services/delete",
+            "bounds": {
+              "x": 1141.5,
+              "y": 212.5234375,
+              "right": 1228,
+              "width": 86.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Save",
+            "class": "ghost",
+            "action": "/services/routing",
+            "bounds": {
+              "x": 1049.796875,
+              "y": 376.7109375,
+              "right": 1115.296875,
+              "width": 65.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Remove",
+            "class": "danger",
+            "action": "/services/delete",
+            "bounds": {
+              "x": 1141.5,
+              "y": 280.7109375,
+              "right": 1228,
+              "width": 86.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Add service",
+            "class": "",
+            "action": "/services/new",
+            "bounds": {
+              "x": 470.3984375,
+              "y": 697.8671875,
+              "right": 581.8984375,
+              "width": 111.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Add address",
+            "class": "ghost",
+            "action": "/services/address",
+            "bounds": {
+              "x": 470.3984375,
+              "y": 968.1015625,
+              "right": 587.8984375,
+              "width": 117.5,
+              "height": 40
+            }
+          }
+        ],
+        "theme_cards": 0
+      },
+      {
+        "path": "/records",
+        "dpr": 2,
+        "viewport": [
+          1280,
+          900
+        ],
+        "theme": "busnes-light",
+        "saved_theme": null,
+        "nav_regions": 1,
+        "nav": {
+          "x": 0,
+          "y": 0,
+          "right": 240,
+          "width": 240,
+          "height": 900
+        },
+        "nav_hint": [
+          {
+            "text": "",
+            "display": "block",
+            "bounds": {
+              "x": 20,
+              "y": 20.2578125,
+              "right": 48,
+              "width": 28,
+              "height": 28
+            }
+          },
+          {
+            "text": "KyDNSScroll navigation",
+            "display": "block",
+            "bounds": {
+              "x": 57.59375,
+              "y": 20,
+              "right": 115.1796875,
+              "width": 57.5859375,
+              "height": 28.515625
+            }
+          },
+          {
+            "text": "Scroll navigation",
+            "display": "none",
+            "bounds": {
+              "x": 0,
+              "y": 0,
+              "right": 0,
+              "width": 0,
+              "height": 0
+            }
+          }
+        ],
+        "body_overflow": 0,
+        "secrets": {
+          "nonempty_password": 0,
+          "setup": 0
+        },
+        "details": [],
+        "headers": [
+          {
+            "text": "Add record",
+            "href": "#add-record",
+            "class": "",
+            "background": "rgba(0, 0, 0, 0)",
+            "form_action": "/records/new",
+            "bounds": {
+              "x": 1165,
+              "y": 32,
+              "right": 1240,
+              "width": 75,
+              "height": 40
+            }
+          }
+        ],
+        "checkboxes": [],
+        "metrics": [],
+        "fieldsets": [],
+        "scrollers": [],
+        "save": [],
+        "quotes": [],
+        "blacklist_cells": [],
+        "buttons": [
+          {
+            "text": "Remove",
+            "class": "danger",
+            "action": "/records/delete",
+            "bounds": {
+              "x": 1141.5,
+              "y": 144.3359375,
+              "right": 1228,
+              "width": 86.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Remove",
+            "class": "danger",
+            "action": "/records/delete",
+            "bounds": {
+              "x": 1141.5,
+              "y": 212.5234375,
+              "right": 1228,
+              "width": 86.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Remove",
+            "class": "danger",
+            "action": "/records/delete",
+            "bounds": {
+              "x": 1141.5,
+              "y": 280.7109375,
+              "right": 1228,
+              "width": 86.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Add record",
+            "class": "",
+            "action": "/records/new",
+            "bounds": {
+              "x": 470.3984375,
+              "y": 607.03125,
+              "right": 578.8984375,
+              "width": 108.5,
+              "height": 40
+            }
+          }
+        ],
+        "theme_cards": 0
+      },
+      {
+        "path": "/blacklists",
+        "dpr": 2,
+        "viewport": [
+          1280,
+          900
+        ],
+        "theme": "busnes-light",
+        "saved_theme": null,
+        "nav_regions": 1,
+        "nav": {
+          "x": 0,
+          "y": 0,
+          "right": 240,
+          "width": 240,
+          "height": 900
+        },
+        "nav_hint": [
+          {
+            "text": "",
+            "display": "block",
+            "bounds": {
+              "x": 20,
+              "y": 20.2578125,
+              "right": 48,
+              "width": 28,
+              "height": 28
+            }
+          },
+          {
+            "text": "KyDNSScroll navigation",
+            "display": "block",
+            "bounds": {
+              "x": 57.59375,
+              "y": 20,
+              "right": 115.1796875,
+              "width": 57.5859375,
+              "height": 28.515625
+            }
+          },
+          {
+            "text": "Scroll navigation",
+            "display": "none",
+            "bounds": {
+              "x": 0,
+              "y": 0,
+              "right": 0,
+              "width": 0,
+              "height": 0
+            }
+          }
+        ],
+        "body_overflow": 0,
+        "secrets": {
+          "nonempty_password": 0,
+          "setup": 0
+        },
+        "details": [],
+        "headers": [
+          {
+            "text": "Add list",
+            "href": "#add-list",
+            "class": "",
+            "background": "rgba(0, 0, 0, 0)",
+            "form_action": null,
+            "bounds": {
+              "x": 1188.5,
+              "y": 32,
+              "right": 1240,
+              "width": 51.5,
+              "height": 40
+            }
+          }
+        ],
+        "checkboxes": [],
+        "metrics": [],
+        "fieldsets": [],
+        "scrollers": [],
+        "save": [],
+        "quotes": [],
+        "blacklist_cells": [
+          {
+            "text": "steven-black built-in\n\nUnified hosts file: adware and malware domains, consolidated from several maintained sources. (MIT, StevenBlack/hosts contributors)\nhttps://raw.githubusercontent.com/StevenBlack/hosts/master/hosts",
+            "bounds": {
+              "x": 280,
+              "y": 460.609375,
+              "right": 654.90625,
+              "width": 374.90625,
+              "height": 153.765625
+            },
+            "scroll": 375,
+            "client": 375
+          }
+        ],
+        "buttons": [
+          {
+            "text": "Turn filtering off",
+            "class": "ghost",
+            "action": "/blacklists/toggle",
+            "bounds": {
+              "x": 280,
+              "y": 261.1796875,
+              "right": 423,
+              "width": 143,
+              "height": 40
+            }
+          },
+          {
+            "text": "Refresh all lists",
+            "class": "ghost",
+            "action": "/blacklists/refresh",
+            "bounds": {
+              "x": 431,
+              "y": 261.1796875,
+              "right": 566,
+              "width": 135,
+              "height": 40
+            }
+          },
+          {
+            "text": "Enable",
+            "class": "ghost",
+            "action": "/blacklists/lists/toggle",
+            "bounds": {
+              "x": 1060,
+              "y": 517.7421875,
+              "right": 1138.5,
+              "width": 78.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Refresh",
+            "class": "ghost",
+            "action": "/blacklists/refresh",
+            "bounds": {
+              "x": 1142.5,
+              "y": 517.7421875,
+              "right": 1228,
+              "width": 85.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Add list",
+            "class": "",
+            "action": "/blacklists/lists/new",
+            "bounds": {
+              "x": 470.3984375,
+              "y": 965.453125,
+              "right": 554.8984375,
+              "width": 84.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Remove",
+            "class": "danger",
+            "action": "/blacklists/rules/delete",
+            "bounds": {
+              "x": 1141.5,
+              "y": 1210.4765625,
+              "right": 1228,
+              "width": 86.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Add rule",
+            "class": "ghost",
+            "action": "/blacklists/rules/new",
+            "bounds": {
+              "x": 470.3984375,
+              "y": 1382.4609375,
+              "right": 559.8984375,
+              "width": 89.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Test",
+            "class": "ghost",
+            "action": "/blacklists/test",
+            "bounds": {
+              "x": 470.3984375,
+              "y": 1548.796875,
+              "right": 532.3984375,
+              "width": 62,
+              "height": 40
+            }
+          }
+        ],
+        "theme_cards": 0
+      },
+      {
+        "path": "/dhcp",
+        "dpr": 2,
+        "viewport": [
+          1280,
+          900
+        ],
+        "theme": "busnes-light",
+        "saved_theme": null,
+        "nav_regions": 1,
+        "nav": {
+          "x": 0,
+          "y": 0,
+          "right": 240,
+          "width": 240,
+          "height": 900
+        },
+        "nav_hint": [
+          {
+            "text": "",
+            "display": "block",
+            "bounds": {
+              "x": 20,
+              "y": 20.2578125,
+              "right": 48,
+              "width": 28,
+              "height": 28
+            }
+          },
+          {
+            "text": "KyDNSScroll navigation",
+            "display": "block",
+            "bounds": {
+              "x": 57.59375,
+              "y": 20,
+              "right": 115.1796875,
+              "width": 57.5859375,
+              "height": 28.515625
+            }
+          },
+          {
+            "text": "Scroll navigation",
+            "display": "none",
+            "bounds": {
+              "x": 0,
+              "y": 0,
+              "right": 0,
+              "width": 0,
+              "height": 0
+            }
+          }
+        ],
+        "body_overflow": 0,
+        "secrets": {
+          "nonempty_password": 0,
+          "setup": 0
+        },
+        "details": [],
+        "headers": [],
+        "checkboxes": [
+          {
+            "id": "",
+            "name": "enabled",
+            "bounds": {
+              "x": 474.3984375,
+              "y": 306.8671875,
+              "right": 490.3984375,
+              "width": 16,
+              "height": 16
+            },
+            "label_bounds": {
+              "x": 470.3984375,
+              "y": 300.671875,
+              "right": 1016,
+              "width": 545.6015625,
+              "height": 25.1953125
+            },
+            "label_class": "",
+            "parent_bounds": {
+              "x": 470.3984375,
+              "y": 300.671875,
+              "right": 1016,
+              "width": 545.6015625,
+              "height": 25.1953125
+            },
+            "help": "Interface",
+            "help_bounds": {
+              "x": 280,
+              "y": 334.6640625,
+              "right": 456,
+              "width": 176,
+              "height": 27.7890625
+            }
+          },
+          {
+            "id": "",
+            "name": "allow_foreign",
+            "bounds": {
+              "x": 474.3984375,
+              "y": 701.921875,
+              "right": 490.3984375,
+              "width": 16,
+              "height": 16
+            },
+            "label_bounds": {
+              "x": 470.3984375,
+              "y": 687.0234375,
+              "right": 1016,
+              "width": 545.6015625,
+              "height": 42.6015625
+            },
+            "label_class": "",
+            "parent_bounds": {
+              "x": 470.3984375,
+              "y": 687.0234375,
+              "right": 1016,
+              "width": 545.6015625,
+              "height": 42.6015625
+            },
+            "help_bounds": null
+          }
+        ],
+        "metrics": [],
+        "fieldsets": [],
+        "scrollers": [],
+        "save": [],
+        "quotes": [],
+        "blacklist_cells": [],
+        "buttons": [
+          {
+            "text": "Save",
+            "class": "last",
+            "action": "/dhcp/settings",
+            "bounds": {
+              "x": 470.3984375,
+              "y": 743.21875,
+              "right": 535.8984375,
+              "width": 65.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Fill in from this interface",
+            "class": "ghost",
+            "action": "/dhcp/settings",
+            "bounds": {
+              "x": 470.3984375,
+              "y": 388.2578125,
+              "right": 667.8984375,
+              "width": 197.5,
+              "height": 40
+            }
+          }
+        ],
+        "theme_cards": 0
+      },
+      {
+        "path": "/settings",
+        "dpr": 2,
+        "viewport": [
+          1280,
+          900
+        ],
+        "theme": "busnes-light",
+        "saved_theme": null,
+        "nav_regions": 1,
+        "nav": {
+          "x": 0,
+          "y": 0,
+          "right": 240,
+          "width": 240,
+          "height": 900
+        },
+        "nav_hint": [
+          {
+            "text": "",
+            "display": "block",
+            "bounds": {
+              "x": 20,
+              "y": 20.2578125,
+              "right": 48,
+              "width": 28,
+              "height": 28
+            }
+          },
+          {
+            "text": "KyDNSScroll navigation",
+            "display": "block",
+            "bounds": {
+              "x": 57.59375,
+              "y": 20,
+              "right": 115.1796875,
+              "width": 57.5859375,
+              "height": 28.515625
+            }
+          },
+          {
+            "text": "Scroll navigation",
+            "display": "none",
+            "bounds": {
+              "x": 0,
+              "y": 0,
+              "right": 0,
+              "width": 0,
+              "height": 0
+            }
+          }
+        ],
+        "body_overflow": 0,
+        "secrets": {
+          "nonempty_password": 0,
+          "setup": 0
+        },
+        "details": [],
+        "headers": [],
+        "checkboxes": [
+          {
+            "id": "",
+            "name": "allow_tailscale",
+            "bounds": {
+              "x": 474.3984375,
+              "y": 689.875,
+              "right": 490.3984375,
+              "width": 16,
+              "height": 16
+            },
+            "label_bounds": {
+              "x": 470.3984375,
+              "y": 683.6796875,
+              "right": 1016,
+              "width": 545.6015625,
+              "height": 25.1953125
+            },
+            "label_class": "",
+            "parent_bounds": {
+              "x": 470.3984375,
+              "y": 683.6796875,
+              "right": 1016,
+              "width": 545.6015625,
+              "height": 25.1953125
+            },
+            "help_bounds": null
+          },
+          {
+            "id": "",
+            "name": "log_queries",
+            "bounds": {
+              "x": 474.3984375,
+              "y": 1589.0859375,
+              "right": 490.3984375,
+              "width": 16,
+              "height": 16
+            },
+            "label_bounds": {
+              "x": 470.3984375,
+              "y": 1582.890625,
+              "right": 1016,
+              "width": 545.6015625,
+              "height": 25.1953125
+            },
+            "label_class": "",
+            "parent_bounds": {
+              "x": 470.3984375,
+              "y": 1582.890625,
+              "right": 1016,
+              "width": 545.6015625,
+              "height": 25.1953125
+            },
+            "help": " Also log who asked",
+            "help_bounds": {
+              "x": 470.3984375,
+              "y": 1616.8828125,
+              "right": 1016,
+              "width": 545.6015625,
+              "height": 25.1953125
+            }
+          },
+          {
+            "id": "",
+            "name": "log_client_ip",
+            "bounds": {
+              "x": 474.3984375,
+              "y": 1623.078125,
+              "right": 490.3984375,
+              "width": 16,
+              "height": 16
+            },
+            "label_bounds": {
+              "x": 470.3984375,
+              "y": 1616.8828125,
+              "right": 1016,
+              "width": 545.6015625,
+              "height": 25.1953125
+            },
+            "label_class": "",
+            "parent_bounds": {
+              "x": 470.3984375,
+              "y": 1616.8828125,
+              "right": 1016,
+              "width": 545.6015625,
+              "height": 25.1953125
+            },
+            "help_bounds": null
+          },
+          {
+            "id": "",
+            "name": "query_log",
+            "bounds": {
+              "x": 474.3984375,
+              "y": 2363.9609375,
+              "right": 490.3984375,
+              "width": 16,
+              "height": 16
+            },
+            "label_bounds": {
+              "x": 470.3984375,
+              "y": 2357.765625,
+              "right": 1016,
+              "width": 545.6015625,
+              "height": 25.1953125
+            },
+            "label_class": "",
+            "parent_bounds": {
+              "x": 470.3984375,
+              "y": 2357.765625,
+              "right": 1016,
+              "width": 545.6015625,
+              "height": 25.1953125
+            },
+            "help": "Read and write lets anyone who can message the agent try to make it\n       change your rules or pause blocking.",
+            "help_bounds": {
+              "x": 470.3984375,
+              "y": 2393.3515625,
+              "right": 1016,
+              "width": 545.6015625,
+              "height": 41.65625
+            }
+          },
+          {
+            "id": "",
+            "name": "enabled",
+            "bounds": {
+              "x": 474.3984375,
+              "y": 2710.53125,
+              "right": 490.3984375,
+              "width": 16,
+              "height": 16
+            },
+            "label_bounds": {
+              "x": 470.3984375,
+              "y": 2704.3359375,
+              "right": 1016,
+              "width": 545.6015625,
+              "height": 25.1953125
+            },
+            "label_class": "",
+            "parent_bounds": {
+              "x": 470.3984375,
+              "y": 2704.3359375,
+              "right": 1016,
+              "width": 545.6015625,
+              "height": 25.1953125
+            },
+            "help": "Issuer URL",
+            "help_bounds": {
+              "x": 280,
+              "y": 2738.328125,
+              "right": 456,
+              "width": 176,
+              "height": 27.7890625
+            }
+          }
+        ],
+        "metrics": [],
+        "fieldsets": [
+          {
+            "bounds": {
+              "x": 280,
+              "y": 188.25,
+              "right": 1016,
+              "width": 736,
+              "height": 225.1171875
+            },
+            "scroll": 736,
+            "client": 736
+          },
+          {
+            "bounds": {
+              "x": 280,
+              "y": 437.3671875,
+              "right": 1016,
+              "width": 736,
+              "height": 271.5078125
+            },
+            "scroll": 736,
+            "client": 736
+          },
+          {
+            "bounds": {
+              "x": 280,
+              "y": 732.875,
+              "right": 1016,
+              "width": 736,
+              "height": 141.9375
+            },
+            "scroll": 736,
+            "client": 736
+          },
+          {
+            "bounds": {
+              "x": 280,
+              "y": 898.8125,
+              "right": 1016,
+              "width": 736,
+              "height": 234.71875
+            },
+            "scroll": 736,
+            "client": 736
+          },
+          {
+            "bounds": {
+              "x": 280,
+              "y": 1157.53125,
+              "right": 1016,
+              "width": 736,
+              "height": 143.109375
+            },
+            "scroll": 736,
+            "client": 736
+          },
+          {
+            "bounds": {
+              "x": 280,
+              "y": 1324.640625,
+              "right": 1016,
+              "width": 736,
+              "height": 191.90625
+            },
+            "scroll": 736,
+            "client": 736
+          },
+          {
+            "bounds": {
+              "x": 280,
+              "y": 1540.546875,
+              "right": 1016,
+              "width": 736,
+              "height": 101.53125
+            },
+            "scroll": 736,
+            "client": 736
+          },
+          {
+            "bounds": {
+              "x": 280,
+              "y": 2661.9921875,
+              "right": 1016,
+              "width": 736,
+              "height": 276.7578125
+            },
+            "scroll": 736,
+            "client": 736
+          }
+        ],
+        "scrollers": [],
+        "save": [
+          {
+            "bounds": {
+              "x": 893,
+              "y": 86,
+              "right": 1016,
+              "width": 123,
+              "height": 40
+            },
+            "form_id": "server-settings-form",
+            "form_bounds": {
+              "x": 280,
+              "y": 188.25,
+              "right": 1240,
+              "width": 960,
+              "height": 1453.828125
+            },
+            "action": "/settings/server"
+          }
+        ],
+        "quotes": [],
+        "blacklist_cells": [],
+        "buttons": [
+          {
+            "text": "Add view",
+            "class": "",
+            "action": "/settings/views/new",
+            "bounds": {
+              "x": 470.3984375,
+              "y": 1939.5703125,
+              "right": 564.3984375,
+              "width": 94,
+              "height": 40
+            }
+          },
+          {
+            "text": "Revoke",
+            "class": "danger",
+            "action": "/settings/tokens/delete",
+            "bounds": {
+              "x": 1146.5,
+              "y": 2184.59375,
+              "right": 1228,
+              "width": 81.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Create token",
+            "class": "",
+            "action": "/settings/tokens/new",
+            "bounds": {
+              "x": 470.3984375,
+              "y": 2453.3984375,
+              "right": 590.8984375,
+              "width": 120.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Link SSO identity",
+            "class": "ghost",
+            "action": "/settings/sso/link",
+            "bounds": {
+              "x": 280,
+              "y": 2597.9921875,
+              "right": 428.5,
+              "width": 148.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Save SSO settings",
+            "class": "",
+            "action": "/settings/sso",
+            "bounds": {
+              "x": 280,
+              "y": 2962.75,
+              "right": 433,
+              "width": 153,
+              "height": 40
+            }
+          },
+          {
+            "text": "Flush DNS cache",
+            "class": "ghost",
+            "action": "/settings/cache/flush",
+            "bounds": {
+              "x": 280,
+              "y": 3152.59375,
+              "right": 423,
+              "width": 143,
+              "height": 40
+            }
+          },
+          {
+            "text": "Back up now",
+            "class": "",
+            "action": "/settings/backup/deposit",
+            "bounds": {
+              "x": 280,
+              "y": 3546.9375,
+              "right": 399,
+              "width": 119,
+              "height": 40
+            }
+          },
+          {
+            "text": "Run drill",
+            "class": "ghost",
+            "action": "/settings/backup/drill",
+            "bounds": {
+              "x": 280,
+              "y": 3586.9375,
+              "right": 368,
+              "width": 88,
+              "height": 40
+            }
+          },
+          {
+            "text": "Save schedule",
+            "class": "",
+            "action": "/settings/backup/schedule",
+            "bounds": {
+              "x": 470.3984375,
+              "y": 3809.515625,
+              "right": 599.8984375,
+              "width": 129.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Pair KyRecovery",
+            "class": "",
+            "action": "/settings/backup/pair",
+            "bounds": {
+              "x": 470.3984375,
+              "y": 4002.8359375,
+              "right": 612.8984375,
+              "width": 142.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Pin recovery key",
+            "class": "",
+            "action": "/settings/backup/pin-key",
+            "bounds": {
+              "x": 470.3984375,
+              "y": 4378.2578125,
+              "right": 614.8984375,
+              "width": 144.5,
+              "height": 40
+            }
+          }
+        ],
+        "theme_cards": 0
+      },
+      {
+        "path": "/discovered",
+        "dpr": 2,
+        "viewport": [
+          1280,
+          900
+        ],
+        "theme": "busnes-light",
+        "saved_theme": null,
+        "nav_regions": 1,
+        "nav": {
+          "x": 0,
+          "y": 0,
+          "right": 240,
+          "width": 240,
+          "height": 900
+        },
+        "nav_hint": [
+          {
+            "text": "",
+            "display": "block",
+            "bounds": {
+              "x": 20,
+              "y": 20.2578125,
+              "right": 48,
+              "width": 28,
+              "height": 28
+            }
+          },
+          {
+            "text": "KyDNSScroll navigation",
+            "display": "block",
+            "bounds": {
+              "x": 57.59375,
+              "y": 20,
+              "right": 115.1796875,
+              "width": 57.5859375,
+              "height": 28.515625
+            }
+          },
+          {
+            "text": "Scroll navigation",
+            "display": "none",
+            "bounds": {
+              "x": 0,
+              "y": 0,
+              "right": 0,
+              "width": 0,
+              "height": 0
+            }
+          }
+        ],
+        "body_overflow": 0,
+        "secrets": {
+          "nonempty_password": 0,
+          "setup": 0
+        },
+        "details": [],
+        "headers": [],
+        "checkboxes": [],
+        "metrics": [],
+        "fieldsets": [],
+        "scrollers": [],
+        "save": [],
+        "quotes": [],
+        "blacklist_cells": [],
+        "buttons": [],
+        "theme_cards": 0
+      },
+      {
+        "path": "/appearance",
+        "dpr": 2,
+        "viewport": [
+          1280,
+          900
+        ],
+        "theme": "busnes-light",
+        "saved_theme": null,
+        "nav_regions": 1,
+        "nav": {
+          "x": 0,
+          "y": 0,
+          "right": 240,
+          "width": 240,
+          "height": 900
+        },
+        "nav_hint": [
+          {
+            "text": "",
+            "display": "block",
+            "bounds": {
+              "x": 20,
+              "y": 20.2578125,
+              "right": 48,
+              "width": 28,
+              "height": 28
+            }
+          },
+          {
+            "text": "KyDNSScroll navigation",
+            "display": "block",
+            "bounds": {
+              "x": 57.59375,
+              "y": 20,
+              "right": 115.1796875,
+              "width": 57.5859375,
+              "height": 28.515625
+            }
+          },
+          {
+            "text": "Scroll navigation",
+            "display": "none",
+            "bounds": {
+              "x": 0,
+              "y": 0,
+              "right": 0,
+              "width": 0,
+              "height": 0
+            }
+          }
+        ],
+        "body_overflow": 0,
+        "secrets": {
+          "nonempty_password": 0,
+          "setup": 0
+        },
+        "details": [],
+        "headers": [],
+        "checkboxes": [],
+        "metrics": [],
+        "fieldsets": [
+          {
+            "bounds": {
+              "x": 280,
+              "y": 155,
+              "right": 1240,
+              "width": 960,
+              "height": 682.1171875
+            },
+            "scroll": 960,
+            "client": 960
+          }
+        ],
+        "scrollers": [],
+        "save": [],
+        "quotes": [],
+        "blacklist_cells": [],
+        "buttons": [],
+        "theme_cards": 23,
+        "checked_theme": "system"
+      },
+      {
+        "path": "/",
+        "dpr": 2,
+        "viewport": [
+          390,
+          844
+        ],
+        "theme": "busnes-dark",
+        "saved_theme": null,
+        "nav_regions": 1,
+        "nav": {
+          "x": 0,
+          "y": 0,
+          "right": 390,
+          "width": 390,
+          "height": 118.4140625
+        },
+        "nav_hint": [
+          {
+            "text": "",
+            "display": "block",
+            "bounds": {
+              "x": 16,
+              "y": 20.703125,
+              "right": 44,
+              "width": 28,
+              "height": 28
+            }
+          },
+          {
+            "text": "KyDNSScroll navigation",
+            "display": "block",
+            "bounds": {
+              "x": 53.59375,
+              "y": 12,
+              "right": 157.59375,
+              "width": 104,
+              "height": 45.4140625
+            }
+          },
+          {
+            "text": "Scroll navigation",
+            "display": "block",
+            "bounds": {
+              "x": 53.59375,
+              "y": 40.515625,
+              "right": 157.59375,
+              "width": 104,
+              "height": 16.8984375
+            }
+          }
+        ],
+        "body_overflow": 0,
+        "secrets": {
+          "nonempty_password": 0,
+          "setup": 0
+        },
+        "details": [],
+        "headers": [],
+        "checkboxes": [],
+        "metrics": [
+          {
+            "bounds": {
+              "x": 16,
+              "y": 192.4140625,
+              "right": 374,
+              "width": 358,
+              "height": 186.5
+            },
+            "class": "card stat-row metrics",
+            "columns": "167px 167px",
+            "children": [
+              {
+                "bounds": {
+                  "x": 16,
+                  "y": 192.4140625,
+                  "right": 183,
+                  "width": 167,
+                  "height": 51.5
+                },
+                "value_bounds": {
+                  "x": 16,
+                  "y": 192.4140625,
+                  "right": 183,
+                  "width": 167,
+                  "height": 28.15625
+                },
+                "text": "24Queries"
+              },
+              {
+                "bounds": {
+                  "x": 207,
+                  "y": 192.4140625,
+                  "right": 374,
+                  "width": 167,
+                  "height": 51.5
+                },
+                "value_bounds": {
+                  "x": 207,
+                  "y": 192.4140625,
+                  "right": 374,
+                  "width": 167,
+                  "height": 28.15625
+                },
+                "text": "6Blocked"
+              },
+              {
+                "bounds": {
+                  "x": 16,
+                  "y": 259.9140625,
+                  "right": 183,
+                  "width": 167,
+                  "height": 51.5
+                },
+                "value_bounds": {
+                  "x": 16,
+                  "y": 259.9140625,
+                  "right": 183,
+                  "width": 167,
+                  "height": 28.15625
+                },
+                "text": "0%Cache hit rate"
+              },
+              {
+                "bounds": {
+                  "x": 207,
+                  "y": 259.9140625,
+                  "right": 374,
+                  "width": 167,
+                  "height": 51.5
+                },
+                "value_bounds": {
+                  "x": 207,
+                  "y": 259.9140625,
+                  "right": 374,
+                  "width": 167,
+                  "height": 28.15625
+                },
+                "text": "0msAvg response"
+              },
+              {
+                "bounds": {
+                  "x": 16,
+                  "y": 327.4140625,
+                  "right": 374,
+                  "width": 358,
+                  "height": 51.5
+                },
+                "value_bounds": {
+                  "x": 16,
+                  "y": 327.4140625,
+                  "right": 374,
+                  "width": 358,
+                  "height": 28.15625
+                },
+                "text": "1mUptime"
+              }
+            ]
+          },
+          {
+            "bounds": {
+              "x": 16,
+              "y": 925.1015625,
+              "right": 374,
+              "width": 358,
+              "height": 119
+            },
+            "class": "card stat-row metrics",
+            "columns": "167px 167px",
+            "children": [
+              {
+                "bounds": {
+                  "x": 16,
+                  "y": 925.1015625,
+                  "right": 183,
+                  "width": 167,
+                  "height": 51.5
+                },
+                "value_bounds": {
+                  "x": 16,
+                  "y": 925.1015625,
+                  "right": 183,
+                  "width": 167,
+                  "height": 28.15625
+                },
+                "text": "3Services"
+              },
+              {
+                "bounds": {
+                  "x": 207,
+                  "y": 925.1015625,
+                  "right": 374,
+                  "width": 167,
+                  "height": 51.5
+                },
+                "value_bounds": {
+                  "x": 207,
+                  "y": 925.1015625,
+                  "right": 374,
+                  "width": 167,
+                  "height": 28.15625
+                },
+                "text": "3Records"
+              },
+              {
+                "bounds": {
+                  "x": 16,
+                  "y": 992.6015625,
+                  "right": 183,
+                  "width": 167,
+                  "height": 51.5
+                },
+                "value_bounds": {
+                  "x": 16,
+                  "y": 992.6015625,
+                  "right": 183,
+                  "width": 167,
+                  "height": 28.15625
+                },
+                "text": "0Views"
+              },
+              {
+                "bounds": {
+                  "x": 207,
+                  "y": 992.6015625,
+                  "right": 374,
+                  "width": 167,
+                  "height": 51.5
+                },
+                "value_bounds": {
+                  "x": 207,
+                  "y": 992.6015625,
+                  "right": 374,
+                  "width": 167,
+                  "height": 28.15625
+                },
+                "text": "0Cached"
+              }
+            ]
+          }
+        ],
+        "fieldsets": [],
+        "scrollers": [],
+        "save": [],
+        "quotes": [],
+        "blacklist_cells": [],
+        "buttons": [],
+        "theme_cards": 0
+      },
+      {
+        "path": "/services",
+        "dpr": 2,
+        "viewport": [
+          390,
+          844
+        ],
+        "theme": "busnes-dark",
+        "saved_theme": null,
+        "nav_regions": 1,
+        "nav": {
+          "x": 0,
+          "y": 0,
+          "right": 390,
+          "width": 390,
+          "height": 118.4140625
+        },
+        "nav_hint": [
+          {
+            "text": "",
+            "display": "block",
+            "bounds": {
+              "x": 16,
+              "y": 20.703125,
+              "right": 44,
+              "width": 28,
+              "height": 28
+            }
+          },
+          {
+            "text": "KyDNSScroll navigation",
+            "display": "block",
+            "bounds": {
+              "x": 53.59375,
+              "y": 12,
+              "right": 157.59375,
+              "width": 104,
+              "height": 45.4140625
+            }
+          },
+          {
+            "text": "Scroll navigation",
+            "display": "block",
+            "bounds": {
+              "x": 53.59375,
+              "y": 40.515625,
+              "right": 157.59375,
+              "width": 104,
+              "height": 16.8984375
+            }
+          }
+        ],
+        "body_overflow": 0,
+        "secrets": {
+          "nonempty_password": 0,
+          "setup": 0
+        },
+        "details": [
+          {
+            "open": false,
+            "summary": "Direct",
+            "marker": "\"\"",
+            "bounds": {
+              "x": 268.5,
+              "y": 271.3203125,
+              "right": 325,
+              "width": 56.5,
+              "height": 40
+            }
+          },
+          {
+            "open": false,
+            "summary": "Direct",
+            "marker": "\"\"",
+            "bounds": {
+              "x": 268.5,
+              "y": 454.8203125,
+              "right": 325,
+              "width": 56.5,
+              "height": 40
+            }
+          },
+          {
+            "open": false,
+            "summary": "Direct",
+            "marker": "\"\"",
+            "bounds": {
+              "x": 268.5,
+              "y": 638.3203125,
+              "right": 325,
+              "width": 56.5,
+              "height": 40
+            }
+          }
+        ],
+        "headers": [
+          {
+            "text": "Add service",
+            "href": "#add-service",
+            "class": "",
+            "background": "rgba(0, 0, 0, 0)",
+            "form_action": "/services/new",
+            "bounds": {
+              "x": 294,
+              "y": 138.4140625,
+              "right": 374,
+              "width": 80,
+              "height": 40
+            }
+          }
+        ],
+        "checkboxes": [
+          {
+            "id": "",
+            "name": "route_via_proxy",
+            "bounds": {
+              "x": 272.5,
+              "y": 370.3203125,
+              "right": 288.5,
+              "width": 16,
+              "height": 16
+            },
+            "label_bounds": {
+              "x": 268.5,
+              "y": 367.3203125,
+              "right": 334.59375,
+              "width": 66.09375,
+              "height": 22
+            },
+            "label_class": "",
+            "parent_bounds": {
+              "x": 268.5,
+              "y": 367.3203125,
+              "right": 334.59375,
+              "width": 66.09375,
+              "height": 22
+            },
+            "help": "Save",
+            "help_bounds": {
+              "x": 268.5,
+              "y": 397.3203125,
+              "right": 334,
+              "width": 65.5,
+              "height": 40
+            }
+          },
+          {
+            "id": "",
+            "name": "route_via_proxy",
+            "bounds": {
+              "x": 272.5,
+              "y": 553.8203125,
+              "right": 288.5,
+              "width": 16,
+              "height": 16
+            },
+            "label_bounds": {
+              "x": 268.5,
+              "y": 550.8203125,
+              "right": 334.59375,
+              "width": 66.09375,
+              "height": 22
+            },
+            "label_class": "",
+            "parent_bounds": {
+              "x": 268.5,
+              "y": 550.8203125,
+              "right": 334.59375,
+              "width": 66.09375,
+              "height": 22
+            },
+            "help": "Save",
+            "help_bounds": {
+              "x": 268.5,
+              "y": 580.8203125,
+              "right": 334,
+              "width": 65.5,
+              "height": 40
+            }
+          },
+          {
+            "id": "",
+            "name": "route_via_proxy",
+            "bounds": {
+              "x": 272.5,
+              "y": 737.3203125,
+              "right": 288.5,
+              "width": 16,
+              "height": 16
+            },
+            "label_bounds": {
+              "x": 268.5,
+              "y": 734.3203125,
+              "right": 334.59375,
+              "width": 66.09375,
+              "height": 22
+            },
+            "label_class": "",
+            "parent_bounds": {
+              "x": 268.5,
+              "y": 734.3203125,
+              "right": 334.59375,
+              "width": 66.09375,
+              "height": 22
+            },
+            "help": "Save",
+            "help_bounds": {
+              "x": 268.5,
+              "y": 764.3203125,
+              "right": 334,
+              "width": 65.5,
+              "height": 40
+            }
+          },
+          {
+            "id": "",
+            "name": "route_via_proxy",
+            "bounds": {
+              "x": 20,
+              "y": 1122.0078125,
+              "right": 36,
+              "width": 16,
+              "height": 16
+            },
+            "label_bounds": {
+              "x": 16,
+              "y": 1115.8125,
+              "right": 374,
+              "width": 358,
+              "height": 25.1953125
+            },
+            "label_class": "",
+            "parent_bounds": {
+              "x": 16,
+              "y": 1115.8125,
+              "right": 374,
+              "width": 358,
+              "height": 25.1953125
+            },
+            "help": "When routing is on, clients resolve to the proxy address\n       instead of the service's own address.",
+            "help_bounds": {
+              "x": 16,
+              "y": 1147.3984375,
+              "right": 374,
+              "width": 358,
+              "height": 41.65625
+            }
+          }
+        ],
+        "metrics": [],
+        "fieldsets": [],
+        "scrollers": [],
+        "save": [],
+        "quotes": [],
+        "blacklist_cells": [],
+        "buttons": [
+          {
+            "text": "Save",
+            "class": "ghost",
+            "action": "/services/routing",
+            "bounds": {
+              "x": 268.5,
+              "y": 397.3203125,
+              "right": 334,
+              "width": 65.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Remove",
+            "class": "danger",
+            "action": "/services/delete",
+            "bounds": {
+              "x": 311.5,
+              "y": 323.3203125,
+              "right": 374,
+              "width": 62.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Save",
+            "class": "ghost",
+            "action": "/services/routing",
+            "bounds": {
+              "x": 268.5,
+              "y": 580.8203125,
+              "right": 334,
+              "width": 65.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Remove",
+            "class": "danger",
+            "action": "/services/delete",
+            "bounds": {
+              "x": 311.5,
+              "y": 506.8203125,
+              "right": 374,
+              "width": 62.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Save",
+            "class": "ghost",
+            "action": "/services/routing",
+            "bounds": {
+              "x": 268.5,
+              "y": 764.3203125,
+              "right": 334,
+              "width": 65.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Remove",
+            "class": "danger",
+            "action": "/services/delete",
+            "bounds": {
+              "x": 311.5,
+              "y": 690.3203125,
+              "right": 374,
+              "width": 62.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Add service",
+            "class": "",
+            "action": "/services/new",
+            "bounds": {
+              "x": 16,
+              "y": 1203.4453125,
+              "right": 127.5,
+              "width": 111.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Add address",
+            "class": "ghost",
+            "action": "/services/address",
+            "bounds": {
+              "x": 16,
+              "y": 1547.7109375,
+              "right": 133.5,
+              "width": 117.5,
+              "height": 40
+            }
+          }
+        ],
+        "theme_cards": 0
+      },
+      {
+        "path": "/records",
+        "dpr": 2,
+        "viewport": [
+          390,
+          844
+        ],
+        "theme": "busnes-dark",
+        "saved_theme": null,
+        "nav_regions": 1,
+        "nav": {
+          "x": 0,
+          "y": 0,
+          "right": 390,
+          "width": 390,
+          "height": 118.4140625
+        },
+        "nav_hint": [
+          {
+            "text": "",
+            "display": "block",
+            "bounds": {
+              "x": 16,
+              "y": 20.703125,
+              "right": 44,
+              "width": 28,
+              "height": 28
+            }
+          },
+          {
+            "text": "KyDNSScroll navigation",
+            "display": "block",
+            "bounds": {
+              "x": 53.59375,
+              "y": 12,
+              "right": 157.59375,
+              "width": 104,
+              "height": 45.4140625
+            }
+          },
+          {
+            "text": "Scroll navigation",
+            "display": "block",
+            "bounds": {
+              "x": 53.59375,
+              "y": 40.515625,
+              "right": 157.59375,
+              "width": 104,
+              "height": 16.8984375
+            }
+          }
+        ],
+        "body_overflow": 0,
+        "secrets": {
+          "nonempty_password": 0,
+          "setup": 0
+        },
+        "details": [],
+        "headers": [
+          {
+            "text": "Add record",
+            "href": "#add-record",
+            "class": "",
+            "background": "rgba(0, 0, 0, 0)",
+            "form_action": "/records/new",
+            "bounds": {
+              "x": 299,
+              "y": 138.4140625,
+              "right": 374,
+              "width": 75,
+              "height": 40
+            }
+          }
+        ],
+        "checkboxes": [],
+        "metrics": [],
+        "fieldsets": [],
+        "scrollers": [],
+        "save": [],
+        "quotes": [],
+        "blacklist_cells": [],
+        "buttons": [
+          {
+            "text": "Remove",
+            "class": "danger",
+            "action": "/records/delete",
+            "bounds": {
+              "x": 311.5,
+              "y": 276.15625,
+              "right": 374,
+              "width": 62.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Remove",
+            "class": "danger",
+            "action": "/records/delete",
+            "bounds": {
+              "x": 311.5,
+              "y": 412.4921875,
+              "right": 374,
+              "width": 62.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Remove",
+            "class": "danger",
+            "action": "/records/delete",
+            "bounds": {
+              "x": 311.5,
+              "y": 548.828125,
+              "right": 374,
+              "width": 62.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Add record",
+            "class": "",
+            "action": "/records/new",
+            "bounds": {
+              "x": 16,
+              "y": 979.1171875,
+              "right": 124.5,
+              "width": 108.5,
+              "height": 40
+            }
+          }
+        ],
+        "theme_cards": 0
+      },
+      {
+        "path": "/blacklists",
+        "dpr": 2,
+        "viewport": [
+          390,
+          844
+        ],
+        "theme": "busnes-dark",
+        "saved_theme": null,
+        "nav_regions": 1,
+        "nav": {
+          "x": 0,
+          "y": 0,
+          "right": 390,
+          "width": 390,
+          "height": 118.4140625
+        },
+        "nav_hint": [
+          {
+            "text": "",
+            "display": "block",
+            "bounds": {
+              "x": 16,
+              "y": 20.703125,
+              "right": 44,
+              "width": 28,
+              "height": 28
+            }
+          },
+          {
+            "text": "KyDNSScroll navigation",
+            "display": "block",
+            "bounds": {
+              "x": 53.59375,
+              "y": 12,
+              "right": 157.59375,
+              "width": 104,
+              "height": 45.4140625
+            }
+          },
+          {
+            "text": "Scroll navigation",
+            "display": "block",
+            "bounds": {
+              "x": 53.59375,
+              "y": 40.515625,
+              "right": 157.59375,
+              "width": 104,
+              "height": 16.8984375
+            }
+          }
+        ],
+        "body_overflow": 0,
+        "secrets": {
+          "nonempty_password": 0,
+          "setup": 0
+        },
+        "details": [],
+        "headers": [
+          {
+            "text": "Add list",
+            "href": "#add-list",
+            "class": "",
+            "background": "rgba(0, 0, 0, 0)",
+            "form_action": null,
+            "bounds": {
+              "x": 322.5,
+              "y": 138.4140625,
+              "right": 374,
+              "width": 51.5,
+              "height": 40
+            }
+          }
+        ],
+        "checkboxes": [],
+        "metrics": [],
+        "fieldsets": [],
+        "scrollers": [],
+        "save": [],
+        "quotes": [],
+        "blacklist_cells": [
+          {
+            "text": "steven-black built-in\n\nUnified hosts file: adware and malware domains, consolidated from several maintained sources. (MIT, StevenBlack/hosts contributors)\nhttps://raw.githubusercontent.com/StevenBlack/hosts/master/hosts",
+            "bounds": {
+              "x": 16,
+              "y": 608.9375,
+              "right": 374,
+              "width": 358,
+              "height": 134.078125
+            },
+            "scroll": 358,
+            "client": 358
+          }
+        ],
+        "buttons": [
+          {
+            "text": "Turn filtering off",
+            "class": "ghost",
+            "action": "/blacklists/toggle",
+            "bounds": {
+              "x": 16,
+              "y": 437.34375,
+              "right": 159,
+              "width": 143,
+              "height": 40
+            }
+          },
+          {
+            "text": "Refresh all lists",
+            "class": "ghost",
+            "action": "/blacklists/refresh",
+            "bounds": {
+              "x": 167,
+              "y": 437.34375,
+              "right": 302,
+              "width": 135,
+              "height": 40
+            }
+          },
+          {
+            "text": "Enable",
+            "class": "ghost",
+            "action": "/blacklists/lists/toggle",
+            "bounds": {
+              "x": 202,
+              "y": 842.4375,
+              "right": 280.5,
+              "width": 78.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Refresh",
+            "class": "ghost",
+            "action": "/blacklists/refresh",
+            "bounds": {
+              "x": 288.5,
+              "y": 842.4375,
+              "right": 374,
+              "width": 85.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Add list",
+            "class": "",
+            "action": "/blacklists/lists/new",
+            "bounds": {
+              "x": 16,
+              "y": 1397.578125,
+              "right": 100.5,
+              "width": 84.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Remove",
+            "class": "danger",
+            "action": "/blacklists/rules/delete",
+            "bounds": {
+              "x": 275.5,
+              "y": 1689.1015625,
+              "right": 362,
+              "width": 86.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Add rule",
+            "class": "ghost",
+            "action": "/blacklists/rules/new",
+            "bounds": {
+              "x": 16,
+              "y": 1911.8671875,
+              "right": 105.5,
+              "width": 89.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Test",
+            "class": "ghost",
+            "action": "/blacklists/test",
+            "bounds": {
+              "x": 16,
+              "y": 2103.59375,
+              "right": 78,
+              "width": 62,
+              "height": 40
+            }
+          }
+        ],
+        "theme_cards": 0
+      },
+      {
+        "path": "/dhcp",
+        "dpr": 2,
+        "viewport": [
+          390,
+          844
+        ],
+        "theme": "busnes-dark",
+        "saved_theme": null,
+        "nav_regions": 1,
+        "nav": {
+          "x": 0,
+          "y": 0,
+          "right": 390,
+          "width": 390,
+          "height": 118.4140625
+        },
+        "nav_hint": [
+          {
+            "text": "",
+            "display": "block",
+            "bounds": {
+              "x": 16,
+              "y": 20.703125,
+              "right": 44,
+              "width": 28,
+              "height": 28
+            }
+          },
+          {
+            "text": "KyDNSScroll navigation",
+            "display": "block",
+            "bounds": {
+              "x": 53.59375,
+              "y": 12,
+              "right": 157.59375,
+              "width": 104,
+              "height": 45.4140625
+            }
+          },
+          {
+            "text": "Scroll navigation",
+            "display": "block",
+            "bounds": {
+              "x": 53.59375,
+              "y": 40.515625,
+              "right": 157.59375,
+              "width": 104,
+              "height": 16.8984375
+            }
+          }
+        ],
+        "body_overflow": 0,
+        "secrets": {
+          "nonempty_password": 0,
+          "setup": 0
+        },
+        "details": [],
+        "headers": [],
+        "checkboxes": [
+          {
+            "id": "",
+            "name": "enabled",
+            "bounds": {
+              "x": 20,
+              "y": 436.53125,
+              "right": 36,
+              "width": 16,
+              "height": 16
+            },
+            "label_bounds": {
+              "x": 16,
+              "y": 430.3359375,
+              "right": 374,
+              "width": 358,
+              "height": 25.1953125
+            },
+            "label_class": "",
+            "parent_bounds": {
+              "x": 16,
+              "y": 430.3359375,
+              "right": 374,
+              "width": 358,
+              "height": 25.1953125
+            },
+            "help": "Interface",
+            "help_bounds": {
+              "x": 16,
+              "y": 460.328125,
+              "right": 374,
+              "width": 358,
+              "height": 24.59375
+            }
+          },
+          {
+            "id": "",
+            "name": "allow_foreign",
+            "bounds": {
+              "x": 20,
+              "y": 969.9453125,
+              "right": 36,
+              "width": 16,
+              "height": 16
+            },
+            "label_bounds": {
+              "x": 16,
+              "y": 955.046875,
+              "right": 374,
+              "width": 358,
+              "height": 42.6015625
+            },
+            "label_class": "",
+            "parent_bounds": {
+              "x": 16,
+              "y": 955.046875,
+              "right": 374,
+              "width": 358,
+              "height": 42.6015625
+            },
+            "help_bounds": null
+          }
+        ],
+        "metrics": [],
+        "fieldsets": [],
+        "scrollers": [],
+        "save": [],
+        "quotes": [],
+        "blacklist_cells": [],
+        "buttons": [
+          {
+            "text": "Save",
+            "class": "last",
+            "action": "/dhcp/settings",
+            "bounds": {
+              "x": 16,
+              "y": 1007.2421875,
+              "right": 81.5,
+              "width": 65.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Fill in from this interface",
+            "class": "ghost",
+            "action": "/dhcp/settings",
+            "bounds": {
+              "x": 16,
+              "y": 539.3125,
+              "right": 213.5,
+              "width": 197.5,
+              "height": 40
+            }
+          }
+        ],
+        "theme_cards": 0
+      },
+      {
+        "path": "/settings",
+        "dpr": 2,
+        "viewport": [
+          390,
+          844
+        ],
+        "theme": "busnes-dark",
+        "saved_theme": null,
+        "nav_regions": 1,
+        "nav": {
+          "x": 0,
+          "y": 0,
+          "right": 390,
+          "width": 390,
+          "height": 118.4140625
+        },
+        "nav_hint": [
+          {
+            "text": "",
+            "display": "block",
+            "bounds": {
+              "x": 16,
+              "y": 20.703125,
+              "right": 44,
+              "width": 28,
+              "height": 28
+            }
+          },
+          {
+            "text": "KyDNSScroll navigation",
+            "display": "block",
+            "bounds": {
+              "x": 53.59375,
+              "y": 12,
+              "right": 157.59375,
+              "width": 104,
+              "height": 45.4140625
+            }
+          },
+          {
+            "text": "Scroll navigation",
+            "display": "block",
+            "bounds": {
+              "x": 53.59375,
+              "y": 40.515625,
+              "right": 157.59375,
+              "width": 104,
+              "height": 16.8984375
+            }
+          }
+        ],
+        "body_overflow": 0,
+        "secrets": {
+          "nonempty_password": 0,
+          "setup": 0
+        },
+        "details": [],
+        "headers": [],
+        "checkboxes": [
+          {
+            "id": "",
+            "name": "allow_tailscale",
+            "bounds": {
+              "x": 20,
+              "y": 938.5234375,
+              "right": 36,
+              "width": 16,
+              "height": 16
+            },
+            "label_bounds": {
+              "x": 16,
+              "y": 932.328125,
+              "right": 374,
+              "width": 358,
+              "height": 25.1953125
+            },
+            "label_class": "",
+            "parent_bounds": {
+              "x": 16,
+              "y": 932.328125,
+              "right": 374,
+              "width": 358,
+              "height": 25.1953125
+            },
+            "help_bounds": null
+          },
+          {
+            "id": "",
+            "name": "log_queries",
+            "bounds": {
+              "x": 20,
+              "y": 2077.71875,
+              "right": 36,
+              "width": 16,
+              "height": 16
+            },
+            "label_bounds": {
+              "x": 16,
+              "y": 2071.5234375,
+              "right": 374,
+              "width": 358,
+              "height": 25.1953125
+            },
+            "label_class": "",
+            "parent_bounds": {
+              "x": 16,
+              "y": 2071.5234375,
+              "right": 374,
+              "width": 358,
+              "height": 25.1953125
+            },
+            "help": " Also log who asked",
+            "help_bounds": {
+              "x": 16,
+              "y": 2101.515625,
+              "right": 374,
+              "width": 358,
+              "height": 25.1953125
+            }
+          },
+          {
+            "id": "",
+            "name": "log_client_ip",
+            "bounds": {
+              "x": 20,
+              "y": 2107.7109375,
+              "right": 36,
+              "width": 16,
+              "height": 16
+            },
+            "label_bounds": {
+              "x": 16,
+              "y": 2101.515625,
+              "right": 374,
+              "width": 358,
+              "height": 25.1953125
+            },
+            "label_class": "",
+            "parent_bounds": {
+              "x": 16,
+              "y": 2101.515625,
+              "right": 374,
+              "width": 358,
+              "height": 25.1953125
+            },
+            "help_bounds": null
+          },
+          {
+            "id": "",
+            "name": "query_log",
+            "bounds": {
+              "x": 20,
+              "y": 3016.640625,
+              "right": 36,
+              "width": 16,
+              "height": 16
+            },
+            "label_bounds": {
+              "x": 16,
+              "y": 3001.7421875,
+              "right": 374,
+              "width": 358,
+              "height": 42.6015625
+            },
+            "label_class": "",
+            "parent_bounds": {
+              "x": 16,
+              "y": 3001.7421875,
+              "right": 374,
+              "width": 358,
+              "height": 42.6015625
+            },
+            "help": "Read and write lets anyone who can message the agent try to make it\n       change your rules or pause blocking.",
+            "help_bounds": {
+              "x": 16,
+              "y": 3050.734375,
+              "right": 374,
+              "width": 358,
+              "height": 62.484375
+            }
+          },
+          {
+            "id": "",
+            "name": "enabled",
+            "bounds": {
+              "x": 20,
+              "y": 3407.9921875,
+              "right": 36,
+              "width": 16,
+              "height": 16
+            },
+            "label_bounds": {
+              "x": 16,
+              "y": 3401.796875,
+              "right": 374,
+              "width": 358,
+              "height": 25.1953125
+            },
+            "label_class": "",
+            "parent_bounds": {
+              "x": 16,
+              "y": 3401.796875,
+              "right": 374,
+              "width": 358,
+              "height": 25.1953125
+            },
+            "help": "Issuer URL",
+            "help_bounds": {
+              "x": 16,
+              "y": 3431.7890625,
+              "right": 374,
+              "width": 358,
+              "height": 24.59375
+            }
+          }
+        ],
+        "metrics": [],
+        "fieldsets": [
+          {
+            "bounds": {
+              "x": 16,
+              "y": 317.9140625,
+              "right": 374,
+              "width": 358,
+              "height": 299.3046875
+            },
+            "scroll": 358,
+            "client": 358
+          },
+          {
+            "bounds": {
+              "x": 16,
+              "y": 641.21875,
+              "right": 374,
+              "width": 358,
+              "height": 316.3046875
+            },
+            "scroll": 358,
+            "client": 358
+          },
+          {
+            "bounds": {
+              "x": 16,
+              "y": 981.5234375,
+              "right": 374,
+              "width": 358,
+              "height": 171.328125
+            },
+            "scroll": 358,
+            "client": 358
+          },
+          {
+            "bounds": {
+              "x": 16,
+              "y": 1176.8515625,
+              "right": 374,
+              "width": 358,
+              "height": 334.296875
+            },
+            "scroll": 358,
+            "client": 358
+          },
+          {
+            "bounds": {
+              "x": 16,
+              "y": 1535.1484375,
+              "right": 374,
+              "width": 358,
+              "height": 185.921875
+            },
+            "scroll": 358,
+            "client": 358
+          },
+          {
+            "bounds": {
+              "x": 16,
+              "y": 1745.0703125,
+              "right": 374,
+              "width": 358,
+              "height": 260.109375
+            },
+            "scroll": 358,
+            "client": 358
+          },
+          {
+            "bounds": {
+              "x": 16,
+              "y": 2029.1796875,
+              "right": 374,
+              "width": 358,
+              "height": 97.53125
+            },
+            "scroll": 358,
+            "client": 358
+          },
+          {
+            "bounds": {
+              "x": 16,
+              "y": 3359.453125,
+              "right": 374,
+              "width": 358,
+              "height": 342.9453125
+            },
+            "scroll": 358,
+            "client": 358
+          }
+        ],
+        "scrollers": [
+          {
+            "tag": "DIV",
+            "id": "",
+            "class": "card",
+            "bounds": {
+              "x": 16,
+              "y": 2541,
+              "right": 374,
+              "width": 358,
+              "height": 626.609375
+            },
+            "scroll": 476,
+            "client": 358
+          }
+        ],
+        "save": [
+          {
+            "bounds": {
+              "x": 251,
+              "y": 192.4140625,
+              "right": 374,
+              "width": 123,
+              "height": 40
+            },
+            "form_id": "server-settings-form",
+            "form_bounds": {
+              "x": 16,
+              "y": 317.9140625,
+              "right": 374,
+              "width": 358,
+              "height": 1808.796875
+            },
+            "action": "/settings/server"
+          }
+        ],
+        "quotes": [],
+        "blacklist_cells": [],
+        "buttons": [
+          {
+            "text": "Add view",
+            "class": "",
+            "action": "/settings/views/new",
+            "bounds": {
+              "x": 16,
+              "y": 2469,
+              "right": 110,
+              "width": 94,
+              "height": 40
+            }
+          },
+          {
+            "text": "Revoke",
+            "class": "danger",
+            "action": "/settings/tokens/delete",
+            "bounds": {
+              "x": 398.5,
+              "y": 2783.7734375,
+              "right": 480,
+              "width": 81.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Create token",
+            "class": "",
+            "action": "/settings/tokens/new",
+            "bounds": {
+              "x": 16,
+              "y": 3127.609375,
+              "right": 136.5,
+              "width": 120.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Link SSO identity",
+            "class": "ghost",
+            "action": "/settings/sso/link",
+            "bounds": {
+              "x": 16,
+              "y": 3295.453125,
+              "right": 164.5,
+              "width": 148.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Save SSO settings",
+            "class": "",
+            "action": "/settings/sso",
+            "bounds": {
+              "x": 16,
+              "y": 3726.3984375,
+              "right": 169,
+              "width": 153,
+              "height": 40
+            }
+          },
+          {
+            "text": "Flush DNS cache",
+            "class": "ghost",
+            "action": "/settings/cache/flush",
+            "bounds": {
+              "x": 16,
+              "y": 3939.4921875,
+              "right": 159,
+              "width": 143,
+              "height": 40
+            }
+          },
+          {
+            "text": "Back up now",
+            "class": "",
+            "action": "/settings/backup/deposit",
+            "bounds": {
+              "x": 16,
+              "y": 4380.3359375,
+              "right": 135,
+              "width": 119,
+              "height": 40
+            }
+          },
+          {
+            "text": "Run drill",
+            "class": "ghost",
+            "action": "/settings/backup/drill",
+            "bounds": {
+              "x": 16,
+              "y": 4420.3359375,
+              "right": 104,
+              "width": 88,
+              "height": 40
+            }
+          },
+          {
+            "text": "Save schedule",
+            "class": "",
+            "action": "/settings/backup/schedule",
+            "bounds": {
+              "x": 16,
+              "y": 4708.8203125,
+              "right": 145.5,
+              "width": 129.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Pair KyRecovery",
+            "class": "",
+            "action": "/settings/backup/pair",
+            "bounds": {
+              "x": 16,
+              "y": 4946.6328125,
+              "right": 158.5,
+              "width": 142.5,
+              "height": 40
+            }
+          },
+          {
+            "text": "Pin recovery key",
+            "class": "",
+            "action": "/settings/backup/pin-key",
+            "bounds": {
+              "x": 16,
+              "y": 5444.7265625,
+              "right": 160.5,
+              "width": 144.5,
+              "height": 40
+            }
+          }
+        ],
+        "theme_cards": 0
+      },
+      {
+        "path": "/discovered",
+        "dpr": 2,
+        "viewport": [
+          390,
+          844
+        ],
+        "theme": "busnes-dark",
+        "saved_theme": null,
+        "nav_regions": 1,
+        "nav": {
+          "x": 0,
+          "y": 0,
+          "right": 390,
+          "width": 390,
+          "height": 118.4140625
+        },
+        "nav_hint": [
+          {
+            "text": "",
+            "display": "block",
+            "bounds": {
+              "x": 16,
+              "y": 20.703125,
+              "right": 44,
+              "width": 28,
+              "height": 28
+            }
+          },
+          {
+            "text": "KyDNSScroll navigation",
+            "display": "block",
+            "bounds": {
+              "x": 53.59375,
+              "y": 12,
+              "right": 157.59375,
+              "width": 104,
+              "height": 45.4140625
+            }
+          },
+          {
+            "text": "Scroll navigation",
+            "display": "block",
+            "bounds": {
+              "x": 53.59375,
+              "y": 40.515625,
+              "right": 157.59375,
+              "width": 104,
+              "height": 16.8984375
+            }
+          }
+        ],
+        "body_overflow": 0,
+        "secrets": {
+          "nonempty_password": 0,
+          "setup": 0
+        },
+        "details": [],
+        "headers": [],
+        "checkboxes": [],
+        "metrics": [],
+        "fieldsets": [],
+        "scrollers": [],
+        "save": [],
+        "quotes": [],
+        "blacklist_cells": [],
+        "buttons": [],
+        "theme_cards": 0
+      },
+      {
+        "path": "/appearance",
+        "dpr": 2,
+        "viewport": [
+          390,
+          844
+        ],
+        "theme": "busnes-dark",
+        "saved_theme": null,
+        "nav_regions": 1,
+        "nav": {
+          "x": 0,
+          "y": 0,
+          "right": 390,
+          "width": 390,
+          "height": 118.4140625
+        },
+        "nav_hint": [
+          {
+            "text": "",
+            "display": "block",
+            "bounds": {
+              "x": 16,
+              "y": 20.703125,
+              "right": 44,
+              "width": 28,
+              "height": 28
+            }
+          },
+          {
+            "text": "KyDNSScroll navigation",
+            "display": "block",
+            "bounds": {
+              "x": 53.59375,
+              "y": 12,
+              "right": 157.59375,
+              "width": 104,
+              "height": 45.4140625
+            }
+          },
+          {
+            "text": "Scroll navigation",
+            "display": "block",
+            "bounds": {
+              "x": 53.59375,
+              "y": 40.515625,
+              "right": 157.59375,
+              "width": 104,
+              "height": 16.8984375
+            }
+          }
+        ],
+        "body_overflow": 0,
+        "secrets": {
+          "nonempty_password": 0,
+          "setup": 0
+        },
+        "details": [],
+        "headers": [],
+        "checkboxes": [],
+        "metrics": [],
+        "fieldsets": [
+          {
+            "bounds": {
+              "x": 16,
+              "y": 283.9140625,
+              "right": 374,
+              "width": 358,
+              "height": 1603.2734375
+            },
+            "scroll": 358,
+            "client": 358
+          }
+        ],
+        "scrollers": [],
+        "save": [],
+        "quotes": [],
+        "blacklist_cells": [],
+        "buttons": [],
+        "theme_cards": 23,
+        "checked_theme": "system"
+      },
+      {
+        "check": "phone quiet header jump",
+        "path": "/services",
+        "hash": "#add-service",
+        "scrollY": 778.5,
+        "target_y": -0.1796875,
+        "target": "Add a service",
+        "actual_form_action": "/services/new",
+        "submit": "Add service",
+        "no_submission": true
+      },
+      {
+        "check": "phone quiet header jump",
+        "path": "/records",
+        "hash": "#add-record",
+        "scrollY": 355.5,
+        "target_y": 281.328125,
+        "target": "Add a record",
+        "actual_form_action": "/records/new",
+        "submit": "Add record",
+        "no_submission": true
+      },
+      {
+        "check": "phone quiet header jump",
+        "path": "/blacklists",
+        "hash": "#add-list",
+        "scrollY": 930.5,
+        "target_y": -0.0625,
+        "target": "Add a list",
+        "actual_form_action": "/blacklists/lists/new",
+        "submit": "Add list",
+        "no_submission": true
+      },
+      {
+        "check": "phone native Enter disclosure then Tab",
+        "open": true,
+        "active": {
+          "tag": "INPUT",
+          "name": "proxy_address"
+        },
+        "chevron_transform": "matrix(0.707107, 0.707107, -0.707107, 0.707107, 0, 0)",
+        "controls": [
+          {
+            "tag": "INPUT",
+            "name": "proxy_address",
+            "text": null,
+            "bounds": {
+              "x": 16,
+              "right": 208.390625,
+              "width": 192.390625
+            }
+          },
+          {
+            "tag": "INPUT",
+            "name": "route_via_proxy",
+            "text": null,
+            "bounds": {
+              "x": 220.390625,
+              "right": 236.390625,
+              "width": 16
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "name": "",
+            "text": "Save",
+            "bounds": {
+              "x": 290.484375,
+              "right": 355.984375,
+              "width": 65.5
+            }
+          }
+        ],
+        "unchanged_proxy": "",
+        "route_checked": false
+      },
+      {
+        "check": "DHCP explicit typography",
+        "paragraph": "No interface is chosen yet. Choose an interface below and\n       press “Fill in from this interface” to see a proposed range.",
+        "enabled": false,
+        "interface": ""
+      },
+      {
+        "path": "/",
+        "dpr": 2,
+        "viewport": [
+          1280,
+          900
+        ],
+        "theme": "busnes-light",
+        "saved_theme": null,
+        "nav_regions": 1,
+        "nav": {
+          "x": 0,
+          "y": 0,
+          "right": 240,
+          "width": 240,
+          "height": 900
+        },
+        "nav_hint": [
+          {
+            "text": "",
+            "display": "block",
+            "bounds": {
+              "x": 20,
+              "y": 20.2578125,
+              "right": 48,
+              "width": 28,
+              "height": 28
+            }
+          },
+          {
+            "text": "KyDNSScroll navigation",
+            "display": "block",
+            "bounds": {
+              "x": 57.59375,
+              "y": 20,
+              "right": 115.1796875,
+              "width": 57.5859375,
+              "height": 28.515625
+            }
+          },
+          {
+            "text": "Scroll navigation",
+            "display": "none",
+            "bounds": {
+              "x": 0,
+              "y": 0,
+              "right": 0,
+              "width": 0,
+              "height": 0
+            }
+          }
+        ],
+        "body_overflow": 0,
+        "secrets": {
+          "nonempty_password": 0,
+          "setup": 0
+        },
+        "details": [],
+        "headers": [],
+        "checkboxes": [],
+        "metrics": [
+          {
+            "bounds": {
+              "x": 280,
+              "y": 86,
+              "right": 1240,
+              "width": 960,
+              "height": 68.3046875
+            },
+            "class": "card stat-row metrics",
+            "columns": "192px 192px 192px 192px 192px",
+            "children": [
+              {
+                "bounds": {
+                  "x": 280,
+                  "y": 86,
+                  "right": 472,
+                  "width": 192,
+                  "height": 68.3046875
+                },
+                "value_bounds": {
+                  "x": 280,
+                  "y": 90,
+                  "right": 448,
+                  "width": 168,
+                  "height": 36.9609375
+                },
+                "text": "24Queries"
+              },
+              {
+                "bounds": {
+                  "x": 472,
+                  "y": 86,
+                  "right": 664,
+                  "width": 192,
+                  "height": 68.3046875
+                },
+                "value_bounds": {
+                  "x": 497,
+                  "y": 90,
+                  "right": 640,
+                  "width": 143,
+                  "height": 36.9609375
+                },
+                "text": "6Blocked"
+              },
+              {
+                "bounds": {
+                  "x": 664,
+                  "y": 86,
+                  "right": 856,
+                  "width": 192,
+                  "height": 68.3046875
+                },
+                "value_bounds": {
+                  "x": 689,
+                  "y": 90,
+                  "right": 832,
+                  "width": 143,
+                  "height": 36.9609375
+                },
+                "text": "0%Cache hit rate"
+              },
+              {
+                "bounds": {
+                  "x": 856,
+                  "y": 86,
+                  "right": 1048,
+                  "width": 192,
+                  "height": 68.3046875
+                },
+                "value_bounds": {
+                  "x": 881,
+                  "y": 90,
+                  "right": 1024,
+                  "width": 143,
+                  "height": 36.9609375
+                },
+                "text": "0msAvg response"
+              },
+              {
+                "bounds": {
+                  "x": 1048,
+                  "y": 86,
+                  "right": 1240,
+                  "width": 192,
+                  "height": 68.3046875
+                },
+                "value_bounds": {
+                  "x": 1073,
+                  "y": 90,
+                  "right": 1216,
+                  "width": 143,
+                  "height": 36.9609375
+                },
+                "text": "2mUptime"
+              }
+            ]
+          },
+          {
+            "bounds": {
+              "x": 280,
+              "y": 520.2265625,
+              "right": 1240,
+              "width": 960,
+              "height": 68.3046875
+            },
+            "class": "card stat-row metrics",
+            "columns": "192px 192px 192px 192px 192px",
+            "children": [
+              {
+                "bounds": {
+                  "x": 280,
+                  "y": 520.2265625,
+                  "right": 472,
+                  "width": 192,
+                  "height": 68.3046875
+                },
+                "value_bounds": {
+                  "x": 280,
+                  "y": 524.2265625,
+                  "right": 448,
+                  "width": 168,
+                  "height": 36.9609375
+                },
+                "text": "3Services"
+              },
+              {
+                "bounds": {
+                  "x": 472,
+                  "y": 520.2265625,
+                  "right": 664,
+                  "width": 192,
+                  "height": 68.3046875
+                },
+                "value_bounds": {
+                  "x": 497,
+                  "y": 524.2265625,
+                  "right": 640,
+                  "width": 143,
+                  "height": 36.9609375
+                },
+                "text": "3Records"
+              },
+              {
+                "bounds": {
+                  "x": 664,
+                  "y": 520.2265625,
+                  "right": 856,
+                  "width": 192,
+                  "height": 68.3046875
+                },
+                "value_bounds": {
+                  "x": 689,
+                  "y": 524.2265625,
+                  "right": 832,
+                  "width": 143,
+                  "height": 36.9609375
+                },
+                "text": "0Views"
+              },
+              {
+                "bounds": {
+                  "x": 856,
+                  "y": 520.2265625,
+                  "right": 1048,
+                  "width": 192,
+                  "height": 68.3046875
+                },
+                "value_bounds": {
+                  "x": 881,
+                  "y": 524.2265625,
+                  "right": 1024,
+                  "width": 143,
+                  "height": 36.9609375
+                },
+                "text": "0Cached"
+              }
+            ]
+          }
+        ],
+        "fieldsets": [],
+        "scrollers": [],
+        "save": [],
+        "quotes": [],
+        "blacklist_cells": [],
+        "buttons": [],
+        "theme_cards": 0
+      },
+      {
+        "check": "desktop quiet header jump",
+        "path": "/services",
+        "hash": "#add-service",
+        "scrollY": 188,
+        "target_y": 178.3046875,
+        "target": "Add a service",
+        "actual_form_action": "/services/new",
+        "submit": "Add service",
+        "no_submission": true
+      },
+      {
+        "check": "desktop quiet header jump",
+        "path": "/records",
+        "hash": "#add-record",
+        "scrollY": 0,
+        "target_y": 366.3046875,
+        "target": "Add a record",
+        "actual_form_action": "/records/new",
+        "submit": "Add record",
+        "no_submission": true
+      },
+      {
+        "check": "desktop quiet header jump",
+        "path": "/blacklists",
+        "hash": "#add-list",
+        "scrollY": 646.5,
+        "target_y": -0.125,
+        "target": "Add a list",
+        "actual_form_action": "/blacklists/lists/new",
+        "submit": "Add list",
+        "no_submission": true
+      }
+    ],
+    "auth_shell_check": {
+      "path": "/",
+      "navs": 1,
+      "password_fields": 0
+    },
+    "closed_at": "2026-10-27T23:43:28.773Z",
+    "limits": "Partial native visual/layout and one disclosure keyboard path only; no full keyboard/contrast/all-theme/security/connected service/production gate. No fixture form values edited or submitted except real password login."
+  },
+  "served_assets": [
+    {
+      "path": "/static/app-icon.png",
+      "file": "internal/web/static/app-icon.png",
+      "sha256": "56ce0926e6b9878745645498b2dd2317f869b6982b12cbaf9e285459fac93974",
+      "bytes": 56132,
+      "matches_frozen_worktree": true
+    },
+    {
+      "path": "/static/app.css",
+      "file": "internal/web/static/app.css",
+      "sha256": "f64419a1f5be26986d834bcf4126f2358876518f29743b5e269308f7b24e9d2b",
+      "bytes": 26188,
+      "matches_frozen_worktree": true
+    },
+    {
+      "path": "/static/charts.js",
+      "file": "internal/web/static/charts.js",
+      "sha256": "7a6295c1cc51f7628e519a78f139b5df8a5151c6c6a87cbbb1d07ebaedf495d7",
+      "bytes": 8641,
+      "matches_frozen_worktree": true
+    },
+    {
+      "path": "/static/fonts/IBM_Plex_Mono/IBMPlexMono-Regular.ttf",
+      "file": "internal/web/static/fonts/IBM_Plex_Mono/IBMPlexMono-Regular.ttf",
+      "sha256": "ab08018ccd276b79fb2c636bb95b9c543598f9d50505fe92506fcb4dae7810cd",
+      "bytes": 133796,
+      "matches_frozen_worktree": true
+    },
+    {
+      "path": "/static/fonts/IBM_Plex_Mono/IBMPlexMono-SemiBold.ttf",
+      "file": "internal/web/static/fonts/IBM_Plex_Mono/IBMPlexMono-SemiBold.ttf",
+      "sha256": "b1a936f96266fbe036b112f659155f7c32222af44a9a20f3bb011f51050669d5",
+      "bytes": 138448,
+      "matches_frozen_worktree": true
+    },
+    {
+      "path": "/static/fonts/Space_Grotesk/SpaceGrotesk-VariableFont_wght.ttf",
+      "file": "internal/web/static/fonts/Space_Grotesk/SpaceGrotesk-VariableFont_wght.ttf",
+      "sha256": "697a7905c71f7c61d071648bc73449541796af865b51c86a672795f3b452b142",
+      "bytes": 134112,
+      "matches_frozen_worktree": true
+    },
+    {
+      "path": "/static/ky-ui/appearance-themes.css",
+      "file": "internal/web/static/ky-ui/appearance-themes.css",
+      "sha256": "6897cfea5a6e3c72e358c00f2ecd6f46f308ee33dc3b6cada023df99eab899ca",
+      "bytes": 3466,
+      "matches_frozen_worktree": true
+    },
+    {
+      "path": "/static/ky-ui/appearance.css",
+      "file": "internal/web/static/ky-ui/appearance.css",
+      "sha256": "f689ae75f13319f1cf2ddf60903df07165fac2ceaf81db21d735bc0eb411ccba",
+      "bytes": 3247,
+      "matches_frozen_worktree": true
+    },
+    {
+      "path": "/static/ky-ui/navigation.css",
+      "file": "internal/web/static/ky-ui/navigation.css",
+      "sha256": "cc6dbaa07a01f4ed088d38d41ff6cf95155a480bcb29327f413cbfa1ec11ac55",
+      "bytes": 1338,
+      "matches_frozen_worktree": true
+    },
+    {
+      "path": "/static/ky-ui/themes-browser.js",
+      "file": "internal/web/static/ky-ui/themes-browser.js",
+      "sha256": "369588a4e3e81214db225fc87f1f653ec8677fb72fb3b1a4426bc3ba75361473",
+      "bytes": 7177,
+      "matches_frozen_worktree": true
+    },
+    {
+      "path": "/static/ky-ui/tokens.css",
+      "file": "internal/web/static/ky-ui/tokens.css",
+      "sha256": "639f8e73259aca02119b98a5340539d5e8e16d65fd5f6124b939fdfe9c5f86af",
+      "bytes": 3575,
+      "matches_frozen_worktree": true
+    },
+    {
+      "path": "/static/live.js",
+      "file": "internal/web/static/live.js",
+      "sha256": "acd9b013d5f6789a16964a009b8c60fc5b1b796377bcfc664fd8fad5a7e4b8a9",
+      "bytes": 2127,
+      "matches_frozen_worktree": true
+    },
+    {
+      "path": "/static/nav.js",
+      "file": "internal/web/static/nav.js",
+      "sha256": "4520edccc1ce1ba0d0f545ef610de534add4e21a58b8bede246646c5e2218390",
+      "bytes": 592,
+      "matches_frozen_worktree": true
+    },
+    {
+      "path": "/static/styles.css",
+      "file": "internal/web/static/styles.css",
+      "sha256": "ebd5997f2e41a9602c7e65f42884b2fec279e96eee73427da96237d2c55e29ea",
+      "bytes": 16733,
+      "matches_frozen_worktree": true
+    },
+    {
+      "path": "/static/theme.js",
+      "file": "internal/web/static/theme.js",
+      "sha256": "6ca77a97b837f4af2daed3f6d9c8d6ff0614642febceea6412e882a9846d63ee",
+      "bytes": 3006,
+      "matches_frozen_worktree": true
+    }
+  ],
+  "vcs_status_at_capture": "?? docs/ui-dns-eight/capture-round3.mjs\n?? docs/ui-dns-eight/fixture-round3.json\n?? docs/ui-dns-eight/manifest-02-after.json\n?? docs/ui-dns-eight/round2-disagreement-audit.json\n?? docs/ui-dns-eight/screenshots/kydns-02-after-appearance-desktop-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-appearance-desktop-light.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-appearance-mobile-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-appearance-mobile-light.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-blacklists-desktop-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-blacklists-desktop-light.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-blacklists-mobile-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-blacklists-mobile-light.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-dashboard-desktop-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-dashboard-desktop-light.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-dashboard-mobile-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-dashboard-mobile-light.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-dhcp-desktop-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-dhcp-desktop-light.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-dhcp-mobile-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-dhcp-mobile-light.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-discovered-desktop-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-discovered-desktop-light.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-discovered-mobile-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-discovered-mobile-light.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-login-desktop-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-login-desktop-light.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-login-mobile-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-login-mobile-light.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-records-desktop-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-records-desktop-light.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-records-mobile-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-records-mobile-light.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-services-desktop-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-services-desktop-light.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-services-mobile-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-services-mobile-light.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-settings-desktop-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-settings-desktop-light.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-settings-mobile-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-02-after-settings-mobile-light.png",
+  "caveats": [
+    "Actual build info and dirty state are preserved in source-provenance-r3.json; untracked reporting evidence is not a product-source edit.",
+    "The native inspection ran at DPR2 and is separate from these DPR1 originals.",
+    "Browser controls/forms retain shipped defaults, focus and overflow. No image correction or confirmation run."
+  ]
+}

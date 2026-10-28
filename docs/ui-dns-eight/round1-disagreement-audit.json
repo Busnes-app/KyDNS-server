@@ -1,0 +1,736 @@
+{
+  "schema": "ky-ui-round-disagreement-audit/1",
+  "round": 1,
+  "product": "KyDNS",
+  "auditor": {
+    "model": "gpt-6.1-sol",
+    "mode": "static disagreement audit, peer-aware; not an independent review round"
+  },
+  "created_at_utc": "2026-10-27T23:04:37.689402+00:00",
+  "scope": {
+    "output_only": "docs/ui-dns-eight/round1-disagreement-audit.json",
+    "baseline_only": true,
+    "no_new_ratings": true,
+    "no_adjudicated_or_averaged_score": true,
+    "raw_reviews_unchanged": true,
+    "progression": "Opus current-round overall quality alone, half-up to one decimal, >=8.0; this audit adds no gate veto and requests no extra review round.",
+    "excluded": "Current product source, after images, browser, builds, product tests, servers, product edits, subagents, commits/pushes, PR and MySlop actions."
+  },
+  "authority": {
+    "rubric": "ky-suite-v2",
+    "commit": "639e5882cada099dd189197beb2a3e3b4c188658",
+    "authority_manifest_sha256": "c43a491455e70a9708f692dddb078057e909db475df1d9170e9fcf3e372a91cd",
+    "pinned_files_sha256": {
+      "skills/ky-suite-ui/SKILL.md": "6010ea39ac6e4e21926eb2a45d8a5a4894cd9e5e6eec07aca4cf60423233dcc2",
+      "skills/ky-suite-ui/references/rubric.md": "ad3516620420fbdc30f5273f82b7c72c76e1365d1b6296fcaa56be3cbebf2c41",
+      "skills/ky-suite-ui/references/design-contract.md": "392afb88c51fb3cfad6c94d6b841804b194d107a0431c31f35ff81d3a7a444d3",
+      "src/tokens.css": "639f8e73259aca02119b98a5340539d5e8e16d65fd5f6124b939fdfe9c5f86af",
+      "src/navigation.css": "fbd0aea3e45fa818f916ad1bc35832f6ac26e37124208ffde029b809048b4380"
+    },
+    "all_pinned_hashes_verified": true,
+    "anchors": {
+      "3": "Broken: overlap, clipping, unreadable text, or no discernible primary action.",
+      "5": "Works but fights you: competing emphasis, mixed components, nested boxes, weak states.",
+      "7": "Solid: clear primary and consistent components, with minor visible slips.",
+      "9": "Refined: every emphasis earns its place, even rhythm, unambiguous states."
+    },
+    "rule": "Reinspect differences >=2; never average to resolve them. Quality stays brand-neutral; Ky fit stays separate. Judge the captured state; screenshots do not prove behavior."
+  },
+  "raw_pairs": {
+    "opus-round1.json": {
+      "sha256": "6c5ca2c346bd47f34468b8e75d6d8b167370b49c8398d20788d6288596c06ffe",
+      "bytes": 145263
+    },
+    "opus-round1.md": {
+      "sha256": "f686970ac04b7d1680f07e69871b9498e48e268ad96f8894e5252078603d85d7",
+      "bytes": 9264
+    },
+    "sol-round1.json": {
+      "sha256": "77a3e2cb4ac9921a24be01dd6f55638705daf8e89f7f1e7f4473af946905a432",
+      "bytes": 192118
+    },
+    "sol-round1.md": {
+      "sha256": "83bfb9669aa8f387425b2e8b65de50383d8c31431883d8fdbcc7f44c427b2ba2",
+      "bytes": 8197
+    }
+  },
+  "inputs": {
+    "inventory-v1.json": "8c54a58228f68913c0602f290e3ce709b8b29a82f552cb58b073ff48b81fb059",
+    "artifacts-v1.json": "6977a79cc54f16183358f77e50923197b7d9d6b8493ba4a9d0acd9b5fea598ba",
+    "manifest-00-before.json": "f3a6bec6732d56dc9b6d998760fc603d0ac82ca0e69c4d5588965fdc6e37e78d",
+    "capture-provenance.json": "17f491ff203b95bd00051b5738292b2ceef72ca7bbdb35eae6fd6a2dbac340ea",
+    "review-inputs-v1.json": "9ee71cb1b3656a427e3f3cde425018d3db77ced556175c6d2b61f6baaca6f141"
+  },
+  "capture": {
+    "product_source": "5d274783d2277c3a44be2cfe11cf068a6df49580",
+    "captured_head": "8e41fae3559c6c6e0e7a5dac7536754d855643e8",
+    "capture_started_at": "2026-10-27T22:40:52.660Z",
+    "capture_completed_at": "2026-10-27T22:41:14.848Z",
+    "conditions": {
+      "viewports": [
+        [
+          1280,
+          900
+        ],
+        [
+          390,
+          844
+        ]
+      ],
+      "dpr": 1,
+      "schemes": [
+        "light",
+        "dark"
+      ],
+      "locale": "en-US",
+      "timezone": "America/New_York",
+      "full_page": false,
+      "service_workers": "allow",
+      "saved_kydns_theme": null,
+      "settling_ms": 500,
+      "pointer": [
+        0,
+        0
+      ]
+    },
+    "state": "Synthetic standalone local-recovery administrator; signed-out login. Initial viewport; live counters naturally drift."
+  },
+  "membership": {
+    "inventory_count": 36,
+    "opus_count": 36,
+    "sol_count": 36,
+    "artifact_current_count": 36,
+    "exact_membership_match": true,
+    "all_36_baseline_hashes_bytes_dimensions_verified": true,
+    "files": [
+      "screenshots/kydns-00-before-appearance-desktop-dark.png",
+      "screenshots/kydns-00-before-appearance-desktop-light.png",
+      "screenshots/kydns-00-before-appearance-mobile-dark.png",
+      "screenshots/kydns-00-before-appearance-mobile-light.png",
+      "screenshots/kydns-00-before-blacklists-desktop-dark.png",
+      "screenshots/kydns-00-before-blacklists-desktop-light.png",
+      "screenshots/kydns-00-before-blacklists-mobile-dark.png",
+      "screenshots/kydns-00-before-blacklists-mobile-light.png",
+      "screenshots/kydns-00-before-dashboard-desktop-dark.png",
+      "screenshots/kydns-00-before-dashboard-desktop-light.png",
+      "screenshots/kydns-00-before-dashboard-mobile-dark.png",
+      "screenshots/kydns-00-before-dashboard-mobile-light.png",
+      "screenshots/kydns-00-before-dhcp-desktop-dark.png",
+      "screenshots/kydns-00-before-dhcp-desktop-light.png",
+      "screenshots/kydns-00-before-dhcp-mobile-dark.png",
+      "screenshots/kydns-00-before-dhcp-mobile-light.png",
+      "screenshots/kydns-00-before-discovered-desktop-dark.png",
+      "screenshots/kydns-00-before-discovered-desktop-light.png",
+      "screenshots/kydns-00-before-discovered-mobile-dark.png",
+      "screenshots/kydns-00-before-discovered-mobile-light.png",
+      "screenshots/kydns-00-before-login-desktop-dark.png",
+      "screenshots/kydns-00-before-login-desktop-light.png",
+      "screenshots/kydns-00-before-login-mobile-dark.png",
+      "screenshots/kydns-00-before-login-mobile-light.png",
+      "screenshots/kydns-00-before-records-desktop-dark.png",
+      "screenshots/kydns-00-before-records-desktop-light.png",
+      "screenshots/kydns-00-before-records-mobile-dark.png",
+      "screenshots/kydns-00-before-records-mobile-light.png",
+      "screenshots/kydns-00-before-services-desktop-dark.png",
+      "screenshots/kydns-00-before-services-desktop-light.png",
+      "screenshots/kydns-00-before-services-mobile-dark.png",
+      "screenshots/kydns-00-before-services-mobile-light.png",
+      "screenshots/kydns-00-before-settings-desktop-dark.png",
+      "screenshots/kydns-00-before-settings-desktop-light.png",
+      "screenshots/kydns-00-before-settings-mobile-dark.png",
+      "screenshots/kydns-00-before-settings-mobile-light.png"
+    ],
+    "affected_files": [
+      "screenshots/kydns-00-before-blacklists-desktop-dark.png",
+      "screenshots/kydns-00-before-blacklists-desktop-light.png",
+      "screenshots/kydns-00-before-blacklists-mobile-dark.png",
+      "screenshots/kydns-00-before-blacklists-mobile-light.png",
+      "screenshots/kydns-00-before-dashboard-desktop-dark.png",
+      "screenshots/kydns-00-before-dashboard-desktop-light.png",
+      "screenshots/kydns-00-before-dashboard-mobile-dark.png",
+      "screenshots/kydns-00-before-dashboard-mobile-light.png",
+      "screenshots/kydns-00-before-dhcp-desktop-dark.png",
+      "screenshots/kydns-00-before-dhcp-desktop-light.png",
+      "screenshots/kydns-00-before-dhcp-mobile-dark.png",
+      "screenshots/kydns-00-before-dhcp-mobile-light.png",
+      "screenshots/kydns-00-before-discovered-desktop-dark.png",
+      "screenshots/kydns-00-before-discovered-desktop-light.png",
+      "screenshots/kydns-00-before-discovered-mobile-dark.png",
+      "screenshots/kydns-00-before-discovered-mobile-light.png",
+      "screenshots/kydns-00-before-records-desktop-dark.png",
+      "screenshots/kydns-00-before-records-desktop-light.png",
+      "screenshots/kydns-00-before-services-desktop-dark.png",
+      "screenshots/kydns-00-before-services-desktop-light.png",
+      "screenshots/kydns-00-before-services-mobile-dark.png",
+      "screenshots/kydns-00-before-services-mobile-light.png",
+      "screenshots/kydns-00-before-settings-desktop-dark.png",
+      "screenshots/kydns-00-before-settings-desktop-light.png",
+      "screenshots/kydns-00-before-settings-mobile-dark.png",
+      "screenshots/kydns-00-before-settings-mobile-light.png"
+    ],
+    "excluded_brand_only_files": [
+      "brand-references/kyidentity-02-after-users-manage-desktop-light.png",
+      "brand-references/kyidentity-02-after-users-manage-desktop-dark.png",
+      "brand-references/kyidentity-02-after-appearance-mobile-light.png",
+      "brand-references/kyidentity-02-after-appearance-mobile-dark.png"
+    ],
+    "brand_reference_policy": "Four existing brand references remain excluded from quality and were not reopened; this audit viewed frozen KyDNS baseline originals only.",
+    "unviewed_below_threshold_files": [
+      "screenshots/kydns-00-before-appearance-desktop-dark.png",
+      "screenshots/kydns-00-before-appearance-desktop-light.png",
+      "screenshots/kydns-00-before-appearance-mobile-dark.png",
+      "screenshots/kydns-00-before-appearance-mobile-light.png",
+      "screenshots/kydns-00-before-login-desktop-dark.png",
+      "screenshots/kydns-00-before-login-desktop-light.png",
+      "screenshots/kydns-00-before-login-mobile-dark.png",
+      "screenshots/kydns-00-before-login-mobile-light.png"
+    ]
+  },
+  "counts": {
+    "quality_dimension_pairs": 216,
+    "comparable_ky_fit_dimension_pairs": 176,
+    "noncomparable_ky_fit_dimension_pairs": 4,
+    "quality_spreads_ge_2": 36,
+    "ky_fit_spreads_ge_2": 38,
+    "quality_affected_files": 22,
+    "ky_fit_affected_files": 24,
+    "union_affected_files": 26,
+    "individually_reopened_affected_originals": 26,
+    "additional_claim_check_originals": 2,
+    "total_originals_viewed": 28,
+    "surface_findings": 7,
+    "factual_or_categorical_review_overstatements": 7
+  },
+  "spread_method": {
+    "pair_order": [
+      "opus",
+      "sol"
+    ],
+    "spread": "abs(opus - sol), per file and dimension; no averaging",
+    "threshold": 2,
+    "noncomparable": "Opus marks login shell N/A in all four files; Sol gives 9. These remain raw, spread null. This coverage mismatch is not a numerical threshold disagreement.",
+    "audit_ref_format": "surface.quality.dimension or surface.ky_fit.dimension resolves to findings[id=surface].dimensions[category.dimension]. Every threshold cell maps explicitly.",
+    "cell_shape": "pair is [opus, sol]; spread is their absolute numerical difference, or null for N/A; audit_ref is present for every spread >=2."
+  },
+  "per_file_spreads": [
+    {"file":"screenshots/kydns-00-before-appearance-desktop-dark.png","sha256":"7e9df60c4a432ae66a3c069745d4e06db29e2b1b22b4687c762617e5a87121ae","surface":"appearance","device":"desktop","theme":"dark","quality":{"coherence":{"pair":[8,8],"spread":0},"color":{"pair":[8,9],"spread":1},"density_layout":{"pair":[8,8],"spread":0},"hierarchy":{"pair":[8,8],"spread":0},"typography":{"pair":[8,8],"spread":0},"visible_affordances":{"pair":[8,9],"spread":1}},"ky_fit":{"accent_discipline":{"pair":[9,9],"spread":0},"palette_tokens":{"pair":[8,9],"spread":1},"shell":{"pair":[6,7],"spread":1},"suite_cohesion":{"pair":[9,9],"spread":0},"type_geometry":{"pair":[8,8],"spread":0}}},
+    {"file":"screenshots/kydns-00-before-appearance-desktop-light.png","sha256":"4907ef9b7573d72d679c78e71914bd1f2552c78786962004f672a57da8953fc9","surface":"appearance","device":"desktop","theme":"light","quality":{"coherence":{"pair":[8,8],"spread":0},"color":{"pair":[8,9],"spread":1},"density_layout":{"pair":[8,8],"spread":0},"hierarchy":{"pair":[8,8],"spread":0},"typography":{"pair":[8,8],"spread":0},"visible_affordances":{"pair":[8,9],"spread":1}},"ky_fit":{"accent_discipline":{"pair":[9,9],"spread":0},"palette_tokens":{"pair":[8,9],"spread":1},"shell":{"pair":[6,7],"spread":1},"suite_cohesion":{"pair":[9,9],"spread":0},"type_geometry":{"pair":[8,8],"spread":0}}},
+    {"file":"screenshots/kydns-00-before-appearance-mobile-dark.png","sha256":"0b863dede47be5f8c1f9a5dd791f98066de226edd2feaee4cb3d95c9abed012a","surface":"appearance","device":"mobile","theme":"dark","quality":{"coherence":{"pair":[8,8],"spread":0},"color":{"pair":[8,9],"spread":1},"density_layout":{"pair":[8,8],"spread":0},"hierarchy":{"pair":[8,8],"spread":0},"typography":{"pair":[8,8],"spread":0},"visible_affordances":{"pair":[8,8],"spread":0}},"ky_fit":{"accent_discipline":{"pair":[9,9],"spread":0},"palette_tokens":{"pair":[8,9],"spread":1},"shell":{"pair":[6,7],"spread":1},"suite_cohesion":{"pair":[9,9],"spread":0},"type_geometry":{"pair":[8,8],"spread":0}}},
+    {"file":"screenshots/kydns-00-before-appearance-mobile-light.png","sha256":"5b5f0e4a4e902f7e199741a18152d29b2a0c1bf6c40860b58e09ee0bbf541bb8","surface":"appearance","device":"mobile","theme":"light","quality":{"coherence":{"pair":[8,8],"spread":0},"color":{"pair":[8,9],"spread":1},"density_layout":{"pair":[8,8],"spread":0},"hierarchy":{"pair":[8,8],"spread":0},"typography":{"pair":[8,8],"spread":0},"visible_affordances":{"pair":[8,8],"spread":0}},"ky_fit":{"accent_discipline":{"pair":[9,9],"spread":0},"palette_tokens":{"pair":[8,9],"spread":1},"shell":{"pair":[6,7],"spread":1},"suite_cohesion":{"pair":[9,9],"spread":0},"type_geometry":{"pair":[8,8],"spread":0}}},
+    {"file":"screenshots/kydns-00-before-blacklists-desktop-dark.png","sha256":"8c05be76d87a2d95329ad72be34f4f9d59a5a6cb6cef7c8609bd5c292ef1b4bb","surface":"blacklists","device":"desktop","theme":"dark","quality":{"coherence":{"pair":[6,7],"spread":1},"color":{"pair":[5,7],"spread":2,"audit_ref":"blacklists.quality.color"},"density_layout":{"pair":[5,6],"spread":1},"hierarchy":{"pair":[5,7],"spread":2,"audit_ref":"blacklists.quality.hierarchy"},"typography":{"pair":[5,6],"spread":1},"visible_affordances":{"pair":[7,7],"spread":0}},"ky_fit":{"accent_discipline":{"pair":[4,6],"spread":2,"audit_ref":"blacklists.ky_fit.accent_discipline"},"palette_tokens":{"pair":[7,9],"spread":2,"audit_ref":"blacklists.ky_fit.palette_tokens"},"shell":{"pair":[6,7],"spread":1},"suite_cohesion":{"pair":[6,7],"spread":1},"type_geometry":{"pair":[5,6],"spread":1}}},
+    {"file":"screenshots/kydns-00-before-blacklists-desktop-light.png","sha256":"0d36d5bd36dbe8bc524a11dbeef318f9ae95f0198b7c7bc8e9128e600802545d","surface":"blacklists","device":"desktop","theme":"light","quality":{"coherence":{"pair":[6,7],"spread":1},"color":{"pair":[5,7],"spread":2,"audit_ref":"blacklists.quality.color"},"density_layout":{"pair":[5,6],"spread":1},"hierarchy":{"pair":[5,7],"spread":2,"audit_ref":"blacklists.quality.hierarchy"},"typography":{"pair":[5,6],"spread":1},"visible_affordances":{"pair":[7,7],"spread":0}},"ky_fit":{"accent_discipline":{"pair":[4,6],"spread":2,"audit_ref":"blacklists.ky_fit.accent_discipline"},"palette_tokens":{"pair":[7,9],"spread":2,"audit_ref":"blacklists.ky_fit.palette_tokens"},"shell":{"pair":[6,7],"spread":1},"suite_cohesion":{"pair":[6,7],"spread":1},"type_geometry":{"pair":[5,6],"spread":1}}},
+    {"file":"screenshots/kydns-00-before-blacklists-mobile-dark.png","sha256":"49097122d43542e9d39e98eaebc75dbd8a759d523376f86bc791b2a6d00957f0","surface":"blacklists","device":"mobile","theme":"dark","quality":{"coherence":{"pair":[6,7],"spread":1},"color":{"pair":[5,8],"spread":3,"audit_ref":"blacklists.quality.color"},"density_layout":{"pair":[4,5],"spread":1},"hierarchy":{"pair":[5,7],"spread":2,"audit_ref":"blacklists.quality.hierarchy"},"typography":{"pair":[5,6],"spread":1},"visible_affordances":{"pair":[6,6],"spread":0}},"ky_fit":{"accent_discipline":{"pair":[4,7],"spread":3,"audit_ref":"blacklists.ky_fit.accent_discipline"},"palette_tokens":{"pair":[7,9],"spread":2,"audit_ref":"blacklists.ky_fit.palette_tokens"},"shell":{"pair":[6,7],"spread":1},"suite_cohesion":{"pair":[6,7],"spread":1},"type_geometry":{"pair":[5,6],"spread":1}}},
+    {"file":"screenshots/kydns-00-before-blacklists-mobile-light.png","sha256":"e37dd1bc34ab325fa129a62a5d365dfa9f8c51c3da62d3eeb967debd16de71f6","surface":"blacklists","device":"mobile","theme":"light","quality":{"coherence":{"pair":[6,7],"spread":1},"color":{"pair":[5,8],"spread":3,"audit_ref":"blacklists.quality.color"},"density_layout":{"pair":[4,5],"spread":1},"hierarchy":{"pair":[5,7],"spread":2,"audit_ref":"blacklists.quality.hierarchy"},"typography":{"pair":[5,6],"spread":1},"visible_affordances":{"pair":[6,6],"spread":0}},"ky_fit":{"accent_discipline":{"pair":[4,7],"spread":3,"audit_ref":"blacklists.ky_fit.accent_discipline"},"palette_tokens":{"pair":[7,9],"spread":2,"audit_ref":"blacklists.ky_fit.palette_tokens"},"shell":{"pair":[6,7],"spread":1},"suite_cohesion":{"pair":[6,7],"spread":1},"type_geometry":{"pair":[5,6],"spread":1}}},
+    {"file":"screenshots/kydns-00-before-dashboard-desktop-dark.png","sha256":"8ecc44b71433cd3e6ffda00c0c152203f34684890b704f6d4ad5c88df3679941","surface":"dashboard","device":"desktop","theme":"dark","quality":{"coherence":{"pair":[6,8],"spread":2,"audit_ref":"dashboard.quality.coherence"},"color":{"pair":[7,7],"spread":0},"density_layout":{"pair":[6,7],"spread":1},"hierarchy":{"pair":[7,8],"spread":1},"typography":{"pair":[7,8],"spread":1},"visible_affordances":{"pair":[7,7],"spread":0}},"ky_fit":{"accent_discipline":{"pair":[7,9],"spread":2,"audit_ref":"dashboard.ky_fit.accent_discipline"},"palette_tokens":{"pair":[6,9],"spread":3,"audit_ref":"dashboard.ky_fit.palette_tokens"},"shell":{"pair":[6,7],"spread":1},"suite_cohesion":{"pair":[6,8],"spread":2,"audit_ref":"dashboard.ky_fit.suite_cohesion"},"type_geometry":{"pair":[6,8],"spread":2,"audit_ref":"dashboard.ky_fit.type_geometry"}}},
+    {"file":"screenshots/kydns-00-before-dashboard-desktop-light.png","sha256":"85a69ee389d3605d8296854f3e0c04abcfed4b18465c8421f6f32fc2e8547778","surface":"dashboard","device":"desktop","theme":"light","quality":{"coherence":{"pair":[6,8],"spread":2,"audit_ref":"dashboard.quality.coherence"},"color":{"pair":[7,7],"spread":0},"density_layout":{"pair":[6,7],"spread":1},"hierarchy":{"pair":[7,8],"spread":1},"typography":{"pair":[7,8],"spread":1},"visible_affordances":{"pair":[7,7],"spread":0}},"ky_fit":{"accent_discipline":{"pair":[7,9],"spread":2,"audit_ref":"dashboard.ky_fit.accent_discipline"},"palette_tokens":{"pair":[6,9],"spread":3,"audit_ref":"dashboard.ky_fit.palette_tokens"},"shell":{"pair":[6,7],"spread":1},"suite_cohesion":{"pair":[6,8],"spread":2,"audit_ref":"dashboard.ky_fit.suite_cohesion"},"type_geometry":{"pair":[6,8],"spread":2,"audit_ref":"dashboard.ky_fit.type_geometry"}}},
+    {"file":"screenshots/kydns-00-before-dashboard-mobile-dark.png","sha256":"5f377ae5aaeda83b90c518a29df474921f561aec84fbd5349323b9b201731d01","surface":"dashboard","device":"mobile","theme":"dark","quality":{"coherence":{"pair":[6,8],"spread":2,"audit_ref":"dashboard.quality.coherence"},"color":{"pair":[7,7],"spread":0},"density_layout":{"pair":[6,6],"spread":0},"hierarchy":{"pair":[7,8],"spread":1},"typography":{"pair":[7,8],"spread":1},"visible_affordances":{"pair":[6,7],"spread":1}},"ky_fit":{"accent_discipline":{"pair":[7,9],"spread":2,"audit_ref":"dashboard.ky_fit.accent_discipline"},"palette_tokens":{"pair":[6,9],"spread":3,"audit_ref":"dashboard.ky_fit.palette_tokens"},"shell":{"pair":[6,7],"spread":1},"suite_cohesion":{"pair":[6,8],"spread":2,"audit_ref":"dashboard.ky_fit.suite_cohesion"},"type_geometry":{"pair":[6,7],"spread":1}}},
+    {"file":"screenshots/kydns-00-before-dashboard-mobile-light.png","sha256":"343d29d773fea1ab1153ddae343102277e2ddf82df18ee7e58bdda4f93709346","surface":"dashboard","device":"mobile","theme":"light","quality":{"coherence":{"pair":[6,8],"spread":2,"audit_ref":"dashboard.quality.coherence"},"color":{"pair":[7,7],"spread":0},"density_layout":{"pair":[6,6],"spread":0},"hierarchy":{"pair":[7,8],"spread":1},"typography":{"pair":[7,8],"spread":1},"visible_affordances":{"pair":[6,7],"spread":1}},"ky_fit":{"accent_discipline":{"pair":[7,9],"spread":2,"audit_ref":"dashboard.ky_fit.accent_discipline"},"palette_tokens":{"pair":[6,9],"spread":3,"audit_ref":"dashboard.ky_fit.palette_tokens"},"shell":{"pair":[6,7],"spread":1},"suite_cohesion":{"pair":[6,8],"spread":2,"audit_ref":"dashboard.ky_fit.suite_cohesion"},"type_geometry":{"pair":[6,7],"spread":1}}},
+    {"file":"screenshots/kydns-00-before-dhcp-desktop-dark.png","sha256":"66eed7bae6c4bc64c7481cf5ee03e12336e3d766e3a36e24584fcab046aa8cdb","surface":"dhcp","device":"desktop","theme":"dark","quality":{"coherence":{"pair":[7,7],"spread":0},"color":{"pair":[8,8],"spread":0},"density_layout":{"pair":[7,7],"spread":0},"hierarchy":{"pair":[7,8],"spread":1},"typography":{"pair":[6,8],"spread":2,"audit_ref":"dhcp.quality.typography"},"visible_affordances":{"pair":[6,8],"spread":2,"audit_ref":"dhcp.quality.visible_affordances"}},"ky_fit":{"accent_discipline":{"pair":[8,9],"spread":1},"palette_tokens":{"pair":[8,9],"spread":1},"shell":{"pair":[6,7],"spread":1},"suite_cohesion":{"pair":[6,8],"spread":2,"audit_ref":"dhcp.ky_fit.suite_cohesion"},"type_geometry":{"pair":[7,7],"spread":0}}},
+    {"file":"screenshots/kydns-00-before-dhcp-desktop-light.png","sha256":"edcecfdaef731e6880905a05df221a56b3c5bbbf5cb404a659a4a04e4341cdf9","surface":"dhcp","device":"desktop","theme":"light","quality":{"coherence":{"pair":[7,7],"spread":0},"color":{"pair":[8,8],"spread":0},"density_layout":{"pair":[7,7],"spread":0},"hierarchy":{"pair":[7,8],"spread":1},"typography":{"pair":[6,8],"spread":2,"audit_ref":"dhcp.quality.typography"},"visible_affordances":{"pair":[6,8],"spread":2,"audit_ref":"dhcp.quality.visible_affordances"}},"ky_fit":{"accent_discipline":{"pair":[8,9],"spread":1},"palette_tokens":{"pair":[8,9],"spread":1},"shell":{"pair":[6,7],"spread":1},"suite_cohesion":{"pair":[6,8],"spread":2,"audit_ref":"dhcp.ky_fit.suite_cohesion"},"type_geometry":{"pair":[7,7],"spread":0}}},
+    {"file":"screenshots/kydns-00-before-dhcp-mobile-dark.png","sha256":"9e69a5ffff89ff1322fa5de6befe1db08f30b35b08d1849b1031e18ae7208497","surface":"dhcp","device":"mobile","theme":"dark","quality":{"coherence":{"pair":[7,7],"spread":0},"color":{"pair":[8,8],"spread":0},"density_layout":{"pair":[7,7],"spread":0},"hierarchy":{"pair":[6,8],"spread":2,"audit_ref":"dhcp.quality.hierarchy"},"typography":{"pair":[6,8],"spread":2,"audit_ref":"dhcp.quality.typography"},"visible_affordances":{"pair":[6,8],"spread":2,"audit_ref":"dhcp.quality.visible_affordances"}},"ky_fit":{"accent_discipline":{"pair":[8,9],"spread":1},"palette_tokens":{"pair":[8,9],"spread":1},"shell":{"pair":[6,7],"spread":1},"suite_cohesion":{"pair":[6,8],"spread":2,"audit_ref":"dhcp.ky_fit.suite_cohesion"},"type_geometry":{"pair":[7,8],"spread":1}}},
+    {"file":"screenshots/kydns-00-before-dhcp-mobile-light.png","sha256":"8d5ff3e344221e57caa597b3ba6fd5ccae332053c7073d5ee91198268de6defd","surface":"dhcp","device":"mobile","theme":"light","quality":{"coherence":{"pair":[7,7],"spread":0},"color":{"pair":[8,8],"spread":0},"density_layout":{"pair":[7,7],"spread":0},"hierarchy":{"pair":[6,8],"spread":2,"audit_ref":"dhcp.quality.hierarchy"},"typography":{"pair":[6,8],"spread":2,"audit_ref":"dhcp.quality.typography"},"visible_affordances":{"pair":[6,8],"spread":2,"audit_ref":"dhcp.quality.visible_affordances"}},"ky_fit":{"accent_discipline":{"pair":[8,9],"spread":1},"palette_tokens":{"pair":[8,9],"spread":1},"shell":{"pair":[6,7],"spread":1},"suite_cohesion":{"pair":[6,8],"spread":2,"audit_ref":"dhcp.ky_fit.suite_cohesion"},"type_geometry":{"pair":[7,8],"spread":1}}},
+    {"file":"screenshots/kydns-00-before-discovered-desktop-dark.png","sha256":"9fa11071e12df329f9f6d91f9130603d08b8959fc5579c7ccaf5a985c690b345","surface":"discovered","device":"desktop","theme":"dark","quality":{"coherence":{"pair":[7,8],"spread":1},"color":{"pair":[8,8],"spread":0},"density_layout":{"pair":[6,8],"spread":2,"audit_ref":"discovered.quality.density_layout"},"hierarchy":{"pair":[6,7],"spread":1},"typography":{"pair":[7,8],"spread":1},"visible_affordances":{"pair":[5,6],"spread":1}},"ky_fit":{"accent_discipline":{"pair":[9,9],"spread":0},"palette_tokens":{"pair":[8,9],"spread":1},"shell":{"pair":[6,7],"spread":1},"suite_cohesion":{"pair":[6,8],"spread":2,"audit_ref":"discovered.ky_fit.suite_cohesion"},"type_geometry":{"pair":[7,8],"spread":1}}},
+    {"file":"screenshots/kydns-00-before-discovered-desktop-light.png","sha256":"9a4eeab9d388923f01f565bf8d9f5eeabff1423a548652fcb6bcbe631a96f512","surface":"discovered","device":"desktop","theme":"light","quality":{"coherence":{"pair":[7,8],"spread":1},"color":{"pair":[8,8],"spread":0},"density_layout":{"pair":[6,8],"spread":2,"audit_ref":"discovered.quality.density_layout"},"hierarchy":{"pair":[6,7],"spread":1},"typography":{"pair":[7,8],"spread":1},"visible_affordances":{"pair":[5,6],"spread":1}},"ky_fit":{"accent_discipline":{"pair":[9,9],"spread":0},"palette_tokens":{"pair":[8,9],"spread":1},"shell":{"pair":[6,7],"spread":1},"suite_cohesion":{"pair":[6,8],"spread":2,"audit_ref":"discovered.ky_fit.suite_cohesion"},"type_geometry":{"pair":[7,8],"spread":1}}},
+    {"file":"screenshots/kydns-00-before-discovered-mobile-dark.png","sha256":"4a6775c07e5127b89b92d9bcae7820c1a2f78a2fb54760771f3731bc051d6ef2","surface":"discovered","device":"mobile","theme":"dark","quality":{"coherence":{"pair":[5,6],"spread":1},"color":{"pair":[8,8],"spread":0},"density_layout":{"pair":[3,4],"spread":1},"hierarchy":{"pair":[5,6],"spread":1},"typography":{"pair":[7,8],"spread":1},"visible_affordances":{"pair":[5,6],"spread":1}},"ky_fit":{"accent_discipline":{"pair":[9,9],"spread":0},"palette_tokens":{"pair":[8,9],"spread":1},"shell":{"pair":[4,4],"spread":0},"suite_cohesion":{"pair":[6,6],"spread":0},"type_geometry":{"pair":[7,4],"spread":3,"audit_ref":"discovered.ky_fit.type_geometry"}}},
+    {"file":"screenshots/kydns-00-before-discovered-mobile-light.png","sha256":"035074ab587f2833bcba2127de99831d2a586b60a34539052ec9691864a599bb","surface":"discovered","device":"mobile","theme":"light","quality":{"coherence":{"pair":[5,6],"spread":1},"color":{"pair":[8,8],"spread":0},"density_layout":{"pair":[3,4],"spread":1},"hierarchy":{"pair":[5,6],"spread":1},"typography":{"pair":[7,8],"spread":1},"visible_affordances":{"pair":[5,6],"spread":1}},"ky_fit":{"accent_discipline":{"pair":[9,9],"spread":0},"palette_tokens":{"pair":[8,9],"spread":1},"shell":{"pair":[4,4],"spread":0},"suite_cohesion":{"pair":[6,6],"spread":0},"type_geometry":{"pair":[7,4],"spread":3,"audit_ref":"discovered.ky_fit.type_geometry"}}},
+    {"file":"screenshots/kydns-00-before-login-desktop-dark.png","sha256":"241b6e89a24135bdd4a7cd9c3c4a23f16244dd950df0d97447e2bac6e874eed6","surface":"login","device":"desktop","theme":"dark","quality":{"coherence":{"pair":[7,8],"spread":1},"color":{"pair":[8,9],"spread":1},"density_layout":{"pair":[8,9],"spread":1},"hierarchy":{"pair":[8,9],"spread":1},"typography":{"pair":[8,8],"spread":0},"visible_affordances":{"pair":[8,9],"spread":1}},"ky_fit":{"accent_discipline":{"pair":[9,9],"spread":0},"palette_tokens":{"pair":[8,9],"spread":1},"shell":{"pair":["N/A",9],"spread":null,"caveat":"Non-comparable N/A; not zero, not a threshold disagreement."},"suite_cohesion":{"pair":[7,8],"spread":1},"type_geometry":{"pair":[8,8],"spread":0}}},
+    {"file":"screenshots/kydns-00-before-login-desktop-light.png","sha256":"2796b01b26fb74963405e745a1eff3b60cc792d710856c01fb25c32be5f5920f","surface":"login","device":"desktop","theme":"light","quality":{"coherence":{"pair":[7,7],"spread":0},"color":{"pair":[8,9],"spread":1},"density_layout":{"pair":[8,8],"spread":0},"hierarchy":{"pair":[8,9],"spread":1},"typography":{"pair":[8,8],"spread":0},"visible_affordances":{"pair":[8,9],"spread":1}},"ky_fit":{"accent_discipline":{"pair":[9,9],"spread":0},"palette_tokens":{"pair":[8,9],"spread":1},"shell":{"pair":["N/A",9],"spread":null,"caveat":"Non-comparable N/A; not zero, not a threshold disagreement."},"suite_cohesion":{"pair":[7,8],"spread":1},"type_geometry":{"pair":[8,7],"spread":1}}},
+    {"file":"screenshots/kydns-00-before-login-mobile-dark.png","sha256":"c902022e34f02206b93610bae6da6878f8e3b457b1fdd42ccf8d07470c178695","surface":"login","device":"mobile","theme":"dark","quality":{"coherence":{"pair":[7,8],"spread":1},"color":{"pair":[8,9],"spread":1},"density_layout":{"pair":[8,9],"spread":1},"hierarchy":{"pair":[8,9],"spread":1},"typography":{"pair":[8,8],"spread":0},"visible_affordances":{"pair":[8,9],"spread":1}},"ky_fit":{"accent_discipline":{"pair":[9,9],"spread":0},"palette_tokens":{"pair":[8,9],"spread":1},"shell":{"pair":["N/A",9],"spread":null,"caveat":"Non-comparable N/A; not zero, not a threshold disagreement."},"suite_cohesion":{"pair":[7,8],"spread":1},"type_geometry":{"pair":[8,8],"spread":0}}},
+    {"file":"screenshots/kydns-00-before-login-mobile-light.png","sha256":"045f4f66bb9dd6e68d605ae2a4ac15517c9977158e9d1634e7e7902d2d0e70cf","surface":"login","device":"mobile","theme":"light","quality":{"coherence":{"pair":[7,7],"spread":0},"color":{"pair":[8,9],"spread":1},"density_layout":{"pair":[8,8],"spread":0},"hierarchy":{"pair":[8,9],"spread":1},"typography":{"pair":[8,8],"spread":0},"visible_affordances":{"pair":[8,9],"spread":1}},"ky_fit":{"accent_discipline":{"pair":[9,9],"spread":0},"palette_tokens":{"pair":[8,9],"spread":1},"shell":{"pair":["N/A",9],"spread":null,"caveat":"Non-comparable N/A; not zero, not a threshold disagreement."},"suite_cohesion":{"pair":[7,8],"spread":1},"type_geometry":{"pair":[8,7],"spread":1}}},
+    {"file":"screenshots/kydns-00-before-records-desktop-dark.png","sha256":"4763370f654c173ca70224153a7efa544b217966fcaecdb0e4295a2b13f23c44","surface":"records","device":"desktop","theme":"dark","quality":{"coherence":{"pair":[7,7],"spread":0},"color":{"pair":[7,8],"spread":1},"density_layout":{"pair":[7,8],"spread":1},"hierarchy":{"pair":[7,8],"spread":1},"typography":{"pair":[7,8],"spread":1},"visible_affordances":{"pair":[7,8],"spread":1}},"ky_fit":{"accent_discipline":{"pair":[8,9],"spread":1},"palette_tokens":{"pair":[8,9],"spread":1},"shell":{"pair":[6,7],"spread":1},"suite_cohesion":{"pair":[6,8],"spread":2,"audit_ref":"records.ky_fit.suite_cohesion"},"type_geometry":{"pair":[7,7],"spread":0}}},
+    {"file":"screenshots/kydns-00-before-records-desktop-light.png","sha256":"ddcf2ba308363a05a4c6508e8f583bb94ab357a6108b5791c429c3e566044177","surface":"records","device":"desktop","theme":"light","quality":{"coherence":{"pair":[7,7],"spread":0},"color":{"pair":[7,8],"spread":1},"density_layout":{"pair":[7,8],"spread":1},"hierarchy":{"pair":[7,8],"spread":1},"typography":{"pair":[7,8],"spread":1},"visible_affordances":{"pair":[7,8],"spread":1}},"ky_fit":{"accent_discipline":{"pair":[8,9],"spread":1},"palette_tokens":{"pair":[8,9],"spread":1},"shell":{"pair":[6,7],"spread":1},"suite_cohesion":{"pair":[6,8],"spread":2,"audit_ref":"records.ky_fit.suite_cohesion"},"type_geometry":{"pair":[7,7],"spread":0}}},
+    {"file":"screenshots/kydns-00-before-records-mobile-dark.png","sha256":"ea64e4dc4100df47124f0a1968e86141e738399b9cf4c809366662cee15ecfbf","surface":"records","device":"mobile","theme":"dark","quality":{"coherence":{"pair":[6,7],"spread":1},"color":{"pair":[7,8],"spread":1},"density_layout":{"pair":[5,6],"spread":1},"hierarchy":{"pair":[6,7],"spread":1},"typography":{"pair":[7,8],"spread":1},"visible_affordances":{"pair":[5,6],"spread":1}},"ky_fit":{"accent_discipline":{"pair":[8,9],"spread":1},"palette_tokens":{"pair":[8,9],"spread":1},"shell":{"pair":[6,7],"spread":1},"suite_cohesion":{"pair":[6,7],"spread":1},"type_geometry":{"pair":[7,7],"spread":0}}},
+    {"file":"screenshots/kydns-00-before-records-mobile-light.png","sha256":"1b4cf25b1f184e46ed736b08c7da8d48ff45b4ec74506b468fc41e59d69fafd7","surface":"records","device":"mobile","theme":"light","quality":{"coherence":{"pair":[6,7],"spread":1},"color":{"pair":[7,8],"spread":1},"density_layout":{"pair":[5,6],"spread":1},"hierarchy":{"pair":[6,7],"spread":1},"typography":{"pair":[7,8],"spread":1},"visible_affordances":{"pair":[5,6],"spread":1}},"ky_fit":{"accent_discipline":{"pair":[8,9],"spread":1},"palette_tokens":{"pair":[8,9],"spread":1},"shell":{"pair":[6,7],"spread":1},"suite_cohesion":{"pair":[6,7],"spread":1},"type_geometry":{"pair":[7,7],"spread":0}}},
+    {"file":"screenshots/kydns-00-before-services-desktop-dark.png","sha256":"463ecea9e29d497ca734c4361cca05a9f3c0892ab262710773e03dcb7290d3d0","surface":"services","device":"desktop","theme":"dark","quality":{"coherence":{"pair":[6,7],"spread":1},"color":{"pair":[6,7],"spread":1},"density_layout":{"pair":[6,7],"spread":1},"hierarchy":{"pair":[5,7],"spread":2,"audit_ref":"services.quality.hierarchy"},"typography":{"pair":[7,8],"spread":1},"visible_affordances":{"pair":[6,8],"spread":2,"audit_ref":"services.quality.visible_affordances"}},"ky_fit":{"accent_discipline":{"pair":[4,5],"spread":1},"palette_tokens":{"pair":[8,9],"spread":1},"shell":{"pair":[6,7],"spread":1},"suite_cohesion":{"pair":[6,7],"spread":1},"type_geometry":{"pair":[6,7],"spread":1}}},
+    {"file":"screenshots/kydns-00-before-services-desktop-light.png","sha256":"7d7aee66ac1f6ded30269b4181fdc5740b934ce9a9510811db1c9fe4d74f2965","surface":"services","device":"desktop","theme":"light","quality":{"coherence":{"pair":[6,7],"spread":1},"color":{"pair":[6,7],"spread":1},"density_layout":{"pair":[6,7],"spread":1},"hierarchy":{"pair":[5,7],"spread":2,"audit_ref":"services.quality.hierarchy"},"typography":{"pair":[7,8],"spread":1},"visible_affordances":{"pair":[6,8],"spread":2,"audit_ref":"services.quality.visible_affordances"}},"ky_fit":{"accent_discipline":{"pair":[4,5],"spread":1},"palette_tokens":{"pair":[8,9],"spread":1},"shell":{"pair":[6,7],"spread":1},"suite_cohesion":{"pair":[6,7],"spread":1},"type_geometry":{"pair":[6,7],"spread":1}}},
+    {"file":"screenshots/kydns-00-before-services-mobile-dark.png","sha256":"ad1d42b294fedec360512978c8ca5e18fc6319908d2c5147dc0d34b156eafb4f","surface":"services","device":"mobile","theme":"dark","quality":{"coherence":{"pair":[5,6],"spread":1},"color":{"pair":[7,8],"spread":1},"density_layout":{"pair":[3,5],"spread":2,"audit_ref":"services.quality.density_layout"},"hierarchy":{"pair":[4,6],"spread":2,"audit_ref":"services.quality.hierarchy"},"typography":{"pair":[7,8],"spread":1},"visible_affordances":{"pair":[4,5],"spread":1}},"ky_fit":{"accent_discipline":{"pair":[4,9],"spread":5,"audit_ref":"services.ky_fit.accent_discipline"},"palette_tokens":{"pair":[8,9],"spread":1},"shell":{"pair":[6,7],"spread":1},"suite_cohesion":{"pair":[6,6],"spread":0},"type_geometry":{"pair":[6,5],"spread":1}}},
+    {"file":"screenshots/kydns-00-before-services-mobile-light.png","sha256":"3f782af35930279b410549b2ae52b5d311b621064efab7630019297c255b9a94","surface":"services","device":"mobile","theme":"light","quality":{"coherence":{"pair":[5,6],"spread":1},"color":{"pair":[7,8],"spread":1},"density_layout":{"pair":[3,5],"spread":2,"audit_ref":"services.quality.density_layout"},"hierarchy":{"pair":[4,6],"spread":2,"audit_ref":"services.quality.hierarchy"},"typography":{"pair":[7,8],"spread":1},"visible_affordances":{"pair":[4,5],"spread":1}},"ky_fit":{"accent_discipline":{"pair":[4,9],"spread":5,"audit_ref":"services.ky_fit.accent_discipline"},"palette_tokens":{"pair":[8,9],"spread":1},"shell":{"pair":[6,7],"spread":1},"suite_cohesion":{"pair":[6,6],"spread":0},"type_geometry":{"pair":[6,5],"spread":1}}},
+    {"file":"screenshots/kydns-00-before-settings-desktop-dark.png","sha256":"af31d3e944be5406b5425abdd1f6a16606d023bb7d532ff2ae66f3f2ba8c9ddb","surface":"settings","device":"desktop","theme":"dark","quality":{"coherence":{"pair":[5,6],"spread":1},"color":{"pair":[8,8],"spread":0},"density_layout":{"pair":[5,6],"spread":1},"hierarchy":{"pair":[5,7],"spread":2,"audit_ref":"settings.quality.hierarchy"},"typography":{"pair":[7,7],"spread":0},"visible_affordances":{"pair":[7,7],"spread":0}},"ky_fit":{"accent_discipline":{"pair":[9,9],"spread":0},"palette_tokens":{"pair":[8,9],"spread":1},"shell":{"pair":[6,7],"spread":1},"suite_cohesion":{"pair":[5,7],"spread":2,"audit_ref":"settings.ky_fit.suite_cohesion"},"type_geometry":{"pair":[6,6],"spread":0}}},
+    {"file":"screenshots/kydns-00-before-settings-desktop-light.png","sha256":"a145d1310e3c48812575ca55cf87fa09f767e1349faea2ed115f66fb55147a63","surface":"settings","device":"desktop","theme":"light","quality":{"coherence":{"pair":[5,6],"spread":1},"color":{"pair":[8,8],"spread":0},"density_layout":{"pair":[5,6],"spread":1},"hierarchy":{"pair":[5,7],"spread":2,"audit_ref":"settings.quality.hierarchy"},"typography":{"pair":[7,7],"spread":0},"visible_affordances":{"pair":[7,7],"spread":0}},"ky_fit":{"accent_discipline":{"pair":[9,9],"spread":0},"palette_tokens":{"pair":[8,9],"spread":1},"shell":{"pair":[6,7],"spread":1},"suite_cohesion":{"pair":[5,7],"spread":2,"audit_ref":"settings.ky_fit.suite_cohesion"},"type_geometry":{"pair":[6,6],"spread":0}}},
+    {"file":"screenshots/kydns-00-before-settings-mobile-dark.png","sha256":"e996a4d7c33e2d8a8ab22124f4b378a62099895e961f11d4b29d66b3e0370b6e","surface":"settings","device":"mobile","theme":"dark","quality":{"coherence":{"pair":[4,5],"spread":1},"color":{"pair":[8,8],"spread":0},"density_layout":{"pair":[3,4],"spread":1},"hierarchy":{"pair":[5,7],"spread":2,"audit_ref":"settings.quality.hierarchy"},"typography":{"pair":[7,8],"spread":1},"visible_affordances":{"pair":[6,7],"spread":1}},"ky_fit":{"accent_discipline":{"pair":[9,9],"spread":0},"palette_tokens":{"pair":[8,9],"spread":1},"shell":{"pair":[6,7],"spread":1},"suite_cohesion":{"pair":[5,6],"spread":1},"type_geometry":{"pair":[6,4],"spread":2,"audit_ref":"settings.ky_fit.type_geometry"}}},
+    {"file":"screenshots/kydns-00-before-settings-mobile-light.png","sha256":"3280712b7efd44996e7cfa54d763abb804754a58e224fbaf37371e60ae566479","surface":"settings","device":"mobile","theme":"light","quality":{"coherence":{"pair":[4,5],"spread":1},"color":{"pair":[8,8],"spread":0},"density_layout":{"pair":[3,4],"spread":1},"hierarchy":{"pair":[5,7],"spread":2,"audit_ref":"settings.quality.hierarchy"},"typography":{"pair":[7,8],"spread":1},"visible_affordances":{"pair":[6,7],"spread":1}},"ky_fit":{"accent_discipline":{"pair":[9,9],"spread":0},"palette_tokens":{"pair":[8,9],"spread":1},"shell":{"pair":[6,7],"spread":1},"suite_cohesion":{"pair":[5,6],"spread":1},"type_geometry":{"pair":[6,4],"spread":2,"audit_ref":"settings.ky_fit.type_geometry"}}}
+  ],
+  "individual_image_view_log": [
+    {"file":"screenshots/kydns-00-before-blacklists-desktop-dark.png","tool":"view_image","requested_detail":"original","returned_detail":"original","viewed_at":"2026-10-27T23:01:09.849Z","sha256":"8c05be76d87a2d95329ad72be34f4f9d59a5a6cb6cef7c8609bd5c292ef1b4bb","width":1280,"height":900,"purpose":"threshold disagreement"},
+    {"file":"screenshots/kydns-00-before-blacklists-desktop-light.png","tool":"view_image","requested_detail":"original","returned_detail":"original","viewed_at":"2026-10-27T23:01:09.859Z","sha256":"0d36d5bd36dbe8bc524a11dbeef318f9ae95f0198b7c7bc8e9128e600802545d","width":1280,"height":900,"purpose":"threshold disagreement"},
+    {"file":"screenshots/kydns-00-before-blacklists-mobile-dark.png","tool":"view_image","requested_detail":"original","returned_detail":"original","viewed_at":"2026-10-27T23:01:09.864Z","sha256":"49097122d43542e9d39e98eaebc75dbd8a759d523376f86bc791b2a6d00957f0","width":390,"height":844,"purpose":"threshold disagreement"},
+    {"file":"screenshots/kydns-00-before-blacklists-mobile-light.png","tool":"view_image","requested_detail":"original","returned_detail":"original","viewed_at":"2026-10-27T23:01:09.869Z","sha256":"e37dd1bc34ab325fa129a62a5d365dfa9f8c51c3da62d3eeb967debd16de71f6","width":390,"height":844,"purpose":"threshold disagreement"},
+    {"file":"screenshots/kydns-00-before-dashboard-desktop-dark.png","tool":"view_image","requested_detail":"original","returned_detail":"original","viewed_at":"2026-10-27T23:01:19.242Z","sha256":"8ecc44b71433cd3e6ffda00c0c152203f34684890b704f6d4ad5c88df3679941","width":1280,"height":900,"purpose":"threshold disagreement"},
+    {"file":"screenshots/kydns-00-before-dashboard-desktop-light.png","tool":"view_image","requested_detail":"original","returned_detail":"original","viewed_at":"2026-10-27T23:01:19.249Z","sha256":"85a69ee389d3605d8296854f3e0c04abcfed4b18465c8421f6f32fc2e8547778","width":1280,"height":900,"purpose":"threshold disagreement"},
+    {"file":"screenshots/kydns-00-before-dashboard-mobile-dark.png","tool":"view_image","requested_detail":"original","returned_detail":"original","viewed_at":"2026-10-27T23:01:19.253Z","sha256":"5f377ae5aaeda83b90c518a29df474921f561aec84fbd5349323b9b201731d01","width":390,"height":844,"purpose":"threshold disagreement"},
+    {"file":"screenshots/kydns-00-before-dashboard-mobile-light.png","tool":"view_image","requested_detail":"original","returned_detail":"original","viewed_at":"2026-10-27T23:01:19.256Z","sha256":"343d29d773fea1ab1153ddae343102277e2ddf82df18ee7e58bdda4f93709346","width":390,"height":844,"purpose":"threshold disagreement"},
+    {"file":"screenshots/kydns-00-before-dhcp-desktop-dark.png","tool":"view_image","requested_detail":"original","returned_detail":"original","viewed_at":"2026-10-27T23:01:25.409Z","sha256":"66eed7bae6c4bc64c7481cf5ee03e12336e3d766e3a36e24584fcab046aa8cdb","width":1280,"height":900,"purpose":"threshold disagreement"},
+    {"file":"screenshots/kydns-00-before-dhcp-desktop-light.png","tool":"view_image","requested_detail":"original","returned_detail":"original","viewed_at":"2026-10-27T23:01:25.415Z","sha256":"edcecfdaef731e6880905a05df221a56b3c5bbbf5cb404a659a4a04e4341cdf9","width":1280,"height":900,"purpose":"threshold disagreement"},
+    {"file":"screenshots/kydns-00-before-dhcp-mobile-dark.png","tool":"view_image","requested_detail":"original","returned_detail":"original","viewed_at":"2026-10-27T23:01:25.420Z","sha256":"9e69a5ffff89ff1322fa5de6befe1db08f30b35b08d1849b1031e18ae7208497","width":390,"height":844,"purpose":"threshold disagreement"},
+    {"file":"screenshots/kydns-00-before-dhcp-mobile-light.png","tool":"view_image","requested_detail":"original","returned_detail":"original","viewed_at":"2026-10-27T23:01:25.424Z","sha256":"8d5ff3e344221e57caa597b3ba6fd5ccae332053c7073d5ee91198268de6defd","width":390,"height":844,"purpose":"threshold disagreement"},
+    {"file":"screenshots/kydns-00-before-discovered-desktop-dark.png","tool":"view_image","requested_detail":"original","returned_detail":"original","viewed_at":"2026-10-27T23:01:34.362Z","sha256":"9fa11071e12df329f9f6d91f9130603d08b8959fc5579c7ccaf5a985c690b345","width":1280,"height":900,"purpose":"threshold disagreement"},
+    {"file":"screenshots/kydns-00-before-discovered-desktop-light.png","tool":"view_image","requested_detail":"original","returned_detail":"original","viewed_at":"2026-10-27T23:01:34.368Z","sha256":"9a4eeab9d388923f01f565bf8d9f5eeabff1423a548652fcb6bcbe631a96f512","width":1280,"height":900,"purpose":"threshold disagreement"},
+    {"file":"screenshots/kydns-00-before-discovered-mobile-dark.png","tool":"view_image","requested_detail":"original","returned_detail":"original","viewed_at":"2026-10-27T23:01:34.371Z","sha256":"4a6775c07e5127b89b92d9bcae7820c1a2f78a2fb54760771f3731bc051d6ef2","width":390,"height":844,"purpose":"threshold disagreement"},
+    {"file":"screenshots/kydns-00-before-discovered-mobile-light.png","tool":"view_image","requested_detail":"original","returned_detail":"original","viewed_at":"2026-10-27T23:01:34.374Z","sha256":"035074ab587f2833bcba2127de99831d2a586b60a34539052ec9691864a599bb","width":390,"height":844,"purpose":"threshold disagreement"},
+    {"file":"screenshots/kydns-00-before-records-desktop-dark.png","tool":"view_image","requested_detail":"original","returned_detail":"original","viewed_at":"2026-10-27T23:01:45.767Z","sha256":"4763370f654c173ca70224153a7efa544b217966fcaecdb0e4295a2b13f23c44","width":1280,"height":900,"purpose":"threshold disagreement"},
+    {"file":"screenshots/kydns-00-before-records-desktop-light.png","tool":"view_image","requested_detail":"original","returned_detail":"original","viewed_at":"2026-10-27T23:01:45.775Z","sha256":"ddcf2ba308363a05a4c6508e8f583bb94ab357a6108b5791c429c3e566044177","width":1280,"height":900,"purpose":"threshold disagreement"},
+    {"file":"screenshots/kydns-00-before-records-mobile-dark.png","tool":"view_image","requested_detail":"original","returned_detail":"original","viewed_at":"2026-10-27T23:01:45.779Z","sha256":"ea64e4dc4100df47124f0a1968e86141e738399b9cf4c809366662cee15ecfbf","width":390,"height":844,"purpose":"mobile Records behavioral-claim check; no dimension reaches threshold"},
+    {"file":"screenshots/kydns-00-before-records-mobile-light.png","tool":"view_image","requested_detail":"original","returned_detail":"original","viewed_at":"2026-10-27T23:01:45.782Z","sha256":"1b4cf25b1f184e46ed736b08c7da8d48ff45b4ec74506b468fc41e59d69fafd7","width":390,"height":844,"purpose":"mobile Records behavioral-claim check; no dimension reaches threshold"},
+    {"file":"screenshots/kydns-00-before-services-desktop-dark.png","tool":"view_image","requested_detail":"original","returned_detail":"original","viewed_at":"2026-10-27T23:01:50.150Z","sha256":"463ecea9e29d497ca734c4361cca05a9f3c0892ab262710773e03dcb7290d3d0","width":1280,"height":900,"purpose":"threshold disagreement"},
+    {"file":"screenshots/kydns-00-before-services-desktop-light.png","tool":"view_image","requested_detail":"original","returned_detail":"original","viewed_at":"2026-10-27T23:01:50.159Z","sha256":"7d7aee66ac1f6ded30269b4181fdc5740b934ce9a9510811db1c9fe4d74f2965","width":1280,"height":900,"purpose":"threshold disagreement"},
+    {"file":"screenshots/kydns-00-before-services-mobile-dark.png","tool":"view_image","requested_detail":"original","returned_detail":"original","viewed_at":"2026-10-27T23:01:50.163Z","sha256":"ad1d42b294fedec360512978c8ca5e18fc6319908d2c5147dc0d34b156eafb4f","width":390,"height":844,"purpose":"threshold disagreement"},
+    {"file":"screenshots/kydns-00-before-services-mobile-light.png","tool":"view_image","requested_detail":"original","returned_detail":"original","viewed_at":"2026-10-27T23:01:50.167Z","sha256":"3f782af35930279b410549b2ae52b5d311b621064efab7630019297c255b9a94","width":390,"height":844,"purpose":"threshold disagreement"},
+    {"file":"screenshots/kydns-00-before-settings-desktop-dark.png","tool":"view_image","requested_detail":"original","returned_detail":"original","viewed_at":"2026-10-27T23:01:54.308Z","sha256":"af31d3e944be5406b5425abdd1f6a16606d023bb7d532ff2ae66f3f2ba8c9ddb","width":1280,"height":900,"purpose":"threshold disagreement"},
+    {"file":"screenshots/kydns-00-before-settings-desktop-light.png","tool":"view_image","requested_detail":"original","returned_detail":"original","viewed_at":"2026-10-27T23:01:54.318Z","sha256":"a145d1310e3c48812575ca55cf87fa09f767e1349faea2ed115f66fb55147a63","width":1280,"height":900,"purpose":"threshold disagreement"},
+    {"file":"screenshots/kydns-00-before-settings-mobile-dark.png","tool":"view_image","requested_detail":"original","returned_detail":"original","viewed_at":"2026-10-27T23:01:54.322Z","sha256":"e996a4d7c33e2d8a8ab22124f4b378a62099895e961f11d4b29d66b3e0370b6e","width":390,"height":844,"purpose":"threshold disagreement"},
+    {"file":"screenshots/kydns-00-before-settings-mobile-light.png","tool":"view_image","requested_detail":"original","returned_detail":"original","viewed_at":"2026-10-27T23:01:54.326Z","sha256":"3280712b7efd44996e7cfa54d763abb804754a58e224fbaf37371e60ae566479","width":390,"height":844,"purpose":"threshold disagreement"}
+  ],
+  "view_log_caveat": "Each image was opened separately from its exact inventoried original path using view_image detail=original and forwarded with original detail; no crops, collages or substitutions. Pixel positions outside manifest measurements are visual estimates; internal viewer behavior is not independently measurable.",
+  "findings": [
+    {
+      "id": "blacklists",
+      "surface": "blacklists",
+      "visible_evidence": "Desktop: clearly named Filtering, Lists and Add a list groups; two orange filled controls; orange on/built-in chips; amber never-loaded warning with text; small mono description and fragmented URL. Mobile: Filtering remains readable, only Turn filtering off is visibly filled, and the partial Lists table starts below it.",
+      "dimensions": {
+        "quality.hierarchy": {
+          "supported": "Both identify clear groups and an overemphasized off action. Desktop competition supports the 5 works-but-fights-you concern; section headings support the 7 solid interpretation. On mobile the second action is not captured, so that desktop competition cannot justify the mobile rationale.",
+          "caveat": "A single visible off action can accurately express the current on state; whether that action is the right task priority is judgment, not a demonstrated behavioral defect."
+        },
+        "quality.color": {
+          "supported": "Orange descriptive badges violate the strict accent role; the small amber warning is semantic and labelled. Opus stresses role misuse; Sol stresses readable neutral surfaces. Both visual accounts are supported, but calling semantic warning color itself clutter overstates the contract.",
+          "caveat": "No measured contrast or exact rendered token provenance was established."
+        },
+        "ky_fit.accent_discipline": {
+          "supported": "Desktop has two filled actions plus descriptive orange chips. Mobile has one filled action plus the same chips. Sol correctly distinguishes those captured states; Opus copies the two-button explanation onto mobile, where Enable is not visible.",
+          "caveat": "Do not import offscreen desktop controls into phone scoring."
+        },
+        "ky_fit.palette_tokens": {
+          "supported": "Both reviews describe on-palette surfaces and a permitted warning hue. Sol’s matching-palette explanation is more directly supported for this dimension; Opus’s accent-role concern belongs primarily to accent_discipline.",
+          "caveat": "Apparent palette match is visual only; the dark stamp tile is subtle rather than demonstrably absent."
+        }
+      },
+      "useful_finding": "Quiet the descriptive orange chips and competing desktop actions; improve the small prose/URL treatment and the partial table’s scroll discoverability.",
+      "affected_files": [
+        "screenshots/kydns-00-before-blacklists-desktop-dark.png",
+        "screenshots/kydns-00-before-blacklists-desktop-light.png",
+        "screenshots/kydns-00-before-blacklists-mobile-dark.png",
+        "screenshots/kydns-00-before-blacklists-mobile-light.png"
+      ]
+    },
+    {
+      "id": "dashboard",
+      "surface": "dashboard",
+      "visible_evidence": "Desktop shows repeated rounded frames around a query KPI strip, charts, a separate services/records/views/cache strip and a technical Metric/Value table. Mobile shows the first strip and charts only. Teal, orange and violet series have explicit Local/Forwarded/Blocked labels; charcoal/cream chrome remains shared.",
+      "dimensions": {
+        "quality.coherence": {
+          "supported": "Sol correctly sees repeated component geometry; Opus correctly sees a second mono table vocabulary on desktop. Adjacent repeated frames are less severe than nested chrome, and that table is outside the phone viewport. The 6-to-8 spread reflects framing versus consistency emphasis.",
+          "caveat": "The second KPI strip counts different entities; describing all strips as repetition of the same counts overstates the visible redundancy. Blank charts reflect this sparse capture, not broken chart behavior."
+        },
+        "ky_fit.palette_tokens": {
+          "supported": "Opus correctly notices non-token teal/violet series. Sol correctly describes the neutral shell, but its general palette explanation omits the chart hues. The pinned contract permits other hues as user data; these are labelled system metrics, so Sol’s broader all-chart-data exception is not explicit in the contract.",
+          "caveat": "This is a contract-interpretation difference. Visible hues do not prove source token values, and the dark tile is not proven missing."
+        },
+        "ky_fit.accent_discipline": {
+          "supported": "An orange Forwarded series is visible in all four images. Opus’s strict primary/selection/focus reading has direct contract support; Sol’s semantic-series explanation explains why the color is understandable, but does not erase that orange use.",
+          "caveat": "Do not turn a color-role interpretation into a behavioral claim or a new score."
+        },
+        "ky_fit.type_geometry": {
+          "supported": "Desktop contains clear Grotesk KPI hierarchy and small mono technical labels/table entries. Sol’s hierarchy praise and Opus’s prose-in-mono concern both have visible evidence. The latter applies to prose such as Answered locally, while numeric values and fixed-width technical data are explicitly allowed.",
+          "caveat": "Only desktop reaches this threshold. Exact font sizes and 8px compliance are not measured by this audit."
+        },
+        "ky_fit.suite_cohesion": {
+          "supported": "The shared palette, title and selected rail support Sol; repeated framed task groups support Opus’s stricter flat-surface concern. The current baseline itself shows both facts.",
+          "caveat": "No KyIdentity reference was reopened in this baseline-only audit. Published reference comparisons are retained, not independently re-rated; exact composition parity is not required to recognize a suite family."
+        }
+      },
+      "useful_finding": "Retain labelled series and clear KPI type; reduce redundant framing/prose in mono and document the chart-color interpretation separately from shell palette fit.",
+      "affected_files": [
+        "screenshots/kydns-00-before-dashboard-desktop-dark.png",
+        "screenshots/kydns-00-before-dashboard-desktop-light.png",
+        "screenshots/kydns-00-before-dashboard-mobile-dark.png",
+        "screenshots/kydns-00-before-dashboard-mobile-light.png"
+      ]
+    },
+    {
+      "id": "dhcp",
+      "surface": "dhcp",
+      "visible_evidence": "Readable Status and Settings headings, explicit not-running text, an unchecked Serve DHCP checkbox, conventional input borders and a named Fill in from this interface control. Desktop shows Save. Phone shows the start of the stacked form, with no Save in the initial viewport. The guidance visibly uses a closing quote at both ends.",
+      "dimensions": {
+        "quality.hierarchy": {
+          "supported": "Phone provides an explicit starting task (choose an interface and fill a range), supporting Sol’s clarity explanation. Opus correctly notes that Save is outside the picture, but absence from the initial viewport alone does not establish an unclear task or missing primary.",
+          "caveat": "Below-fold content is unscored and the document is taller than the viewport; no reachability test occurred."
+        },
+        "quality.typography": {
+          "supported": "Sol’s readable type hierarchy is visible. Opus’s punctuation defect and wrapped optional label on desktop are real, limited polish issues; they do not show unreadable type.",
+          "caveat": "The difference is severity weighting between the 7 solid and 9 refined anchors, not a need to infer font failure."
+        },
+        "quality.visible_affordances": {
+          "supported": "Sol correctly identifies recognizable checkbox, inputs and named action. Opus accurately says the fields look editable while serving is off, but no evidence establishes they must be disabled: editing a stopped server’s configuration is plausible.",
+          "caveat": "Enabled state and checkbox-dependent requirements are untested. Do not convert appearance into an incorrect-state claim; placeholder absence is not feature absence."
+        },
+        "ky_fit.suite_cohesion": {
+          "supported": "Shared neutral/orange shell and consistent controls support Sol. Separate Status/Settings/Leases frames support Opus’s flat-composition concern.",
+          "caveat": "Stacked task groups are not nested panels. Brand-reference comparisons remain published reviewer explanations, not a new comparative rating."
+        }
+      },
+      "useful_finding": "Fix the quote pair and preserve readable form groups; treat disabled-state expectations and offscreen Save as unverified.",
+      "affected_files": [
+        "screenshots/kydns-00-before-dhcp-desktop-dark.png",
+        "screenshots/kydns-00-before-dhcp-desktop-light.png",
+        "screenshots/kydns-00-before-dhcp-mobile-dark.png",
+        "screenshots/kydns-00-before-dhcp-mobile-light.png"
+      ]
+    },
+    {
+      "id": "discovered",
+      "surface": "discovered",
+      "visible_evidence": "Desktop has a compact notice explaining discovery is off and specifying dhcp_lease_file under Settings, Server settings, with large unused canvas. Phone has the same notice below an approximately 330px header and a large blank band between brand and navigation.",
+      "dimensions": {
+        "quality.density_layout": {
+          "supported": "Sol’s compact state-appropriate notice is supported. Opus’s blank-canvas observation is true, but blank area on an intentionally off/empty surface does not alone show poor density; the rubric explicitly judges the captured state.",
+          "caveat": "A direct inline Settings control could improve convenience; no missing discovery feature is established."
+        },
+        "ky_fit.suite_cohesion": {
+          "supported": "The text supplies a concrete next step and the shell visibly includes Settings on desktop. Opus’s “no next action” is too categorical if it means no guidance; it is defensible only as no inline styled action in the notice. Sol’s suite-family explanation is supported by shared visual vocabulary.",
+          "caveat": "No keyboard, link activation or complete workflow was inspected."
+        },
+        "ky_fit.type_geometry": {
+          "supported": "On phone, Sol’s criticism accounts for the giant header gap, which the manifest measures at 330.0625px versus 113px on other reviewed mobile surfaces. Opus’s 15px-body/code-chip account describes local type but omits the major spacing anomaly.",
+          "caveat": "This is a metric-scope disagreement: local typography is orderly while whole-surface rhythm is poor. The manifest measures geometry, not the CSS cause."
+        }
+      },
+      "useful_finding": "The stretched phone header is a robust visible finding. Keep the honest empty guidance; a compact desktop empty notice is appropriate.",
+      "affected_files": [
+        "screenshots/kydns-00-before-discovered-desktop-dark.png",
+        "screenshots/kydns-00-before-discovered-desktop-light.png",
+        "screenshots/kydns-00-before-discovered-mobile-dark.png",
+        "screenshots/kydns-00-before-discovered-mobile-light.png"
+      ]
+    },
+    {
+      "id": "records",
+      "surface": "records",
+      "visible_evidence": "Desktop separates a three-row technical table from Add a record, with consistent cream/charcoal surfaces, one orange Add record and outlined Remove actions. The two additionally inspected phone images show a partial table and readable stacked form.",
+      "dimensions": {
+        "ky_fit.suite_cohesion": {
+          "supported": "Opus emphasizes two distinct framed task regions; Sol emphasizes the common shell, type and selected navigation. Both are visible. Separating list and form is not itself card-inside-card nesting, so strict composition parity is a narrower preference than family resemblance.",
+          "caveat": "No brand-only image was reopened, and no new cross-product rating is assigned. The phone table behavior is addressed only by existing capture measurements."
+        }
+      },
+      "useful_finding": "Preserve recognizable technical fields and actions; the phone table has weak scroll discoverability, not proven missing View/Remove functionality.",
+      "affected_files": [
+        "screenshots/kydns-00-before-records-desktop-dark.png",
+        "screenshots/kydns-00-before-records-desktop-light.png"
+      ]
+    },
+    {
+      "id": "services",
+      "surface": "services",
+      "visible_evidence": "Desktop shows three orange row Saves plus one orange Add service, named Route controls and distinct Remove outlines. Phone shows Name/Address/View/Aliases, three tall sparse rows, the start of Add a service, and no filled action button.",
+      "dimensions": {
+        "quality.hierarchy": {
+          "supported": "Desktop competition is real, supporting Opus’s stricter emphasis judgment; Sol correctly sees named list/form groups. Phone has a clear title but no visible row action and an oversized list, supporting both critiques at different severities.",
+          "caveat": "Offscreen actions cannot establish absence or inaccessibility; measured internal scrolling exists."
+        },
+        "quality.visible_affordances": {
+          "supported": "Desktop controls are identifiable, as Sol says. Repeated pale 192.168.1.20 text could be mistaken for stored routing data, as Opus says, but it is visibly quieter than the row addresses.",
+          "caveat": "A static image cannot prove that text is a placeholder or a saved value; data-state ambiguity is an appearance finding only."
+        },
+        "quality.density_layout": {
+          "supported": "Phone rows are visibly tall and only the left table columns appear. The 3 broken anchor explicitly includes clipping, so Opus can invoke it without proving functional loss. Sol’s 5 works-but-fights-you interpretation gives more credit to the readable partial table and existing internal scrolling. Both describe the same real layout problem; the manifest rules out treating it as proven page-width overflow or inaccessible actions.",
+          "caveat": "The reason hidden controls determine row height is a screenshot-only causal inference, not measured CSS evidence."
+        },
+        "ky_fit.accent_discipline": {
+          "supported": "Opus’s mobile explanation says four filled accent buttons are in view, but none is visible. That imports the desktop state into phone scoring. Sol’s account of orange confined to selection is supported by both phone originals.",
+          "caveat": "This corrects the explanation only. Both raw mobile score pairs, including the five-point spread, stay unchanged."
+        }
+      },
+      "useful_finding": "Quiet repeated desktop Save actions and compact phone rows while preserving horizontal access to existing controls.",
+      "affected_files": [
+        "screenshots/kydns-00-before-services-desktop-dark.png",
+        "screenshots/kydns-00-before-services-desktop-light.png",
+        "screenshots/kydns-00-before-services-mobile-dark.png",
+        "screenshots/kydns-00-before-services-mobile-light.png"
+      ]
+    },
+    {
+      "id": "settings",
+      "surface": "settings",
+      "visible_evidence": "Desktop has six titled fieldsets inside Server settings, with uneven two-column gaps and no visible Save. Phone retains a clear title and section labels but fieldset right borders run beyond the visible card edge; labels and inputs are stacked at phone width.",
+      "dimensions": {
+        "quality.hierarchy": {
+          "supported": "Sol’s clear titles and named groups and Opus’s competing equal-weight frames are both visible. No Save appears in the initial viewport, but that cannot establish missing apply behavior.",
+          "caveat": "The captured mobile document is 6635px high and has internal overflow; below-fold controls and their accessibility remain unknown."
+        },
+        "ky_fit.suite_cohesion": {
+          "supported": "Unlike the merely adjacent task cards elsewhere, these are visibly nested fieldset frames inside a panel. Opus’s flat-surface contract concern has direct support; Sol’s shared palette/type remains true but does not remove the nested framing.",
+          "caveat": "Brand resemblance and contract geometry are separate aspects; no new score reconciles them."
+        },
+        "ky_fit.type_geometry": {
+          "supported": "Sol’s phone gutter/containment explanation is visible. Opus’s repeated roughly 190px label-column description does not describe the phone originals, which stack labels above wide inputs.",
+          "caveat": "Nested padding and clipped right fieldset borders are visible; exact 8px violations are not independently measured here."
+        }
+      },
+      "useful_finding": "Flatten redundant framing and contain phone fieldsets; retain the existing named groups and avoid treating offscreen Save as missing.",
+      "affected_files": [
+        "screenshots/kydns-00-before-settings-desktop-dark.png",
+        "screenshots/kydns-00-before-settings-desktop-light.png",
+        "screenshots/kydns-00-before-settings-mobile-dark.png",
+        "screenshots/kydns-00-before-settings-mobile-light.png"
+      ]
+    }
+  ],
+  "review_overstatements": [
+    {
+      "id": "O1",
+      "reviewer": "opus",
+      "scope": "services/mobile, both themes; ky_fit.accent_discipline",
+      "claim": "Four filled accent buttons in view.",
+      "supported_correction": "None is visible in either phone original; the four-button pattern belongs to desktop.",
+      "finding_ref": "services.ky_fit.accent_discipline"
+    },
+    {
+      "id": "O2",
+      "reviewer": "opus",
+      "scope": "blacklists/mobile, both themes; ky_fit.accent_discipline",
+      "claim": "Accent fills two buttons.",
+      "supported_correction": "Only Turn filtering off is visibly filled; Enable is outside the captured table width. Orange descriptive chips remain a valid finding.",
+      "finding_ref": "blacklists.ky_fit.accent_discipline"
+    },
+    {
+      "id": "O3",
+      "reviewer": "opus",
+      "scope": "discovered, all four originals; suite-cohesion rationale",
+      "claim": "The empty state offers no next action.",
+      "supported_correction": "It explicitly says to set dhcp_lease_file under Settings, Server settings. No inline styled action is visible; lack of guidance is overstated.",
+      "finding_ref": "discovered.ky_fit.suite_cohesion"
+    },
+    {
+      "id": "O4",
+      "reviewer": "opus",
+      "scope": "settings/mobile, both themes; ky_fit.type_geometry",
+      "claim": "Wrapped labels in approximately 190px columns.",
+      "supported_correction": "Phone labels sit above wide inputs. That desktop-column description does not fit these images; clipped fieldset edges do.",
+      "finding_ref": "settings.ky_fit.type_geometry"
+    },
+    {
+      "id": "O5",
+      "reviewer": "opus",
+      "scope": "inspected dark baseline originals, especially dashboard/blacklists",
+      "claim": "Stamp renders without its tile.",
+      "supported_correction": "A subtle dark rounded backing is discernible. Reduced separation is supported; categorical tile absence is not. Unviewed login/Appearance variants are outside this finding.",
+      "finding_ref": "dashboard.ky_fit.palette_tokens"
+    },
+    {
+      "id": "O6",
+      "reviewer": "opus",
+      "scope": "dashboard desktop; Markdown strongest-defect summary",
+      "claim": "A second KPI strip and Metric/Value table repeat the same counts.",
+      "supported_correction": "The second strip counts services, records, views and cached entries, distinct from the query KPI strip. Some table rows do repeat chart/legend values; that narrower redundancy is visible.",
+      "finding_ref": "dashboard.quality.coherence"
+    },
+    {
+      "id": "O7",
+      "reviewer": "sol",
+      "scope": "blacklists/mobile, both themes; quality.hierarchy",
+      "claim": "The lengthy introduction pushes list status below the initial viewport.",
+      "supported_correction": "Lists already begins within the viewport; the wide table continues to the right. The image establishes nonvisibility, not a below-fold location for State. Existing capture widths support a sideways-overflow explanation.",
+      "finding_ref": "blacklists.quality.hierarchy"
+    }
+  ],
+  "behavioral_claim_audit": {
+    "measurement_source": "manifest-00-before.json shots[].state, recorded at baseline capture; not newly executed tests.",
+    "per_surface_measurements": [
+      {
+        "surface": "services",
+        "files": [
+          "screenshots/kydns-00-before-services-mobile-light.png",
+          "screenshots/kydns-00-before-services-mobile-dark.png"
+        ],
+        "recorded_measurements": {
+          "scroll": {
+            "x": 0,
+            "y": 0,
+            "document_width": 390,
+            "viewport_width": 390,
+            "document_height": 1561,
+            "viewport_height": 844
+          },
+          "horizontal_overflow_px": 0,
+          "internal_horizontal_scrollers": [
+            {
+              "tag": "DIV",
+              "class": "card",
+              "scrollWidth": 773,
+              "clientWidth": 356,
+              "scrollLeft": 0
+            }
+          ]
+        }
+      },
+      {
+        "surface": "records",
+        "files": [
+          "screenshots/kydns-00-before-records-mobile-light.png",
+          "screenshots/kydns-00-before-records-mobile-dark.png"
+        ],
+        "recorded_measurements": {
+          "scroll": {
+            "x": 0,
+            "y": 0,
+            "document_width": 390,
+            "viewport_width": 390,
+            "document_height": 1071,
+            "viewport_height": 844
+          },
+          "horizontal_overflow_px": 0,
+          "internal_horizontal_scrollers": [
+            {
+              "tag": "DIV",
+              "class": "card",
+              "scrollWidth": 572,
+              "clientWidth": 356,
+              "scrollLeft": 0
+            }
+          ]
+        }
+      },
+      {
+        "surface": "blacklists",
+        "files": [
+          "screenshots/kydns-00-before-blacklists-mobile-light.png",
+          "screenshots/kydns-00-before-blacklists-mobile-dark.png"
+        ],
+        "recorded_measurements": {
+          "scroll": {
+            "x": 0,
+            "y": 0,
+            "document_width": 390,
+            "viewport_width": 390,
+            "document_height": 2288,
+            "viewport_height": 844
+          },
+          "horizontal_overflow_px": 0,
+          "internal_horizontal_scrollers": [
+            {
+              "tag": "DIV",
+              "class": "card",
+              "scrollWidth": 1025,
+              "clientWidth": 356,
+              "scrollLeft": 0
+            }
+          ]
+        }
+      },
+      {
+        "surface": "settings",
+        "files": [
+          "screenshots/kydns-00-before-settings-mobile-light.png",
+          "screenshots/kydns-00-before-settings-mobile-dark.png"
+        ],
+        "recorded_measurements": {
+          "scroll": {
+            "x": 0,
+            "y": 0,
+            "document_width": 390,
+            "viewport_width": 390,
+            "document_height": 6635,
+            "viewport_height": 844
+          },
+          "horizontal_overflow_px": 0,
+          "internal_horizontal_scrollers": [
+            {
+              "tag": "DIV",
+              "class": "card",
+              "scrollWidth": 368,
+              "clientWidth": 356,
+              "scrollLeft": 0
+            },
+            {
+              "tag": "DIV",
+              "class": "card",
+              "scrollWidth": 501,
+              "clientWidth": 356,
+              "scrollLeft": 0
+            },
+            {
+              "tag": "DIV",
+              "class": "card",
+              "scrollWidth": 368,
+              "clientWidth": 356,
+              "scrollLeft": 0
+            }
+          ]
+        }
+      },
+      {
+        "surface": "dhcp",
+        "files": [
+          "screenshots/kydns-00-before-dhcp-mobile-light.png",
+          "screenshots/kydns-00-before-dhcp-mobile-dark.png"
+        ],
+        "recorded_measurements": {
+          "scroll": {
+            "x": 0,
+            "y": 0,
+            "document_width": 390,
+            "viewport_width": 390,
+            "document_height": 1343,
+            "viewport_height": 844
+          },
+          "horizontal_overflow_px": 0,
+          "internal_horizontal_scrollers": []
+        }
+      },
+      {
+        "surface": "discovered",
+        "files": [
+          "screenshots/kydns-00-before-discovered-mobile-light.png",
+          "screenshots/kydns-00-before-discovered-mobile-dark.png"
+        ],
+        "recorded_measurements": {
+          "scroll": {
+            "x": 0,
+            "y": 0,
+            "document_width": 390,
+            "viewport_width": 390,
+            "document_height": 844,
+            "viewport_height": 844
+          },
+          "horizontal_overflow_px": 0,
+          "internal_horizontal_scrollers": [],
+          "nav_bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 330.0625
+          }
+        }
+      }
+    ],
+    "conclusions": [
+      "Services, Records, Blacklists and Settings phone captures have horizontal_overflow_px=0 and document_width=390, plus card scrollWidth>clientWidth at scrollLeft=0. These measurements support internal horizontal content, not a page-width overflow failure.",
+      "The pictures support partial columns/fieldset edges and absent obvious scroll cues. They do not prove scroll failure, inaccessible actions or missing View/Remove/Enable/Refresh functionality. Existing measurements establish potential internal scrolling, not successful touch/keyboard operation.",
+      "Opus says visible clipping suggests responsive would fail, while correctly leaving the gate untested. Retain that as a screenshot-only hypothesis, not a gate result. Sol’s explicit static-discoverability caveat is better bounded by the capture evidence.",
+      "Settings and DHCP Save are not visible initially; tall documents do not prove either presence or absence of a below-fold Save, or its accessibility. Do not infer a missing feature.",
+      "Unchecked DHCP serving and editable-looking inputs do not establish an incorrect enabled state. The required relationship was not measured; preparing configuration before enabling is plausible.",
+      "The Discovered 330.0625px phone header is measured and visibly excessive compared with recorded 113px headers. Its CSS cause is not established by static capture.",
+      "No screenshot proves complete keyboard/focus/contrast/state/responsive gates. No executable gate result is changed."
+    ]
+  },
+  "retained_caveats": [
+    "Raw reviewer explanations and score pairs are preserved, including factual overstatements; this report records evidence limits without editing either published review.",
+    "Threshold findings distinguish quality from Ky-fit. Similar palette does not establish full contract geometry; strict geometry differences do not erase a shared visual family.",
+    "Chart hues and labelled series are real. Whether system metrics qualify for the contract’s user-data color exception is an interpretation, not a fact established by the image. Neither reviewer may silently broaden or narrow that exception.",
+    "Sparse counters, empty plots and an off discovery notice reflect this fixture. No live-data volume, missing feature, real connectivity or chart failure is inferred.",
+    "Replicated-node views, below-fold flows, SSO, recovery, keyboard use, computed contrast and production behavior remain outside this audit.",
+    "No new mean, rating, reviewer-satisfaction judgment, progression decision, gate veto or extra-round demand is produced."
+  ],
+  "verification": {
+    "json_parses": true,
+    "all_threshold_dimensions_mapped": true,
+    "all_26_threshold_images_individually_viewed": true,
+    "raw_pair_hashes_match_initial_read": true,
+    "product_checks": "Not run: explicitly prohibited for this static evidence artifact. Only lightweight JSON/hash/membership assertions executed."
+  },
+  "dox_pass": {
+    "owner": "docs/ui-dns-eight/AGENTS.md",
+    "docs_intentionally_unchanged": true,
+    "reason": "Adds audit evidence within the existing ownership and review contract. No behavior, durable structure, workflow or instruction changed; user authorizes only the audit JSON."
+  }
+}

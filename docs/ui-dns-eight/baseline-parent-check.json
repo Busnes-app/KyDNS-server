@@ -1,0 +1,31 @@
+{
+  "verified_at": "2026-10-27T22:50:19.622302+00:00",
+  "current_originals_verified": 36,
+  "brand_references_verified": 4,
+  "authority_objects_verified": 5,
+  "served_assets_match_source": 15,
+  "exact_matrix_and_manifest_membership": true,
+  "duplicate_pair_coverage_checked": 306,
+  "duplicate_pixel_metrics": "Worker measured all306 pairs. Parent validated pair membership, thresholds, zero-duplicate conclusions; did not repeat pixel calculations.",
+  "parent_native_probe": "T3 Incognito login page HTTP200 and resources loaded, no credentials filled. Snapshot verified. Tab closed.",
+  "parent_original_spot_checks": [
+    "dashboard-desktop-light",
+    "services-mobile-light",
+    "discovered-mobile-dark",
+    "settings-mobile-light",
+    "appearance-desktop-dark",
+    "login-desktop-light"
+  ],
+  "worker_full_original_inspection": "Capture worker individually inspected all36 originals at original resolution.",
+  "no_product_changes": true,
+  "dox_pass": "Existing evidence ownership/constraints cover artifacts and blind input inventory. No product, ownership or operating contract changed; AGENTS left unchanged.",
+  "limits": [
+    {
+      "surface": "replication",
+      "reason": "Standalone fixture hides navigation link and redirects /replication with303 to Dashboard. Four combinations N/A, excluded from counts and means."
+    },
+    "Below-fold settings API tokens, SSO, backup/recovery, upstream and configuration sections.",
+    "Real replication, live SSO/recovery and external forwarding.",
+    "Full behavior, keyboard, all-theme contrast and accessibility gates."
+  ]
+}

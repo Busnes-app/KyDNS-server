@@ -1,0 +1,18 @@
+{
+  "verified_at": "2026-10-27T23:17:53.404190+00:00",
+  "current_originals_verified": 36,
+  "source": "bc75c308e828371e415201b9301d3df753eea88f",
+  "all_hash_bytes_dims_and_matrix_pass": true,
+  "served_asset_hashes_pass": 15,
+  "duplicate_pair_coverage": 306,
+  "duplicate_metrics": "Worker measured all306 pairs; parent validated pair membership,threshold logic and zero conclusions without repeating pixel calculations.",
+  "worker_individually_inspected": 36,
+  "parent_spot_checks": [
+    "services-mobile-light",
+    "blacklists-desktop-dark",
+    "settings-mobile-dark",
+    "dashboard-desktop-light"
+  ],
+  "product_unchanged_during_capture": true,
+  "residual": "Below-fold phone Settings card476pxcontent/358pxclient; not hidden or counted as passed responsive assurance."
+}

@@ -54,14 +54,17 @@ curl -fsSo ~/.agents/skills/kydns/SKILL.md {{.}}/agent/skills/kydns/SKILL.md</pr
 {{end}}
 
 {{with .Server}}
-<div class="card">
-  <h3>Server settings</h3>
+<div class="card server-settings">
+  <div class="section-heading">
+    <h3>Server settings</h3>
+    <button type="submit" form="server-settings-form"{{template "ro" $}}>{{if $.Rename}}Save and rename{{else}}Save settings{{end}}</button>
+  </div>
   <p class="muted">Saved to the database and applied at once, except where a
      restart is noted.</p>
   {{with $.ServerError}}
   <p class="error">{{.}}</p>
   {{end}}
-  <form method="post" action="/settings/server">
+  <form id="server-settings-form" method="post" action="/settings/server">
     <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
     {{with $.Rename}}<input type="hidden" name="confirm_rename" value="{{.Confirm}}">{{end}}
     <div class="field-grid">
@@ -149,7 +152,6 @@ curl -fsSo ~/.agents/skills/kydns/SKILL.md {{.}}/agent/skills/kydns/SKILL.md</pr
       </fieldset>
 
     </div>
-    <button type="submit"{{template "ro" $}}>{{if $.Rename}}Save and rename{{else}}Save settings{{end}}</button>
   </form>
 </div>
 {{end}}

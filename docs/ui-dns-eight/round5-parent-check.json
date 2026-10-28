@@ -1,0 +1,29 @@
+{
+  "verified_at": "2026-10-28T00:58:28.541018+00:00",
+  "result": "PASS",
+  "source": "f30749d8b043afa993cd4e7d3d1b86e6ab6c8331",
+  "current_originals": 36,
+  "artifact_hashes_bytes_dimensions_verified": 184,
+  "tracked_preserved": 751,
+  "prior_evidence_preserved": 229,
+  "capture_outputs_password_scanned": 46,
+  "source_hashes": 85,
+  "served_assets": 15,
+  "dns_questions": 24,
+  "same_size_pairs": 306,
+  "r4_exact_matches": 23,
+  "server_proxy_and_socket_ownership_reverified": true,
+  "font_check_qualification": "IBM Plex Mono FontFaceSet.check is false on Appearance in all four conditions, exactly as R4, with byte-identical pictures. The blanket all-named-fonts-required assertion was invalid; flags and originals remain unchanged. Space Grotesk check is true on all36. No claim that every named font is loaded.",
+  "appearance_exact_match_font_exceptions": [
+    "screenshots/kydns-04-after-appearance-desktop-light.png",
+    "screenshots/kydns-04-after-appearance-mobile-light.png",
+    "screenshots/kydns-04-after-appearance-desktop-dark.png",
+    "screenshots/kydns-04-after-appearance-mobile-dark.png"
+  ],
+  "worker_errors_preserved": "Pre-query SSO-client default expectation corrected; final blanket-font assertion corrected by parent offline verifier without browser reopening, recapture or data/source change. Original worker report preserved.",
+  "manifest_sha256": "045a95e1df464a2820ce5cb5978105bfc7cd7fd373e64c98eeab151f9b08e2dd",
+  "raw_worker_check_sha256": "38bcdac18a2f483ec5ad69a331c4ac4c0a0cf02f200d5c389d022c7642bfa6e2",
+  "scores": "none; independent review pending",
+  "dox": "Parent-owned evidence under existing contract; instruction docs unchanged.",
+  "gates": "Complete behavior/accessibility/named-theme/contrast/live-integration/production unproven."
+}

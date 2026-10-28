@@ -1,0 +1,637 @@
+{
+  "schema_version": 6,
+  "account": {
+    "role": "local-recovery-administrator",
+    "login": "local password only; no username field",
+    "created": "native T3 real /setup; subsequent native logout/login succeeded",
+    "credentials": "private outside repository; never in evidence"
+  },
+  "services": [
+    {
+      "id": 1,
+      "name": "atlas",
+      "fqdn": "atlas.home.arpa.",
+      "addresses": [
+        "127.0.0.21"
+      ],
+      "aliases": [
+        "files"
+      ],
+      "view": "all views",
+      "check_url": "",
+      "proxy_address": "",
+      "route_via_proxy": false,
+      "mac": ""
+    },
+    {
+      "id": 2,
+      "name": "beacon",
+      "fqdn": "beacon.home.arpa.",
+      "addresses": [
+        "127.0.0.22"
+      ],
+      "aliases": [
+        "status"
+      ],
+      "view": "all views",
+      "check_url": "",
+      "proxy_address": "",
+      "route_via_proxy": false,
+      "mac": ""
+    },
+    {
+      "id": 3,
+      "name": "cedar",
+      "fqdn": "cedar.home.arpa.",
+      "addresses": [
+        "127.0.0.23"
+      ],
+      "aliases": [
+        "notes"
+      ],
+      "view": "all views",
+      "check_url": "",
+      "proxy_address": "",
+      "route_via_proxy": false,
+      "mac": ""
+    }
+  ],
+  "records": [
+    {
+      "id": 1,
+      "name": "archive.home.arpa.",
+      "type": "A",
+      "value": "127.0.0.31",
+      "view": "all views"
+    },
+    {
+      "id": 2,
+      "name": "printer.home.arpa.",
+      "type": "A",
+      "value": "127.0.0.32",
+      "view": "all views"
+    },
+    {
+      "id": 3,
+      "name": "router.home.arpa.",
+      "type": "A",
+      "value": "127.0.0.33",
+      "view": "all views"
+    }
+  ],
+  "policy": {
+    "enabled": true,
+    "block_ttl": 60,
+    "lists": [
+      {
+        "id": 1,
+        "name": "steven-black",
+        "url": "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts",
+        "format": "hosts",
+        "builtin": true,
+        "enabled": false,
+        "entries": 0,
+        "last_ok": 0,
+        "last_error": "download failed: Fixture blocks external traffic",
+        "state": "disabled, never loaded; no external connection"
+      }
+    ],
+    "rules": [
+      {
+        "id": 1,
+        "kind": "deny",
+        "domain": "ads.example"
+      }
+    ],
+    "startup_proxy_refusals": [
+      {
+        "time": 1793140620.5894763,
+        "method": "CONNECT",
+        "destination": "raw.githubusercontent.com:443",
+        "result": 403
+      }
+    ]
+  },
+  "listeners": {
+    "admin": "127.0.0.1:5880 TCP/HTTP",
+    "dns": "127.0.0.1:15880 UDP+TCP",
+    "replication": "none: standalone; no key/listener/peers",
+    "upstream": "tls://127.0.0.1:15881; unused, no listener",
+    "refusing_http_proxy": "127.0.0.1:15883; CONNECT returns403, never dials remote"
+  },
+  "settings": {
+    "private_domain": "home.arpa",
+    "allow_query": [
+      "127.0.0.0/8"
+    ],
+    "allow_tailscale": false,
+    "reverse_zones": [],
+    "ttl": 60,
+    "cache_min_ttl": 5,
+    "cache_max_ttl": 3600,
+    "negative_max_ttl": 300,
+    "cache_entries": 10000,
+    "log_queries": true,
+    "log_client_ip": false,
+    "discovery_dhcp_lease_file": "",
+    "discovery_interval": 30,
+    "health_interval": 30,
+    "health_timeout": 5,
+    "health_workers": 1,
+    "dhcp_enabled": false,
+    "dhcp_interface": "",
+    "dhcp_lease_seconds": 86400,
+    "backup_deposit_interval": "0",
+    "backup_key": "not pinned",
+    "backup_pairing": "none",
+    "sso": "disabled/unconfigured",
+    "views": []
+  },
+  "tokens": "Only product automatic first-start bootstrap token exists privately; no UI/API/agent tokens minted or used. Token values/hash never published.",
+  "queries": [
+    {
+      "name": "atlas.home.arpa",
+      "type": "A",
+      "transport": "UDP",
+      "at": "2026-10-28T01:24:05.037674+00:00",
+      "rcode": 0,
+      "answers": 1,
+      "authoritative": true,
+      "transaction_id": 26000
+    },
+    {
+      "name": "beacon.home.arpa",
+      "type": "A",
+      "transport": "UDP",
+      "at": "2026-10-28T01:24:05.037916+00:00",
+      "rcode": 0,
+      "answers": 1,
+      "authoritative": true,
+      "transaction_id": 26001
+    },
+    {
+      "name": "cedar.home.arpa",
+      "type": "A",
+      "transport": "UDP",
+      "at": "2026-10-28T01:24:05.037997+00:00",
+      "rcode": 0,
+      "answers": 1,
+      "authoritative": true,
+      "transaction_id": 26002
+    },
+    {
+      "name": "archive.home.arpa",
+      "type": "A",
+      "transport": "UDP",
+      "at": "2026-10-28T01:24:05.038074+00:00",
+      "rcode": 0,
+      "answers": 1,
+      "authoritative": true,
+      "transaction_id": 26003
+    },
+    {
+      "name": "printer.home.arpa",
+      "type": "A",
+      "transport": "UDP",
+      "at": "2026-10-28T01:24:05.038104+00:00",
+      "rcode": 0,
+      "answers": 1,
+      "authoritative": true,
+      "transaction_id": 26004
+    },
+    {
+      "name": "router.home.arpa",
+      "type": "A",
+      "transport": "UDP",
+      "at": "2026-10-28T01:24:05.038134+00:00",
+      "rcode": 0,
+      "answers": 1,
+      "authoritative": true,
+      "transaction_id": 26005
+    },
+    {
+      "name": "ads.example",
+      "type": "A",
+      "transport": "UDP",
+      "at": "2026-10-28T01:24:05.038160+00:00",
+      "rcode": 3,
+      "answers": 0,
+      "authoritative": false,
+      "transaction_id": 26006
+    },
+    {
+      "name": "ads.example",
+      "type": "A",
+      "transport": "UDP",
+      "at": "2026-10-28T01:24:05.038205+00:00",
+      "rcode": 3,
+      "answers": 0,
+      "authoritative": false,
+      "transaction_id": 26007
+    },
+    {
+      "name": "atlas.home.arpa",
+      "type": "A",
+      "transport": "UDP",
+      "at": "2026-10-28T01:24:05.038236+00:00",
+      "rcode": 0,
+      "answers": 1,
+      "authoritative": true,
+      "transaction_id": 26008
+    },
+    {
+      "name": "beacon.home.arpa",
+      "type": "A",
+      "transport": "UDP",
+      "at": "2026-10-28T01:24:05.038263+00:00",
+      "rcode": 0,
+      "answers": 1,
+      "authoritative": true,
+      "transaction_id": 26009
+    },
+    {
+      "name": "cedar.home.arpa",
+      "type": "A",
+      "transport": "UDP",
+      "at": "2026-10-28T01:24:05.038286+00:00",
+      "rcode": 0,
+      "answers": 1,
+      "authoritative": true,
+      "transaction_id": 26010
+    },
+    {
+      "name": "archive.home.arpa",
+      "type": "A",
+      "transport": "UDP",
+      "at": "2026-10-28T01:24:05.038316+00:00",
+      "rcode": 0,
+      "answers": 1,
+      "authoritative": true,
+      "transaction_id": 26011
+    },
+    {
+      "name": "printer.home.arpa",
+      "type": "A",
+      "transport": "UDP",
+      "at": "2026-10-28T01:24:05.038338+00:00",
+      "rcode": 0,
+      "answers": 1,
+      "authoritative": true,
+      "transaction_id": 26012
+    },
+    {
+      "name": "router.home.arpa",
+      "type": "A",
+      "transport": "UDP",
+      "at": "2026-10-28T01:24:05.038361+00:00",
+      "rcode": 0,
+      "answers": 1,
+      "authoritative": true,
+      "transaction_id": 26013
+    },
+    {
+      "name": "ads.example",
+      "type": "A",
+      "transport": "UDP",
+      "at": "2026-10-28T01:24:05.038384+00:00",
+      "rcode": 3,
+      "answers": 0,
+      "authoritative": false,
+      "transaction_id": 26014
+    },
+    {
+      "name": "ads.example",
+      "type": "A",
+      "transport": "UDP",
+      "at": "2026-10-28T01:24:05.038408+00:00",
+      "rcode": 3,
+      "answers": 0,
+      "authoritative": false,
+      "transaction_id": 26015
+    },
+    {
+      "name": "atlas.home.arpa",
+      "type": "A",
+      "transport": "UDP",
+      "at": "2026-10-28T01:24:05.038432+00:00",
+      "rcode": 0,
+      "answers": 1,
+      "authoritative": true,
+      "transaction_id": 26016
+    },
+    {
+      "name": "beacon.home.arpa",
+      "type": "A",
+      "transport": "UDP",
+      "at": "2026-10-28T01:24:05.038457+00:00",
+      "rcode": 0,
+      "answers": 1,
+      "authoritative": true,
+      "transaction_id": 26017
+    },
+    {
+      "name": "cedar.home.arpa",
+      "type": "A",
+      "transport": "TCP",
+      "at": "2026-10-28T01:24:05.038480+00:00",
+      "rcode": 0,
+      "answers": 1,
+      "authoritative": true,
+      "transaction_id": 26018
+    },
+    {
+      "name": "archive.home.arpa",
+      "type": "A",
+      "transport": "TCP",
+      "at": "2026-10-28T01:24:05.038610+00:00",
+      "rcode": 0,
+      "answers": 1,
+      "authoritative": true,
+      "transaction_id": 26019
+    },
+    {
+      "name": "printer.home.arpa",
+      "type": "A",
+      "transport": "TCP",
+      "at": "2026-10-28T01:24:05.038678+00:00",
+      "rcode": 0,
+      "answers": 1,
+      "authoritative": true,
+      "transaction_id": 26020
+    },
+    {
+      "name": "router.home.arpa",
+      "type": "A",
+      "transport": "TCP",
+      "at": "2026-10-28T01:24:05.038746+00:00",
+      "rcode": 0,
+      "answers": 1,
+      "authoritative": true,
+      "transaction_id": 26021
+    },
+    {
+      "name": "ads.example",
+      "type": "A",
+      "transport": "TCP",
+      "at": "2026-10-28T01:24:05.038793+00:00",
+      "rcode": 3,
+      "answers": 0,
+      "authoritative": false,
+      "transaction_id": 26022
+    },
+    {
+      "name": "ads.example",
+      "type": "A",
+      "transport": "TCP",
+      "at": "2026-10-28T01:24:05.038841+00:00",
+      "rcode": 3,
+      "answers": 0,
+      "authoritative": false,
+      "transaction_id": 26023
+    }
+  ],
+  "query_summary": {
+    "total": 24,
+    "UDP": 18,
+    "TCP": 6,
+    "authoritative_answers": 18,
+    "policy_NXDOMAIN": 6,
+    "forwarded": 0,
+    "refused": 0,
+    "SERVFAIL": 0,
+    "source": "Existing private queries-final-r6.json; unchanged before/after; zero new DNS questions."
+  },
+  "capture_state": "Same persisted fixture; parent already seeded exactly24DNS questions once before partial R6. This confirmation sent zero, did not restart/reset age, and retained natural older uptime/query age/spike position.",
+  "seed_method": "Real native UI forms only for all three services, three records, list disable and deny rule; read-only SQLite confirms IDs after seeding.",
+  "automatic_local_backup_sealer": "Normal product startup created data/backup_key privately (0600), not a suite recovery key or pin; no ceremony/pairing.",
+  "stage": "06-after",
+  "product_source": "6ce6fb505d6f2e4c24256953464efbf903758b21",
+  "verified_at": "2026-10-28T01:34:50.720716+00:00",
+  "retained_fixture": true,
+  "reseed_note": "NO reseed by confirmation worker. queries-final-r6.json and exclusive .started marker preserved byte-for-byte. Four real password-form logins are the only prescribed stateful browser activity.",
+  "verification": "Read-only services/addresses/aliases/records/lists/rules/settings match prior private assertions exactly; all baseline query names,transports,rcodes/answers asserted.",
+  "hostname_note": "Baseline OS hostname was not recorded; operator has not confirmed a hostname change. No hostname-change claim. Persisted synthetic DNS names match.",
+  "runtime_reset_owner": "Earlier parent only; no build/restart/signal in confirmation task.",
+  "council_round": 6,
+  "readonly_verification": {
+    "whitelist": {
+      "services": [
+        {
+          "id": 1,
+          "name": "atlas",
+          "check_url": "",
+          "proxy_address": "",
+          "route_via_proxy": 0,
+          "mac": ""
+        },
+        {
+          "id": 2,
+          "name": "beacon",
+          "check_url": "",
+          "proxy_address": "",
+          "route_via_proxy": 0,
+          "mac": ""
+        },
+        {
+          "id": 3,
+          "name": "cedar",
+          "check_url": "",
+          "proxy_address": "",
+          "route_via_proxy": 0,
+          "mac": ""
+        }
+      ],
+      "addresses": [
+        {
+          "service_id": 1,
+          "address": "127.0.0.21",
+          "view_name": null
+        },
+        {
+          "service_id": 2,
+          "address": "127.0.0.22",
+          "view_name": null
+        },
+        {
+          "service_id": 3,
+          "address": "127.0.0.23",
+          "view_name": null
+        }
+      ],
+      "aliases": [
+        {
+          "id": 1,
+          "service_id": 1,
+          "name": "files"
+        },
+        {
+          "id": 2,
+          "service_id": 2,
+          "name": "status"
+        },
+        {
+          "id": 3,
+          "service_id": 3,
+          "name": "notes"
+        }
+      ],
+      "records": [
+        {
+          "id": 1,
+          "name": "archive.home.arpa.",
+          "type": "A",
+          "value": "127.0.0.31",
+          "view_name": null
+        },
+        {
+          "id": 2,
+          "name": "printer.home.arpa.",
+          "type": "A",
+          "value": "127.0.0.32",
+          "view_name": null
+        },
+        {
+          "id": 3,
+          "name": "router.home.arpa.",
+          "type": "A",
+          "value": "127.0.0.33",
+          "view_name": null
+        }
+      ],
+      "lists": [
+        {
+          "id": 1,
+          "name": "steven-black",
+          "url": "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts",
+          "description": "Unified hosts file: adware and malware domains, consolidated from several maintained sources. (MIT, StevenBlack/hosts contributors)",
+          "enabled": 0,
+          "builtin": 1,
+          "last_ok_at": 0,
+          "last_error": "download failed: Fixture blocks external traffic",
+          "entry_count": 0
+        }
+      ],
+      "rules": [
+        {
+          "id": 1,
+          "kind": "deny",
+          "domain": "ads.example"
+        }
+      ],
+      "settings": {
+        "private_domain": "home.arpa",
+        "upstreams": "tls://127.0.0.1:15881",
+        "dhcp_enabled": 0,
+        "dhcp_interface": "",
+        "dhcp_lease_file": ""
+      }
+    },
+    "sso": {
+      "enabled": 0,
+      "issuer_url": "",
+      "client_id": "kydns"
+    }
+  },
+  "capture_dashboard_observations": [
+    {
+      "file": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "captured_at": "2026-10-28T01:31:42.741Z",
+      "uptime_seconds": 963,
+      "last_query_unix": 1793150645,
+      "query_age_seconds_at_capture": 457.7409999370575,
+      "history_nonzero_query_bucket_indexes": [
+        52
+      ],
+      "raw_history_retained_in_manifest": true,
+      "nonzero_query_buckets": [
+        {
+          "index": 52,
+          "minute": 29885844,
+          "authoritative": 18,
+          "forwarded": 0,
+          "blocked": 6,
+          "cache_hits": 0,
+          "cache_misses": 0,
+          "latency_sum_ms": 0,
+          "latency_count": 24
+        }
+      ]
+    },
+    {
+      "file": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "captured_at": "2026-10-28T01:31:30.991Z",
+      "uptime_seconds": 952,
+      "last_query_unix": 1793150645,
+      "query_age_seconds_at_capture": 445.9909999370575,
+      "history_nonzero_query_bucket_indexes": [
+        52
+      ],
+      "raw_history_retained_in_manifest": true,
+      "nonzero_query_buckets": [
+        {
+          "index": 52,
+          "minute": 29885844,
+          "authoritative": 18,
+          "forwarded": 0,
+          "blocked": 6,
+          "cache_hits": 0,
+          "cache_misses": 0,
+          "latency_sum_ms": 0,
+          "latency_count": 24
+        }
+      ]
+    },
+    {
+      "file": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "captured_at": "2026-10-28T01:31:48.670Z",
+      "uptime_seconds": 969,
+      "last_query_unix": 1793150645,
+      "query_age_seconds_at_capture": 463.67000007629395,
+      "history_nonzero_query_bucket_indexes": [
+        52
+      ],
+      "raw_history_retained_in_manifest": true,
+      "nonzero_query_buckets": [
+        {
+          "index": 52,
+          "minute": 29885844,
+          "authoritative": 18,
+          "forwarded": 0,
+          "blocked": 6,
+          "cache_hits": 0,
+          "cache_misses": 0,
+          "latency_sum_ms": 0,
+          "latency_count": 24
+        }
+      ]
+    },
+    {
+      "file": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "captured_at": "2026-10-28T01:31:36.903Z",
+      "uptime_seconds": 958,
+      "last_query_unix": 1793150645,
+      "query_age_seconds_at_capture": 451.90300011634827,
+      "history_nonzero_query_bucket_indexes": [
+        52
+      ],
+      "raw_history_retained_in_manifest": true,
+      "nonzero_query_buckets": [
+        {
+          "index": 52,
+          "minute": 29885844,
+          "authoritative": 18,
+          "forwarded": 0,
+          "blocked": 6,
+          "cache_hits": 0,
+          "cache_misses": 0,
+          "latency_sum_ms": 0,
+          "latency_count": 24
+        }
+      ]
+    }
+  ],
+  "baseline_query_time_first": "2026-10-28T01:24:05.037674+00:00",
+  "baseline_query_time_last": "2026-10-28T01:24:05.038841+00:00",
+  "capture_started_at": "2026-10-28T01:31:29.436Z",
+  "capture_completed_at": "2026-10-28T01:31:53.070Z"
+}

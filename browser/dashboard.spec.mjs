@@ -171,6 +171,24 @@ test('single sample and zero data have finite coordinates and unique axis labels
   expect(geometry).not.toMatch(/NaN|Infinity/);
 });
 
+test('empty chart windows explain missing samples and recover to valid zero values', async ({ page }) => {
+  await page.clock.install();
+  const value = stats([{ minute: 100 }, { minute: 101 }]);
+  await mockStats(page, value);
+  await expect(page.locator('#chart-cache .chart-empty')).toHaveText('No cache lookups in this window');
+  await expect(page.locator('#chart-latency .chart-empty')).toHaveText('No query timings in this window');
+  await expect(page.locator('#chart-cache svg')).toHaveAttribute('aria-description', 'No cache lookups in this window');
+  value.history = [{ minute: 102, cache_hits: 0, cache_misses: 1, latency_count: 1, latency_sum_ms: 0 }];
+  await page.clock.runFor(5000);
+  for (const id of ['cache', 'latency']) {
+    await expect(page.locator(`#chart-${id} .chart-empty`)).toHaveCount(0);
+    await expect(page.locator(`#chart-${id} svg`)).not.toHaveAttribute('aria-description');
+    await expect(page.locator(`#chart-${id} circle`)).toHaveCount(1);
+  }
+  const geometry = await page.locator('svg path, svg circle').evaluateAll(nodes => nodes.map(n => n.outerHTML).join(''));
+  expect(geometry).not.toMatch(/NaN|Infinity/);
+});
+
 for (const failure of ['http', 'json', 'network']) {
   test(`live refresh retains data after ${failure} failure and recovers`, async ({ page }) => {
     await page.clock.install();
@@ -276,4 +294,64 @@ test('signed-out visitors cannot read the dashboard or Appearance', async ({ bro
     }
     expect((await context.request.get(instance.url + '/stats.json')).status()).toBe(401);
   } finally { await context.close(); }
+});
+
+test('admin layouts retain reachable fields and routing actions at shipped sizes', async ({ page }) => {
+  await page.goto('/discovered');
+  const phone = page.viewportSize().width < 860;
+  const nav = await page.locator('nav').boundingBox();
+  if (phone) {
+    expect(nav.height).toBeLessThan(160);
+    await expect(page.locator('.nav-scroll-hint')).toBeVisible();
+  } else expect(nav.width).toBe(240);
+
+  await page.goto('/');
+  const metricRows = page.locator('.stat-row.metrics');
+  const upper = await metricRows.first().locator('.stat').all();
+  const lower = await metricRows.last().locator('.stat').all();
+  for (let index = 0; index < (phone ? 2 : lower.length); index++) {
+    const a = await upper[index].boundingBox();
+    const b = await lower[index].boundingBox();
+    expect(Math.abs(a.x - b.x)).toBeLessThan(1);
+  }
+  if (phone) expect((await upper[0].boundingBox()).x).toBe(16);
+
+  await page.goto('/settings');
+  for (const group of await page.locator('.field-set').all()) {
+    const bounds = await group.boundingBox();
+    expect(bounds.x).toBeGreaterThanOrEqual(0);
+    expect(bounds.x + bounds.width).toBeLessThanOrEqual(page.viewportSize().width);
+  }
+  await expect(page.getByRole('button', { name: 'Save settings', exact: true })).toBeInViewport();
+
+  await page.goto('/services');
+  await page.locator('#name').fill('layout-check');
+  await page.locator('#address').fill('192.0.2.42');
+  await page.getByRole('button', { name: 'Add service', exact: true }).click();
+  const row = page.getByRole('row').filter({ hasText: 'layout-check' });
+  try {
+    await expect(row.getByRole('button', { name: 'Remove', exact: true })).toBeVisible();
+    const disclosure = row.locator('summary');
+    await disclosure.focus();
+    await disclosure.press('Enter');
+    const proxy = row.getByRole('textbox', { name: 'Proxy address for layout-check', exact: true });
+    await expect(proxy).toBeVisible();
+    await proxy.fill('192.0.2.43');
+    await row.getByRole('checkbox', { name: 'Route', exact: true }).check();
+    await row.getByRole('button', { name: 'Save', exact: true }).click();
+    await expect(row.locator('summary')).toHaveText('Via proxy');
+    await row.locator('summary').click();
+    await expect(proxy).toHaveValue('192.0.2.43');
+    await expect(row.getByRole('checkbox', { name: 'Route', exact: true })).toBeChecked();
+    if (phone) {
+      for (const control of await row.locator('input:not([type=hidden]),button,summary').all()) {
+        const bounds = await control.boundingBox();
+        expect(bounds.x).toBeGreaterThanOrEqual(0);
+        expect(bounds.x + bounds.width).toBeLessThanOrEqual(page.viewportSize().width);
+      }
+    }
+  } finally {
+    await row.getByRole('button', { name: 'Remove', exact: true }).click();
+    await expect(row).toHaveCount(0);
+  }
 });

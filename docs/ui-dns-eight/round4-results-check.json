@@ -1,0 +1,31 @@
+{
+  "round": 4,
+  "source": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+  "reports": {
+    "opus": {
+      "exact": "47/6",
+      "decimal": "7.833333333333333333333333333",
+      "rounded": "7.8",
+      "independent_satisfaction": false,
+      "separate_brand_exact": "76/9",
+      "files_freeze_sha256": "47e91926034c524181d5fb078f645ffbfe5ba5077f4db90ad7d1672960546577",
+      "parent_arithmetic_and_freeze_verified": true,
+      "raw_json_sha256": "2a4e390800d6bcc40ea58750740f954bbf7eece35b5e3e7b66938a4e763960aa",
+      "raw_md_sha256": "bab5c07dc20da5da3adab12c04c781797b0863f41a2734a21464f4af1ffc0a93"
+    },
+    "sol": {
+      "exact": "773/90",
+      "decimal": "8.588888888888888888888888889",
+      "rounded": "8.6",
+      "independent_satisfaction": true,
+      "separate_brand_exact": "26/3",
+      "files_freeze_sha256": "4ace68999fce5c3e16085b59430fa2231dc5887fec2fcd45db9d773e0e744c88",
+      "parent_arithmetic_and_freeze_verified": true,
+      "raw_json_sha256": "c6e055b09a3f4aea2a038e63eaf8dfd524c530a5bc66c1934dacc010101bee4f",
+      "raw_md_sha256": "26145990ac1767451332b4fe6a95aff0786e3be570df2ec75b3a07ba031f3b53"
+    }
+  },
+  "progression": "Opus47/6=7.8333 rounds7.8; below8.0",
+  "corrections": "Opus admits six desktop coherence font-face misreads; original frozen ratings preserved.",
+  "audit": "14 threshold originals queued for independent static audit; no quality or brand averaging."
+}

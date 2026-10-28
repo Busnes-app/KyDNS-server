@@ -1,0 +1,5336 @@
+{
+  "schema": "ky-ui-round5-disagreement-audit/1",
+  "round": 5,
+  "auditor": {
+    "model": "gpt-6.1-sol",
+    "effort": "high",
+    "role": "bounded static disagreement auditor; no new rating"
+  },
+  "summary": {
+    "outcome": "Static R5 audit complete: 12 specified originals individually viewed once; 16 threshold dimension differences explained without changing ratings or frozen observations.",
+    "arithmetic": "All 72 current quality totals, 72 separate brand totals, current aggregate means and embedded historical quality drift recompute without mismatches.",
+    "progression": "Opus 71/9 -> 7.9: current overall progression remains unmet. Sol 257/30 -> 8.6 is non-deciding.",
+    "findings": "Support visible and accessible missing-sample explanation only for all-null cache/latency windows, preserving valid zeroes and existing lone-sample markers. Refresh placement is a bounded grouping refinement; hierarchy and gap severity remain judgment.",
+    "integrity": "Both entire 36-row files-array freezes and all four raw-file hashes verified before and after; no rating or observation edits.",
+    "exclusions": "No new ratings, future implementation review, score prediction, new-round request, palette override or previously declined redesign."
+  },
+  "source": "f30749d8b043afa993cd4e7d3d1b86e6ab6c8331",
+  "rubric": "ky-suite-v2",
+  "authority_commit": "639e5882cada099dd189197beb2a3e3b4c188658",
+  "progression": {
+    "deciding_reviewer": "Claude Opus 5.5",
+    "round": 5,
+    "basis": "Current-round mean of unique rubric-rounded per-file quality totals; half-up to one decimal >=8.0.",
+    "opus_exact": "71/9",
+    "opus_half_up_1dp": "7.9",
+    "met": false,
+    "exact_rounding_boundary": "159/20",
+    "gap_to_rounding_boundary": "11/180",
+    "rule_example": "7.985 rounds half-up to 8.0.",
+    "forbidden_pooling": [
+      "Sol quality",
+      "historical rounds",
+      "brand fit",
+      "cohort means"
+    ],
+    "individual_screen_or_cohort_veto": false,
+    "owner_rejection_reopens_gate": true,
+    "long_term_9_target_achieved": false,
+    "independent_satisfaction": {
+      "opus": false,
+      "sol": true
+    },
+    "reviewer_status": [
+      {
+        "reviewer": "Claude Opus 5.5",
+        "round": 5,
+        "quality_exact": "71/9",
+        "quality_half_up_1dp": "7.9",
+        "separate_fit_exact": "241/30",
+        "separate_fit_half_up_1dp": "8.0",
+        "satisfied": false,
+        "status": "terminal raw pair preserved"
+      },
+      {
+        "reviewer": "GPT Sol",
+        "round": 5,
+        "quality_exact": "257/30",
+        "quality_half_up_1dp": "8.6",
+        "separate_fit_exact": "389/45",
+        "separate_fit_half_up_1dp": "8.6",
+        "satisfied": true,
+        "status": "terminal raw pair preserved; non-deciding"
+      },
+      {
+        "reviewer": "Gemini",
+        "round": 5,
+        "status": "unused; advisory; known exhausted quota, not retried or a progression blocker"
+      }
+    ],
+    "no_request_for_additional_rounds": true,
+    "no_predicted_score_gains": true
+  },
+  "spread_summary": {
+    "current_files": 36,
+    "quality_dimension_pairs": 216,
+    "brand_numeric_dimension_pairs": 176,
+    "brand_shell_NA_pairs": 4,
+    "threshold_absolute_inclusive": 2,
+    "threshold_files": 12,
+    "threshold_quality_dimensions": 4,
+    "threshold_brand_dimensions": 12,
+    "threshold_family_counts": {
+      "dashboard": {
+        "originals": 4,
+        "quality_dimensions": 0,
+        "brand_dimensions": 8
+      },
+      "discovered": {
+        "originals": 4,
+        "quality_dimensions": 0,
+        "brand_dimensions": 4
+      },
+      "records_services_dark": {
+        "originals": 4,
+        "quality_dimensions": 4,
+        "brand_dimensions": 0
+      }
+    },
+    "matches_round5_results_check_exactly": true,
+    "mapping_direction": "sol_minus_opus; absolute spread also recorded for all six quality and five brand dimensions, including zeroes and explicit N/A",
+    "evidence_rule": "Quality and brand remain separate. Threshold resolution explains facts versus interpretation, not a rating change.",
+    "overall_mean_difference_sol_minus_opus": {
+      "quality_fraction": "61/90",
+      "separate_brand_fraction": "11/18",
+      "interpretation": "Difference between independent reviewer means only; not a combined rating or progression value."
+    }
+  },
+  "cohort_qualification": {
+    "status": "Cohort-unmatched membership, not a quality-gate error.",
+    "opus_r5_counts": {
+      "admin-console": 24,
+      "settings": 8,
+      "auth": 4
+    },
+    "sol_r4_counts_from_embedded_drift_rows": {
+      "admin-console": 24,
+      "settings": 8,
+      "auth": 4
+    },
+    "sol_r5_counts": {
+      "admin-console": 20,
+      "settings": 12,
+      "auth": 4
+    },
+    "changed_surface": "DHCP",
+    "changed_files": 4,
+    "sol_prior_cohort": "admin-console",
+    "sol_current_cohort": "settings",
+    "opus_current_cohort": "admin-console",
+    "comparison": [
+      {
+        "cohort": "admin-console",
+        "opus_n": 24,
+        "sol_n": 20,
+        "matched": false,
+        "common_n": 20,
+        "opus_only_n": 4,
+        "sol_only_n": 0,
+        "unmatched_reason": "Four DHCP configuration captures remain admin-console only for Opus."
+      },
+      {
+        "cohort": "settings",
+        "opus_n": 8,
+        "sol_n": 12,
+        "matched": false,
+        "common_n": 8,
+        "opus_only_n": 0,
+        "sol_only_n": 4,
+        "unmatched_reason": "Sol includes four DHCP configuration captures."
+      },
+      {
+        "cohort": "auth",
+        "opus_n": 4,
+        "sol_n": 4,
+        "matched": true,
+        "common_n": 4,
+        "opus_only_n": 0,
+        "sol_only_n": 0
+      }
+    ],
+    "handling": "Preserve raw classifications and n. Use canonical surface means (four captures each), kept separately by reviewer, for like-surface coverage comparisons. Do not describe unmatched cohort movements as quality gains/losses, rank across cohorts, reassign frozen rows or alter the overall mean.",
+    "overall_membership_unchanged": 36,
+    "cohort_veto": false
+  },
+  "threshold_resolution_families": {
+    "dashboard": {
+      "visible_facts": "Teal Local, warm-orange Forwarded and purple Blocked legend keys identify measured series; the selected navigation item also has orange emphasis. Cream/charcoal surfaces and neutral text remain consistent.",
+      "interpretation": "Opus applies the pinned contract literally: non-user-selected metric hues are off-palette and Forwarded reuses orange beyond primary/selection/focus (7). Sol treats chart series as semantic data and judges the base palette/accent use refined (9). The pictures establish data-color use; the two-point brand deductions reflect how narrowly to interpret the data exception, not contradictory evidence about which colors are visible.",
+      "disposition": "Retain both brand vectors. Dashboard data recoloring was already declined and is not reopened. Neither brand score enters quality or progression."
+    },
+    "discovered": {
+      "visible_facts": "The page truthfully says DHCP lease discovery is off, names dhcp_lease_file and supplies an underlined orange Settings link as its only content recovery action.",
+      "interpretation": "Opus treats an inline link as outside the contract's primary/selection/focus orange roles (7). Sol treats this sole next-step link as the empty state's primary remedy (9). The pinned contract requires guidance and a next action; it does not require empty-state filler or a new button. The disagreement concerns the role assigned to the same visible link.",
+      "disposition": "Retain both accent ratings. No filler, navigation redesign, extra action or palette change; these were already declined."
+    },
+    "dark_actions": {
+      "visible_facts": "Remove uses warm coral text, while the selected navigation accent is warm orange. On desktop the Add submit is filled orange and separated into its own form; on phone the filled submit is outside the captured area. Labels, placement and component treatment also convey role.",
+      "interpretation": "Opus's color 7 weights the nearby hues as a semantic-emphasis slip; Sol's color 9 weights text labels and distinct placement/treatment. Pinned dark tokens are --ky-danger #ff8176 and --ky-accent #f5865f. Hue proximity is visible; it does not prove users confuse actions or establish a computed contrast failure.",
+      "disposition": "Retain both quality color ratings. No functional ambiguity is proven, no shared palette override is required, and palette changes already declined are not reopened."
+    }
+  },
+  "individual_original_views": [
+    {
+      "order": 1,
+      "file": "screenshots/kydns-04-after-dashboard-desktop-dark.png",
+      "sha256": "655c9266ff6f922c31743f537c47d85375c5d4552d2a5dddaa901f8114275d86",
+      "width": 1280,
+      "height": 900,
+      "tool": "view_image",
+      "requested_detail": "original",
+      "forwarded_detail": "original",
+      "opens": 1,
+      "individual_original": true,
+      "crops_montages_or_resized_substitutes": false,
+      "visible_facts": "Charcoal Dashboard: 24 queries, 6 blocked, 0% summary; teal/orange/purple legend, empty cache grid, and one teal latency marker near the 0ms line. One left sidebar; Forwarded legend total is 0.",
+      "resolution_family": "dashboard",
+      "threshold_quality": [],
+      "threshold_brand": [
+        "accent_discipline",
+        "palette_tokens"
+      ],
+      "limits": "Initial viewport only; original detail requested, tool/display scaling not independently measured. No behavioral or computed-contrast inference."
+    },
+    {
+      "order": 2,
+      "file": "screenshots/kydns-04-after-dashboard-desktop-light.png",
+      "sha256": "86d75cc53780f2a9146221ca51d9f368a98f8f5feb8dde7084a9d10045ad9eef",
+      "width": 1280,
+      "height": 900,
+      "tool": "view_image",
+      "requested_detail": "original",
+      "forwarded_detail": "original",
+      "opens": 1,
+      "individual_original": true,
+      "crops_montages_or_resized_substitutes": false,
+      "visible_facts": "Cream Dashboard: 24 queries, 6 blocked, 0% summary; colored data keys and right-edge query spike. Cache grid has no series or visible missing-data wording; Response time has a teal sample dot. One sidebar.",
+      "resolution_family": "dashboard",
+      "threshold_quality": [],
+      "threshold_brand": [
+        "accent_discipline",
+        "palette_tokens"
+      ],
+      "limits": "Initial viewport only; original detail requested, tool/display scaling not independently measured. No behavioral or computed-contrast inference."
+    },
+    {
+      "order": 3,
+      "file": "screenshots/kydns-04-after-dashboard-mobile-dark.png",
+      "sha256": "713e4e43079c7728476cc7de9d33257172f30fe1e16cb757488e36959255ec4e",
+      "width": 390,
+      "height": 844,
+      "tool": "view_image",
+      "requested_detail": "original",
+      "forwarded_detail": "original",
+      "opens": 1,
+      "individual_original": true,
+      "crops_montages_or_resized_substitutes": false,
+      "visible_facts": "Charcoal 390px Dashboard: one scrolling navigation strip with Dashboard selected, five metrics leave Uptime on its own row. Teal/orange/purple data legend and spike; cache grid is empty. Only the upper latency frame is captured; its sample is below the fold.",
+      "resolution_family": "dashboard",
+      "threshold_quality": [],
+      "threshold_brand": [
+        "accent_discipline",
+        "palette_tokens"
+      ],
+      "limits": "Initial viewport only; original detail requested, tool/display scaling not independently measured. No behavioral or computed-contrast inference."
+    },
+    {
+      "order": 4,
+      "file": "screenshots/kydns-04-after-dashboard-mobile-light.png",
+      "sha256": "468502de70de5b621a475b09795c86d7dadb97be8d16a807ce967cec3a60ca31",
+      "width": 390,
+      "height": 844,
+      "tool": "view_image",
+      "requested_detail": "original",
+      "forwarded_detail": "original",
+      "opens": 1,
+      "individual_original": true,
+      "crops_montages_or_resized_substitutes": false,
+      "visible_facts": "Cream 390px Dashboard: Dashboard selected in one horizontal navigation strip; Uptime alone below the two-column metrics. Data legend uses teal/orange/purple and cache shows gridlines only. Latency sample area extends below the initial viewport.",
+      "resolution_family": "dashboard",
+      "threshold_quality": [],
+      "threshold_brand": [
+        "accent_discipline",
+        "palette_tokens"
+      ],
+      "limits": "Initial viewport only; original detail requested, tool/display scaling not independently measured. No behavioral or computed-contrast inference."
+    },
+    {
+      "order": 5,
+      "file": "screenshots/kydns-04-after-discovered-desktop-dark.png",
+      "sha256": "5f4c16be5aa4c8cc35665d458ed03bea781962517810854be060a8910b95be28",
+      "width": 1280,
+      "height": 900,
+      "tool": "view_image",
+      "requested_detail": "original",
+      "forwarded_detail": "original",
+      "opens": 1,
+      "individual_original": true,
+      "crops_montages_or_resized_substitutes": false,
+      "visible_facts": "Charcoal Discovered page: one left navigation region, selected Discovered row, a single explanatory paragraph with dhcp_lease_file and underlined orange Settings. Remaining content area is empty, consistent with discovery off.",
+      "resolution_family": "discovered",
+      "threshold_quality": [],
+      "threshold_brand": [
+        "accent_discipline"
+      ],
+      "limits": "Initial viewport only; original detail requested, tool/display scaling not independently measured. No behavioral or computed-contrast inference."
+    },
+    {
+      "order": 6,
+      "file": "screenshots/kydns-04-after-discovered-desktop-light.png",
+      "sha256": "d97c166cf5581f84b4300df803de5e4703cf215c0a7213aecccfdd57d90855ed",
+      "width": 1280,
+      "height": 900,
+      "tool": "view_image",
+      "requested_detail": "original",
+      "forwarded_detail": "original",
+      "opens": 1,
+      "individual_original": true,
+      "crops_montages_or_resized_substitutes": false,
+      "visible_facts": "Cream Discovered page: one sidebar, title and truthful discovery-off paragraph. Settings is the only colored inline content link and the next step; no discovered results are fabricated.",
+      "resolution_family": "discovered",
+      "threshold_quality": [],
+      "threshold_brand": [
+        "accent_discipline"
+      ],
+      "limits": "Initial viewport only; original detail requested, tool/display scaling not independently measured. No behavioral or computed-contrast inference."
+    },
+    {
+      "order": 7,
+      "file": "screenshots/kydns-04-after-discovered-mobile-dark.png",
+      "sha256": "9b3215634cc241ee2bd76a34d10660d08f961583b6124d1be67244bd6f6c4177",
+      "width": 390,
+      "height": 844,
+      "tool": "view_image",
+      "requested_detail": "original",
+      "forwarded_detail": "original",
+      "opens": 1,
+      "individual_original": true,
+      "crops_montages_or_resized_substitutes": false,
+      "visible_facts": "Charcoal phone: Discovered selected at the right edge of the sole horizontal strip, explanatory paragraph wraps across three lines with orange underlined Settings, then a quiet licence footer and empty page space.",
+      "resolution_family": "discovered",
+      "threshold_quality": [],
+      "threshold_brand": [
+        "accent_discipline"
+      ],
+      "limits": "Initial viewport only; original detail requested, tool/display scaling not independently measured. No behavioral or computed-contrast inference."
+    },
+    {
+      "order": 8,
+      "file": "screenshots/kydns-04-after-discovered-mobile-light.png",
+      "sha256": "f6a9c3d309158d66b19f52dc14c63f54d90c63ccd1571558c3aba007b8002202",
+      "width": 390,
+      "height": 844,
+      "tool": "view_image",
+      "requested_detail": "original",
+      "forwarded_detail": "original",
+      "opens": 1,
+      "individual_original": true,
+      "crops_montages_or_resized_substitutes": false,
+      "visible_facts": "Cream phone: one scroll-navigation strip and selected Discovered tab; three-line discovery-off guidance with code-styled dhcp_lease_file and underlined orange Settings. Empty space accurately reflects the state.",
+      "resolution_family": "discovered",
+      "threshold_quality": [],
+      "threshold_brand": [
+        "accent_discipline"
+      ],
+      "limits": "Initial viewport only; original detail requested, tool/display scaling not independently measured. No behavioral or computed-contrast inference."
+    },
+    {
+      "order": 9,
+      "file": "screenshots/kydns-04-after-records-desktop-dark.png",
+      "sha256": "86e20c57ddbd83c42b6ff6d6fd1c81ffd0cfcd7a87a92726c6ad25baf563dd95",
+      "width": 1280,
+      "height": 900,
+      "tool": "view_image",
+      "requested_detail": "original",
+      "forwarded_detail": "original",
+      "opens": 1,
+      "individual_original": true,
+      "crops_montages_or_resized_substitutes": false,
+      "visible_facts": "Charcoal Records: three rows with neutral A badges and coral Remove text, quiet Add record jump link, separate labelled form and filled orange Add record submit. The primary submit is spatially and stylistically distinct from row removal.",
+      "resolution_family": "dark_actions",
+      "threshold_quality": [
+        "color"
+      ],
+      "threshold_brand": [],
+      "limits": "Initial viewport only; original detail requested, tool/display scaling not independently measured. No behavioral or computed-contrast inference."
+    },
+    {
+      "order": 10,
+      "file": "screenshots/kydns-04-after-records-mobile-dark.png",
+      "sha256": "69144b28a459c36f1efde90155c369fdcb4750b84c9c5bb0dc726ce47669cc31",
+      "width": 390,
+      "height": 844,
+      "tool": "view_image",
+      "requested_detail": "original",
+      "forwarded_detail": "original",
+      "opens": 1,
+      "individual_original": true,
+      "crops_montages_or_resized_substitutes": false,
+      "visible_facts": "Charcoal phone Records: three name/Remove rows; Type/View are paired and Value spans the next line. Remove is coral text, selected Records nav has orange rail, Add record jump link is neutral. Only the start of the add form appears at the fold; primary submit is unseen.",
+      "resolution_family": "dark_actions",
+      "threshold_quality": [
+        "color"
+      ],
+      "threshold_brand": [],
+      "limits": "Initial viewport only; original detail requested, tool/display scaling not independently measured. No behavioral or computed-contrast inference."
+    },
+    {
+      "order": 11,
+      "file": "screenshots/kydns-04-after-services-desktop-dark.png",
+      "sha256": "472b2d7988d77c701160c3b5c789acc216ac02630d8c8e7474fcfae200286f88",
+      "width": 1280,
+      "height": 900,
+      "tool": "view_image",
+      "requested_detail": "original",
+      "forwarded_detail": "original",
+      "opens": 1,
+      "individual_original": true,
+      "crops_montages_or_resized_substitutes": false,
+      "visible_facts": "Charcoal Services: three rows with coral Remove, Direct chevron disclosures and neutral data; separate form has filled orange Add service. Aliases (comma separated) label is visibly on one line. One left sidebar.",
+      "resolution_family": "dark_actions",
+      "threshold_quality": [
+        "color"
+      ],
+      "threshold_brand": [],
+      "limits": "Initial viewport only; original detail requested, tool/display scaling not independently measured. No behavioral or computed-contrast inference."
+    },
+    {
+      "order": 12,
+      "file": "screenshots/kydns-04-after-services-mobile-dark.png",
+      "sha256": "d542da21ab8ae8f79fabe3405658396c5dcbddae9b560a2b658adc6ca1300d71",
+      "width": 390,
+      "height": 844,
+      "tool": "view_image",
+      "requested_detail": "original",
+      "forwarded_detail": "original",
+      "opens": 1,
+      "individual_original": true,
+      "crops_montages_or_resized_substitutes": false,
+      "visible_facts": "Charcoal phone Services: coral Remove on each service-name row; Address/View and Aliases/Routing form two-column pairs with Direct chevrons. Selected Services navigation has an orange rail; Add service is a neutral jump link. Filled submit is below the captured area.",
+      "resolution_family": "dark_actions",
+      "threshold_quality": [
+        "color"
+      ],
+      "threshold_brand": [],
+      "limits": "Initial viewport only; original detail requested, tool/display scaling not independently measured. No behavioral or computed-contrast inference."
+    }
+  ],
+  "concrete_finding_audit": [
+    {
+      "id": "cache-missing-window",
+      "finding": "R5 cache graph has gridlines without a visible missing-sample explanation.",
+      "verdict": "Supported with a precise null-only qualification.",
+      "directly_observed": "All four Dashboard originals have an empty cache plot; the 0% headline is a summary, not evidence of 0-valued history samples.",
+      "frozen_source": {
+        "file": "internal/web/static/charts.js",
+        "revision": "f30749d8b043afa993cd4e7d3d1b86e6ab6c8331",
+        "lines": [
+          131,
+          139
+        ],
+        "facts": "Cache history maps hits+misses==0 to null; a nonzero lookup count maps to the rounded hit percentage, including valid 0. line() skips only null. Hover already says 'no lookups' for null, otherwise '<rate>% hit rate'."
+      },
+      "sample_evidence": {
+        "source": "Parent's independent actual R5 local-only fixture/history verification, supplied in task; manifest-04-after.json query_totals corroborate 24 total, 18 authoritative, 6 blocked, 0 forwarded and 0 cached.",
+        "attribution": "All actual R5 cache values are null because this fixture bypasses cache. Parent verification is recorded as supplied, not newly executed or reconstructed from the summary.",
+        "raw_history_replayed": false
+      },
+      "correction": "Do not call this a failure to draw a valid 0% series, claim hover lacks an explanation, or hide the 0% headline. A future visible explanation may supplement the existing tooltip for a window with no lookup samples.",
+      "boundary": "No-data wording applies only when every derived rate is null; any valid zero or positive sample prevents a whole-window no-data label."
+    },
+    {
+      "id": "latency-single-sample",
+      "finding": "Response time shows a single dot.",
+      "verdict": "Visible on the two desktop originals; already handled as a valid sample, not an empty chart or missing lone-sample marker.",
+      "directly_observed": "The desktop plots show one teal marker on/near the 0ms line. The phone initial view cuts the lower plot, so its marker cannot be assessed there.",
+      "frozen_source": {
+        "file": "internal/web/static/charts.js",
+        "revision": "f30749d8b043afa993cd4e7d3d1b86e6ab6c8331",
+        "lines": [
+          82,
+          107,
+          142,
+          148
+        ],
+        "facts": "A positive latency_count yields Math.round(sum/count), even when zero; no count yields null. line() already adds r=3 circles to isolated non-null samples; zero remains a sample. Hover says 'no queries' only for null."
+      },
+      "qualification": "A future all-null latency window can receive visible and accessible missing-sample wording. The captured desktop window has a sample and must not acquire a false no-data label. Keep the marker and zero values."
+    },
+    {
+      "id": "blacklist-action-grouping",
+      "finding": "Filtering toggle, Refresh all lists and row actions share quiet outline treatment; Lists gap/hierarchy are weak.",
+      "verdict": "Grouping refinement is supportable; the severity of competing hierarchy and gap size is reviewer judgment, not a proven behavior failure.",
+      "evidence": "No additional Blacklists image was opened. Existing frozen Opus/Sol rows and reports describe the same old page differently. Frozen template lines 30-38 place separate toggle and global-refresh forms together; lines 50-52 start Lists; lines 67-83 retain independent row toggle/refresh/removal forms.",
+      "frozen_source": {
+        "file": "internal/web/templates/blacklists.html",
+        "revision": "f30749d8b043afa993cd4e7d3d1b86e6ab6c8331",
+        "global_refresh": {
+          "method": "post",
+          "action": "/blacklists/refresh",
+          "csrf_hidden_field": "csrf_token",
+          "read_only_template": "ro"
+        },
+        "toggle": {
+          "method": "post",
+          "action": "/blacklists/toggle",
+          "csrf_hidden_field": "csrf_token"
+        }
+      },
+      "qualification": "Turning filtering off reduces protection; that does not make it the primary task that must be promoted with orange or a danger treatment. Four equally styled controls do not prove users cannot distinguish their explicit labels. Approximate screenshot gap and form/table width judgments are not exact CSS measurements.",
+      "bounded_candidate": "Move the existing global-refresh POST beside Lists as a quiet button, retaining the Filtering on/off action, CSRF field, read-only conditions, row actions and on/off/loading/error states. Treat this solely as the parent's supplied scope; the future implementation was neither read nor evaluated."
+    },
+    {
+      "id": "dark-danger-primary",
+      "finding": "Dark Remove hue is close to primary accent.",
+      "verdict": "Visible hue proximity acknowledged; functional ambiguity and contrast failure unproven.",
+      "resolution_family": "dark_actions",
+      "scope": "No shared-token or product-local palette override. Do not reopen previously declined shared palette changes."
+    },
+    {
+      "id": "dashboard-brand",
+      "finding": "Orange Forwarded and other data series depart from literal accent/palette rules.",
+      "verdict": "Policy interpretation documented independently from the visible semantic data encodings.",
+      "resolution_family": "dashboard",
+      "scope": "Prior chart data recoloring refusal remains binding; no reopened recolor or new scoring."
+    },
+    {
+      "id": "discovered-brand-empty-state",
+      "finding": "Orange inline Settings is an accent slip; empty layout lacks emphasis.",
+      "verdict": "The truthful guidance and next action are visible; classification of the sole recovery link as primary is an anchor/policy judgment.",
+      "resolution_family": "discovered",
+      "scope": "Judge the empty state as captured. No filler, fabricated discoveries, extra feature or navigation redesign; declined changes stay declined."
+    },
+    {
+      "id": "old-hierarchy-density-gap",
+      "finding": "Phone Records density, lone Dashboard Uptime row and larger section gaps are less refined.",
+      "verdict": "Record as hierarchy/rhythm judgments. The originals show tall rows and a lone Uptime row; pictures do not prove task failure, and sparse/empty states are not penalized for having little data.",
+      "scope": "No new redesign, additional view, new rating or cohort/screen veto."
+    },
+    {
+      "id": "immutable-corrections",
+      "finding": "Opus's already-published factual corrections outside frozen rows.",
+      "verdict": "Preserved without changing frozen observations.",
+      "corrections": [
+        {
+          "claim": "Desktop Services Aliases (comma separated) wraps.",
+          "qualification": "Already corrected by Opus outside its immutable rows. The dark desktop original opened here confirms the label is one line; tight spacing is a separate judgment. Light original was not reopened for this audit."
+        },
+        {
+          "claim": "Dark login stamp renders without its tile.",
+          "qualification": "Already qualified by Opus outside its immutable rows: screenshots cannot distinguish an absent tile from a tile matching the background. No login image was reopened and no absence is newly asserted."
+        }
+      ]
+    }
+  ],
+  "future_candidate_scope": {
+    "provenance": "Parent's bounded R6 candidate supplied by user; this audit only evaluates support from R5 evidence.",
+    "allowed_description": [
+      "Visible and accessible text for null-only cache/latency windows.",
+      "Preserve valid zeroes and lone-sample markers, with recovery from empty to sampled windows checked by the parent.",
+      "Move the existing CSRF-protected global-refresh POST to a quiet button beside Lists; preserve filtering toggle, row actions and states."
+    ],
+    "implementation_read": false,
+    "implementation_inspected": false,
+    "implementation_scored": false,
+    "zero_and_recovery_checks_run_by_auditor": false,
+    "no_new_round_requested": true,
+    "no_score_gain_prediction": true,
+    "prior_declined_changes_not_reopened": [
+      "Dashboard data recoloring",
+      "Discovered empty-state filler",
+      "navigation redesign",
+      "shared palette changes"
+    ]
+  },
+  "arithmetic": {
+    "opus": {
+      "overall_quality": {
+        "n": 36,
+        "sum_fraction": "284",
+        "mean_fraction": "71/9",
+        "decimal_60_digits": "7.88888888888888888888888888888888888888888888888888888888889",
+        "half_up_1dp": "7.9"
+      },
+      "unrounded_vectors_transparency_only": {
+        "n": 36,
+        "sum_fraction": "1417/5",
+        "mean_fraction": "1417/180",
+        "decimal_60_digits": "7.87222222222222222222222222222222222222222222222222222222222",
+        "half_up_1dp": "7.9"
+      },
+      "separate_brand": {
+        "n": 36,
+        "sum_fraction": "1446/5",
+        "mean_fraction": "241/30",
+        "decimal_60_digits": "8.03333333333333333333333333333333333333333333333333333333333",
+        "half_up_1dp": "8.0"
+      },
+      "quality_dimension_means": {
+        "hierarchy": {
+          "n": 36,
+          "sum_fraction": "286",
+          "mean_fraction": "143/18",
+          "decimal_60_digits": "7.94444444444444444444444444444444444444444444444444444444444",
+          "half_up_1dp": "7.9"
+        },
+        "typography": {
+          "n": 36,
+          "sum_fraction": "288",
+          "mean_fraction": "8",
+          "decimal_60_digits": "8",
+          "half_up_1dp": "8.0"
+        },
+        "density_layout": {
+          "n": 36,
+          "sum_fraction": "276",
+          "mean_fraction": "23/3",
+          "decimal_60_digits": "7.66666666666666666666666666666666666666666666666666666666667",
+          "half_up_1dp": "7.7"
+        },
+        "color": {
+          "n": 36,
+          "sum_fraction": "284",
+          "mean_fraction": "71/9",
+          "decimal_60_digits": "7.88888888888888888888888888888888888888888888888888888888889",
+          "half_up_1dp": "7.9"
+        },
+        "visible_affordances": {
+          "n": 36,
+          "sum_fraction": "280",
+          "mean_fraction": "70/9",
+          "decimal_60_digits": "7.77777777777777777777777777777777777777777777777777777777778",
+          "half_up_1dp": "7.8"
+        },
+        "coherence": {
+          "n": 36,
+          "sum_fraction": "288",
+          "mean_fraction": "8",
+          "decimal_60_digits": "8",
+          "half_up_1dp": "8.0"
+        }
+      },
+      "brand_dimension_means": {
+        "palette_tokens": {
+          "n": 36,
+          "sum_fraction": "292",
+          "mean_fraction": "73/9",
+          "decimal_60_digits": "8.11111111111111111111111111111111111111111111111111111111111",
+          "half_up_1dp": "8.1"
+        },
+        "type_geometry": {
+          "n": 36,
+          "sum_fraction": "288",
+          "mean_fraction": "8",
+          "decimal_60_digits": "8",
+          "half_up_1dp": "8.0"
+        },
+        "shell": {
+          "n": 32,
+          "sum_fraction": "240",
+          "mean_fraction": "15/2",
+          "decimal_60_digits": "7.5",
+          "half_up_1dp": "7.5"
+        },
+        "accent_discipline": {
+          "n": 36,
+          "sum_fraction": "300",
+          "mean_fraction": "25/3",
+          "decimal_60_digits": "8.33333333333333333333333333333333333333333333333333333333333",
+          "half_up_1dp": "8.3"
+        },
+        "suite_cohesion": {
+          "n": 36,
+          "sum_fraction": "292",
+          "mean_fraction": "73/9",
+          "decimal_60_digits": "8.11111111111111111111111111111111111111111111111111111111111",
+          "half_up_1dp": "8.1"
+        }
+      },
+      "cohort_means_not_rankings": {
+        "admin-console": {
+          "n": 24,
+          "sum_fraction": "932/5",
+          "mean_fraction": "233/30",
+          "decimal_60_digits": "7.76666666666666666666666666666666666666666666666666666666667",
+          "half_up_1dp": "7.8"
+        },
+        "auth": {
+          "n": 4,
+          "sum_fraction": "34",
+          "mean_fraction": "17/2",
+          "decimal_60_digits": "8.5",
+          "half_up_1dp": "8.5"
+        },
+        "settings": {
+          "n": 8,
+          "sum_fraction": "318/5",
+          "mean_fraction": "159/20",
+          "decimal_60_digits": "7.95",
+          "half_up_1dp": "8.0"
+        }
+      },
+      "canonical_groups_not_rankings": {
+        "surface": {
+          "appearance": {
+            "n": 4,
+            "sum_fraction": "158/5",
+            "mean_fraction": "79/10",
+            "decimal_60_digits": "7.9",
+            "half_up_1dp": "7.9"
+          },
+          "blacklists": {
+            "n": 4,
+            "sum_fraction": "30",
+            "mean_fraction": "15/2",
+            "decimal_60_digits": "7.5",
+            "half_up_1dp": "7.5"
+          },
+          "dashboard": {
+            "n": 4,
+            "sum_fraction": "30",
+            "mean_fraction": "15/2",
+            "decimal_60_digits": "7.5",
+            "half_up_1dp": "7.5"
+          },
+          "dhcp": {
+            "n": 4,
+            "sum_fraction": "158/5",
+            "mean_fraction": "79/10",
+            "decimal_60_digits": "7.9",
+            "half_up_1dp": "7.9"
+          },
+          "discovered": {
+            "n": 4,
+            "sum_fraction": "158/5",
+            "mean_fraction": "79/10",
+            "decimal_60_digits": "7.9",
+            "half_up_1dp": "7.9"
+          },
+          "login": {
+            "n": 4,
+            "sum_fraction": "34",
+            "mean_fraction": "17/2",
+            "decimal_60_digits": "8.5",
+            "half_up_1dp": "8.5"
+          },
+          "records": {
+            "n": 4,
+            "sum_fraction": "157/5",
+            "mean_fraction": "157/20",
+            "decimal_60_digits": "7.85",
+            "half_up_1dp": "7.9"
+          },
+          "services": {
+            "n": 4,
+            "sum_fraction": "159/5",
+            "mean_fraction": "159/20",
+            "decimal_60_digits": "7.95",
+            "half_up_1dp": "8.0"
+          },
+          "settings": {
+            "n": 4,
+            "sum_fraction": "32",
+            "mean_fraction": "8",
+            "decimal_60_digits": "8",
+            "half_up_1dp": "8.0"
+          }
+        },
+        "device": {
+          "desktop": {
+            "n": 18,
+            "sum_fraction": "713/5",
+            "mean_fraction": "713/90",
+            "decimal_60_digits": "7.92222222222222222222222222222222222222222222222222222222222",
+            "half_up_1dp": "7.9"
+          },
+          "mobile": {
+            "n": 18,
+            "sum_fraction": "707/5",
+            "mean_fraction": "707/90",
+            "decimal_60_digits": "7.85555555555555555555555555555555555555555555555555555555556",
+            "half_up_1dp": "7.9"
+          }
+        },
+        "theme": {
+          "dark": {
+            "n": 18,
+            "sum_fraction": "709/5",
+            "mean_fraction": "709/90",
+            "decimal_60_digits": "7.87777777777777777777777777777777777777777777777777777777778",
+            "half_up_1dp": "7.9"
+          },
+          "light": {
+            "n": 18,
+            "sum_fraction": "711/5",
+            "mean_fraction": "79/10",
+            "decimal_60_digits": "7.9",
+            "half_up_1dp": "7.9"
+          }
+        }
+      }
+    },
+    "sol": {
+      "overall_quality": {
+        "n": 36,
+        "sum_fraction": "1542/5",
+        "mean_fraction": "257/30",
+        "decimal_60_digits": "8.56666666666666666666666666666666666666666666666666666666667",
+        "half_up_1dp": "8.6"
+      },
+      "unrounded_vectors_transparency_only": {
+        "n": 36,
+        "sum_fraction": "615/2",
+        "mean_fraction": "205/24",
+        "decimal_60_digits": "8.54166666666666666666666666666666666666666666666666666666667",
+        "half_up_1dp": "8.5"
+      },
+      "separate_brand": {
+        "n": 36,
+        "sum_fraction": "1556/5",
+        "mean_fraction": "389/45",
+        "decimal_60_digits": "8.64444444444444444444444444444444444444444444444444444444444",
+        "half_up_1dp": "8.6"
+      },
+      "quality_dimension_means": {
+        "hierarchy": {
+          "n": 36,
+          "sum_fraction": "310",
+          "mean_fraction": "155/18",
+          "decimal_60_digits": "8.61111111111111111111111111111111111111111111111111111111111",
+          "half_up_1dp": "8.6"
+        },
+        "typography": {
+          "n": 36,
+          "sum_fraction": "292",
+          "mean_fraction": "73/9",
+          "decimal_60_digits": "8.11111111111111111111111111111111111111111111111111111111111",
+          "half_up_1dp": "8.1"
+        },
+        "density_layout": {
+          "n": 36,
+          "sum_fraction": "296",
+          "mean_fraction": "74/9",
+          "decimal_60_digits": "8.22222222222222222222222222222222222222222222222222222222222",
+          "half_up_1dp": "8.2"
+        },
+        "color": {
+          "n": 36,
+          "sum_fraction": "320",
+          "mean_fraction": "80/9",
+          "decimal_60_digits": "8.88888888888888888888888888888888888888888888888888888888889",
+          "half_up_1dp": "8.9"
+        },
+        "visible_affordances": {
+          "n": 36,
+          "sum_fraction": "306",
+          "mean_fraction": "17/2",
+          "decimal_60_digits": "8.5",
+          "half_up_1dp": "8.5"
+        },
+        "coherence": {
+          "n": 36,
+          "sum_fraction": "324",
+          "mean_fraction": "9",
+          "decimal_60_digits": "9",
+          "half_up_1dp": "9.0"
+        }
+      },
+      "brand_dimension_means": {
+        "palette_tokens": {
+          "n": 36,
+          "sum_fraction": "324",
+          "mean_fraction": "9",
+          "decimal_60_digits": "9",
+          "half_up_1dp": "9.0"
+        },
+        "type_geometry": {
+          "n": 36,
+          "sum_fraction": "296",
+          "mean_fraction": "74/9",
+          "decimal_60_digits": "8.22222222222222222222222222222222222222222222222222222222222",
+          "half_up_1dp": "8.2"
+        },
+        "shell": {
+          "n": 32,
+          "sum_fraction": "256",
+          "mean_fraction": "8",
+          "decimal_60_digits": "8",
+          "half_up_1dp": "8.0"
+        },
+        "accent_discipline": {
+          "n": 36,
+          "sum_fraction": "324",
+          "mean_fraction": "9",
+          "decimal_60_digits": "9",
+          "half_up_1dp": "9.0"
+        },
+        "suite_cohesion": {
+          "n": 36,
+          "sum_fraction": "320",
+          "mean_fraction": "80/9",
+          "decimal_60_digits": "8.88888888888888888888888888888888888888888888888888888888889",
+          "half_up_1dp": "8.9"
+        }
+      },
+      "cohort_means_not_rankings": {
+        "admin-console": {
+          "n": 20,
+          "sum_fraction": "844/5",
+          "mean_fraction": "211/25",
+          "decimal_60_digits": "8.44",
+          "half_up_1dp": "8.4"
+        },
+        "auth": {
+          "n": 4,
+          "sum_fraction": "36",
+          "mean_fraction": "9",
+          "decimal_60_digits": "9",
+          "half_up_1dp": "9.0"
+        },
+        "settings": {
+          "n": 12,
+          "sum_fraction": "518/5",
+          "mean_fraction": "259/30",
+          "decimal_60_digits": "8.63333333333333333333333333333333333333333333333333333333333",
+          "half_up_1dp": "8.6"
+        }
+      },
+      "canonical_groups_not_rankings": {
+        "surface": {
+          "appearance": {
+            "n": 4,
+            "sum_fraction": "176/5",
+            "mean_fraction": "44/5",
+            "decimal_60_digits": "8.8",
+            "half_up_1dp": "8.8"
+          },
+          "blacklists": {
+            "n": 4,
+            "sum_fraction": "164/5",
+            "mean_fraction": "41/5",
+            "decimal_60_digits": "8.2",
+            "half_up_1dp": "8.2"
+          },
+          "dashboard": {
+            "n": 4,
+            "sum_fraction": "164/5",
+            "mean_fraction": "41/5",
+            "decimal_60_digits": "8.2",
+            "half_up_1dp": "8.2"
+          },
+          "dhcp": {
+            "n": 4,
+            "sum_fraction": "168/5",
+            "mean_fraction": "42/5",
+            "decimal_60_digits": "8.4",
+            "half_up_1dp": "8.4"
+          },
+          "discovered": {
+            "n": 4,
+            "sum_fraction": "174/5",
+            "mean_fraction": "87/10",
+            "decimal_60_digits": "8.7",
+            "half_up_1dp": "8.7"
+          },
+          "login": {
+            "n": 4,
+            "sum_fraction": "36",
+            "mean_fraction": "9",
+            "decimal_60_digits": "9",
+            "half_up_1dp": "9.0"
+          },
+          "records": {
+            "n": 4,
+            "sum_fraction": "172/5",
+            "mean_fraction": "43/5",
+            "decimal_60_digits": "8.6",
+            "half_up_1dp": "8.6"
+          },
+          "services": {
+            "n": 4,
+            "sum_fraction": "34",
+            "mean_fraction": "17/2",
+            "decimal_60_digits": "8.5",
+            "half_up_1dp": "8.5"
+          },
+          "settings": {
+            "n": 4,
+            "sum_fraction": "174/5",
+            "mean_fraction": "87/10",
+            "decimal_60_digits": "8.7",
+            "half_up_1dp": "8.7"
+          }
+        },
+        "device": {
+          "desktop": {
+            "n": 18,
+            "sum_fraction": "779/5",
+            "mean_fraction": "779/90",
+            "decimal_60_digits": "8.65555555555555555555555555555555555555555555555555555555556",
+            "half_up_1dp": "8.7"
+          },
+          "mobile": {
+            "n": 18,
+            "sum_fraction": "763/5",
+            "mean_fraction": "763/90",
+            "decimal_60_digits": "8.47777777777777777777777777777777777777777777777777777777778",
+            "half_up_1dp": "8.5"
+          }
+        },
+        "theme": {
+          "dark": {
+            "n": 18,
+            "sum_fraction": "771/5",
+            "mean_fraction": "257/30",
+            "decimal_60_digits": "8.56666666666666666666666666666666666666666666666666666666667",
+            "half_up_1dp": "8.6"
+          },
+          "light": {
+            "n": 18,
+            "sum_fraction": "771/5",
+            "mean_fraction": "257/30",
+            "decimal_60_digits": "8.56666666666666666666666666666666666666666666666666666666667",
+            "half_up_1dp": "8.6"
+          }
+        }
+      }
+    }
+  },
+  "drift_arithmetic": {
+    "opus": {
+      "prior_overall_from_embedded_prior_vectors": {
+        "n": 36,
+        "sum_fraction": "282",
+        "mean_fraction": "47/6",
+        "decimal_60_digits": "7.83333333333333333333333333333333333333333333333333333333333",
+        "half_up_1dp": "7.8"
+      },
+      "delta_all": {
+        "n": 36,
+        "sum_fraction": "2",
+        "mean_fraction": "1/18",
+        "decimal_60_digits": "0.0555555555555555555555555555555555555555555555555555555555556",
+        "half_up_1dp": "0.1"
+      },
+      "delta_exact_23": {
+        "n": 23,
+        "sum_fraction": "-1/2",
+        "mean_fraction": "-1/46",
+        "decimal_60_digits": "-0.0217391304347826086956521739130434782608695652173913043478261",
+        "half_up_1dp": "-0.0"
+      },
+      "delta_changed_13": {
+        "n": 13,
+        "sum_fraction": "5/2",
+        "mean_fraction": "5/26",
+        "decimal_60_digits": "0.192307692307692307692307692307692307692307692307692307692308",
+        "half_up_1dp": "0.2"
+      },
+      "large_quality_delta_count": 4,
+      "large_quality_deltas": [
+        {
+          "file": "screenshots/kydns-04-after-appearance-mobile-dark.png",
+          "delta_fraction": "-1/2",
+          "explanation": "Byte-identical; density 8->7 (clipped \"cklists\" scroll row counted against rhythm this round), color and affordances 9->8: all calibration on unchanged pixels, not a regression."
+        },
+        {
+          "file": "screenshots/kydns-04-after-appearance-mobile-light.png",
+          "delta_fraction": "-1/2",
+          "explanation": "Byte-identical; density 8->7 (clipped \"cklists\" scroll row counted against rhythm this round), color and affordances 9->8: all calibration on unchanged pixels, not a regression."
+        },
+        {
+          "file": "screenshots/kydns-04-after-records-desktop-light.png",
+          "delta_fraction": "1/2",
+          "explanation": "Changed pixels: outline danger Remove buttons became quiet danger text and the precedence note moved into the form column above Add record (both visible vs the R4 original). Hierarchy and coherence +1 align with these; light color +1 because Remove no longer forms a red column; dark color stays 7 for coral-vs-accent hue. Magnitude also contains calibration; no exact split claimed."
+        },
+        {
+          "file": "screenshots/kydns-04-after-services-desktop-light.png",
+          "delta_fraction": "1/2",
+          "explanation": "Changed pixels: outline danger Remove buttons became quiet danger text (visible vs R4 original). Hierarchy and coherence +1 align; light color +1 because Remove no longer forms a red column. Magnitude also contains calibration; no exact split claimed."
+        }
+      ],
+      "prior_quality_vectors_recomputed": 36,
+      "historical_images_opened": 0,
+      "cohort_changes": []
+    },
+    "sol": {
+      "prior_overall_from_embedded_prior_vectors": {
+        "n": 36,
+        "sum_fraction": "1546/5",
+        "mean_fraction": "773/90",
+        "decimal_60_digits": "8.58888888888888888888888888888888888888888888888888888888889",
+        "half_up_1dp": "8.6"
+      },
+      "delta_all": {
+        "n": 36,
+        "sum_fraction": "-4/5",
+        "mean_fraction": "-1/45",
+        "decimal_60_digits": "-0.0222222222222222222222222222222222222222222222222222222222222",
+        "half_up_1dp": "-0.0"
+      },
+      "delta_exact_23": {
+        "n": 23,
+        "sum_fraction": "-8/5",
+        "mean_fraction": "-8/115",
+        "decimal_60_digits": "-0.0695652173913043478260869565217391304347826086956521739130435",
+        "half_up_1dp": "-0.1"
+      },
+      "delta_changed_13": {
+        "n": 13,
+        "sum_fraction": "4/5",
+        "mean_fraction": "4/65",
+        "decimal_60_digits": "0.0615384615384615384615384615384615384615384615384615384615385",
+        "half_up_1dp": "0.1"
+      },
+      "large_quality_delta_count": 0,
+      "large_quality_deltas": [],
+      "prior_quality_vectors_recomputed": 36,
+      "historical_images_opened": 0,
+      "cohort_changes": [
+        {
+          "file": "screenshots/kydns-04-after-dhcp-desktop-dark.png",
+          "prior_cohort": "admin-console",
+          "cohort": "settings",
+          "prior_total": 8.5,
+          "total": 8.5
+        },
+        {
+          "file": "screenshots/kydns-04-after-dhcp-desktop-light.png",
+          "prior_cohort": "admin-console",
+          "cohort": "settings",
+          "prior_total": 8.5,
+          "total": 8.5
+        },
+        {
+          "file": "screenshots/kydns-04-after-dhcp-mobile-dark.png",
+          "prior_cohort": "admin-console",
+          "cohort": "settings",
+          "prior_total": 8.3,
+          "total": 8.3
+        },
+        {
+          "file": "screenshots/kydns-04-after-dhcp-mobile-light.png",
+          "prior_cohort": "admin-console",
+          "cohort": "settings",
+          "prior_total": 8.3,
+          "total": 8.3
+        }
+      ]
+    }
+  },
+  "exhaustive_spread_mapping": [
+    {
+      "file": "screenshots/kydns-04-after-appearance-desktop-dark.png",
+      "surface": "appearance",
+      "device": "desktop",
+      "theme": "dark",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "suite_cohesion": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "8",
+          "quality_half_up_1dp": "8.0",
+          "brand_exact": "43/5",
+          "brand_half_up_1dp": "8.6",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "177/20",
+          "quality_half_up_1dp": "8.9",
+          "brand_exact": "44/5",
+          "brand_half_up_1dp": "8.8",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "9/10",
+      "brand_total_sol_minus_opus": "1/5",
+      "resolved_by": "All numeric dimension differences are below 2; mapped exhaustively without extra image opens or replacement ratings.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/0",
+        "sol": "sol-round5.json#/files/0"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-appearance-desktop-light.png",
+      "surface": "appearance",
+      "device": "desktop",
+      "theme": "light",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "suite_cohesion": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "8",
+          "quality_half_up_1dp": "8.0",
+          "brand_exact": "43/5",
+          "brand_half_up_1dp": "8.6",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "177/20",
+          "quality_half_up_1dp": "8.9",
+          "brand_exact": "44/5",
+          "brand_half_up_1dp": "8.8",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "9/10",
+      "brand_total_sol_minus_opus": "1/5",
+      "resolved_by": "All numeric dimension differences are below 2; mapped exhaustively without extra image opens or replacement ratings.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/1",
+        "sol": "sol-round5.json#/files/1"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-appearance-mobile-dark.png",
+      "surface": "appearance",
+      "device": "mobile",
+      "theme": "dark",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "shell": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "suite_cohesion": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "39/5",
+          "quality_half_up_1dp": "7.8",
+          "brand_exact": "42/5",
+          "brand_half_up_1dp": "8.4",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "173/20",
+          "quality_half_up_1dp": "8.7",
+          "brand_exact": "44/5",
+          "brand_half_up_1dp": "8.8",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "9/10",
+      "brand_total_sol_minus_opus": "2/5",
+      "resolved_by": "All numeric dimension differences are below 2; mapped exhaustively without extra image opens or replacement ratings.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/2",
+        "sol": "sol-round5.json#/files/2"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-appearance-mobile-light.png",
+      "surface": "appearance",
+      "device": "mobile",
+      "theme": "light",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "shell": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "suite_cohesion": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "39/5",
+          "quality_half_up_1dp": "7.8",
+          "brand_exact": "42/5",
+          "brand_half_up_1dp": "8.4",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "173/20",
+          "quality_half_up_1dp": "8.7",
+          "brand_exact": "44/5",
+          "brand_half_up_1dp": "8.8",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "9/10",
+      "brand_total_sol_minus_opus": "2/5",
+      "resolved_by": "All numeric dimension differences are below 2; mapped exhaustively without extra image opens or replacement ratings.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/3",
+        "sol": "sol-round5.json#/files/3"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-blacklists-desktop-dark.png",
+      "surface": "blacklists",
+      "device": "desktop",
+      "theme": "dark",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "visible_affordances": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "accent_discipline": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "149/20",
+          "quality_half_up_1dp": "7.5",
+          "brand_exact": "8",
+          "brand_half_up_1dp": "8.0",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "83/10",
+          "quality_half_up_1dp": "8.3",
+          "brand_exact": "43/5",
+          "brand_half_up_1dp": "8.6",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "4/5",
+      "brand_total_sol_minus_opus": "3/5",
+      "resolved_by": "All numeric dimension differences are below 2; mapped exhaustively without extra image opens or replacement ratings.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/4",
+        "sol": "sol-round5.json#/files/4"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-blacklists-desktop-light.png",
+      "surface": "blacklists",
+      "device": "desktop",
+      "theme": "light",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "visible_affordances": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "accent_discipline": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "149/20",
+          "quality_half_up_1dp": "7.5",
+          "brand_exact": "8",
+          "brand_half_up_1dp": "8.0",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "83/10",
+          "quality_half_up_1dp": "8.3",
+          "brand_exact": "43/5",
+          "brand_half_up_1dp": "8.6",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "4/5",
+      "brand_total_sol_minus_opus": "3/5",
+      "resolved_by": "All numeric dimension differences are below 2; mapped exhaustively without extra image opens or replacement ratings.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/5",
+        "sol": "sol-round5.json#/files/5"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-blacklists-mobile-dark.png",
+      "surface": "blacklists",
+      "device": "mobile",
+      "theme": "dark",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 7,
+          "sol": 7,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "visible_affordances": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "shell": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "accent_discipline": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "149/20",
+          "quality_half_up_1dp": "7.5",
+          "brand_exact": "39/5",
+          "brand_half_up_1dp": "7.8",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "81/10",
+          "quality_half_up_1dp": "8.1",
+          "brand_exact": "43/5",
+          "brand_half_up_1dp": "8.6",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "3/5",
+      "brand_total_sol_minus_opus": "4/5",
+      "resolved_by": "All numeric dimension differences are below 2; mapped exhaustively without extra image opens or replacement ratings.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/6",
+        "sol": "sol-round5.json#/files/6"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-blacklists-mobile-light.png",
+      "surface": "blacklists",
+      "device": "mobile",
+      "theme": "light",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 7,
+          "sol": 7,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "visible_affordances": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "shell": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "accent_discipline": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "149/20",
+          "quality_half_up_1dp": "7.5",
+          "brand_exact": "39/5",
+          "brand_half_up_1dp": "7.8",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "81/10",
+          "quality_half_up_1dp": "8.1",
+          "brand_exact": "43/5",
+          "brand_half_up_1dp": "8.6",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "3/5",
+      "brand_total_sol_minus_opus": "4/5",
+      "resolved_by": "All numeric dimension differences are below 2; mapped exhaustively without extra image opens or replacement ratings.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/7",
+        "sol": "sol-round5.json#/files/7"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-dashboard-desktop-dark.png",
+      "surface": "dashboard",
+      "device": "desktop",
+      "theme": "dark",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "color": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "visible_affordances": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute": 2
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "accent_discipline": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute": 2
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [
+        "palette_tokens",
+        "accent_discipline"
+      ],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "15/2",
+          "quality_half_up_1dp": "7.5",
+          "brand_exact": "38/5",
+          "brand_half_up_1dp": "7.6",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "167/20",
+          "quality_half_up_1dp": "8.4",
+          "brand_exact": "43/5",
+          "brand_half_up_1dp": "8.6",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "9/10",
+      "brand_total_sol_minus_opus": "1",
+      "resolution_family": "dashboard",
+      "resolved_by": "Individual original reinspection separates visible facts from anchor/policy interpretation; both immutable ratings retained, no averaged or negotiated replacement.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/8",
+        "sol": "sol-round5.json#/files/8"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-dashboard-desktop-light.png",
+      "surface": "dashboard",
+      "device": "desktop",
+      "theme": "light",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "color": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "visible_affordances": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute": 2
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "accent_discipline": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute": 2
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [
+        "palette_tokens",
+        "accent_discipline"
+      ],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "15/2",
+          "quality_half_up_1dp": "7.5",
+          "brand_exact": "38/5",
+          "brand_half_up_1dp": "7.6",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "167/20",
+          "quality_half_up_1dp": "8.4",
+          "brand_exact": "43/5",
+          "brand_half_up_1dp": "8.6",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "9/10",
+      "brand_total_sol_minus_opus": "1",
+      "resolution_family": "dashboard",
+      "resolved_by": "Individual original reinspection separates visible facts from anchor/policy interpretation; both immutable ratings retained, no averaged or negotiated replacement.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/9",
+        "sol": "sol-round5.json#/files/9"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-dashboard-mobile-dark.png",
+      "surface": "dashboard",
+      "device": "mobile",
+      "theme": "dark",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 7,
+          "sol": 7,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "color": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "visible_affordances": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute": 2
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "shell": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "accent_discipline": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute": 2
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [
+        "palette_tokens",
+        "accent_discipline"
+      ],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "15/2",
+          "quality_half_up_1dp": "7.5",
+          "brand_exact": "37/5",
+          "brand_half_up_1dp": "7.4",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "159/20",
+          "quality_half_up_1dp": "8.0",
+          "brand_exact": "43/5",
+          "brand_half_up_1dp": "8.6",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "1/2",
+      "brand_total_sol_minus_opus": "6/5",
+      "resolution_family": "dashboard",
+      "resolved_by": "Individual original reinspection separates visible facts from anchor/policy interpretation; both immutable ratings retained, no averaged or negotiated replacement.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/10",
+        "sol": "sol-round5.json#/files/10"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-dashboard-mobile-light.png",
+      "surface": "dashboard",
+      "device": "mobile",
+      "theme": "light",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 7,
+          "sol": 7,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "color": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "visible_affordances": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute": 2
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "shell": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "accent_discipline": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute": 2
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [
+        "palette_tokens",
+        "accent_discipline"
+      ],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "15/2",
+          "quality_half_up_1dp": "7.5",
+          "brand_exact": "37/5",
+          "brand_half_up_1dp": "7.4",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "159/20",
+          "quality_half_up_1dp": "8.0",
+          "brand_exact": "43/5",
+          "brand_half_up_1dp": "8.6",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "1/2",
+      "brand_total_sol_minus_opus": "6/5",
+      "resolution_family": "dashboard",
+      "resolved_by": "Individual original reinspection separates visible facts from anchor/policy interpretation; both immutable ratings retained, no averaged or negotiated replacement.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/11",
+        "sol": "sol-round5.json#/files/11"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-dhcp-desktop-dark.png",
+      "surface": "dhcp",
+      "device": "desktop",
+      "theme": "dark",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "8",
+          "quality_half_up_1dp": "8.0",
+          "brand_exact": "41/5",
+          "brand_half_up_1dp": "8.2",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "169/20",
+          "quality_half_up_1dp": "8.5",
+          "brand_exact": "43/5",
+          "brand_half_up_1dp": "8.6",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "1/2",
+      "brand_total_sol_minus_opus": "2/5",
+      "resolved_by": "All numeric dimension differences are below 2; mapped exhaustively without extra image opens or replacement ratings.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/12",
+        "sol": "sol-round5.json#/files/12"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-dhcp-desktop-light.png",
+      "surface": "dhcp",
+      "device": "desktop",
+      "theme": "light",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "8",
+          "quality_half_up_1dp": "8.0",
+          "brand_exact": "41/5",
+          "brand_half_up_1dp": "8.2",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "169/20",
+          "quality_half_up_1dp": "8.5",
+          "brand_exact": "43/5",
+          "brand_half_up_1dp": "8.6",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "1/2",
+      "brand_total_sol_minus_opus": "2/5",
+      "resolved_by": "All numeric dimension differences are below 2; mapped exhaustively without extra image opens or replacement ratings.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/13",
+        "sol": "sol-round5.json#/files/13"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-dhcp-mobile-dark.png",
+      "surface": "dhcp",
+      "device": "mobile",
+      "theme": "dark",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "shell": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "39/5",
+          "quality_half_up_1dp": "7.8",
+          "brand_exact": "8",
+          "brand_half_up_1dp": "8.0",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "83/10",
+          "quality_half_up_1dp": "8.3",
+          "brand_exact": "43/5",
+          "brand_half_up_1dp": "8.6",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "1/2",
+      "brand_total_sol_minus_opus": "3/5",
+      "resolved_by": "All numeric dimension differences are below 2; mapped exhaustively without extra image opens or replacement ratings.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/14",
+        "sol": "sol-round5.json#/files/14"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-dhcp-mobile-light.png",
+      "surface": "dhcp",
+      "device": "mobile",
+      "theme": "light",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "shell": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "39/5",
+          "quality_half_up_1dp": "7.8",
+          "brand_exact": "8",
+          "brand_half_up_1dp": "8.0",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "83/10",
+          "quality_half_up_1dp": "8.3",
+          "brand_exact": "43/5",
+          "brand_half_up_1dp": "8.6",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "1/2",
+      "brand_total_sol_minus_opus": "3/5",
+      "resolved_by": "All numeric dimension differences are below 2; mapped exhaustively without extra image opens or replacement ratings.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/15",
+        "sol": "sol-round5.json#/files/15"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-discovered-desktop-dark.png",
+      "surface": "discovered",
+      "device": "desktop",
+      "theme": "dark",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "visible_affordances": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "accent_discipline": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute": 2
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [
+        "accent_discipline"
+      ],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "157/20",
+          "quality_half_up_1dp": "7.9",
+          "brand_exact": "39/5",
+          "brand_half_up_1dp": "7.8",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "87/10",
+          "quality_half_up_1dp": "8.7",
+          "brand_exact": "43/5",
+          "brand_half_up_1dp": "8.6",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "4/5",
+      "brand_total_sol_minus_opus": "4/5",
+      "resolution_family": "discovered",
+      "resolved_by": "Individual original reinspection separates visible facts from anchor/policy interpretation; both immutable ratings retained, no averaged or negotiated replacement.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/16",
+        "sol": "sol-round5.json#/files/16"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-discovered-desktop-light.png",
+      "surface": "discovered",
+      "device": "desktop",
+      "theme": "light",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "visible_affordances": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "accent_discipline": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute": 2
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [
+        "accent_discipline"
+      ],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "157/20",
+          "quality_half_up_1dp": "7.9",
+          "brand_exact": "39/5",
+          "brand_half_up_1dp": "7.8",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "87/10",
+          "quality_half_up_1dp": "8.7",
+          "brand_exact": "43/5",
+          "brand_half_up_1dp": "8.6",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "4/5",
+      "brand_total_sol_minus_opus": "4/5",
+      "resolution_family": "discovered",
+      "resolved_by": "Individual original reinspection separates visible facts from anchor/policy interpretation; both immutable ratings retained, no averaged or negotiated replacement.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/17",
+        "sol": "sol-round5.json#/files/17"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-discovered-mobile-dark.png",
+      "surface": "discovered",
+      "device": "mobile",
+      "theme": "dark",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "visible_affordances": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "shell": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "accent_discipline": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute": 2
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [
+        "accent_discipline"
+      ],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "157/20",
+          "quality_half_up_1dp": "7.9",
+          "brand_exact": "38/5",
+          "brand_half_up_1dp": "7.6",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "87/10",
+          "quality_half_up_1dp": "8.7",
+          "brand_exact": "43/5",
+          "brand_half_up_1dp": "8.6",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "4/5",
+      "brand_total_sol_minus_opus": "1",
+      "resolution_family": "discovered",
+      "resolved_by": "Individual original reinspection separates visible facts from anchor/policy interpretation; both immutable ratings retained, no averaged or negotiated replacement.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/18",
+        "sol": "sol-round5.json#/files/18"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-discovered-mobile-light.png",
+      "surface": "discovered",
+      "device": "mobile",
+      "theme": "light",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "visible_affordances": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "shell": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "accent_discipline": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute": 2
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [
+        "accent_discipline"
+      ],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "157/20",
+          "quality_half_up_1dp": "7.9",
+          "brand_exact": "38/5",
+          "brand_half_up_1dp": "7.6",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "87/10",
+          "quality_half_up_1dp": "8.7",
+          "brand_exact": "43/5",
+          "brand_half_up_1dp": "8.6",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "4/5",
+      "brand_total_sol_minus_opus": "1",
+      "resolution_family": "discovered",
+      "resolved_by": "Individual original reinspection separates visible facts from anchor/policy interpretation; both immutable ratings retained, no averaged or negotiated replacement.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/19",
+        "sol": "sol-round5.json#/files/19"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-login-desktop-dark.png",
+      "surface": "login",
+      "device": "desktop",
+      "theme": "dark",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "color": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "visible_affordances": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "shell": {
+          "opus": "N/A",
+          "sol": null,
+          "sol_minus_opus": null,
+          "absolute": null
+        },
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "17/2",
+          "quality_half_up_1dp": "8.5",
+          "brand_exact": "17/2",
+          "brand_half_up_1dp": "8.5",
+          "brand_dimension_n": 4
+        },
+        "sol": {
+          "quality_exact": "9",
+          "quality_half_up_1dp": "9.0",
+          "brand_exact": "35/4",
+          "brand_half_up_1dp": "8.8",
+          "brand_dimension_n": 4
+        }
+      },
+      "quality_total_sol_minus_opus": "1/2",
+      "brand_total_sol_minus_opus": "3/10",
+      "resolved_by": "All numeric dimension differences are below 2; mapped exhaustively without extra image opens or replacement ratings.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/20",
+        "sol": "sol-round5.json#/files/20"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-login-desktop-light.png",
+      "surface": "login",
+      "device": "desktop",
+      "theme": "light",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "color": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "visible_affordances": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "shell": {
+          "opus": "N/A",
+          "sol": null,
+          "sol_minus_opus": null,
+          "absolute": null
+        },
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "17/2",
+          "quality_half_up_1dp": "8.5",
+          "brand_exact": "17/2",
+          "brand_half_up_1dp": "8.5",
+          "brand_dimension_n": 4
+        },
+        "sol": {
+          "quality_exact": "9",
+          "quality_half_up_1dp": "9.0",
+          "brand_exact": "35/4",
+          "brand_half_up_1dp": "8.8",
+          "brand_dimension_n": 4
+        }
+      },
+      "quality_total_sol_minus_opus": "1/2",
+      "brand_total_sol_minus_opus": "3/10",
+      "resolved_by": "All numeric dimension differences are below 2; mapped exhaustively without extra image opens or replacement ratings.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/21",
+        "sol": "sol-round5.json#/files/21"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-login-mobile-dark.png",
+      "surface": "login",
+      "device": "mobile",
+      "theme": "dark",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "color": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "visible_affordances": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "shell": {
+          "opus": "N/A",
+          "sol": null,
+          "sol_minus_opus": null,
+          "absolute": null
+        },
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "17/2",
+          "quality_half_up_1dp": "8.5",
+          "brand_exact": "17/2",
+          "brand_half_up_1dp": "8.5",
+          "brand_dimension_n": 4
+        },
+        "sol": {
+          "quality_exact": "9",
+          "quality_half_up_1dp": "9.0",
+          "brand_exact": "35/4",
+          "brand_half_up_1dp": "8.8",
+          "brand_dimension_n": 4
+        }
+      },
+      "quality_total_sol_minus_opus": "1/2",
+      "brand_total_sol_minus_opus": "3/10",
+      "resolved_by": "All numeric dimension differences are below 2; mapped exhaustively without extra image opens or replacement ratings.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/22",
+        "sol": "sol-round5.json#/files/22"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-login-mobile-light.png",
+      "surface": "login",
+      "device": "mobile",
+      "theme": "light",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "color": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "visible_affordances": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "shell": {
+          "opus": "N/A",
+          "sol": null,
+          "sol_minus_opus": null,
+          "absolute": null
+        },
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "17/2",
+          "quality_half_up_1dp": "8.5",
+          "brand_exact": "17/2",
+          "brand_half_up_1dp": "8.5",
+          "brand_dimension_n": 4
+        },
+        "sol": {
+          "quality_exact": "9",
+          "quality_half_up_1dp": "9.0",
+          "brand_exact": "35/4",
+          "brand_half_up_1dp": "8.8",
+          "brand_dimension_n": 4
+        }
+      },
+      "quality_total_sol_minus_opus": "1/2",
+      "brand_total_sol_minus_opus": "3/10",
+      "resolved_by": "All numeric dimension differences are below 2; mapped exhaustively without extra image opens or replacement ratings.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/23",
+        "sol": "sol-round5.json#/files/23"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-records-desktop-dark.png",
+      "surface": "records",
+      "device": "desktop",
+      "theme": "dark",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "color": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute": 2
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "accent_discipline": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "threshold_quality": [
+        "color"
+      ],
+      "threshold_brand": [],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "157/20",
+          "quality_half_up_1dp": "7.9",
+          "brand_exact": "8",
+          "brand_half_up_1dp": "8.0",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "177/20",
+          "quality_half_up_1dp": "8.9",
+          "brand_exact": "43/5",
+          "brand_half_up_1dp": "8.6",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "1",
+      "brand_total_sol_minus_opus": "3/5",
+      "resolution_family": "dark_actions",
+      "resolved_by": "Individual original reinspection separates visible facts from anchor/policy interpretation; both immutable ratings retained, no averaged or negotiated replacement.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/24",
+        "sol": "sol-round5.json#/files/24"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-records-desktop-light.png",
+      "surface": "records",
+      "device": "desktop",
+      "theme": "light",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "8",
+          "quality_half_up_1dp": "8.0",
+          "brand_exact": "41/5",
+          "brand_half_up_1dp": "8.2",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "177/20",
+          "quality_half_up_1dp": "8.9",
+          "brand_exact": "43/5",
+          "brand_half_up_1dp": "8.6",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "9/10",
+      "brand_total_sol_minus_opus": "2/5",
+      "resolved_by": "All numeric dimension differences are below 2; mapped exhaustively without extra image opens or replacement ratings.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/25",
+        "sol": "sol-round5.json#/files/25"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-records-mobile-dark.png",
+      "surface": "records",
+      "device": "mobile",
+      "theme": "dark",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "color": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute": 2
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "shell": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "accent_discipline": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "threshold_quality": [
+        "color"
+      ],
+      "threshold_brand": [],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "153/20",
+          "quality_half_up_1dp": "7.7",
+          "brand_exact": "39/5",
+          "brand_half_up_1dp": "7.8",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "83/10",
+          "quality_half_up_1dp": "8.3",
+          "brand_exact": "43/5",
+          "brand_half_up_1dp": "8.6",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "3/5",
+      "brand_total_sol_minus_opus": "4/5",
+      "resolution_family": "dark_actions",
+      "resolved_by": "Individual original reinspection separates visible facts from anchor/policy interpretation; both immutable ratings retained, no averaged or negotiated replacement.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/26",
+        "sol": "sol-round5.json#/files/26"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-records-mobile-light.png",
+      "surface": "records",
+      "device": "mobile",
+      "theme": "light",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "shell": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "39/5",
+          "quality_half_up_1dp": "7.8",
+          "brand_exact": "8",
+          "brand_half_up_1dp": "8.0",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "83/10",
+          "quality_half_up_1dp": "8.3",
+          "brand_exact": "43/5",
+          "brand_half_up_1dp": "8.6",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "1/2",
+      "brand_total_sol_minus_opus": "3/5",
+      "resolved_by": "All numeric dimension differences are below 2; mapped exhaustively without extra image opens or replacement ratings.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/27",
+        "sol": "sol-round5.json#/files/27"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-services-desktop-dark.png",
+      "surface": "services",
+      "device": "desktop",
+      "theme": "dark",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "color": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute": 2
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "accent_discipline": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "threshold_quality": [
+        "color"
+      ],
+      "threshold_brand": [],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "157/20",
+          "quality_half_up_1dp": "7.9",
+          "brand_exact": "8",
+          "brand_half_up_1dp": "8.0",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "17/2",
+          "quality_half_up_1dp": "8.5",
+          "brand_exact": "43/5",
+          "brand_half_up_1dp": "8.6",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "3/5",
+      "brand_total_sol_minus_opus": "3/5",
+      "resolution_family": "dark_actions",
+      "resolved_by": "Individual original reinspection separates visible facts from anchor/policy interpretation; both immutable ratings retained, no averaged or negotiated replacement.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/28",
+        "sol": "sol-round5.json#/files/28"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-services-desktop-light.png",
+      "surface": "services",
+      "device": "desktop",
+      "theme": "light",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "8",
+          "quality_half_up_1dp": "8.0",
+          "brand_exact": "41/5",
+          "brand_half_up_1dp": "8.2",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "17/2",
+          "quality_half_up_1dp": "8.5",
+          "brand_exact": "43/5",
+          "brand_half_up_1dp": "8.6",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "1/2",
+      "brand_total_sol_minus_opus": "2/5",
+      "resolved_by": "All numeric dimension differences are below 2; mapped exhaustively without extra image opens or replacement ratings.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/29",
+        "sol": "sol-round5.json#/files/29"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-services-mobile-dark.png",
+      "surface": "services",
+      "device": "mobile",
+      "theme": "dark",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "color": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute": 2
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "shell": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "accent_discipline": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "threshold_quality": [
+        "color"
+      ],
+      "threshold_brand": [],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "157/20",
+          "quality_half_up_1dp": "7.9",
+          "brand_exact": "39/5",
+          "brand_half_up_1dp": "7.8",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "169/20",
+          "quality_half_up_1dp": "8.5",
+          "brand_exact": "43/5",
+          "brand_half_up_1dp": "8.6",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "3/5",
+      "brand_total_sol_minus_opus": "4/5",
+      "resolution_family": "dark_actions",
+      "resolved_by": "Individual original reinspection separates visible facts from anchor/policy interpretation; both immutable ratings retained, no averaged or negotiated replacement.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/30",
+        "sol": "sol-round5.json#/files/30"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-services-mobile-light.png",
+      "surface": "services",
+      "device": "mobile",
+      "theme": "light",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "shell": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "8",
+          "quality_half_up_1dp": "8.0",
+          "brand_exact": "8",
+          "brand_half_up_1dp": "8.0",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "169/20",
+          "quality_half_up_1dp": "8.5",
+          "brand_exact": "43/5",
+          "brand_half_up_1dp": "8.6",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "1/2",
+      "brand_total_sol_minus_opus": "3/5",
+      "resolved_by": "All numeric dimension differences are below 2; mapped exhaustively without extra image opens or replacement ratings.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/31",
+        "sol": "sol-round5.json#/files/31"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-settings-desktop-dark.png",
+      "surface": "settings",
+      "device": "desktop",
+      "theme": "dark",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "8",
+          "quality_half_up_1dp": "8.0",
+          "brand_exact": "41/5",
+          "brand_half_up_1dp": "8.2",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "173/20",
+          "quality_half_up_1dp": "8.7",
+          "brand_exact": "43/5",
+          "brand_half_up_1dp": "8.6",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "7/10",
+      "brand_total_sol_minus_opus": "2/5",
+      "resolved_by": "All numeric dimension differences are below 2; mapped exhaustively without extra image opens or replacement ratings.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/32",
+        "sol": "sol-round5.json#/files/32"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-settings-desktop-light.png",
+      "surface": "settings",
+      "device": "desktop",
+      "theme": "light",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "8",
+          "quality_half_up_1dp": "8.0",
+          "brand_exact": "41/5",
+          "brand_half_up_1dp": "8.2",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "173/20",
+          "quality_half_up_1dp": "8.7",
+          "brand_exact": "43/5",
+          "brand_half_up_1dp": "8.6",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "7/10",
+      "brand_total_sol_minus_opus": "2/5",
+      "resolved_by": "All numeric dimension differences are below 2; mapped exhaustively without extra image opens or replacement ratings.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/33",
+        "sol": "sol-round5.json#/files/33"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-settings-mobile-dark.png",
+      "surface": "settings",
+      "device": "mobile",
+      "theme": "dark",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "shell": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "8",
+          "quality_half_up_1dp": "8.0",
+          "brand_exact": "8",
+          "brand_half_up_1dp": "8.0",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "173/20",
+          "quality_half_up_1dp": "8.7",
+          "brand_exact": "43/5",
+          "brand_half_up_1dp": "8.6",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "7/10",
+      "brand_total_sol_minus_opus": "3/5",
+      "resolved_by": "All numeric dimension differences are below 2; mapped exhaustively without extra image opens or replacement ratings.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/34",
+        "sol": "sol-round5.json#/files/34"
+      }
+    },
+    {
+      "file": "screenshots/kydns-04-after-settings-mobile-light.png",
+      "surface": "settings",
+      "device": "mobile",
+      "theme": "light",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "brand_dimensions": {
+        "palette_tokens": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "shell": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        },
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute": 1
+        }
+      },
+      "threshold_quality": [],
+      "threshold_brand": [],
+      "per_file_totals": {
+        "opus": {
+          "quality_exact": "8",
+          "quality_half_up_1dp": "8.0",
+          "brand_exact": "8",
+          "brand_half_up_1dp": "8.0",
+          "brand_dimension_n": 5
+        },
+        "sol": {
+          "quality_exact": "173/20",
+          "quality_half_up_1dp": "8.7",
+          "brand_exact": "43/5",
+          "brand_half_up_1dp": "8.6",
+          "brand_dimension_n": 5
+        }
+      },
+      "quality_total_sol_minus_opus": "7/10",
+      "brand_total_sol_minus_opus": "3/5",
+      "resolved_by": "All numeric dimension differences are below 2; mapped exhaustively without extra image opens or replacement ratings.",
+      "frozen_evidence_refs": {
+        "opus": "opus-round5.json#/files/35",
+        "sol": "sol-round5.json#/files/35"
+      }
+    }
+  ],
+  "threshold_spreads": [
+    {
+      "file": "screenshots/kydns-04-after-dashboard-desktop-dark.png",
+      "quality": [],
+      "brand": [
+        "accent_discipline",
+        "palette_tokens"
+      ]
+    },
+    {
+      "file": "screenshots/kydns-04-after-dashboard-desktop-light.png",
+      "quality": [],
+      "brand": [
+        "accent_discipline",
+        "palette_tokens"
+      ]
+    },
+    {
+      "file": "screenshots/kydns-04-after-dashboard-mobile-dark.png",
+      "quality": [],
+      "brand": [
+        "accent_discipline",
+        "palette_tokens"
+      ]
+    },
+    {
+      "file": "screenshots/kydns-04-after-dashboard-mobile-light.png",
+      "quality": [],
+      "brand": [
+        "accent_discipline",
+        "palette_tokens"
+      ]
+    },
+    {
+      "file": "screenshots/kydns-04-after-discovered-desktop-dark.png",
+      "quality": [],
+      "brand": [
+        "accent_discipline"
+      ]
+    },
+    {
+      "file": "screenshots/kydns-04-after-discovered-desktop-light.png",
+      "quality": [],
+      "brand": [
+        "accent_discipline"
+      ]
+    },
+    {
+      "file": "screenshots/kydns-04-after-discovered-mobile-dark.png",
+      "quality": [],
+      "brand": [
+        "accent_discipline"
+      ]
+    },
+    {
+      "file": "screenshots/kydns-04-after-discovered-mobile-light.png",
+      "quality": [],
+      "brand": [
+        "accent_discipline"
+      ]
+    },
+    {
+      "file": "screenshots/kydns-04-after-records-desktop-dark.png",
+      "quality": [
+        "color"
+      ],
+      "brand": []
+    },
+    {
+      "file": "screenshots/kydns-04-after-records-mobile-dark.png",
+      "quality": [
+        "color"
+      ],
+      "brand": []
+    },
+    {
+      "file": "screenshots/kydns-04-after-services-desktop-dark.png",
+      "quality": [
+        "color"
+      ],
+      "brand": []
+    },
+    {
+      "file": "screenshots/kydns-04-after-services-mobile-dark.png",
+      "quality": [
+        "color"
+      ],
+      "brand": []
+    }
+  ],
+  "integrity": {
+    "before": {
+      "opus": {
+        "raw_json_sha256": "b29d3a3c22829f368adc3a26c41514b618f1122afa583a8e3c5b87c01a655ea0",
+        "raw_md_sha256": "2fdb5badd109ca3122dc4335cf96fc23c1e375dccf48cb711d22cff2a3a55673",
+        "files_array_sha256": "47ec3de1b92b9d1305f11eac4ba169cbfe4cf311618aecbf904b53e762bdbd0c",
+        "files_array_bytes": 91562,
+        "serialization": "json.dumps(files,ensure_ascii=False,sort_keys=True,separators=(',',':'),allow_nan=False).encode('utf-8'); no trailing newline",
+        "matches_parent_raw_hashes_and_published_full_freeze": true
+      },
+      "sol": {
+        "raw_json_sha256": "7775d1f940b2a18edf9d2de7415eca68580781104dccb96eba597d293df4d5b1",
+        "raw_md_sha256": "44909901e558d85fa7dff020252db261ff4d104ef02404555e770226fff2ef92",
+        "files_array_sha256": "3c2f726cb5f483fdb998aa85c0431c3e9862e0208df72fe660a77e92218e1ca3",
+        "files_array_bytes": 107847,
+        "serialization": "json.dumps(files,ensure_ascii=False,sort_keys=True,separators=(',',':'),allow_nan=False).encode('utf-8'); no trailing newline",
+        "matches_parent_raw_hashes_and_published_full_freeze": true
+      }
+    },
+    "raw_hashes_match_round5_results_check": true,
+    "full_files_freezes_match_published": true,
+    "current_inventory_hash_bytes_IHDR": [
+      {
+        "file": "screenshots/kydns-04-after-appearance-desktop-dark.png",
+        "sha256": "3c442f4218b6d1d0deef8a61d4bd75fda5f50fd373c2ded5e0ac9c47496b19d6",
+        "bytes": 74291,
+        "width": 1280,
+        "height": 900,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-appearance-desktop-light.png",
+        "sha256": "b1796624b59ce3350dfd6deda938a45a680b692af2efff1fccb2c7f2bc091aad",
+        "bytes": 73519,
+        "width": 1280,
+        "height": 900,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-appearance-mobile-dark.png",
+        "sha256": "70ed830cf877fe5f797bf6b20eda4be0b12b167bbd5e0e023278ae46f7f5ef27",
+        "bytes": 41121,
+        "width": 390,
+        "height": 844,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-appearance-mobile-light.png",
+        "sha256": "a5311fac55631cfe4cbd0b5a54cd0395be8f0fea33e64019cfbbc1f980eee941",
+        "bytes": 40467,
+        "width": 390,
+        "height": 844,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-blacklists-desktop-dark.png",
+        "sha256": "d1e4d24ce933e7bc9baf37b34a2655fb9ae55e01e96da066db131986ab931425",
+        "bytes": 96709,
+        "width": 1280,
+        "height": 900,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-blacklists-desktop-light.png",
+        "sha256": "c97a4b4dee5ec4e63dfea6c1d9f5a7bf812ba3afc53594faf1b765d747f6c564",
+        "bytes": 96475,
+        "width": 1280,
+        "height": 900,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-blacklists-mobile-dark.png",
+        "sha256": "8313d0487fd06ecbf90dcc77f1f5ad8ff4a0363f0cdcf8396f15a637d0f02f73",
+        "bytes": 55971,
+        "width": 390,
+        "height": 844,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-blacklists-mobile-light.png",
+        "sha256": "39879c7561ee95131cf17e59026c9b3c9a090dec1ad26103ab7cef6a0ccb1c2f",
+        "bytes": 56268,
+        "width": 390,
+        "height": 844,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-dashboard-desktop-dark.png",
+        "sha256": "655c9266ff6f922c31743f537c47d85375c5d4552d2a5dddaa901f8114275d86",
+        "bytes": 68807,
+        "width": 1280,
+        "height": 900,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-dashboard-desktop-light.png",
+        "sha256": "86d75cc53780f2a9146221ca51d9f368a98f8f5feb8dde7084a9d10045ad9eef",
+        "bytes": 68737,
+        "width": 1280,
+        "height": 900,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-dashboard-mobile-dark.png",
+        "sha256": "713e4e43079c7728476cc7de9d33257172f30fe1e16cb757488e36959255ec4e",
+        "bytes": 36243,
+        "width": 390,
+        "height": 844,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-dashboard-mobile-light.png",
+        "sha256": "468502de70de5b621a475b09795c86d7dadb97be8d16a807ce967cec3a60ca31",
+        "bytes": 36184,
+        "width": 390,
+        "height": 844,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-dhcp-desktop-dark.png",
+        "sha256": "c882c2e6dcd4507f373f5061a8e764b2d7203cfd942bcab99f39b927c501355d",
+        "bytes": 66502,
+        "width": 1280,
+        "height": 900,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-dhcp-desktop-light.png",
+        "sha256": "794b841d14612c83ff48591a795c8c34340da81e3a1bc9f54902370256576d79",
+        "bytes": 66340,
+        "width": 1280,
+        "height": 900,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-dhcp-mobile-dark.png",
+        "sha256": "017f799337af412bb13e913afcc380072f5c09ced70f93fe0fe7351f430a012b",
+        "bytes": 36976,
+        "width": 390,
+        "height": 844,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-dhcp-mobile-light.png",
+        "sha256": "bd00189f30962ccd0855ebb4dceddadafbf8c5496002f6766cfd86e9096d3f9e",
+        "bytes": 36884,
+        "width": 390,
+        "height": 844,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-discovered-desktop-dark.png",
+        "sha256": "5f4c16be5aa4c8cc35665d458ed03bea781962517810854be060a8910b95be28",
+        "bytes": 38118,
+        "width": 1280,
+        "height": 900,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-discovered-desktop-light.png",
+        "sha256": "d97c166cf5581f84b4300df803de5e4703cf215c0a7213aecccfdd57d90855ed",
+        "bytes": 38339,
+        "width": 1280,
+        "height": 900,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-discovered-mobile-dark.png",
+        "sha256": "9b3215634cc241ee2bd76a34d10660d08f961583b6124d1be67244bd6f6c4177",
+        "bytes": 26292,
+        "width": 390,
+        "height": 844,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-discovered-mobile-light.png",
+        "sha256": "f6a9c3d309158d66b19f52dc14c63f54d90c63ccd1571558c3aba007b8002202",
+        "bytes": 26208,
+        "width": 390,
+        "height": 844,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-login-desktop-dark.png",
+        "sha256": "852570f11b84974f69b8701cdd9fd48782983fa4ded9c46747ae19415ac749a0",
+        "bytes": 14652,
+        "width": 1280,
+        "height": 900,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-login-desktop-light.png",
+        "sha256": "28ccbf2e360abcb8aa2f22d7b814f362d5dc23ec8c9b07d1d341c473a8bfa39d",
+        "bytes": 14837,
+        "width": 1280,
+        "height": 900,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-login-mobile-dark.png",
+        "sha256": "eb18df452965f9cbf21eddbc6103774cfbc516ec0894f33ee24dfd110f1ec471",
+        "bytes": 11801,
+        "width": 390,
+        "height": 844,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-login-mobile-light.png",
+        "sha256": "3813c7603cbc757bbbba1ced377cc6989166e5d804859d292798abb052f919f4",
+        "bytes": 11874,
+        "width": 390,
+        "height": 844,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-records-desktop-dark.png",
+        "sha256": "86e20c57ddbd83c42b6ff6d6fd1c81ffd0cfcd7a87a92726c6ad25baf563dd95",
+        "bytes": 60381,
+        "width": 1280,
+        "height": 900,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-records-desktop-light.png",
+        "sha256": "306d81c9848b4b9773816d52b9e8c513973937d3314948f90e047342453c24c4",
+        "bytes": 60334,
+        "width": 1280,
+        "height": 900,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-records-mobile-dark.png",
+        "sha256": "69144b28a459c36f1efde90155c369fdcb4750b84c9c5bb0dc726ce47669cc31",
+        "bytes": 36797,
+        "width": 390,
+        "height": 844,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-records-mobile-light.png",
+        "sha256": "a876759de1af54db615baafc8c3f7e98dc7bdfec12732de61aedda4d17949540",
+        "bytes": 36771,
+        "width": 390,
+        "height": 844,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-services-desktop-dark.png",
+        "sha256": "472b2d7988d77c701160c3b5c789acc216ac02630d8c8e7474fcfae200286f88",
+        "bytes": 79307,
+        "width": 1280,
+        "height": 900,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-services-desktop-light.png",
+        "sha256": "cae91e2300c46b90516541b5d3d10bd285fd15591b3949e3128454b8feec71fc",
+        "bytes": 79159,
+        "width": 1280,
+        "height": 900,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-services-mobile-dark.png",
+        "sha256": "d542da21ab8ae8f79fabe3405658396c5dcbddae9b560a2b658adc6ca1300d71",
+        "bytes": 38037,
+        "width": 390,
+        "height": 844,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-services-mobile-light.png",
+        "sha256": "2127cd0211130025209521882c86a64385b7c9c1b44c52ef407b26adf6c1786d",
+        "bytes": 38122,
+        "width": 390,
+        "height": 844,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-settings-desktop-dark.png",
+        "sha256": "34ea4e27673aa04011f7669e98cc40987ec6d992cea953bc1027492b986c2ff4",
+        "bytes": 66141,
+        "width": 1280,
+        "height": 900,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-settings-desktop-light.png",
+        "sha256": "b903652771c3e706cefca41f8448049e3537f16b92b3232502245022e7467131",
+        "bytes": 66172,
+        "width": 1280,
+        "height": 900,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-settings-mobile-dark.png",
+        "sha256": "ef39220b4990261ecf3f55a0bcc657bfacb6ab85614dd68ddff66d189b1a7708",
+        "bytes": 38139,
+        "width": 390,
+        "height": 844,
+        "matches_inventory": true
+      },
+      {
+        "file": "screenshots/kydns-04-after-settings-mobile-light.png",
+        "sha256": "816ed0da2af913756719fc83c656c81d3d948927df094f14fc84a2f058807ca2",
+        "bytes": 37705,
+        "width": 390,
+        "height": 844,
+        "matches_inventory": true
+      }
+    ],
+    "authority_files_sha256": {
+      "skills/ky-suite-ui/SKILL.md": "6010ea39ac6e4e21926eb2a45d8a5a4894cd9e5e6eec07aca4cf60423233dcc2",
+      "skills/ky-suite-ui/references/rubric.md": "ad3516620420fbdc30f5273f82b7c72c76e1365d1b6296fcaa56be3cbebf2c41",
+      "skills/ky-suite-ui/references/design-contract.md": "392afb88c51fb3cfad6c94d6b841804b194d107a0431c31f35ff81d3a7a444d3",
+      "src/tokens.css": "639f8e73259aca02119b98a5340539d5e8e16d65fd5f6124b939fdfe9c5f86af",
+      "src/navigation.css": "fbd0aea3e45fa818f916ad1bc35832f6ac26e37124208ffde029b809048b4380"
+    },
+    "metadata_sha256_before": {
+      "authority.json": "c43a491455e70a9708f692dddb078057e909db475df1d9170e9fcf3e372a91cd",
+      "inventory-v5.json": "b30d943c19504c90b0438889c72052922013c9b979b16a2a6e243b35dbd5dd8e",
+      "round5-results-check.json": "49a88f59d647812fb4ce4d014925947b96973f52a1f3016bf48207312292702f",
+      "round5-responses.json": "5f21ff6275fbfbadb1854afcf942a6b0e7de0a690893bbbdcae75931a4f4d0f7",
+      "round5-parent-check.json": "16a87cd994796a97df36a33d470eb482a149860205fc6fd720bc76a123222655",
+      "manifest-04-after.json": "045a95e1df464a2820ce5cb5978105bfc7cd7fd373e64c98eeab151f9b08e2dd"
+    },
+    "frozen_source_reads_sha256": {
+      "internal/web/static/charts.js": "7a6295c1cc51f7628e519a78f139b5df8a5151c6c6a87cbbb1d07ebaedf495d7",
+      "internal/web/dashboard.go": "53f0673b98f5401b528a2fa0e8d902ad065a185778ff1918f6bef912d14245ee",
+      "internal/web/stats.go": "66589327592f1714c1c827523b0f7df08d1916b5bf1a36632a301a7493682239",
+      "browser/dashboard.spec.mjs": "b54af9e3a2e9d4b2b19239c899bb0e89e97a5973813e09cffab655611ffa324a",
+      "internal/web/templates/blacklists.html": "40b4ad7a243f446edf5d4e8423086732397bb7e5b3f050f9e61e8af87d618860"
+    },
+    "arithmetic_mismatches": [],
+    "current_quality_dimension_comparisons": 216,
+    "current_brand_numeric_dimension_comparisons": 176,
+    "auth_shell_NA_pairs": 4,
+    "all_current_totals_recomputed": 72,
+    "all_current_brand_totals_recomputed": 72,
+    "after": {
+      "opus": {
+        "raw_json_sha256": "b29d3a3c22829f368adc3a26c41514b618f1122afa583a8e3c5b87c01a655ea0",
+        "raw_md_sha256": "2fdb5badd109ca3122dc4335cf96fc23c1e375dccf48cb711d22cff2a3a55673",
+        "files_array_sha256": "47ec3de1b92b9d1305f11eac4ba169cbfe4cf311618aecbf904b53e762bdbd0c",
+        "files_array_bytes": 91562
+      },
+      "sol": {
+        "raw_json_sha256": "7775d1f940b2a18edf9d2de7415eca68580781104dccb96eba597d293df4d5b1",
+        "raw_md_sha256": "44909901e558d85fa7dff020252db261ff4d104ef02404555e770226fff2ef92",
+        "files_array_sha256": "3c2f726cb5f483fdb998aa85c0431c3e9862e0208df72fe660a77e92218e1ca3",
+        "files_array_bytes": 107847
+      }
+    },
+    "metadata_sha256_after": {
+      "authority.json": "c43a491455e70a9708f692dddb078057e909db475df1d9170e9fcf3e372a91cd",
+      "inventory-v5.json": "b30d943c19504c90b0438889c72052922013c9b979b16a2a6e243b35dbd5dd8e",
+      "round5-results-check.json": "49a88f59d647812fb4ce4d014925947b96973f52a1f3016bf48207312292702f",
+      "round5-responses.json": "5f21ff6275fbfbadb1854afcf942a6b0e7de0a690893bbbdcae75931a4f4d0f7",
+      "round5-parent-check.json": "16a87cd994796a97df36a33d470eb482a149860205fc6fd720bc76a123222655",
+      "manifest-04-after.json": "045a95e1df464a2820ce5cb5978105bfc7cd7fd373e64c98eeab151f9b08e2dd"
+    },
+    "raw_pairs_and_full_arrays_unchanged_during_audit": true,
+    "sol_embedded_prior_array_freeze": {
+      "bytes": 107175,
+      "sha256": "4ace68999fce5c3e16085b59430fa2231dc5887fec2fcd45db9d773e0e744c88",
+      "reported": "4ace68999fce5c3e16085b59430fa2231dc5887fec2fcd45db9d773e0e744c88"
+    },
+    "all_current_duplicate_of_null": true,
+    "completed_at_utc": "2026-10-28T01:21:54.354Z",
+    "post_write_validation": {
+      "verified_at_utc": "2026-10-28T01:22:41.376788+00:00",
+      "four_raw_file_hashes_and_two_entire_array_freezes_unchanged": true,
+      "six_metadata_inputs_unchanged": true,
+      "exhaustive_392_numeric_spreads_and_four_NA_pairs_rechecked": true,
+      "twelve_individual_view_records_match_threshold_set": true,
+      "json_readback_valid": true,
+      "errors": []
+    }
+  },
+  "scope_and_limits": {
+    "worktree": "/home/yoshi/git/busnes.app/kydns-server/.claude/worktrees/dns-eight",
+    "sole_writable_file": "docs/ui-dns-eight/round5-disagreement-audit.json",
+    "static_evidence_audit_only": true,
+    "source_reads": "Only named frozen objects at f30749d via git show; no mutable product source read. Applicable AGENTS instructions read from the working tree as required.",
+    "current_originals_viewed": 12,
+    "extra_current_originals_viewed": 0,
+    "historical_images_viewed": 0,
+    "brand_images_viewed": 0,
+    "image_processing": "No montage, crop, resized substitute or broad additional image set. Hash/byte/IHDR reads of 36 current files are metadata verification, not additional visual opens.",
+    "checks_performed": "Read-only Python stdlib fraction/Decimal arithmetic, canonical JSON SHA-256, raw-file hashes, authority hashes and PNG header validation; frozen-source inspection only.",
+    "excluded_operations": [
+      "browser",
+      "server",
+      "build",
+      "product tests",
+      "install",
+      "signals",
+      "git mutations",
+      "delegates",
+      "product/source changes",
+      "rating changes",
+      "AGENTS edits",
+      "old-record/exporter edits or exporter execution",
+      "future implementation review"
+    ],
+    "untested_gates": [
+      "behavior",
+      "keyboard",
+      "focus",
+      "screen-reader behavior",
+      "computed all-theme contrast",
+      "complete states",
+      "responsive behavior beyond static captured views",
+      "security",
+      "integration",
+      "production"
+    ],
+    "gate_status": "untested: static pictures and frozen-source inspection do not pass these gates.",
+    "unscored": "Other current originals not visually reinspected; replication four combinations remain N/A; below-fold content, live forwarding, blacklist fetching, SSO/recovery/replication and unseen states not evaluated. KyDNS ordinary-user workflows remain N/A because it is administrator-only.",
+    "capture_conditions": "Supplied original batch: 1280x900 desktop / 390x844 phone, DPR1, en-US, America/New_York, OS light/dark, no saved theme, initial viewport, pointer 0,0, 500ms settling, synthetic local administrator fixture. No recapture performed.",
+    "prior_context": "Audit deliberately reads both terminal reviews and parent record after their immutable freezes; this is reconciliation, not a new blind review.",
+    "durable_contracts_changed": false
+  },
+  "dox_pass": {
+    "complete": true,
+    "contracts_read": [
+      "/home/yoshi/git/AGENTS.md",
+      "/home/yoshi/git/busnes.app/AGENTS.md",
+      "/home/yoshi/git/busnes.app/kydns-server/AGENTS.md",
+      "worktree AGENTS.md",
+      "docs/ui-dns-eight/AGENTS.md"
+    ],
+    "changed_paths": [
+      "docs/ui-dns-eight/round5-disagreement-audit.json"
+    ],
+    "docs_intentionally_unchanged": "This bounded audit adds an evidence record under the existing Council owner; it changes no product behavior, ownership, durable workflow, permissions, hierarchy or child index. Applicable contracts already cover frozen records and Opus-only progression. AGENTS edits are outside the explicitly authorized writable set."
+  }
+}

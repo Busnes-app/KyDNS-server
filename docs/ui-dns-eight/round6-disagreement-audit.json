@@ -1,0 +1,225 @@
+{
+  "round": 6,
+  "threshold": "absolute difference >=2 on quality or separate brand dimensions",
+  "reviewed_originals": [
+    "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+    "screenshots/kydns-06-after-blacklists-desktop-light.png",
+    "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+    "screenshots/kydns-06-after-blacklists-mobile-light.png",
+    "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+    "screenshots/kydns-06-after-dashboard-desktop-light.png",
+    "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+    "screenshots/kydns-06-after-dashboard-mobile-light.png",
+    "screenshots/kydns-06-after-discovered-desktop-dark.png",
+    "screenshots/kydns-06-after-discovered-desktop-light.png",
+    "screenshots/kydns-06-after-discovered-mobile-dark.png",
+    "screenshots/kydns-06-after-discovered-mobile-light.png"
+  ],
+  "viewing": "Parent opened each of the 12 original PNGs individually with view_image; no montage or new capture.",
+  "differences": [
+    {
+      "file": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "category": "quality",
+      "dimension": "coherence",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Two button vocabularies (outlined buttons vs underlined text actions) and two pill styles (mono \"built-in\", amber \"never loaded\").",
+      "sol_observation": "Flat sections, quiet links and outlined controls share one vocabulary.",
+      "resolution": "Re-opened all four originals individually. Underlined Add list and Refresh all lists are quieter than outlined state/row buttons. Built-in metadata and amber never-loaded warnings have distinct meanings, so different badge styles are not themselves incoherence. Phone inline label/value geometry differs from Services/Records as Opus states. Retain the visible geometry finding and both subjective scores; no additional polish batch after accepted progression."
+    },
+    {
+      "file": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "category": "quality",
+      "dimension": "coherence",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Two button vocabularies (outlined buttons vs underlined text actions) and two pill styles (mono \"built-in\", amber \"never loaded\").",
+      "sol_observation": "Flat sections, quiet links and outlined controls share one vocabulary.",
+      "resolution": "Re-opened all four originals individually. Underlined Add list and Refresh all lists are quieter than outlined state/row buttons. Built-in metadata and amber never-loaded warnings have distinct meanings, so different badge styles are not themselves incoherence. Phone inline label/value geometry differs from Services/Records as Opus states. Retain the visible geometry finding and both subjective scores; no additional polish batch after accepted progression."
+    },
+    {
+      "file": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "category": "quality",
+      "dimension": "coherence",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "List row uses inline label-value pairs unlike the labels-above rows on Services/Records; two pill styles and two action styles.",
+      "sol_observation": "The list uses flat dividers and the same control language as the shell.",
+      "resolution": "Re-opened all four originals individually. Underlined Add list and Refresh all lists are quieter than outlined state/row buttons. Built-in metadata and amber never-loaded warnings have distinct meanings, so different badge styles are not themselves incoherence. Phone inline label/value geometry differs from Services/Records as Opus states. Retain the visible geometry finding and both subjective scores; no additional polish batch after accepted progression."
+    },
+    {
+      "file": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "category": "quality",
+      "dimension": "coherence",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "List row uses inline label-value pairs unlike the labels-above rows on Services/Records; two pill styles and two action styles.",
+      "sol_observation": "The list uses flat dividers and the same control language as the shell.",
+      "resolution": "Re-opened all four originals individually. Underlined Add list and Refresh all lists are quieter than outlined state/row buttons. Built-in metadata and amber never-loaded warnings have distinct meanings, so different badge styles are not themselves incoherence. Phone inline label/value geometry differs from Services/Records as Opus states. Retain the visible geometry finding and both subjective scores; no additional polish batch after accepted progression."
+    },
+    {
+      "file": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "category": "brand",
+      "dimension": "palette_tokens",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Neutral surfaces match tokens; chart series teal/purple are off-palette hues (system data, not user data).",
+      "sol_observation": "Charcoal surfaces, pale ink and salmon-orange accents visually match the dark Busnes reference.",
+      "resolution": "Re-opened all four originals individually. Teal Local, orange Forwarded and purple Blocked series are visible, and orange also marks selection. Sol describes shell palette accurately but its accent observation undercounts the chart use. Preserve Opus's stricter brand-contract interpretation and Sol's data-series interpretation separately; brand does not enter quality progression. Do not recolor data after acceptance."
+    },
+    {
+      "file": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "category": "brand",
+      "dimension": "accent_discipline",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Orange also encodes the Forwarded chart series, beyond primary/selection/focus.",
+      "sol_observation": "Orange marks primary actions, selection or focus; status and chart data use separate semantics.",
+      "resolution": "Re-opened all four originals individually. Teal Local, orange Forwarded and purple Blocked series are visible, and orange also marks selection. Sol describes shell palette accurately but its accent observation undercounts the chart use. Preserve Opus's stricter brand-contract interpretation and Sol's data-series interpretation separately; brand does not enter quality progression. Do not recolor data after acceptance."
+    },
+    {
+      "file": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "category": "brand",
+      "dimension": "palette_tokens",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Neutral surfaces match tokens; chart series teal/purple are off-palette hues (system data, not user data).",
+      "sol_observation": "Cream surfaces, dark ink and burnt-orange accents visually match the light Busnes reference.",
+      "resolution": "Re-opened all four originals individually. Teal Local, orange Forwarded and purple Blocked series are visible, and orange also marks selection. Sol describes shell palette accurately but its accent observation undercounts the chart use. Preserve Opus's stricter brand-contract interpretation and Sol's data-series interpretation separately; brand does not enter quality progression. Do not recolor data after acceptance."
+    },
+    {
+      "file": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "category": "brand",
+      "dimension": "accent_discipline",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Orange also encodes the Forwarded chart series, beyond primary/selection/focus.",
+      "sol_observation": "Orange marks primary actions, selection or focus; status and chart data use separate semantics.",
+      "resolution": "Re-opened all four originals individually. Teal Local, orange Forwarded and purple Blocked series are visible, and orange also marks selection. Sol describes shell palette accurately but its accent observation undercounts the chart use. Preserve Opus's stricter brand-contract interpretation and Sol's data-series interpretation separately; brand does not enter quality progression. Do not recolor data after acceptance."
+    },
+    {
+      "file": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "category": "brand",
+      "dimension": "palette_tokens",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Neutral surfaces match tokens; chart series teal/purple are off-palette hues (system data, not user data).",
+      "sol_observation": "Charcoal surfaces, pale ink and salmon-orange accents visually match the dark Busnes reference.",
+      "resolution": "Re-opened all four originals individually. Teal Local, orange Forwarded and purple Blocked series are visible, and orange also marks selection. Sol describes shell palette accurately but its accent observation undercounts the chart use. Preserve Opus's stricter brand-contract interpretation and Sol's data-series interpretation separately; brand does not enter quality progression. Do not recolor data after acceptance."
+    },
+    {
+      "file": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "category": "brand",
+      "dimension": "accent_discipline",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Orange also encodes the Forwarded chart series, beyond primary/selection/focus.",
+      "sol_observation": "Orange marks primary actions, selection or focus; status and chart data use separate semantics.",
+      "resolution": "Re-opened all four originals individually. Teal Local, orange Forwarded and purple Blocked series are visible, and orange also marks selection. Sol describes shell palette accurately but its accent observation undercounts the chart use. Preserve Opus's stricter brand-contract interpretation and Sol's data-series interpretation separately; brand does not enter quality progression. Do not recolor data after acceptance."
+    },
+    {
+      "file": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "category": "brand",
+      "dimension": "palette_tokens",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Neutral surfaces match tokens; chart series teal/purple are off-palette hues (system data, not user data).",
+      "sol_observation": "Cream surfaces, dark ink and burnt-orange accents visually match the light Busnes reference.",
+      "resolution": "Re-opened all four originals individually. Teal Local, orange Forwarded and purple Blocked series are visible, and orange also marks selection. Sol describes shell palette accurately but its accent observation undercounts the chart use. Preserve Opus's stricter brand-contract interpretation and Sol's data-series interpretation separately; brand does not enter quality progression. Do not recolor data after acceptance."
+    },
+    {
+      "file": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "category": "brand",
+      "dimension": "accent_discipline",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Orange also encodes the Forwarded chart series, beyond primary/selection/focus.",
+      "sol_observation": "Orange marks primary actions, selection or focus; status and chart data use separate semantics.",
+      "resolution": "Re-opened all four originals individually. Teal Local, orange Forwarded and purple Blocked series are visible, and orange also marks selection. Sol describes shell palette accurately but its accent observation undercounts the chart use. Preserve Opus's stricter brand-contract interpretation and Sol's data-series interpretation separately; brand does not enter quality progression. Do not recolor data after acceptance."
+    },
+    {
+      "file": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "category": "quality",
+      "dimension": "hierarchy",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Title plus one sentence; the only next action is the inline \"Settings\" link inside prose; the page does not say what will appear here.",
+      "sol_observation": "Discovered has one short explanation and a direct Settings next step.",
+      "resolution": "Re-opened all four originals individually. The page explicitly says DHCP lease discovery is off and names dhcp_lease_file under Settings / Server settings. Settings is an underlined orange link; there is no filled button or description of future discovered rows. Opus correctly notes missing fuller guidance; Sol correctly notes a clear next step. Button weight alone does not prove a broken affordance. Preserve both scores without averaging or inventing behavior evidence."
+    },
+    {
+      "file": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "category": "quality",
+      "dimension": "visible_affordances",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Next step is a text link only; no button-weight action for the empty state.",
+      "sol_observation": "The underlined Settings link supplies an explicit route out of the disabled-discovery state.",
+      "resolution": "Re-opened all four originals individually. The page explicitly says DHCP lease discovery is off and names dhcp_lease_file under Settings / Server settings. Settings is an underlined orange link; there is no filled button or description of future discovered rows. Opus correctly notes missing fuller guidance; Sol correctly notes a clear next step. Button weight alone does not prove a broken affordance. Preserve both scores without averaging or inventing behavior evidence."
+    },
+    {
+      "file": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "category": "quality",
+      "dimension": "hierarchy",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Title plus one sentence; the only next action is the inline \"Settings\" link inside prose; the page does not say what will appear here.",
+      "sol_observation": "Discovered has one short explanation and a direct Settings next step.",
+      "resolution": "Re-opened all four originals individually. The page explicitly says DHCP lease discovery is off and names dhcp_lease_file under Settings / Server settings. Settings is an underlined orange link; there is no filled button or description of future discovered rows. Opus correctly notes missing fuller guidance; Sol correctly notes a clear next step. Button weight alone does not prove a broken affordance. Preserve both scores without averaging or inventing behavior evidence."
+    },
+    {
+      "file": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "category": "quality",
+      "dimension": "visible_affordances",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Next step is a text link only; no button-weight action for the empty state.",
+      "sol_observation": "The underlined Settings link supplies an explicit route out of the disabled-discovery state.",
+      "resolution": "Re-opened all four originals individually. The page explicitly says DHCP lease discovery is off and names dhcp_lease_file under Settings / Server settings. Settings is an underlined orange link; there is no filled button or description of future discovered rows. Opus correctly notes missing fuller guidance; Sol correctly notes a clear next step. Button weight alone does not prove a broken affordance. Preserve both scores without averaging or inventing behavior evidence."
+    },
+    {
+      "file": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "category": "quality",
+      "dimension": "hierarchy",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Title plus one sentence; the only next action is the inline \"Settings\" link inside prose; the page does not say what will appear here.",
+      "sol_observation": "Discovered and the explanatory next step remain the only task hierarchy.",
+      "resolution": "Re-opened all four originals individually. The page explicitly says DHCP lease discovery is off and names dhcp_lease_file under Settings / Server settings. Settings is an underlined orange link; there is no filled button or description of future discovered rows. Opus correctly notes missing fuller guidance; Sol correctly notes a clear next step. Button weight alone does not prove a broken affordance. Preserve both scores without averaging or inventing behavior evidence."
+    },
+    {
+      "file": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "category": "quality",
+      "dimension": "visible_affordances",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Next step is a text link only; no button-weight action for the empty state.",
+      "sol_observation": "Settings is visibly underlined, and the text says discovery is off.",
+      "resolution": "Re-opened all four originals individually. The page explicitly says DHCP lease discovery is off and names dhcp_lease_file under Settings / Server settings. Settings is an underlined orange link; there is no filled button or description of future discovered rows. Opus correctly notes missing fuller guidance; Sol correctly notes a clear next step. Button weight alone does not prove a broken affordance. Preserve both scores without averaging or inventing behavior evidence."
+    },
+    {
+      "file": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "category": "quality",
+      "dimension": "hierarchy",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Title plus one sentence; the only next action is the inline \"Settings\" link inside prose; the page does not say what will appear here.",
+      "sol_observation": "Discovered and the explanatory next step remain the only task hierarchy.",
+      "resolution": "Re-opened all four originals individually. The page explicitly says DHCP lease discovery is off and names dhcp_lease_file under Settings / Server settings. Settings is an underlined orange link; there is no filled button or description of future discovered rows. Opus correctly notes missing fuller guidance; Sol correctly notes a clear next step. Button weight alone does not prove a broken affordance. Preserve both scores without averaging or inventing behavior evidence."
+    },
+    {
+      "file": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "category": "quality",
+      "dimension": "visible_affordances",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Next step is a text link only; no button-weight action for the empty state.",
+      "sol_observation": "Settings is visibly underlined, and the text says discovery is off.",
+      "resolution": "Re-opened all four originals individually. The page explicitly says DHCP lease discovery is off and names dhcp_lease_file under Settings / Server settings. Settings is an underlined orange link; there is no filled button or description of future discovered rows. Opus correctly notes missing fuller guidance; Sol correctly notes a clear next step. Button weight alone does not prove a broken affordance. Preserve both scores without averaging or inventing behavior evidence."
+    }
+  ],
+  "raw_scores_changed": false,
+  "progression": "accepted under current-round Opus 241/30 -> 8.0; no extra batch",
+  "behavior_gates": "Not passed by this static audit",
+  "dox_pass": "Evidence-only update; existing ownership/contracts remain accurate; AGENTS unchanged."
+}

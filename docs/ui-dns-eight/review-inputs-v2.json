@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "product": "KyDNS",
+  "quality_set": 36,
+  "quality_unscored_brand_references": 4,
+  "capture_conditions": {
+    "viewports": [
+      [
+        1280,
+        900
+      ],
+      [
+        390,
+        844
+      ]
+    ],
+    "dpr": 1,
+    "schemes": [
+      "light",
+      "dark"
+    ],
+    "locale": "en-US",
+    "timezone": "America/New_York",
+    "full_page": false,
+    "service_workers": "allow",
+    "saved_kydns_theme": null,
+    "settling_ms": 500,
+    "pointer": [
+      0,
+      0
+    ]
+  },
+  "capture_scope": "Initial viewport of nine surfaces, two sizes and two OS themes. Signed-out login and real local-recovery-administrator session. Administrator-only product.",
+  "missing_unscored": [
+    {
+      "surface": "replication",
+      "reason": "Standalone fixture hides navigation link and redirects /replication with303 to Dashboard. Four combinations N/A, excluded from counts and means."
+    },
+    "Below-fold settings API tokens, SSO, backup/recovery, upstream and configuration sections.",
+    "Real replication, live SSO/recovery and external forwarding.",
+    "Full behavior, keyboard, all-theme contrast and accessibility gates."
+  ],
+  "behavior_gates": "Untested as complete gates. Score only pixels; do not turn static quality into behavior, integration or production acceptance.",
+  "round": 2,
+  "product_source": "bc75c308e828371e415201b9301d3df753eea88f",
+  "capture_frozen_head": "bc75c308e828371e415201b9301d3df753eea88f",
+  "product_source_changes": true,
+  "changed_product_files": [
+    "internal/web/static/app.css",
+    "internal/web/templates/base.html",
+    "internal/web/templates/layout.html",
+    "internal/web/templates/services.html",
+    "internal/web/templates/records.html",
+    "internal/web/templates/blacklists.html",
+    "internal/web/templates/settings.html",
+    "internal/web/templates/discovered.html",
+    "internal/web/templates/dashboard.html"
+  ],
+  "authority": "authority.json",
+  "inventory": "inventory-v2.json",
+  "artifacts": "artifacts-v2.json",
+  "duplicates": "near-duplicate-audit-v2.json",
+  "brands": "brand-references.json",
+  "runtime": {
+    "playwright": "1.64.1",
+    "browser": "156.0.8078.4",
+    "headless": true
+  },
+  "fixture_facts": [
+    "Three services and three manual A records; no view restrictions.",
+    "Discovered legitimately empty: DHCP lease discovery off. DHCP disabled.",
+    "Built-in list disabled, zero entries and honest never-loaded/error state; owned proxy refused outbound fetch.",
+    "Exactly24 actual local DNS questions:18 authoritative successes and6 policy NXDOMAIN.",
+    "No mocks, auth injection or credential snapshots. No further DNS queries during capture. Real uptime/chart-minute positions drift.",
+    "Server rebuilt on same persisted private fixture; runtime counters reset and exactly24same local queries reissued. Uptime,latency,minute positions drift naturally."
+  ],
+  "blind_input_allowlist": [
+    "/home/yoshi/git/busnes.app/AGENTS.md",
+    "AGENTS.md",
+    "docs/ui-dns-eight/AGENTS.md",
+    "authority.json",
+    "authority/**",
+    "inventory-v2.json",
+    "artifacts-v2.json",
+    "near-duplicate-audit-v2.json",
+    "review-inputs-v2.json",
+    "brand-references.json",
+    "brand-references/*.png",
+    "screenshots/kydns-01-after-*.png"
+  ],
+  "blind_input_rule": "Read/view only this allowlist until ENTIRE current files array vectors,observations and separate brand judgments are frozen on disk and SHA256recorded. Hash historical artifacts but do not decode/view. Current totals/rankings may then be computed. Afterwards read ONLY your own round1 pair, mapped baseline images and round2-responses.json to explain implemented deltas. Peer/current-other reports,parent audits,exports,galleries,old fleet scores and source/capture-provenance bodies remain outside blind inputs.",
+  "post_freeze_response_record": "round2-responses.json"
+}

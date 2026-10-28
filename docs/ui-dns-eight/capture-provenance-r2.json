@@ -1,0 +1,381 @@
+{
+  "driver": {
+    "file": "capture-round2.mjs",
+    "sha256": "4ab2b2a602039cfcfe275484e44df197e82e79c9d0d9d907da50588693c79988"
+  },
+  "runtime": {
+    "node": "v24.22.0",
+    "os": "Linux",
+    "release": "7.2.10-1-cachyos",
+    "platform": "linux",
+    "arch": "x64",
+    "playwright_module": "/home/yoshi/git/busnes.app/KyDrive-server/.claude/worktrees/drive-eight/web/node_modules/@playwright/test/index.mjs",
+    "playwright": "1.64.1",
+    "browser": "156.0.8078.4",
+    "chromium_executable": "/home/yoshi/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+    "chromium_sha256": "377a9fc07b495c3b8d0ab8ec1fdfd153641759f9756fea34d8dfce4de82f5025",
+    "package_json_sha256": "8a1442670473c614959ef40861670d169d1fb29240d21e3c739fc80a4f5b7400",
+    "package_lock_sha256": "d535ae94755b431e17ce0916fb3c1726ed28ffd49a7cd5dcb274e8f834d140be",
+    "headless": true
+  },
+  "auth": "Real browser form password login in each fresh scheme/viewport context; no storageState, cookies, storage/auth injection or security bypass.",
+  "interception": false,
+  "dom_style_content_mutation": false,
+  "native_closed_before_formal": true,
+  "native_probe": {
+    "closed_at": "2026-10-27T23:11:30.262Z",
+    "tool": "T3 native Computer Use",
+    "profile": "Incognito",
+    "auth": "Real native password form; no auth/storage injection; checked zero nonempty password/setup fields before every snapshot.",
+    "notes": [
+      "Initial unsupported locator #password (locator field) was rejected; accidental empty submit401. Corrected using selector field; real login succeeded. No secret snapshot.",
+      "Anchor probes initially sampled smooth scrolling too early; waited700ms and measured actual targets; headings adjacent to existing forms.",
+      "Summary focused, Enter opened; Tab reached proxy text input. No fixture edits/submissions.",
+      "Canonical formal views use default closed disclosures."
+    ],
+    "probes": [
+      {
+        "path": "/services",
+        "dpr": 2,
+        "theme": "busnes-light",
+        "saved": null,
+        "nav": [
+          {
+            "x": 0,
+            "y": 0,
+            "width": 240,
+            "height": 900
+          }
+        ],
+        "headers": [
+          {
+            "text": "Add service",
+            "href": "#add-service"
+          }
+        ],
+        "links": [
+          {
+            "text": "Add service",
+            "href": "#add-service"
+          }
+        ],
+        "details": [
+          {
+            "open": false,
+            "label": "Direct"
+          },
+          {
+            "open": false,
+            "label": "Direct"
+          },
+          {
+            "open": false,
+            "label": "Direct"
+          }
+        ],
+        "nonempty": 0
+      },
+      {
+        "path": "/discovered",
+        "theme": "busnes-dark",
+        "navHeight": 113,
+        "overflow": 0,
+        "nonempty": 0
+      },
+      {
+        "path": "/services",
+        "hash": "#add-service",
+        "scrollY": 1,
+        "targetY": 771.90625,
+        "formPresent": false
+      },
+      {
+        "path": "/records",
+        "hash": "#add-record",
+        "scrollY": 0,
+        "targetY": 631.4140625,
+        "formPresent": false
+      },
+      {
+        "path": "/blacklists",
+        "hash": "#add-list",
+        "scrollY": 1,
+        "targetY": 924.375,
+        "formPresent": false
+      },
+      {
+        "path": "/services",
+        "open": true,
+        "focused": "SUMMARY",
+        "controls": [
+          {
+            "tag": "INPUT",
+            "type": "hidden",
+            "label": "",
+            "x": 0,
+            "right": 0
+          },
+          {
+            "tag": "INPUT",
+            "type": "hidden",
+            "label": "",
+            "x": 0,
+            "right": 0
+          },
+          {
+            "tag": "INPUT",
+            "type": "text",
+            "label": "",
+            "x": 16,
+            "right": 208.390625
+          },
+          {
+            "tag": "INPUT",
+            "type": "checkbox",
+            "label": " Route",
+            "x": 220.390625,
+            "right": 236.390625
+          },
+          {
+            "tag": "BUTTON",
+            "type": "submit",
+            "label": "Save",
+            "x": 290.484375,
+            "right": 355.984375
+          }
+        ]
+      },
+      {
+        "path": "/settings",
+        "theme": "busnes-dark",
+        "nav": {
+          "x": 0,
+          "right": 390,
+          "width": 390,
+          "scrollWidth": 390,
+          "clientWidth": 390
+        },
+        "groups": [
+          {
+            "x": 16,
+            "right": 374,
+            "width": 358,
+            "scrollWidth": 358,
+            "clientWidth": 358
+          },
+          {
+            "x": 16,
+            "right": 374,
+            "width": 358,
+            "scrollWidth": 358,
+            "clientWidth": 358
+          },
+          {
+            "x": 16,
+            "right": 374,
+            "width": 358,
+            "scrollWidth": 358,
+            "clientWidth": 358
+          },
+          {
+            "x": 16,
+            "right": 374,
+            "width": 358,
+            "scrollWidth": 358,
+            "clientWidth": 358
+          },
+          {
+            "x": 16,
+            "right": 374,
+            "width": 358,
+            "scrollWidth": 358,
+            "clientWidth": 358
+          },
+          {
+            "x": 16,
+            "right": 374,
+            "width": 358,
+            "scrollWidth": 358,
+            "clientWidth": 358
+          },
+          {
+            "x": 16,
+            "right": 374,
+            "width": 358,
+            "scrollWidth": 358,
+            "clientWidth": 358
+          },
+          {
+            "x": 16,
+            "right": 374,
+            "width": 358,
+            "scrollWidth": 358,
+            "clientWidth": 358
+          }
+        ],
+        "save": [],
+        "nonempty": 0
+      },
+      {
+        "settings_save": [
+          {
+            "label": "Save settings",
+            "form": "server-settings-form",
+            "method": "post",
+            "action": "/settings/server",
+            "explicitForm": "server-settings-form"
+          }
+        ]
+      },
+      {
+        "path": "/services",
+        "hash": "#add-service",
+        "scrollY": 773,
+        "targetY": -0.09375,
+        "targetTag": "H3",
+        "nextTag": "FORM",
+        "nextAction": "/services/new",
+        "forms": [
+          "/services/new"
+        ]
+      },
+      {
+        "path": "/records",
+        "hash": "#add-record",
+        "scrollY": 350,
+        "targetY": 281.4140625,
+        "targetTag": "H3",
+        "nextTag": "FORM",
+        "nextAction": "/records/new",
+        "forms": [
+          "/records/new"
+        ]
+      },
+      {
+        "path": "/blacklists",
+        "hash": "#add-list",
+        "scrollY": 925.5,
+        "targetY": -0.125,
+        "targetTag": "H3",
+        "nextTag": "P",
+        "nextAction": null,
+        "forms": [
+          "/blacklists/lists/new"
+        ]
+      }
+    ]
+  },
+  "served_assets": [
+    {
+      "path": "/static/app-icon.png",
+      "file": "internal/web/static/app-icon.png",
+      "sha256": "56ce0926e6b9878745645498b2dd2317f869b6982b12cbaf9e285459fac93974",
+      "bytes": 56132,
+      "matches_frozen_worktree": true
+    },
+    {
+      "path": "/static/app.css",
+      "file": "internal/web/static/app.css",
+      "sha256": "ad7ce5990da9c3e8a2748a5e5b9f62501b1e4e7268f5fed970067978e187560b",
+      "bytes": 25035,
+      "matches_frozen_worktree": true
+    },
+    {
+      "path": "/static/charts.js",
+      "file": "internal/web/static/charts.js",
+      "sha256": "7a6295c1cc51f7628e519a78f139b5df8a5151c6c6a87cbbb1d07ebaedf495d7",
+      "bytes": 8641,
+      "matches_frozen_worktree": true
+    },
+    {
+      "path": "/static/fonts/IBM_Plex_Mono/IBMPlexMono-Regular.ttf",
+      "file": "internal/web/static/fonts/IBM_Plex_Mono/IBMPlexMono-Regular.ttf",
+      "sha256": "ab08018ccd276b79fb2c636bb95b9c543598f9d50505fe92506fcb4dae7810cd",
+      "bytes": 133796,
+      "matches_frozen_worktree": true
+    },
+    {
+      "path": "/static/fonts/IBM_Plex_Mono/IBMPlexMono-SemiBold.ttf",
+      "file": "internal/web/static/fonts/IBM_Plex_Mono/IBMPlexMono-SemiBold.ttf",
+      "sha256": "b1a936f96266fbe036b112f659155f7c32222af44a9a20f3bb011f51050669d5",
+      "bytes": 138448,
+      "matches_frozen_worktree": true
+    },
+    {
+      "path": "/static/fonts/Space_Grotesk/SpaceGrotesk-VariableFont_wght.ttf",
+      "file": "internal/web/static/fonts/Space_Grotesk/SpaceGrotesk-VariableFont_wght.ttf",
+      "sha256": "697a7905c71f7c61d071648bc73449541796af865b51c86a672795f3b452b142",
+      "bytes": 134112,
+      "matches_frozen_worktree": true
+    },
+    {
+      "path": "/static/ky-ui/appearance-themes.css",
+      "file": "internal/web/static/ky-ui/appearance-themes.css",
+      "sha256": "6897cfea5a6e3c72e358c00f2ecd6f46f308ee33dc3b6cada023df99eab899ca",
+      "bytes": 3466,
+      "matches_frozen_worktree": true
+    },
+    {
+      "path": "/static/ky-ui/appearance.css",
+      "file": "internal/web/static/ky-ui/appearance.css",
+      "sha256": "f689ae75f13319f1cf2ddf60903df07165fac2ceaf81db21d735bc0eb411ccba",
+      "bytes": 3247,
+      "matches_frozen_worktree": true
+    },
+    {
+      "path": "/static/ky-ui/navigation.css",
+      "file": "internal/web/static/ky-ui/navigation.css",
+      "sha256": "cc6dbaa07a01f4ed088d38d41ff6cf95155a480bcb29327f413cbfa1ec11ac55",
+      "bytes": 1338,
+      "matches_frozen_worktree": true
+    },
+    {
+      "path": "/static/ky-ui/themes-browser.js",
+      "file": "internal/web/static/ky-ui/themes-browser.js",
+      "sha256": "369588a4e3e81214db225fc87f1f653ec8677fb72fb3b1a4426bc3ba75361473",
+      "bytes": 7177,
+      "matches_frozen_worktree": true
+    },
+    {
+      "path": "/static/ky-ui/tokens.css",
+      "file": "internal/web/static/ky-ui/tokens.css",
+      "sha256": "639f8e73259aca02119b98a5340539d5e8e16d65fd5f6124b939fdfe9c5f86af",
+      "bytes": 3575,
+      "matches_frozen_worktree": true
+    },
+    {
+      "path": "/static/live.js",
+      "file": "internal/web/static/live.js",
+      "sha256": "acd9b013d5f6789a16964a009b8c60fc5b1b796377bcfc664fd8fad5a7e4b8a9",
+      "bytes": 2127,
+      "matches_frozen_worktree": true
+    },
+    {
+      "path": "/static/nav.js",
+      "file": "internal/web/static/nav.js",
+      "sha256": "4520edccc1ce1ba0d0f545ef610de534add4e21a58b8bede246646c5e2218390",
+      "bytes": 592,
+      "matches_frozen_worktree": true
+    },
+    {
+      "path": "/static/styles.css",
+      "file": "internal/web/static/styles.css",
+      "sha256": "ebd5997f2e41a9602c7e65f42884b2fec279e96eee73427da96237d2c55e29ea",
+      "bytes": 16733,
+      "matches_frozen_worktree": true
+    },
+    {
+      "path": "/static/theme.js",
+      "file": "internal/web/static/theme.js",
+      "sha256": "6ca77a97b837f4af2daed3f6d9c8d6ff0614642febceea6412e882a9846d63ee",
+      "bytes": 3006,
+      "matches_frozen_worktree": true
+    }
+  ],
+  "vcs_status_at_capture": "?? docs/ui-dns-eight/COUNCIL.md\n?? docs/ui-dns-eight/KyDNS-Council.xlsx\n?? docs/ui-dns-eight/build-report.py\n?? docs/ui-dns-eight/capture-round2.mjs\n?? docs/ui-dns-eight/manifest-01-after.json\n?? docs/ui-dns-eight/ratings.csv\n?? docs/ui-dns-eight/screenshots/kydns-01-after-appearance-desktop-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-appearance-desktop-light.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-appearance-mobile-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-appearance-mobile-light.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-blacklists-desktop-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-blacklists-desktop-light.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-blacklists-mobile-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-blacklists-mobile-light.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-dashboard-desktop-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-dashboard-desktop-light.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-dashboard-mobile-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-dashboard-mobile-light.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-dhcp-desktop-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-dhcp-desktop-light.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-dhcp-mobile-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-dhcp-mobile-light.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-discovered-desktop-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-discovered-desktop-light.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-discovered-mobile-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-discovered-mobile-light.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-login-desktop-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-login-desktop-light.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-login-mobile-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-login-mobile-light.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-records-desktop-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-records-desktop-light.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-records-mobile-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-records-mobile-light.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-services-desktop-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-services-desktop-light.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-services-mobile-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-services-mobile-light.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-settings-desktop-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-settings-desktop-light.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-settings-mobile-dark.png\n?? docs/ui-dns-eight/screenshots/kydns-01-after-settings-mobile-light.png",
+  "caveats": [
+    "Actual build info and dirty state are preserved in source-provenance-r2.json; untracked reporting evidence is not a product-source edit.",
+    "The native inspection ran at DPR2 and is separate from these DPR1 originals.",
+    "Browser controls/forms retain shipped defaults, focus and overflow. No image correction or confirmation run."
+  ]
+}

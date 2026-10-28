@@ -1,0 +1,121 @@
+{
+  "round": 5,
+  "source": "f30749d8b043afa993cd4e7d3d1b86e6ab6c8331",
+  "reports": {
+    "opus": {
+      "exact": "71/9",
+      "decimal": "7.888888888888888888888888889",
+      "rounded": "7.9",
+      "independent_satisfaction": false,
+      "separate_brand_exact": "241/30",
+      "files_freeze_sha256": "47ec3de1b92b9d1305f11eac4ba169cbfe4cf311618aecbf904b53e762bdbd0c",
+      "parent_arithmetic_and_freeze_verified": true,
+      "raw_json_sha256": "b29d3a3c22829f368adc3a26c41514b618f1122afa583a8e3c5b87c01a655ea0",
+      "raw_md_sha256": "2fdb5badd109ca3122dc4335cf96fc23c1e375dccf48cb711d22cff2a3a55673"
+    },
+    "sol": {
+      "exact": "257/30",
+      "decimal": "8.566666666666666666666666667",
+      "rounded": "8.6",
+      "independent_satisfaction": true,
+      "separate_brand_exact": "389/45",
+      "files_freeze_sha256": "3c2f726cb5f483fdb998aa85c0431c3e9862e0208df72fe660a77e92218e1ca3",
+      "parent_arithmetic_and_freeze_verified": true,
+      "raw_json_sha256": "7775d1f940b2a18edf9d2de7415eca68580781104dccb96eba597d293df4d5b1",
+      "raw_md_sha256": "44909901e558d85fa7dff020252db261ff4d104ef02404555e770226fff2ef92"
+    }
+  },
+  "progression": "Opus71/9=7.8889 rounds7.9; below8.0",
+  "cohort_qualification": "Sol classifies DHCP as settings this round (12settings/20admin); Opus retains8settings/24admin. Preserve raw cohort assignments; compare canonical surface means, and do not pool cohorts or alter overall progression.",
+  "threshold_spreads": [
+    {
+      "file": "screenshots/kydns-04-after-dashboard-desktop-dark.png",
+      "quality": [],
+      "brand": [
+        "accent_discipline",
+        "palette_tokens"
+      ]
+    },
+    {
+      "file": "screenshots/kydns-04-after-dashboard-desktop-light.png",
+      "quality": [],
+      "brand": [
+        "accent_discipline",
+        "palette_tokens"
+      ]
+    },
+    {
+      "file": "screenshots/kydns-04-after-dashboard-mobile-dark.png",
+      "quality": [],
+      "brand": [
+        "accent_discipline",
+        "palette_tokens"
+      ]
+    },
+    {
+      "file": "screenshots/kydns-04-after-dashboard-mobile-light.png",
+      "quality": [],
+      "brand": [
+        "accent_discipline",
+        "palette_tokens"
+      ]
+    },
+    {
+      "file": "screenshots/kydns-04-after-discovered-desktop-dark.png",
+      "quality": [],
+      "brand": [
+        "accent_discipline"
+      ]
+    },
+    {
+      "file": "screenshots/kydns-04-after-discovered-desktop-light.png",
+      "quality": [],
+      "brand": [
+        "accent_discipline"
+      ]
+    },
+    {
+      "file": "screenshots/kydns-04-after-discovered-mobile-dark.png",
+      "quality": [],
+      "brand": [
+        "accent_discipline"
+      ]
+    },
+    {
+      "file": "screenshots/kydns-04-after-discovered-mobile-light.png",
+      "quality": [],
+      "brand": [
+        "accent_discipline"
+      ]
+    },
+    {
+      "file": "screenshots/kydns-04-after-records-desktop-dark.png",
+      "quality": [
+        "color"
+      ],
+      "brand": []
+    },
+    {
+      "file": "screenshots/kydns-04-after-records-mobile-dark.png",
+      "quality": [
+        "color"
+      ],
+      "brand": []
+    },
+    {
+      "file": "screenshots/kydns-04-after-services-desktop-dark.png",
+      "quality": [
+        "color"
+      ],
+      "brand": []
+    },
+    {
+      "file": "screenshots/kydns-04-after-services-mobile-dark.png",
+      "quality": [
+        "color"
+      ],
+      "brand": []
+    }
+  ],
+  "audit": "Pending bounded static reinspection; raw scores immutable."
+}
