@@ -1,0 +1,4010 @@
+{
+  "schema": "ky-ui-council-disagreement-audit/1",
+  "product": "KyDNS",
+  "round": 4,
+  "kind": "terminal_raw_review_audit_not_a_scored_round",
+  "auditor": {
+    "model": "gpt-6.1-sol",
+    "role": "assigned review sub-agent"
+  },
+  "scope": {
+    "authorized_write": "docs/ui-dns-eight/round4-disagreement-audit.json",
+    "product_source": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+    "read_only_inputs": "Published terminal round4 originals/raw pairs, authority, inputs, responses, current inventory/duplicate data, applicable AGENTS chain, and five frozen product source files read only with git show.",
+    "excluded": "No mutable current product source read. No browser, build, tests, install, server, signals, delegates, git mutations, raw-review rewrites, new ratings, predictions, report exporter or unrelated image views.",
+    "image_budget": {
+      "required_originals": 14,
+      "opened_originals": 14,
+      "opens_each": 1,
+      "detail": "original",
+      "collages": 0,
+      "crops": 0,
+      "additional_original_views": 0
+    },
+    "skill_application": "Council and pinned Ky suite evidence/rubric; minimal product-local scope; change brief. The explicit task limits override delegate, rescore, runtime, export and generic UI context-tool workflows."
+  },
+  "authority": {
+    "manifest": "authority.json",
+    "rubric": "ky-suite-v2",
+    "commit": "639e5882cada099dd189197beb2a3e3b4c188658",
+    "five_pinned_hashes_match": {
+      "skills/ky-suite-ui/SKILL.md": true,
+      "skills/ky-suite-ui/references/rubric.md": true,
+      "skills/ky-suite-ui/references/design-contract.md": true,
+      "src/tokens.css": true,
+      "src/navigation.css": true
+    },
+    "brief": "Uniform Busnes cream/charcoal/orange suite, one navigation region, shared Appearance; preserve DNS/admin behavior, factual content, native actions, roles and security.",
+    "progression_rule": "Only Opus current-round overall mean of per-file rubric-rounded quality totals, half-up to one decimal, >=8.0. Peer/history/brand are never pooled; no individual screen/cohort veto. Owner rejection reopens progression.",
+    "distinction": "The older pinned full 9/10 Accept contract remains a longer-term target; the owner's current 8.0 progression rule is authoritative for this checkpoint."
+  },
+  "preserved_inputs": {
+    "raw_pairs": {
+      "opus-round4.json": {
+        "sha256_before": "2a4e390800d6bcc40ea58750740f954bbf7eece35b5e3e7b66938a4e763960aa",
+        "sha256_after": "2a4e390800d6bcc40ea58750740f954bbf7eece35b5e3e7b66938a4e763960aa",
+        "unchanged": true
+      },
+      "opus-round4.md": {
+        "sha256_before": "bab5c07dc20da5da3adab12c04c781797b0863f41a2734a21464f4af1ffc0a93",
+        "sha256_after": "bab5c07dc20da5da3adab12c04c781797b0863f41a2734a21464f4af1ffc0a93",
+        "unchanged": true
+      },
+      "sol-round4.json": {
+        "sha256_before": "c6e055b09a3f4aea2a038e63eaf8dfd524c530a5bc66c1934dacc010101bee4f",
+        "sha256_after": "c6e055b09a3f4aea2a038e63eaf8dfd524c530a5bc66c1934dacc010101bee4f",
+        "unchanged": true
+      },
+      "sol-round4.md": {
+        "sha256_before": "26145990ac1767451332b4fe6a95aff0786e3be570df2ec75b3a07ba031f3b53",
+        "sha256_after": "26145990ac1767451332b4fe6a95aff0786e3be570df2ec75b3a07ba031f3b53",
+        "unchanged": true
+      }
+    },
+    "input_manifests": {
+      "authority.json": {
+        "sha256_before": "c43a491455e70a9708f692dddb078057e909db475df1d9170e9fcf3e372a91cd",
+        "sha256_after": "c43a491455e70a9708f692dddb078057e909db475df1d9170e9fcf3e372a91cd",
+        "unchanged": true
+      },
+      "review-inputs-v4.json": {
+        "sha256_before": "6a634f951411d3c29f429fc0f998f08baff551312e882ba687e64b82bb7da147",
+        "sha256_after": "6a634f951411d3c29f429fc0f998f08baff551312e882ba687e64b82bb7da147",
+        "unchanged": true
+      },
+      "round4-responses.json": {
+        "sha256_before": "7ff74b1f590b7f9b66e3dab816ffd391cb026f5f40ce2d272b01199f08be4b4b",
+        "sha256_after": "7ff74b1f590b7f9b66e3dab816ffd391cb026f5f40ce2d272b01199f08be4b4b",
+        "unchanged": true
+      },
+      "inventory-v4.json": {
+        "sha256_before": "e58cfce3c8fbd9f19975201f697f7abe46c2fd9356292f8d375741af260d43b8",
+        "sha256_after": "e58cfce3c8fbd9f19975201f697f7abe46c2fd9356292f8d375741af260d43b8",
+        "unchanged": true
+      },
+      "near-duplicate-audit-v4.json": {
+        "sha256_before": "2ea4b7e4cbe4d734c253dc4e662c63ca99b011e34d01ab408db45de365f51c65",
+        "sha256_after": "2ea4b7e4cbe4d734c253dc4e662c63ca99b011e34d01ab408db45de365f51c65",
+        "unchanged": true
+      },
+      "artifacts-v4.json": {
+        "sha256_before": "94adcca24ed50581416b688d7d1528b5128e69296a11fc268e678ffb1108573e",
+        "sha256_after": "94adcca24ed50581416b688d7d1528b5128e69296a11fc268e678ffb1108573e",
+        "unchanged": true
+      }
+    },
+    "full_files_array_freezes": {
+      "opus": {
+        "sha256": "47e91926034c524181d5fb078f645ffbfe5ba5077f4db90ad7d1672960546577",
+        "bytes": 78603,
+        "matches_published": true
+      },
+      "sol": {
+        "sha256": "4ace68999fce5c3e16085b59430fa2231dc5887fec2fcd45db9d773e0e744c88",
+        "bytes": 107175,
+        "matches_published": true
+      }
+    },
+    "canonicalization": "json.dumps(files,ensure_ascii=False,sort_keys=True,separators=(',',':'),allow_nan=False).encode('utf-8'); no newline",
+    "frozen_source": {
+      "internal/web/static/app.css": {
+        "commit": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+        "sha256": "d56250fcebd1921d561345717e3dfa9f2df794de29ec4a2972ee6f990258140a"
+      },
+      "internal/web/templates/blacklists.html": {
+        "commit": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+        "sha256": "93d8ef227c10218f6f952a5fce307416c79834e7168fb1ca6efed77577909fea"
+      },
+      "internal/web/templates/records.html": {
+        "commit": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+        "sha256": "a3225d47fda2ab70db843d656d3775ad521ec4c48402ffd4914395fdd8cdd83b"
+      },
+      "internal/web/templates/services.html": {
+        "commit": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+        "sha256": "a9b622f5036227970ac19522340db41bf540fb292973b9167b3a9a37e07536ed"
+      },
+      "internal/web/templates/discovered.html": {
+        "commit": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+        "sha256": "7a3e9ebc1b74524cd9d24113b93991882f5a007ff0a173be6b40eb41a7c3c302"
+      }
+    }
+  },
+  "verification": {
+    "arithmetic": {
+      "opus": {
+        "n": 36,
+        "sum": "282.0",
+        "mean_fraction": "47/6",
+        "rounded": "7.8",
+        "unrounded_vector_mean_fraction": "703/90",
+        "fit_mean_fraction": "76/9",
+        "fit_rounded": "8.4",
+        "cohorts": {
+          "settings": {
+            "n": 8,
+            "mean_fraction": "81/10",
+            "rounded": "8.1"
+          },
+          "admin-console": {
+            "n": 24,
+            "mean_fraction": "38/5",
+            "rounded": "7.6"
+          },
+          "auth": {
+            "n": 4,
+            "mean_fraction": "87/10",
+            "rounded": "8.7"
+          }
+        }
+      },
+      "sol": {
+        "n": 36,
+        "sum": "309.2",
+        "mean_fraction": "773/90",
+        "rounded": "8.6",
+        "unrounded_vector_mean_fraction": "3083/360",
+        "fit_mean_fraction": "26/3",
+        "fit_rounded": "8.7",
+        "cohorts": {
+          "settings": {
+            "n": 8,
+            "mean_fraction": "177/20",
+            "rounded": "8.9"
+          },
+          "admin-console": {
+            "n": 24,
+            "mean_fraction": "253/30",
+            "rounded": "8.4"
+          },
+          "auth": {
+            "n": 4,
+            "mean_fraction": "9",
+            "rounded": "9.0"
+          }
+        }
+      }
+    },
+    "all_quality_scores_integer_0_to_10": {
+      "opus": true,
+      "sol": true
+    },
+    "exact_nine_by_two_by_two_matrix": {
+      "opus": true,
+      "sol": true
+    },
+    "all_quality_exact_and_rounded_totals_recompute": true,
+    "all_fit_totals_recompute": true,
+    "arithmetic_or_inventory_errors": [],
+    "inventory": {
+      "n": 36,
+      "unique_files": 36,
+      "disk_membership": true,
+      "review_membership_matches": true,
+      "current_hash_bytes_IHDR_matches": 36,
+      "matrix": true,
+      "historical_exact_matches_verified": 20
+    },
+    "duplicates": {
+      "method": "recomputed identities/counts/reported threshold arithmetic; no pixel diff rerun",
+      "total_pairs": 630,
+      "same_size_pairs": 306,
+      "different_size_excluded": 324,
+      "reported_pair_coverage_matches": true,
+      "arithmetic_errors": [],
+      "exact_pairs": 0,
+      "near_pairs": 0
+    },
+    "note": "The 36 current PNG hashes/bytes/IHDR, 20 pinned cross-round equalities and reported 306 duplicate comparisons were checked without opening additional pixels or rerunning pixel differences. No claim that all 148 historical/brand artifact bodies were independently reverified here."
+  },
+  "result": {
+    "opus": {
+      "mean_fraction": "47/6",
+      "rounded_half_up_1dp": "7.8",
+      "progression_met": false,
+      "independently_satisfied": false
+    },
+    "sol": {
+      "mean_fraction": "773/90",
+      "rounded_half_up_1dp": "8.6",
+      "independently_satisfied": true,
+      "decides_progression": false
+    },
+    "gemini": {
+      "status": "unused",
+      "reason": "Known exhausted quota; advisory after both primaries satisfied, never a progression blocker."
+    },
+    "conclusion": "Published round4 does not meet the owner's Opus progression rule. The audit corrects evidence claims without changing any score, averaging reviewers, negotiating a replacement result, or imposing an individual-screen veto.",
+    "histories": "Twenty pinned current/round3 exact-image equalities verified by hash. On identical pixels a score change is reviewer calibration, not a product improvement/regression. Prior scores are not recomputed or pooled in this audit.",
+    "target_9_claimed": false
+  },
+  "disagreement_counts": {
+    "current_originals": 36,
+    "quality_dimension_pairs": 216,
+    "fit_dimension_pairs_comparable": 176,
+    "quality_threshold_pairs": 24,
+    "threshold_originals": 14,
+    "fit_threshold_pairs": 0,
+    "quality_threshold_by_dimension": {
+      "hierarchy": 6,
+      "typography": 0,
+      "density_layout": 0,
+      "color": 4,
+      "visible_affordances": 6,
+      "coherence": 8
+    },
+    "threshold": "Absolute inter-reviewer difference >=2 integer points on any quality or fit dimension.",
+    "quality_threshold_spread_values": [
+      2
+    ],
+    "fit_not_applicable_shell_rows": 4,
+    "fit_na_policy": "Login shell is excluded, leaving 176 comparable brand dimensions; N/A is not zero.",
+    "findings_by_disposition": {
+      "supported_bounded_refinement": 3,
+      "factual_correction": 2,
+      "anchor_overstatement": 1,
+      "minor_taste_difference": 2
+    }
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "disposition": "supported_bounded_refinement",
+      "subject": "Desktop Services/Records Remove emphasis",
+      "evidence": "Both desktop themes show three repeated red-outline Remove buttons above one filled orange Add submit. The repeated outlines attract attention; the Add submit, quiet header jump and row actions remain distinguishable.",
+      "anchor_resolution": "Opus identifies a real emphasis difference; Sol correctly identifies semantic destructive color and an obvious primary. 'Strongest colour mass' is an aesthetic judgment, not a measured failure. The design contract permits both destructive outline and destructive text.",
+      "recommendation": "Quiet only desktop data-list row Remove, retaining the native button, danger semantics, target size, focus and existing submission/read-only behavior. Do not change shared danger/accent tokens.",
+      "source": [
+        {
+          "revision": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+          "path": "internal/web/templates/records.html",
+          "line": 12,
+          "end_line": 15
+        },
+        {
+          "revision": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+          "path": "internal/web/templates/services.html",
+          "line": 26,
+          "end_line": 29
+        },
+        {
+          "revision": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+          "path": "internal/web/static/app.css",
+          "line": 236,
+          "end_line": 248
+        },
+        {
+          "revision": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+          "path": "internal/web/static/app.css",
+          "line": 296,
+          "end_line": 299
+        },
+        {
+          "revision": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+          "path": "internal/web/static/app.css",
+          "line": 380
+        }
+      ]
+    },
+    {
+      "id": "F2",
+      "disposition": "factual_correction",
+      "subject": "Four Blacklists pill treatments",
+      "evidence": "The four visible labels are global on, built-in, per-list off and never loaded. On/off/built-in use the identical neutral .badge; never loaded uses .badge.warn. There are two relevant visual treatments, with three distinct semantic roles: enablement, source provenance, and load/refresh health.",
+      "anchor_resolution": "Four labels do not establish four styles. Opus's literal four-treatment claim is overstated, including the post-freeze correction's assertion that this evidence still stands. Sol's observation of a coherent vocabulary is better supported on this factual point. The full stylesheet also defines accent/up/down variants for other contexts; this is not a claim that the application has only two badge variants.",
+      "appearance_of_toggle": "The on badge sits inside a sentence and off is under State. Both are small rounded text labels without a thumb or track. Rounded geometry can suggest a control superficially, but the desktop Enable and Turn filtering off buttons are separately labelled and substantially larger. Frozen markup uses noninteractive spans. The mobile source-row Enable action is below the captured viewport; do not call it missing.",
+      "warning_semantics": "Never loaded identifies absence of a successfully loaded source, separate from that source being off and global filtering being on. Stale also carries LastError and refresh-health meaning. Amber is semantic warning, not redundant decoration.",
+      "recommendation": "Plain on/off text is a supported optional reduction of enclosure, retaining the actual on/off words, built-in metadata, amber never-loaded/stale warnings, errors and all actions. Reject collapsing these different meanings to one generic status or removing warnings.",
+      "source": [
+        {
+          "revision": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+          "path": "internal/web/templates/blacklists.html",
+          "line": 11
+        },
+        {
+          "revision": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+          "path": "internal/web/templates/blacklists.html",
+          "line": 56
+        },
+        {
+          "revision": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+          "path": "internal/web/templates/blacklists.html",
+          "line": 63,
+          "end_line": 76
+        },
+        {
+          "revision": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+          "path": "internal/web/static/app.css",
+          "line": 181,
+          "end_line": 189
+        }
+      ]
+    },
+    {
+      "id": "F3",
+      "disposition": "factual_correction",
+      "subject": "Six desktop input/select font observations",
+      "evidence": "Opus explicitly retracts current desktop coherence observations for Records, Services and Blacklists in both themes. Frozen app.css assigns the same mono family and size to text inputs and selects. The inspected originals are consistent with that correction.",
+      "anchor_resolution": "The claimed grotesk-input/mono-select mismatch is false. It cannot justify a font repair or further factual penalty in an audit conclusion. This does not assign replacement coherence scores or cancel unrelated aesthetic observations.",
+      "preserved_correction": "The original observations, all six coherence=7 values, every other score and the full correction remain in the unchanged raw pair.",
+      "source": [
+        {
+          "revision": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+          "path": "internal/web/static/app.css",
+          "line": 216,
+          "end_line": 219
+        },
+        {
+          "revision": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+          "path": "internal/web/templates/records.html",
+          "line": 30,
+          "end_line": 41
+        },
+        {
+          "revision": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+          "path": "internal/web/templates/services.html",
+          "line": 44,
+          "end_line": 54
+        },
+        {
+          "revision": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+          "path": "internal/web/templates/blacklists.html",
+          "line": 101,
+          "end_line": 109
+        }
+      ]
+    },
+    {
+      "id": "F4",
+      "disposition": "anchor_overstatement",
+      "subject": "Discovered inline Settings next step and empty space",
+      "evidence": "All four originals show a clear Discovered title, an honest explanation that DHCP lease discovery is off, the dhcp_lease_file setting and an orange underlined Settings link. The paragraph is legible and contains the next action.",
+      "anchor_resolution": "Opus accurately describes the action as inline, but absence of a button is not by itself a hierarchy or affordance defect. The pinned rubric evaluates empty-state guidance and next action; it does not require a filled CTA or penalize legitimate unused space. Sol's favorable reading of the same evidence is defensible. Neither review supplies runtime navigation proof.",
+      "recommendation": "No empty-state filler or button conversion required. Preserve factual guidance and link. Do not treat whitespace or a missing filled button as a broken workflow.",
+      "source": [
+        {
+          "revision": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+          "path": "internal/web/templates/discovered.html",
+          "line": 30,
+          "end_line": 34
+        },
+        {
+          "revision": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+          "path": "internal/web/static/app.css",
+          "line": 328,
+          "end_line": 329
+        }
+      ]
+    },
+    {
+      "id": "F5",
+      "disposition": "supported_bounded_refinement",
+      "subject": "Records phone Type/View/Value grouping",
+      "evidence": "The two published reviews describe the phone labelled metadata and generous row height. Frozen row order is Name, Type, Value, View, Actions; phone CSS fixes Name/Actions on row one and lets remaining fields fill two columns, leaving View on an unmatched final track.",
+      "anchor_resolution": "Type/View paired with full-width Value is a reasonable product-local grouping for three fields, especially technical values. The current layout is a minor rhythm issue, not missing data or broken behavior.",
+      "recommendation": "Include this grouping in the same bounded list batch while retaining every label/value, table headers, full technical data, and native row actions. Do not assert a new height or score benefit.",
+      "evidence_limit": "Records mobile is outside the 14 threshold originals; its pixels were not reopened in this audit. This assessment uses frozen markup/CSS and both published current observations only.",
+      "source": [
+        {
+          "revision": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+          "path": "internal/web/templates/records.html",
+          "line": 4,
+          "end_line": 15
+        },
+        {
+          "revision": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+          "path": "internal/web/static/app.css",
+          "line": 363,
+          "end_line": 388
+        }
+      ]
+    },
+    {
+      "id": "F6",
+      "disposition": "supported_bounded_refinement",
+      "subject": "Records precedence guidance placement",
+      "evidence": "Both desktop originals place the precedence sentence below the submit, aligned at the page edge rather than with the form fields. Frozen markup puts the paragraph after the form.",
+      "anchor_resolution": "Moving the unchanged guidance into the form is supported information grouping. The existing sentence is visible and accurate; its current position is not evidence of a failed record operation.",
+      "recommendation": "Place the unchanged precedence help inside the form near the relevant fields/submit in the same bounded batch.",
+      "source": [
+        {
+          "revision": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+          "path": "internal/web/templates/records.html",
+          "line": 27,
+          "end_line": 45
+        },
+        {
+          "revision": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+          "path": "internal/web/static/app.css",
+          "line": 204,
+          "end_line": 215
+        }
+      ]
+    },
+    {
+      "id": "F7",
+      "disposition": "minor_taste_difference",
+      "subject": "Services phone text Remove affordance",
+      "evidence": "Both phone originals show clear red Remove text opposite each service name, visible label/value pairs and a chevron beside Direct. Native frozen markup uses a submit button and a details/summary disclosure.",
+      "anchor_resolution": "Opus's 'link-like' description is a plausible appearance preference, not evidence of a broken or missing action. Sol's clear-action reading is also supported. Destructive text is explicitly permitted by the pinned contract; do not add outlines solely to negotiate this spread.",
+      "recommendation": "Preserve the quiet phone control and its label/semantics; maintain target and focus rules if extending that treatment to desktop. Runtime operability remains untested.",
+      "source": [
+        {
+          "revision": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+          "path": "internal/web/templates/services.html",
+          "line": 15,
+          "end_line": 29
+        },
+        {
+          "revision": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+          "path": "internal/web/static/app.css",
+          "line": 245,
+          "end_line": 248
+        },
+        {
+          "revision": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+          "path": "internal/web/static/app.css",
+          "line": 296,
+          "end_line": 309
+        },
+        {
+          "revision": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+          "path": "internal/web/static/app.css",
+          "line": 380,
+          "end_line": 388
+        }
+      ]
+    },
+    {
+      "id": "F8",
+      "disposition": "minor_taste_difference",
+      "subject": "Residual coherence: circular A and next Services form",
+      "evidence": "Records A is the short contents of the same neutral .badge primitive, under Type. Services shows the start of a genuine Add an address to an existing service form near the desktop fold.",
+      "anchor_resolution": "The A label's nearly circular silhouette is not a unique component implementation or a toggle. The second form is a real continuation, not proof of stray chrome or broken layout. Their rhythm/emphasis can remain aesthetic opinions after the false font observation is removed.",
+      "recommendation": "No type-badge deletion or Services form redesign required.",
+      "source": [
+        {
+          "revision": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+          "path": "internal/web/templates/records.html",
+          "line": 8
+        },
+        {
+          "revision": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+          "path": "internal/web/templates/services.html",
+          "line": 65,
+          "end_line": 84
+        },
+        {
+          "revision": "2eb750d46ad986bd9b64bd1eed991b6c9fe88c2f",
+          "path": "internal/web/static/app.css",
+          "line": 181,
+          "end_line": 184
+        }
+      ]
+    }
+  ],
+  "opus_corrections_preserved_outside_frozen_rows": [
+    {
+      "scope": "current R4 frozen rows: coherence observations on records-desktop (2), services-desktop (2) and blacklists-desktop (2)",
+      "error": "Observation says select values render mono while text inputs are grotesk. Post-freeze 2x nearest-neighbour crops (/tmp, Records and Services forms, light) show text-input placeholders (printer.home.arpa., 192.168.1.50, kypost, webmail) and select values in the same mono face. Blacklists form placeholders (my-list, https://lists.example/hosts) are visibly mono in the original too.",
+      "status": "factual misread recorded; frozen vectors and observations retained unchanged. The other coherence evidence (circular type pill on Records; four pill treatments on Blacklists; second form heading at the fold on Services) stands.",
+      "sensitivity_not_a_score": "Arithmetic only: if those six coherence values were 8 instead of 7, the six rounded totals would each be 0.2 higher, the overall sum +6/5, and the mean 7.8(6) (half-up 7.9), still below the 7.95 exact line. This is not a rescoring."
+    },
+    {
+      "scope": "my R3 finding 3 (Records placeholders switch face)",
+      "error": "The same crops show both Records text-input placeholders in one mono face; the parent static audit is consistent with this. My R3 claim was a misread.",
+      "status": "R3 array retained unedited."
+    }
+  ],
+  "correction_policy": "The copied corrections are original reviewer statements, including its expressly unscored sensitivity note. This audit proposes no counterfactual rating; the raw observations and all score vectors remain authoritative historical data.",
+  "threshold_original_inspections": [
+    {
+      "file": "screenshots/kydns-03-after-blacklists-desktop-dark.png",
+      "sha256": "0ebf0c4e2fea594f1047af4b08297532406ee138af1441379fbde558f24c48c9",
+      "device": "desktop",
+      "theme": "dark",
+      "view_index": 1,
+      "view_tool": "view_image",
+      "detail": "original",
+      "opens_in_this_audit": 1,
+      "observation": "Dark Filtering sentence has a neutral on capsule; built-in and off repeat it, while never loaded is amber. Enable/Refresh are separate outline buttons. Visible form placeholders and select values are mono.",
+      "dimensions": [
+        {
+          "dimension": "coherence",
+          "opus": 7,
+          "sol": 9,
+          "absolute_spread": 2,
+          "opus_original_observation": "Four pill treatments (on, built-in, off, amber never loaded) and mono select text beside grotesk inputs.",
+          "sol_original_observation": "Flat sections, quiet row rules and repeated rounded controls form one consistent vocabulary.",
+          "resolution_findings": [
+            "F2",
+            "F3"
+          ],
+          "resolution": "Evidence/anchor interpretation resolved in referenced findings; both original scores retained, no new score."
+        }
+      ]
+    },
+    {
+      "file": "screenshots/kydns-03-after-blacklists-desktop-light.png",
+      "sha256": "713e264ec1cedc424d34695ab133b187fa8bdf4dccf51d713ed9c41b37a07013",
+      "device": "desktop",
+      "theme": "light",
+      "view_index": 2,
+      "view_tool": "view_image",
+      "detail": "original",
+      "opens_in_this_audit": 1,
+      "observation": "Cream Filtering/source sections repeat one neutral capsule for on/built-in/off, with amber never loaded. Separate labelled Enable and Refresh remain identifiable. The URL retains StevenBlack as one segment.",
+      "dimensions": [
+        {
+          "dimension": "coherence",
+          "opus": 7,
+          "sol": 9,
+          "absolute_spread": 2,
+          "opus_original_observation": "Four pill treatments (on, built-in, off, amber never loaded) and mono select text beside grotesk inputs.",
+          "sol_original_observation": "Flat sections, quiet row rules and repeated rounded controls form one consistent vocabulary.",
+          "resolution_findings": [
+            "F2",
+            "F3"
+          ],
+          "resolution": "Evidence/anchor interpretation resolved in referenced findings; both original scores retained, no new score."
+        }
+      ]
+    },
+    {
+      "file": "screenshots/kydns-03-after-blacklists-mobile-dark.png",
+      "sha256": "5b3ad6aa2ee1aa418703c6172ad5f9c3ff712d4eedf65d4e7eca3c4687c19bc0",
+      "device": "mobile",
+      "theme": "dark",
+      "view_index": 3,
+      "view_tool": "view_image",
+      "detail": "original",
+      "opens_in_this_audit": 1,
+      "observation": "The initial phone viewport shows on in prose, built-in beside the source name and off above amber never loaded. The source actions lie below the viewport; no absent-control conclusion follows.",
+      "dimensions": [
+        {
+          "dimension": "coherence",
+          "opus": 7,
+          "sol": 9,
+          "absolute_spread": 2,
+          "opus_original_observation": "Same mixed pill treatments as desktop.",
+          "sol_original_observation": "The flat source row, status chips and rounded actions match the same restrained control vocabulary.",
+          "resolution_findings": [
+            "F2"
+          ],
+          "resolution": "Evidence/anchor interpretation resolved in referenced findings; both original scores retained, no new score."
+        }
+      ]
+    },
+    {
+      "file": "screenshots/kydns-03-after-blacklists-mobile-light.png",
+      "sha256": "91505a523f17b00542141ccf382c405275f36a5fed218844ccee187a791062ce",
+      "device": "mobile",
+      "theme": "light",
+      "view_index": 4,
+      "view_tool": "view_image",
+      "detail": "original",
+      "opens_in_this_audit": 1,
+      "observation": "The cream phone original shows the same neutral on/built-in/off style and distinct amber load warning. Source name/description/URL remain visible; source actions are not captured.",
+      "dimensions": [
+        {
+          "dimension": "coherence",
+          "opus": 7,
+          "sol": 9,
+          "absolute_spread": 2,
+          "opus_original_observation": "Same mixed pill treatments as desktop.",
+          "sol_original_observation": "The flat source row, status chips and rounded actions match the same restrained control vocabulary.",
+          "resolution_findings": [
+            "F2"
+          ],
+          "resolution": "Evidence/anchor interpretation resolved in referenced findings; both original scores retained, no new score."
+        }
+      ]
+    },
+    {
+      "file": "screenshots/kydns-03-after-discovered-desktop-dark.png",
+      "sha256": "5f4c16be5aa4c8cc35665d458ed03bea781962517810854be060a8910b95be28",
+      "device": "desktop",
+      "theme": "dark",
+      "view_index": 5,
+      "view_tool": "view_image",
+      "detail": "original",
+      "opens_in_this_audit": 1,
+      "observation": "Discovered title precedes a compact off-state paragraph and clearly underlined orange Settings link; the large remaining dark area contains no missing promised content.",
+      "dimensions": [
+        {
+          "dimension": "hierarchy",
+          "opus": 7,
+          "sol": 9,
+          "absolute_spread": 2,
+          "opus_original_observation": "Empty state explains discovery is off and where to enable it; next action is only an inline Settings link.",
+          "sol_original_observation": "The Discovered title leads directly to why discovery is off and a Settings next action.",
+          "resolution_findings": [
+            "F4"
+          ],
+          "resolution": "Evidence/anchor interpretation resolved in referenced findings; both original scores retained, no new score."
+        },
+        {
+          "dimension": "visible_affordances",
+          "opus": 7,
+          "sol": 9,
+          "absolute_spread": 2,
+          "opus_original_observation": "Inline link is the sole action; no button-level next step.",
+          "sol_original_observation": "Settings is underlined and colored, giving the empty state an unmistakable next step.",
+          "resolution_findings": [
+            "F4"
+          ],
+          "resolution": "Evidence/anchor interpretation resolved in referenced findings; both original scores retained, no new score."
+        }
+      ]
+    },
+    {
+      "file": "screenshots/kydns-03-after-discovered-desktop-light.png",
+      "sha256": "d97c166cf5581f84b4300df803de5e4703cf215c0a7213aecccfdd57d90855ed",
+      "device": "desktop",
+      "theme": "light",
+      "view_index": 6,
+      "view_tool": "view_image",
+      "detail": "original",
+      "opens_in_this_audit": 1,
+      "observation": "Discovered title and truthful off-state paragraph remain clear on cream; Settings is underlined and orange. A button would be an optional presentation choice.",
+      "dimensions": [
+        {
+          "dimension": "hierarchy",
+          "opus": 7,
+          "sol": 9,
+          "absolute_spread": 2,
+          "opus_original_observation": "Empty state explains discovery is off and where to enable it; next action is only an inline Settings link.",
+          "sol_original_observation": "The Discovered title leads directly to why discovery is off and a Settings next action.",
+          "resolution_findings": [
+            "F4"
+          ],
+          "resolution": "Evidence/anchor interpretation resolved in referenced findings; both original scores retained, no new score."
+        },
+        {
+          "dimension": "visible_affordances",
+          "opus": 7,
+          "sol": 9,
+          "absolute_spread": 2,
+          "opus_original_observation": "Inline link is the sole action; no button-level next step.",
+          "sol_original_observation": "Settings is underlined and colored, giving the empty state an unmistakable next step.",
+          "resolution_findings": [
+            "F4"
+          ],
+          "resolution": "Evidence/anchor interpretation resolved in referenced findings; both original scores retained, no new score."
+        }
+      ]
+    },
+    {
+      "file": "screenshots/kydns-03-after-discovered-mobile-dark.png",
+      "sha256": "9b3215634cc241ee2bd76a34d10660d08f961583b6124d1be67244bd6f6c4177",
+      "device": "mobile",
+      "theme": "dark",
+      "view_index": 7,
+      "view_tool": "view_image",
+      "detail": "original",
+      "opens_in_this_audit": 1,
+      "observation": "Phone title leads into a short wrapped explanation, named setting and underlined Settings link. One navigation strip remains above; the empty remainder needs no invented content.",
+      "dimensions": [
+        {
+          "dimension": "hierarchy",
+          "opus": 7,
+          "sol": 9,
+          "absolute_spread": 2,
+          "opus_original_observation": "Same guidance; next action is an inline Settings link.",
+          "sol_original_observation": "Discovered is followed by a direct off-state explanation and a Settings next action.",
+          "resolution_findings": [
+            "F4"
+          ],
+          "resolution": "Evidence/anchor interpretation resolved in referenced findings; both original scores retained, no new score."
+        },
+        {
+          "dimension": "visible_affordances",
+          "opus": 7,
+          "sol": 9,
+          "absolute_spread": 2,
+          "opus_original_observation": "Inline link only; no button-level next step.",
+          "sol_original_observation": "The Settings link reads as the next action and the current Discovered selection remains visible.",
+          "resolution_findings": [
+            "F4"
+          ],
+          "resolution": "Evidence/anchor interpretation resolved in referenced findings; both original scores retained, no new score."
+        }
+      ]
+    },
+    {
+      "file": "screenshots/kydns-03-after-discovered-mobile-light.png",
+      "sha256": "f6a9c3d309158d66b19f52dc14c63f54d90c63ccd1571558c3aba007b8002202",
+      "device": "mobile",
+      "theme": "light",
+      "view_index": 8,
+      "view_tool": "view_image",
+      "detail": "original",
+      "opens_in_this_audit": 1,
+      "observation": "The cream phone original retains readable guidance and the same clear Settings next action. Unused area is consistent with this legitimate empty state.",
+      "dimensions": [
+        {
+          "dimension": "hierarchy",
+          "opus": 7,
+          "sol": 9,
+          "absolute_spread": 2,
+          "opus_original_observation": "Same guidance; next action is an inline Settings link.",
+          "sol_original_observation": "Discovered is followed by a direct off-state explanation and a Settings next action.",
+          "resolution_findings": [
+            "F4"
+          ],
+          "resolution": "Evidence/anchor interpretation resolved in referenced findings; both original scores retained, no new score."
+        },
+        {
+          "dimension": "visible_affordances",
+          "opus": 7,
+          "sol": 9,
+          "absolute_spread": 2,
+          "opus_original_observation": "Inline link only; no button-level next step.",
+          "sol_original_observation": "The Settings link reads as the next action and the current Discovered selection remains visible.",
+          "resolution_findings": [
+            "F4"
+          ],
+          "resolution": "Evidence/anchor interpretation resolved in referenced findings; both original scores retained, no new score."
+        }
+      ]
+    },
+    {
+      "file": "screenshots/kydns-03-after-records-desktop-dark.png",
+      "sha256": "31c494962fd514f782799c2264a2ec0a758e90d8a5d5da0eb673b0ba1074f415",
+      "device": "desktop",
+      "theme": "dark",
+      "view_index": 9,
+      "view_tool": "view_image",
+      "detail": "original",
+      "opens_in_this_audit": 1,
+      "observation": "Three red-outline Remove actions repeat above a clearly filled Add record submit. Type A uses a neutral badge. Both input placeholders and select values are mono; the precedence note sits outside the form.",
+      "dimensions": [
+        {
+          "dimension": "hierarchy",
+          "opus": 7,
+          "sol": 9,
+          "absolute_spread": 2,
+          "opus_original_observation": "Title, quiet \"Add record\" link, table, then form with orange Add record; three red Remove outlines compete with the primary.",
+          "sol_original_observation": "Records leads into three divided rows and a clearly titled add form with one filled Add record action.",
+          "resolution_findings": [
+            "F1"
+          ],
+          "resolution": "Evidence/anchor interpretation resolved in referenced findings; both original scores retained, no new score."
+        },
+        {
+          "dimension": "color",
+          "opus": 7,
+          "sol": 9,
+          "absolute_spread": 2,
+          "opus_original_observation": "Repeated danger outlines are the strongest color mass above the primary.",
+          "sol_original_observation": "Destructive Remove controls are red outlines; orange is reserved for Add record and navigation selection. Charcoal background and pale ink are visibly consistent.",
+          "resolution_findings": [
+            "F1"
+          ],
+          "resolution": "Evidence/anchor interpretation resolved in referenced findings; both original scores retained, no new score."
+        },
+        {
+          "dimension": "coherence",
+          "opus": 7,
+          "sol": 9,
+          "absolute_spread": 2,
+          "opus_original_observation": "Select values render mono while text inputs are grotesk; small circular \"A\" type pill is unique to this table.",
+          "sol_original_observation": "The flat divided table and consistent rounded form controls create one coherent screen.",
+          "resolution_findings": [
+            "F3",
+            "F8"
+          ],
+          "resolution": "Evidence/anchor interpretation resolved in referenced findings; both original scores retained, no new score."
+        }
+      ]
+    },
+    {
+      "file": "screenshots/kydns-03-after-records-desktop-light.png",
+      "sha256": "c269bce566d0b86d8b4e013eb4df5ba4f1399d33cd5f0c7c5f396e3b5324986d",
+      "device": "desktop",
+      "theme": "light",
+      "view_index": 10,
+      "view_tool": "view_image",
+      "detail": "original",
+      "opens_in_this_audit": 1,
+      "observation": "Red-outline Remove actions are conspicuous against cream, but Add record is the sole filled submit. Neutral A chips label data; the form uses mono controls and the precedence sentence starts at the page edge.",
+      "dimensions": [
+        {
+          "dimension": "hierarchy",
+          "opus": 7,
+          "sol": 9,
+          "absolute_spread": 2,
+          "opus_original_observation": "Title, quiet \"Add record\" link, table, then form with orange Add record; three red Remove outlines compete with the primary.",
+          "sol_original_observation": "Records leads into three divided rows and a clearly titled add form with one filled Add record action.",
+          "resolution_findings": [
+            "F1"
+          ],
+          "resolution": "Evidence/anchor interpretation resolved in referenced findings; both original scores retained, no new score."
+        },
+        {
+          "dimension": "color",
+          "opus": 7,
+          "sol": 9,
+          "absolute_spread": 2,
+          "opus_original_observation": "Repeated danger outlines are the strongest color mass above the primary.",
+          "sol_original_observation": "Destructive Remove controls are red outlines; orange is reserved for Add record and navigation selection. Cream background and dark ink are visibly consistent.",
+          "resolution_findings": [
+            "F1"
+          ],
+          "resolution": "Evidence/anchor interpretation resolved in referenced findings; both original scores retained, no new score."
+        },
+        {
+          "dimension": "coherence",
+          "opus": 7,
+          "sol": 9,
+          "absolute_spread": 2,
+          "opus_original_observation": "Select values render mono while text inputs are grotesk; small circular \"A\" type pill is unique to this table.",
+          "sol_original_observation": "The flat divided table and consistent rounded form controls create one coherent screen.",
+          "resolution_findings": [
+            "F3",
+            "F8"
+          ],
+          "resolution": "Evidence/anchor interpretation resolved in referenced findings; both original scores retained, no new score."
+        }
+      ]
+    },
+    {
+      "file": "screenshots/kydns-03-after-services-desktop-dark.png",
+      "sha256": "993a3242cc710d88ccdd6e693504cdde01480a42fcf68d7ca2d609645f17a4b4",
+      "device": "desktop",
+      "theme": "dark",
+      "view_index": 11,
+      "view_tool": "view_image",
+      "detail": "original",
+      "opens_in_this_audit": 1,
+      "observation": "Three red-outline Remove buttons repeat in a flat table; Direct has a chevron. Mono input/select forms lead to one filled Add service submit, followed by an authentic second form near the fold.",
+      "dimensions": [
+        {
+          "dimension": "color",
+          "opus": 7,
+          "sol": 9,
+          "absolute_spread": 2,
+          "opus_original_observation": "Three danger outlines are the dominant color above the primary.",
+          "sol_original_observation": "Remove uses red outlines; the single visible Add service submit and active navigation use orange. Charcoal background and pale ink are visibly consistent.",
+          "resolution_findings": [
+            "F1"
+          ],
+          "resolution": "Evidence/anchor interpretation resolved in referenced findings; both original scores retained, no new score."
+        },
+        {
+          "dimension": "coherence",
+          "opus": 7,
+          "sol": 9,
+          "absolute_spread": 2,
+          "opus_original_observation": "Mono select values beside grotesk inputs; second form heading starts at fold.",
+          "sol_original_observation": "Flat rows, shared outlined controls and repeated Direct disclosures use one component vocabulary.",
+          "resolution_findings": [
+            "F3",
+            "F8"
+          ],
+          "resolution": "Evidence/anchor interpretation resolved in referenced findings; both original scores retained, no new score."
+        }
+      ]
+    },
+    {
+      "file": "screenshots/kydns-03-after-services-desktop-light.png",
+      "sha256": "9cd0cbbf18dccff84b8f954d8ff19dda3a882fbc647139345372f4fed8b9fc8f",
+      "device": "desktop",
+      "theme": "light",
+      "view_index": 12,
+      "view_tool": "view_image",
+      "detail": "original",
+      "opens_in_this_audit": 1,
+      "observation": "The cream table separates red-outline Remove from the filled Add service submit. All views sits beside Address without its own visible label; frozen aria-label is View, which does not establish an accessibility pass.",
+      "dimensions": [
+        {
+          "dimension": "color",
+          "opus": 7,
+          "sol": 9,
+          "absolute_spread": 2,
+          "opus_original_observation": "Three danger outlines are the dominant color above the primary.",
+          "sol_original_observation": "Remove uses red outlines; the single visible Add service submit and active navigation use orange. Cream background and dark ink are visibly consistent.",
+          "resolution_findings": [
+            "F1"
+          ],
+          "resolution": "Evidence/anchor interpretation resolved in referenced findings; both original scores retained, no new score."
+        },
+        {
+          "dimension": "coherence",
+          "opus": 7,
+          "sol": 9,
+          "absolute_spread": 2,
+          "opus_original_observation": "Mono select values beside grotesk inputs; second form heading starts at fold.",
+          "sol_original_observation": "Flat rows, shared outlined controls and repeated Direct disclosures use one component vocabulary.",
+          "resolution_findings": [
+            "F3",
+            "F8"
+          ],
+          "resolution": "Evidence/anchor interpretation resolved in referenced findings; both original scores retained, no new score."
+        }
+      ]
+    },
+    {
+      "file": "screenshots/kydns-03-after-services-mobile-dark.png",
+      "sha256": "d542da21ab8ae8f79fabe3405658396c5dcbddae9b560a2b658adc6ca1300d71",
+      "device": "mobile",
+      "theme": "dark",
+      "view_index": 13,
+      "view_tool": "view_image",
+      "detail": "original",
+      "opens_in_this_audit": 1,
+      "observation": "Red text Remove is legible opposite each name. Metadata labels align above values and Direct has a chevron; nothing visible establishes a broken action.",
+      "dimensions": [
+        {
+          "dimension": "visible_affordances",
+          "opus": 7,
+          "sol": 9,
+          "absolute_spread": 2,
+          "opus_original_observation": "Text Remove reads link-like; chevron disclosure clear.",
+          "sol_original_observation": "Each Direct value has a chevron, Remove is legible, and the Add service jump is underlined.",
+          "resolution_findings": [
+            "F7"
+          ],
+          "resolution": "Evidence/anchor interpretation resolved in referenced findings; both original scores retained, no new score."
+        }
+      ]
+    },
+    {
+      "file": "screenshots/kydns-03-after-services-mobile-light.png",
+      "sha256": "2127cd0211130025209521882c86a64385b7c9c1b44c52ef407b26adf6c1786d",
+      "device": "mobile",
+      "theme": "light",
+      "view_index": 14,
+      "view_tool": "view_image",
+      "detail": "original",
+      "opens_in_this_audit": 1,
+      "observation": "Each service has a readable red Remove and a labelled Direct chevron in the cream phone layout. The treatment is quiet and text-like; native interaction is not proven by pixels.",
+      "dimensions": [
+        {
+          "dimension": "visible_affordances",
+          "opus": 7,
+          "sol": 9,
+          "absolute_spread": 2,
+          "opus_original_observation": "Text Remove reads link-like; chevron disclosure clear.",
+          "sol_original_observation": "Each Direct value has a chevron, Remove is legible, and the Add service jump is underlined.",
+          "resolution_findings": [
+            "F7"
+          ],
+          "resolution": "Evidence/anchor interpretation resolved in referenced findings; both original scores retained, no new score."
+        }
+      ]
+    }
+  ],
+  "exhaustive_current_spreads": [
+    {
+      "file": "screenshots/kydns-03-after-appearance-desktop-dark.png",
+      "surface": "appearance",
+      "device": "desktop",
+      "theme": "dark",
+      "sha256": "3c442f4218b6d1d0deef8a61d4bd75fda5f50fd373c2ded5e0ac9c47496b19d6",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "color": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "visible_affordances": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "type_geometry": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 8.3,
+      "sol_total": 9,
+      "total_spread": "0.7",
+      "threshold_dimensions": [],
+      "opus_total_unrounded": 8.3,
+      "sol_total_unrounded": 9,
+      "opus_fit_total": 8.8,
+      "sol_fit_total": 8.8
+    },
+    {
+      "file": "screenshots/kydns-03-after-appearance-desktop-light.png",
+      "surface": "appearance",
+      "device": "desktop",
+      "theme": "light",
+      "sha256": "b1796624b59ce3350dfd6deda938a45a680b692af2efff1fccb2c7f2bc091aad",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "color": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "visible_affordances": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "type_geometry": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 8.3,
+      "sol_total": 9,
+      "total_spread": "0.7",
+      "threshold_dimensions": [],
+      "opus_total_unrounded": 8.3,
+      "sol_total_unrounded": 9,
+      "opus_fit_total": 8.8,
+      "sol_fit_total": 8.8
+    },
+    {
+      "file": "screenshots/kydns-03-after-appearance-mobile-dark.png",
+      "surface": "appearance",
+      "device": "mobile",
+      "theme": "dark",
+      "sha256": "70ed830cf877fe5f797bf6b20eda4be0b12b167bbd5e0e023278ae46f7f5ef27",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "color": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "visible_affordances": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "type_geometry": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 8.3,
+      "sol_total": 9,
+      "total_spread": "0.7",
+      "threshold_dimensions": [],
+      "opus_total_unrounded": 8.3,
+      "sol_total_unrounded": 9,
+      "opus_fit_total": 8.8,
+      "sol_fit_total": 8.8
+    },
+    {
+      "file": "screenshots/kydns-03-after-appearance-mobile-light.png",
+      "surface": "appearance",
+      "device": "mobile",
+      "theme": "light",
+      "sha256": "a5311fac55631cfe4cbd0b5a54cd0395be8f0fea33e64019cfbbc1f980eee941",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "color": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "visible_affordances": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "type_geometry": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 8.3,
+      "sol_total": 9,
+      "total_spread": "0.7",
+      "threshold_dimensions": [],
+      "opus_total_unrounded": 8.3,
+      "sol_total_unrounded": 9,
+      "opus_fit_total": 8.8,
+      "sol_fit_total": 8.8
+    },
+    {
+      "file": "screenshots/kydns-03-after-blacklists-desktop-dark.png",
+      "surface": "blacklists",
+      "device": "desktop",
+      "theme": "dark",
+      "sha256": "0ebf0c4e2fea594f1047af4b08297532406ee138af1441379fbde558f24c48c9",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "density_layout": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "visible_affordances": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "coherence": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute_spread": 2
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 7.3,
+      "sol_total": 8.3,
+      "total_spread": "1.0",
+      "threshold_dimensions": [
+        "coherence"
+      ],
+      "opus_total_unrounded": 7.3,
+      "sol_total_unrounded": 8.3,
+      "opus_fit_total": 8.4,
+      "sol_fit_total": 8.6
+    },
+    {
+      "file": "screenshots/kydns-03-after-blacklists-desktop-light.png",
+      "surface": "blacklists",
+      "device": "desktop",
+      "theme": "light",
+      "sha256": "713e264ec1cedc424d34695ab133b187fa8bdf4dccf51d713ed9c41b37a07013",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "density_layout": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "visible_affordances": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "coherence": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute_spread": 2
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 7.3,
+      "sol_total": 8.3,
+      "total_spread": "1.0",
+      "threshold_dimensions": [
+        "coherence"
+      ],
+      "opus_total_unrounded": 7.3,
+      "sol_total_unrounded": 8.3,
+      "opus_fit_total": 8.4,
+      "sol_fit_total": 8.6
+    },
+    {
+      "file": "screenshots/kydns-03-after-blacklists-mobile-dark.png",
+      "surface": "blacklists",
+      "device": "mobile",
+      "theme": "dark",
+      "sha256": "5b3ad6aa2ee1aa418703c6172ad5f9c3ff712d4eedf65d4e7eca3c4687c19bc0",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "density_layout": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "visible_affordances": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "coherence": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute_spread": 2
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 7.3,
+      "sol_total": 8.3,
+      "total_spread": "1.0",
+      "threshold_dimensions": [
+        "coherence"
+      ],
+      "opus_total_unrounded": 7.3,
+      "sol_total_unrounded": 8.3,
+      "opus_fit_total": 8.4,
+      "sol_fit_total": 8.6
+    },
+    {
+      "file": "screenshots/kydns-03-after-blacklists-mobile-light.png",
+      "surface": "blacklists",
+      "device": "mobile",
+      "theme": "light",
+      "sha256": "91505a523f17b00542141ccf382c405275f36a5fed218844ccee187a791062ce",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "density_layout": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "visible_affordances": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "coherence": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute_spread": 2
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 7.3,
+      "sol_total": 8.3,
+      "total_spread": "1.0",
+      "threshold_dimensions": [
+        "coherence"
+      ],
+      "opus_total_unrounded": 7.3,
+      "sol_total_unrounded": 8.3,
+      "opus_fit_total": 8.4,
+      "sol_fit_total": 8.6
+    },
+    {
+      "file": "screenshots/kydns-03-after-dashboard-desktop-dark.png",
+      "surface": "dashboard",
+      "device": "desktop",
+      "theme": "dark",
+      "sha256": "4aab56d160ff1d0e30f206942705aff9dbcca59641d54c9213d0d72e91831117",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "density_layout": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "color": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 7.7,
+      "sol_total": 8.2,
+      "total_spread": "0.5",
+      "threshold_dimensions": [],
+      "opus_total_unrounded": 7.65,
+      "sol_total_unrounded": 8.15,
+      "opus_fit_total": 8.2,
+      "sol_fit_total": 8.6
+    },
+    {
+      "file": "screenshots/kydns-03-after-dashboard-desktop-light.png",
+      "surface": "dashboard",
+      "device": "desktop",
+      "theme": "light",
+      "sha256": "a6d16310964815cfea19f245d136512ad8cea72644bf64fb6617d4879e092afd",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "density_layout": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "color": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 7.7,
+      "sol_total": 8.2,
+      "total_spread": "0.5",
+      "threshold_dimensions": [],
+      "opus_total_unrounded": 7.65,
+      "sol_total_unrounded": 8.15,
+      "opus_fit_total": 8.2,
+      "sol_fit_total": 8.6
+    },
+    {
+      "file": "screenshots/kydns-03-after-dashboard-mobile-dark.png",
+      "surface": "dashboard",
+      "device": "mobile",
+      "theme": "dark",
+      "sha256": "713e4e43079c7728476cc7de9d33257172f30fe1e16cb757488e36959255ec4e",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "density_layout": {
+          "opus": 7,
+          "sol": 7,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "color": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 7.7,
+      "sol_total": 8,
+      "total_spread": "0.3",
+      "threshold_dimensions": [],
+      "opus_total_unrounded": 7.65,
+      "sol_total_unrounded": 7.95,
+      "opus_fit_total": 8.2,
+      "sol_fit_total": 8.6
+    },
+    {
+      "file": "screenshots/kydns-03-after-dashboard-mobile-light.png",
+      "surface": "dashboard",
+      "device": "mobile",
+      "theme": "light",
+      "sha256": "b5d2d0e0f2e8764359f723f9637539400ae28a0f15be52ce4a0f298922379dbc",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "density_layout": {
+          "opus": 7,
+          "sol": 7,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "color": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 7.7,
+      "sol_total": 8,
+      "total_spread": "0.3",
+      "threshold_dimensions": [],
+      "opus_total_unrounded": 7.65,
+      "sol_total_unrounded": 7.95,
+      "opus_fit_total": 8.2,
+      "sol_fit_total": 8.6
+    },
+    {
+      "file": "screenshots/kydns-03-after-dhcp-desktop-dark.png",
+      "surface": "dhcp",
+      "device": "desktop",
+      "theme": "dark",
+      "sha256": "c882c2e6dcd4507f373f5061a8e764b2d7203cfd942bcab99f39b927c501355d",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "density_layout": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 7.8,
+      "sol_total": 8.5,
+      "total_spread": "0.7",
+      "threshold_dimensions": [],
+      "opus_total_unrounded": 7.8,
+      "sol_total_unrounded": 8.45,
+      "opus_fit_total": 8.4,
+      "sol_fit_total": 8.6
+    },
+    {
+      "file": "screenshots/kydns-03-after-dhcp-desktop-light.png",
+      "surface": "dhcp",
+      "device": "desktop",
+      "theme": "light",
+      "sha256": "794b841d14612c83ff48591a795c8c34340da81e3a1bc9f54902370256576d79",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "density_layout": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 7.8,
+      "sol_total": 8.5,
+      "total_spread": "0.7",
+      "threshold_dimensions": [],
+      "opus_total_unrounded": 7.8,
+      "sol_total_unrounded": 8.45,
+      "opus_fit_total": 8.4,
+      "sol_fit_total": 8.6
+    },
+    {
+      "file": "screenshots/kydns-03-after-dhcp-mobile-dark.png",
+      "surface": "dhcp",
+      "device": "mobile",
+      "theme": "dark",
+      "sha256": "017f799337af412bb13e913afcc380072f5c09ced70f93fe0fe7351f430a012b",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 7.8,
+      "sol_total": 8.3,
+      "total_spread": "0.5",
+      "threshold_dimensions": [],
+      "opus_total_unrounded": 7.8,
+      "sol_total_unrounded": 8.3,
+      "opus_fit_total": 8.4,
+      "sol_fit_total": 8.6
+    },
+    {
+      "file": "screenshots/kydns-03-after-dhcp-mobile-light.png",
+      "surface": "dhcp",
+      "device": "mobile",
+      "theme": "light",
+      "sha256": "bd00189f30962ccd0855ebb4dceddadafbf8c5496002f6766cfd86e9096d3f9e",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 7.8,
+      "sol_total": 8.3,
+      "total_spread": "0.5",
+      "threshold_dimensions": [],
+      "opus_total_unrounded": 7.8,
+      "sol_total_unrounded": 8.3,
+      "opus_fit_total": 8.4,
+      "sol_fit_total": 8.6
+    },
+    {
+      "file": "screenshots/kydns-03-after-discovered-desktop-dark.png",
+      "surface": "discovered",
+      "device": "desktop",
+      "theme": "dark",
+      "sha256": "5f4c16be5aa4c8cc35665d458ed03bea781962517810854be060a8910b95be28",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute_spread": 2
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "visible_affordances": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute_spread": 2
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 7.7,
+      "sol_total": 8.9,
+      "total_spread": "1.2",
+      "threshold_dimensions": [
+        "hierarchy",
+        "visible_affordances"
+      ],
+      "opus_total_unrounded": 7.65,
+      "sol_total_unrounded": 8.85,
+      "opus_fit_total": 8.2,
+      "sol_fit_total": 8.6
+    },
+    {
+      "file": "screenshots/kydns-03-after-discovered-desktop-light.png",
+      "surface": "discovered",
+      "device": "desktop",
+      "theme": "light",
+      "sha256": "d97c166cf5581f84b4300df803de5e4703cf215c0a7213aecccfdd57d90855ed",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute_spread": 2
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "visible_affordances": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute_spread": 2
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 7.7,
+      "sol_total": 8.9,
+      "total_spread": "1.2",
+      "threshold_dimensions": [
+        "hierarchy",
+        "visible_affordances"
+      ],
+      "opus_total_unrounded": 7.65,
+      "sol_total_unrounded": 8.85,
+      "opus_fit_total": 8.2,
+      "sol_fit_total": 8.6
+    },
+    {
+      "file": "screenshots/kydns-03-after-discovered-mobile-dark.png",
+      "surface": "discovered",
+      "device": "mobile",
+      "theme": "dark",
+      "sha256": "9b3215634cc241ee2bd76a34d10660d08f961583b6124d1be67244bd6f6c4177",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute_spread": 2
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "visible_affordances": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute_spread": 2
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 7.7,
+      "sol_total": 8.9,
+      "total_spread": "1.2",
+      "threshold_dimensions": [
+        "hierarchy",
+        "visible_affordances"
+      ],
+      "opus_total_unrounded": 7.65,
+      "sol_total_unrounded": 8.85,
+      "opus_fit_total": 8.2,
+      "sol_fit_total": 8.6
+    },
+    {
+      "file": "screenshots/kydns-03-after-discovered-mobile-light.png",
+      "surface": "discovered",
+      "device": "mobile",
+      "theme": "light",
+      "sha256": "f6a9c3d309158d66b19f52dc14c63f54d90c63ccd1571558c3aba007b8002202",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute_spread": 2
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "visible_affordances": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute_spread": 2
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 7.7,
+      "sol_total": 8.9,
+      "total_spread": "1.2",
+      "threshold_dimensions": [
+        "hierarchy",
+        "visible_affordances"
+      ],
+      "opus_total_unrounded": 7.65,
+      "sol_total_unrounded": 8.85,
+      "opus_fit_total": 8.2,
+      "sol_fit_total": 8.6
+    },
+    {
+      "file": "screenshots/kydns-03-after-login-desktop-dark.png",
+      "surface": "login",
+      "device": "desktop",
+      "theme": "dark",
+      "sha256": "852570f11b84974f69b8701cdd9fd48782983fa4ded9c46747ae19415ac749a0",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "color": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "visible_affordances": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "coherence": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": null,
+          "sol": null,
+          "absolute_spread": null
+        }
+      },
+      "opus_total": 8.7,
+      "sol_total": 9,
+      "total_spread": "0.3",
+      "threshold_dimensions": [],
+      "opus_total_unrounded": 8.65,
+      "sol_total_unrounded": 9,
+      "opus_fit_total": 8.8,
+      "sol_fit_total": 9
+    },
+    {
+      "file": "screenshots/kydns-03-after-login-desktop-light.png",
+      "surface": "login",
+      "device": "desktop",
+      "theme": "light",
+      "sha256": "28ccbf2e360abcb8aa2f22d7b814f362d5dc23ec8c9b07d1d341c473a8bfa39d",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "color": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "visible_affordances": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "coherence": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": null,
+          "sol": null,
+          "absolute_spread": null
+        }
+      },
+      "opus_total": 8.7,
+      "sol_total": 9,
+      "total_spread": "0.3",
+      "threshold_dimensions": [],
+      "opus_total_unrounded": 8.65,
+      "sol_total_unrounded": 9,
+      "opus_fit_total": 8.8,
+      "sol_fit_total": 9
+    },
+    {
+      "file": "screenshots/kydns-03-after-login-mobile-dark.png",
+      "surface": "login",
+      "device": "mobile",
+      "theme": "dark",
+      "sha256": "eb18df452965f9cbf21eddbc6103774cfbc516ec0894f33ee24dfd110f1ec471",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "color": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "visible_affordances": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "coherence": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": null,
+          "sol": null,
+          "absolute_spread": null
+        }
+      },
+      "opus_total": 8.7,
+      "sol_total": 9,
+      "total_spread": "0.3",
+      "threshold_dimensions": [],
+      "opus_total_unrounded": 8.65,
+      "sol_total_unrounded": 9,
+      "opus_fit_total": 8.8,
+      "sol_fit_total": 9
+    },
+    {
+      "file": "screenshots/kydns-03-after-login-mobile-light.png",
+      "surface": "login",
+      "device": "mobile",
+      "theme": "light",
+      "sha256": "3813c7603cbc757bbbba1ced377cc6989166e5d804859d292798abb052f919f4",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "color": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "visible_affordances": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "coherence": {
+          "opus": 9,
+          "sol": 9,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": null,
+          "sol": null,
+          "absolute_spread": null
+        }
+      },
+      "opus_total": 8.7,
+      "sol_total": 9,
+      "total_spread": "0.3",
+      "threshold_dimensions": [],
+      "opus_total_unrounded": 8.65,
+      "sol_total_unrounded": 9,
+      "opus_fit_total": 8.8,
+      "sol_fit_total": 9
+    },
+    {
+      "file": "screenshots/kydns-03-after-records-desktop-dark.png",
+      "surface": "records",
+      "device": "desktop",
+      "theme": "dark",
+      "sha256": "31c494962fd514f782799c2264a2ec0a758e90d8a5d5da0eb673b0ba1074f415",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute_spread": 2
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "color": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute_spread": 2
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "coherence": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute_spread": 2
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 7.5,
+      "sol_total": 8.7,
+      "total_spread": "1.2",
+      "threshold_dimensions": [
+        "hierarchy",
+        "color",
+        "coherence"
+      ],
+      "opus_total_unrounded": 7.5,
+      "sol_total_unrounded": 8.65,
+      "opus_fit_total": 8.4,
+      "sol_fit_total": 8.6
+    },
+    {
+      "file": "screenshots/kydns-03-after-records-desktop-light.png",
+      "surface": "records",
+      "device": "desktop",
+      "theme": "light",
+      "sha256": "c269bce566d0b86d8b4e013eb4df5ba4f1399d33cd5f0c7c5f396e3b5324986d",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute_spread": 2
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "color": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute_spread": 2
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "coherence": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute_spread": 2
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 7.5,
+      "sol_total": 8.7,
+      "total_spread": "1.2",
+      "threshold_dimensions": [
+        "hierarchy",
+        "color",
+        "coherence"
+      ],
+      "opus_total_unrounded": 7.5,
+      "sol_total_unrounded": 8.65,
+      "opus_fit_total": 8.4,
+      "sol_fit_total": 8.6
+    },
+    {
+      "file": "screenshots/kydns-03-after-records-mobile-dark.png",
+      "surface": "records",
+      "device": "mobile",
+      "theme": "dark",
+      "sha256": "f96c51caaefbf8c06167515fc03d48063bf896c83028e11ea9f201a61fdf4533",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "density_layout": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "visible_affordances": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 7.5,
+      "sol_total": 8.3,
+      "total_spread": "0.8",
+      "threshold_dimensions": [],
+      "opus_total_unrounded": 7.45,
+      "sol_total_unrounded": 8.3,
+      "opus_fit_total": 8.4,
+      "sol_fit_total": 8.6
+    },
+    {
+      "file": "screenshots/kydns-03-after-records-mobile-light.png",
+      "surface": "records",
+      "device": "mobile",
+      "theme": "light",
+      "sha256": "3ee69dc1e3b6cb2ec92394362d6c2c0a406a569e78dea9a0331aba1cccac97f0",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "density_layout": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "visible_affordances": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 7.5,
+      "sol_total": 8.3,
+      "total_spread": "0.8",
+      "threshold_dimensions": [],
+      "opus_total_unrounded": 7.45,
+      "sol_total_unrounded": 8.3,
+      "opus_fit_total": 8.4,
+      "sol_fit_total": 8.6
+    },
+    {
+      "file": "screenshots/kydns-03-after-services-desktop-dark.png",
+      "surface": "services",
+      "device": "desktop",
+      "theme": "dark",
+      "sha256": "993a3242cc710d88ccdd6e693504cdde01480a42fcf68d7ca2d609645f17a4b4",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "color": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute_spread": 2
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "coherence": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute_spread": 2
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 7.5,
+      "sol_total": 8.3,
+      "total_spread": "0.8",
+      "threshold_dimensions": [
+        "color",
+        "coherence"
+      ],
+      "opus_total_unrounded": 7.5,
+      "sol_total_unrounded": 8.3,
+      "opus_fit_total": 8.4,
+      "sol_fit_total": 8.6
+    },
+    {
+      "file": "screenshots/kydns-03-after-services-desktop-light.png",
+      "surface": "services",
+      "device": "desktop",
+      "theme": "light",
+      "sha256": "9cd0cbbf18dccff84b8f954d8ff19dda3a882fbc647139345372f4fed8b9fc8f",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "color": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute_spread": 2
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "coherence": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute_spread": 2
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 7.5,
+      "sol_total": 8.3,
+      "total_spread": "0.8",
+      "threshold_dimensions": [
+        "color",
+        "coherence"
+      ],
+      "opus_total_unrounded": 7.5,
+      "sol_total_unrounded": 8.3,
+      "opus_fit_total": 8.4,
+      "sol_fit_total": 8.6
+    },
+    {
+      "file": "screenshots/kydns-03-after-services-mobile-dark.png",
+      "surface": "services",
+      "device": "mobile",
+      "theme": "dark",
+      "sha256": "d542da21ab8ae8f79fabe3405658396c5dcbddae9b560a2b658adc6ca1300d71",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "visible_affordances": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute_spread": 2
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 7.7,
+      "sol_total": 8.5,
+      "total_spread": "0.8",
+      "threshold_dimensions": [
+        "visible_affordances"
+      ],
+      "opus_total_unrounded": 7.65,
+      "sol_total_unrounded": 8.45,
+      "opus_fit_total": 8.4,
+      "sol_fit_total": 8.6
+    },
+    {
+      "file": "screenshots/kydns-03-after-services-mobile-light.png",
+      "surface": "services",
+      "device": "mobile",
+      "theme": "light",
+      "sha256": "2127cd0211130025209521882c86a64385b7c9c1b44c52ef407b26adf6c1786d",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "visible_affordances": {
+          "opus": 7,
+          "sol": 9,
+          "sol_minus_opus": 2,
+          "absolute_spread": 2
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 7.7,
+      "sol_total": 8.5,
+      "total_spread": "0.8",
+      "threshold_dimensions": [
+        "visible_affordances"
+      ],
+      "opus_total_unrounded": 7.65,
+      "sol_total_unrounded": 8.45,
+      "opus_fit_total": 8.4,
+      "sol_fit_total": 8.6
+    },
+    {
+      "file": "screenshots/kydns-03-after-settings-desktop-dark.png",
+      "surface": "settings",
+      "device": "desktop",
+      "theme": "dark",
+      "sha256": "34ea4e27673aa04011f7669e98cc40987ec6d992cea953bc1027492b986c2ff4",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "density_layout": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 7.8,
+      "sol_total": 8.7,
+      "total_spread": "0.9",
+      "threshold_dimensions": [],
+      "opus_total_unrounded": 7.8,
+      "sol_total_unrounded": 8.65,
+      "opus_fit_total": 8.4,
+      "sol_fit_total": 8.6
+    },
+    {
+      "file": "screenshots/kydns-03-after-settings-desktop-light.png",
+      "surface": "settings",
+      "device": "desktop",
+      "theme": "light",
+      "sha256": "b903652771c3e706cefca41f8448049e3537f16b92b3232502245022e7467131",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "density_layout": {
+          "opus": 7,
+          "sol": 8,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 7.8,
+      "sol_total": 8.7,
+      "total_spread": "0.9",
+      "threshold_dimensions": [],
+      "opus_total_unrounded": 7.8,
+      "sol_total_unrounded": 8.65,
+      "opus_fit_total": 8.4,
+      "sol_fit_total": 8.6
+    },
+    {
+      "file": "screenshots/kydns-03-after-settings-mobile-dark.png",
+      "surface": "settings",
+      "device": "mobile",
+      "theme": "dark",
+      "sha256": "ef39220b4990261ecf3f55a0bcc657bfacb6ab85614dd68ddff66d189b1a7708",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 8,
+      "sol_total": 8.7,
+      "total_spread": "0.7",
+      "threshold_dimensions": [],
+      "opus_total_unrounded": 8,
+      "sol_total_unrounded": 8.65,
+      "opus_fit_total": 8.4,
+      "sol_fit_total": 8.6
+    },
+    {
+      "file": "screenshots/kydns-03-after-settings-mobile-light.png",
+      "surface": "settings",
+      "device": "mobile",
+      "theme": "light",
+      "sha256": "816ed0da2af913756719fc83c656c81d3d948927df094f14fc84a2f058807ca2",
+      "quality_dimensions": {
+        "hierarchy": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "typography": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "density_layout": {
+          "opus": 8,
+          "sol": 8,
+          "sol_minus_opus": 0,
+          "absolute_spread": 0
+        },
+        "color": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "visible_affordances": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        },
+        "coherence": {
+          "opus": 8,
+          "sol": 9,
+          "sol_minus_opus": 1,
+          "absolute_spread": 1
+        }
+      },
+      "fit_dimensions": {
+        "accent_discipline": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "palette_tokens": {
+          "opus": 9,
+          "sol": 9,
+          "absolute_spread": 0
+        },
+        "suite_cohesion": {
+          "opus": 8,
+          "sol": 9,
+          "absolute_spread": 1
+        },
+        "type_geometry": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        },
+        "shell": {
+          "opus": 8,
+          "sol": 8,
+          "absolute_spread": 0
+        }
+      },
+      "opus_total": 8,
+      "sol_total": 8.7,
+      "total_spread": "0.7",
+      "threshold_dimensions": [],
+      "opus_total_unrounded": 8,
+      "sol_total_unrounded": 8.65,
+      "opus_fit_total": 8.4,
+      "sol_fit_total": 8.6
+    }
+  ],
+  "bounded_batch": {
+    "warranted_as_optional_presentation_work": true,
+    "required_for_this_audit": false,
+    "implements_or_scores_changes": false,
+    "scope": "One product-local list-page consistency batch, matching the parent's supported candidates; no additional feature or redesign work.",
+    "items": [
+      {
+        "candidate": "Quiet desktop Services/Records data-list Remove",
+        "support": "F1",
+        "preserve": "Native submit action, existing POST/CSRF/read-only behavior, clear Remove label, same target size, danger meaning, focus and confirmation behavior wherever it already exists. No claim that a confirmation currently exists in these frozen forms."
+      },
+      {
+        "candidate": "Plain Blacklists on/off text",
+        "support": "F2",
+        "preserve": "Actual global/per-source state words, built-in metadata, amber never-loaded/stale warning and error meaning, separate toggle/refresh actions."
+      },
+      {
+        "candidate": "Records phone Type/View pair plus full-width Value",
+        "support": "F5",
+        "preserve": "Every field/label/value, native table semantics/headers, technical wrapping and row actions."
+      },
+      {
+        "candidate": "Records precedence help inside form",
+        "support": "F6",
+        "preserve": "Exact factual guidance and existing submit behavior."
+      }
+    ],
+    "recommendation": "The frozen evidence supports this bounded refinement, subject to the stated semantic constraints. It is not demanded to settle a taste difference. Parent owns implementation/verification; changed source and outcomes were intentionally not inspected.",
+    "result_prediction": null,
+    "further_scored_round_requested": false
+  },
+  "declined_or_out_of_scope": [
+    "Chart recoloring or metric deletion; distinct labelled operational data is not disposable decoration. No dashboard pixels reopened in this audit.",
+    "Empty-state filler or an automatic whitespace penalty; larger CTA is not mandatory for the clear Discovered Settings link.",
+    "Invented signed-in username, ordinary-user workflows, navigation or Settings redesign.",
+    "Shared token/color changes, type-badge deletion, removing meaningful on/off text or amber health warnings.",
+    "Treating a source action outside the initial phone viewport, a genuine below-fold form, or a minor rhythm preference as broken behavior."
+  ],
+  "unresolved_opinions": "Relative prominence of repeated destructive outlines, capsule enclosure, phone row generosity, compact A shape and form continuation remain aesthetic judgments. Evidence corrections constrain their factual basis without producing new or negotiated ratings.",
+  "gates": {
+    "keyboard": {
+      "status": "untested",
+      "reason": "Static evidence and frozen source inspection cannot pass a complete runtime gate; execution was explicitly prohibited."
+    },
+    "focus": {
+      "status": "untested",
+      "reason": "Static evidence and frozen source inspection cannot pass a complete runtime gate; execution was explicitly prohibited."
+    },
+    "contrast": {
+      "status": "untested",
+      "reason": "Static evidence and frozen source inspection cannot pass a complete runtime gate; execution was explicitly prohibited."
+    },
+    "states": {
+      "status": "untested",
+      "reason": "Static evidence and frozen source inspection cannot pass a complete runtime gate; execution was explicitly prohibited."
+    },
+    "responsive": {
+      "status": "untested",
+      "reason": "Static evidence and frozen source inspection cannot pass a complete runtime gate; execution was explicitly prohibited."
+    },
+    "accessibility": {
+      "status": "untested",
+      "reason": "Static evidence and frozen source inspection cannot pass a complete runtime gate; execution was explicitly prohibited."
+    },
+    "security": {
+      "status": "untested",
+      "reason": "Static evidence and frozen source inspection cannot pass a complete runtime gate; execution was explicitly prohibited."
+    },
+    "integration": {
+      "status": "untested",
+      "reason": "Static evidence and frozen source inspection cannot pass a complete runtime gate; execution was explicitly prohibited."
+    },
+    "production": {
+      "status": "untested",
+      "reason": "Static evidence and frozen source inspection cannot pass a complete runtime gate; execution was explicitly prohibited."
+    }
+  },
+  "unscored": "Replication N/A in standalone fixture, four combinations excluded; below-fold and live SSO/recovery/replication/external-forwarding flows remain unscored. No behavior or production acceptance claim.",
+  "dox": {
+    "pass": "complete",
+    "changed_documents": [
+      "docs/ui-dns-eight/round4-disagreement-audit.json"
+    ],
+    "agents_unchanged": true,
+    "reason": "This bounded evidence audit changes no durable product behavior, ownership, workflow, hierarchy or verification contract. The existing review-directory ownership already covers audits; AGENTS mutations were outside the sole authorized deliverable.",
+    "read_chain": [
+      "/home/yoshi/git/AGENTS.md",
+      "/home/yoshi/git/busnes.app/AGENTS.md",
+      "/home/yoshi/git/busnes.app/kydns-server/AGENTS.md",
+      "/home/yoshi/git/busnes.app/kydns-server/.claude/worktrees/dns-eight/AGENTS.md",
+      "/home/yoshi/git/busnes.app/kydns-server/.claude/worktrees/dns-eight/docs/ui-dns-eight/AGENTS.md"
+    ]
+  }
+}

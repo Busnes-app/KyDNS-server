@@ -1,0 +1,275 @@
+{
+  "schema_version": 1,
+  "product": "KyDNS",
+  "quality_set": 36,
+  "quality_unscored_brand_references": 4,
+  "capture_conditions": {
+    "viewports": [
+      [
+        1280,
+        900
+      ],
+      [
+        390,
+        844
+      ]
+    ],
+    "dpr": 1,
+    "schemes": [
+      "light",
+      "dark"
+    ],
+    "locale": "en-US",
+    "timezone": "America/New_York",
+    "full_page": false,
+    "service_workers": "allow",
+    "saved_kydns_theme": null,
+    "settling_ms": 500,
+    "pointer": [
+      0,
+      0
+    ]
+  },
+  "capture_scope": "Initial viewport of nine surfaces, two sizes and two OS themes. Signed-out login and real local-recovery-administrator session. Administrator-only product.",
+  "missing_unscored": [
+    {
+      "surface": "replication",
+      "reason": "Standalone fixture hides navigation link and redirects /replication with303 to Dashboard. Four combinations N/A, excluded from counts and means."
+    },
+    "Below-fold settings API tokens, SSO, backup/recovery, upstream and configuration sections.",
+    "Real replication, live SSO/recovery and external forwarding.",
+    "Full behavior, keyboard, all-theme contrast and accessibility gates."
+  ],
+  "behavior_gates": "Untested as complete gates. Score only pixels; do not turn static quality into behavior, integration or production acceptance.",
+  "round": 5,
+  "product_source": "f30749d8b043afa993cd4e7d3d1b86e6ab6c8331",
+  "capture_frozen_head": "f30749d8b043afa993cd4e7d3d1b86e6ab6c8331",
+  "product_source_changes": true,
+  "changed_product_files": [
+    "internal/web/static/app.css",
+    "internal/web/templates/blacklists.html",
+    "internal/web/templates/records.html"
+  ],
+  "authority": "authority.json",
+  "inventory": "inventory-v5.json",
+  "artifacts": "artifacts-v5.json",
+  "duplicates": "near-duplicate-audit-v5.json",
+  "brands": "brand-references.json",
+  "runtime": {
+    "playwright": "1.64.1",
+    "browser": "156.0.8078.4",
+    "headless": true
+  },
+  "fixture_facts": [
+    "Three services and three manual A records; no view restrictions.",
+    "Discovered legitimately empty: DHCP lease discovery off. DHCP disabled.",
+    "Built-in list disabled, zero entries and honest never-loaded/error state; owned proxy refused outbound fetch.",
+    "Exactly24 actual local DNS questions:18 authoritative successes and6 policy NXDOMAIN.",
+    "No mocks, auth injection or credential snapshots. No further DNS queries during capture. Real uptime/chart-minute positions drift.",
+    "Baseline hostname unknown; operator has not confirmed a hostname change. SSO disabled with empty issuer and default client_id kydns."
+  ],
+  "blind_input_allowlist": [
+    "/home/yoshi/git/busnes.app/AGENTS.md",
+    "AGENTS.md",
+    "docs/ui-dns-eight/AGENTS.md",
+    "authority.json",
+    "authority/**",
+    "inventory-v5.json",
+    "artifacts-v5.json",
+    "near-duplicate-audit-v5.json",
+    "review-inputs-v5.json",
+    "brand-references.json",
+    "brand-references/*.png",
+    "screenshots/kydns-04-after-*.png"
+  ],
+  "blind_input_rule": "Only allowlisted current inputs until all36per-file score vectors,observations,brand judgments and totals freeze on disk and SHA256 is recorded. No peer/prior scores,historical pixel decoding,audits,exports,provenance or parent findings before freeze. After freeze only own round4 pair,mapped round4 originals and parent round5 response record if available.",
+  "post_freeze_response_record": "round5-responses.json",
+  "cross_round_exact_matches": [
+    {
+      "current": "screenshots/kydns-04-after-appearance-desktop-dark.png",
+      "prior": "screenshots/kydns-03-after-appearance-desktop-dark.png",
+      "sha256": "3c442f4218b6d1d0deef8a61d4bd75fda5f50fd373c2ded5e0ac9c47496b19d6",
+      "surface": "appearance",
+      "device": "desktop",
+      "theme": "dark"
+    },
+    {
+      "current": "screenshots/kydns-04-after-appearance-desktop-light.png",
+      "prior": "screenshots/kydns-03-after-appearance-desktop-light.png",
+      "sha256": "b1796624b59ce3350dfd6deda938a45a680b692af2efff1fccb2c7f2bc091aad",
+      "surface": "appearance",
+      "device": "desktop",
+      "theme": "light"
+    },
+    {
+      "current": "screenshots/kydns-04-after-appearance-mobile-dark.png",
+      "prior": "screenshots/kydns-03-after-appearance-mobile-dark.png",
+      "sha256": "70ed830cf877fe5f797bf6b20eda4be0b12b167bbd5e0e023278ae46f7f5ef27",
+      "surface": "appearance",
+      "device": "mobile",
+      "theme": "dark"
+    },
+    {
+      "current": "screenshots/kydns-04-after-appearance-mobile-light.png",
+      "prior": "screenshots/kydns-03-after-appearance-mobile-light.png",
+      "sha256": "a5311fac55631cfe4cbd0b5a54cd0395be8f0fea33e64019cfbbc1f980eee941",
+      "surface": "appearance",
+      "device": "mobile",
+      "theme": "light"
+    },
+    {
+      "current": "screenshots/kydns-04-after-dashboard-mobile-dark.png",
+      "prior": "screenshots/kydns-03-after-dashboard-mobile-dark.png",
+      "sha256": "713e4e43079c7728476cc7de9d33257172f30fe1e16cb757488e36959255ec4e",
+      "surface": "dashboard",
+      "device": "mobile",
+      "theme": "dark"
+    },
+    {
+      "current": "screenshots/kydns-04-after-dhcp-desktop-dark.png",
+      "prior": "screenshots/kydns-03-after-dhcp-desktop-dark.png",
+      "sha256": "c882c2e6dcd4507f373f5061a8e764b2d7203cfd942bcab99f39b927c501355d",
+      "surface": "dhcp",
+      "device": "desktop",
+      "theme": "dark"
+    },
+    {
+      "current": "screenshots/kydns-04-after-dhcp-desktop-light.png",
+      "prior": "screenshots/kydns-03-after-dhcp-desktop-light.png",
+      "sha256": "794b841d14612c83ff48591a795c8c34340da81e3a1bc9f54902370256576d79",
+      "surface": "dhcp",
+      "device": "desktop",
+      "theme": "light"
+    },
+    {
+      "current": "screenshots/kydns-04-after-dhcp-mobile-dark.png",
+      "prior": "screenshots/kydns-03-after-dhcp-mobile-dark.png",
+      "sha256": "017f799337af412bb13e913afcc380072f5c09ced70f93fe0fe7351f430a012b",
+      "surface": "dhcp",
+      "device": "mobile",
+      "theme": "dark"
+    },
+    {
+      "current": "screenshots/kydns-04-after-dhcp-mobile-light.png",
+      "prior": "screenshots/kydns-03-after-dhcp-mobile-light.png",
+      "sha256": "bd00189f30962ccd0855ebb4dceddadafbf8c5496002f6766cfd86e9096d3f9e",
+      "surface": "dhcp",
+      "device": "mobile",
+      "theme": "light"
+    },
+    {
+      "current": "screenshots/kydns-04-after-discovered-desktop-dark.png",
+      "prior": "screenshots/kydns-03-after-discovered-desktop-dark.png",
+      "sha256": "5f4c16be5aa4c8cc35665d458ed03bea781962517810854be060a8910b95be28",
+      "surface": "discovered",
+      "device": "desktop",
+      "theme": "dark"
+    },
+    {
+      "current": "screenshots/kydns-04-after-discovered-desktop-light.png",
+      "prior": "screenshots/kydns-03-after-discovered-desktop-light.png",
+      "sha256": "d97c166cf5581f84b4300df803de5e4703cf215c0a7213aecccfdd57d90855ed",
+      "surface": "discovered",
+      "device": "desktop",
+      "theme": "light"
+    },
+    {
+      "current": "screenshots/kydns-04-after-discovered-mobile-dark.png",
+      "prior": "screenshots/kydns-03-after-discovered-mobile-dark.png",
+      "sha256": "9b3215634cc241ee2bd76a34d10660d08f961583b6124d1be67244bd6f6c4177",
+      "surface": "discovered",
+      "device": "mobile",
+      "theme": "dark"
+    },
+    {
+      "current": "screenshots/kydns-04-after-discovered-mobile-light.png",
+      "prior": "screenshots/kydns-03-after-discovered-mobile-light.png",
+      "sha256": "f6a9c3d309158d66b19f52dc14c63f54d90c63ccd1571558c3aba007b8002202",
+      "surface": "discovered",
+      "device": "mobile",
+      "theme": "light"
+    },
+    {
+      "current": "screenshots/kydns-04-after-login-desktop-dark.png",
+      "prior": "screenshots/kydns-03-after-login-desktop-dark.png",
+      "sha256": "852570f11b84974f69b8701cdd9fd48782983fa4ded9c46747ae19415ac749a0",
+      "surface": "login",
+      "device": "desktop",
+      "theme": "dark"
+    },
+    {
+      "current": "screenshots/kydns-04-after-login-desktop-light.png",
+      "prior": "screenshots/kydns-03-after-login-desktop-light.png",
+      "sha256": "28ccbf2e360abcb8aa2f22d7b814f362d5dc23ec8c9b07d1d341c473a8bfa39d",
+      "surface": "login",
+      "device": "desktop",
+      "theme": "light"
+    },
+    {
+      "current": "screenshots/kydns-04-after-login-mobile-dark.png",
+      "prior": "screenshots/kydns-03-after-login-mobile-dark.png",
+      "sha256": "eb18df452965f9cbf21eddbc6103774cfbc516ec0894f33ee24dfd110f1ec471",
+      "surface": "login",
+      "device": "mobile",
+      "theme": "dark"
+    },
+    {
+      "current": "screenshots/kydns-04-after-login-mobile-light.png",
+      "prior": "screenshots/kydns-03-after-login-mobile-light.png",
+      "sha256": "3813c7603cbc757bbbba1ced377cc6989166e5d804859d292798abb052f919f4",
+      "surface": "login",
+      "device": "mobile",
+      "theme": "light"
+    },
+    {
+      "current": "screenshots/kydns-04-after-services-mobile-dark.png",
+      "prior": "screenshots/kydns-03-after-services-mobile-dark.png",
+      "sha256": "d542da21ab8ae8f79fabe3405658396c5dcbddae9b560a2b658adc6ca1300d71",
+      "surface": "services",
+      "device": "mobile",
+      "theme": "dark"
+    },
+    {
+      "current": "screenshots/kydns-04-after-services-mobile-light.png",
+      "prior": "screenshots/kydns-03-after-services-mobile-light.png",
+      "sha256": "2127cd0211130025209521882c86a64385b7c9c1b44c52ef407b26adf6c1786d",
+      "surface": "services",
+      "device": "mobile",
+      "theme": "light"
+    },
+    {
+      "current": "screenshots/kydns-04-after-settings-desktop-dark.png",
+      "prior": "screenshots/kydns-03-after-settings-desktop-dark.png",
+      "sha256": "34ea4e27673aa04011f7669e98cc40987ec6d992cea953bc1027492b986c2ff4",
+      "surface": "settings",
+      "device": "desktop",
+      "theme": "dark"
+    },
+    {
+      "current": "screenshots/kydns-04-after-settings-desktop-light.png",
+      "prior": "screenshots/kydns-03-after-settings-desktop-light.png",
+      "sha256": "b903652771c3e706cefca41f8448049e3537f16b92b3232502245022e7467131",
+      "surface": "settings",
+      "device": "desktop",
+      "theme": "light"
+    },
+    {
+      "current": "screenshots/kydns-04-after-settings-mobile-dark.png",
+      "prior": "screenshots/kydns-03-after-settings-mobile-dark.png",
+      "sha256": "ef39220b4990261ecf3f55a0bcc657bfacb6ab85614dd68ddff66d189b1a7708",
+      "surface": "settings",
+      "device": "mobile",
+      "theme": "dark"
+    },
+    {
+      "current": "screenshots/kydns-04-after-settings-mobile-light.png",
+      "prior": "screenshots/kydns-03-after-settings-mobile-light.png",
+      "sha256": "816ed0da2af913756719fc83c656c81d3d948927df094f14fc84a2f058807ca2",
+      "surface": "settings",
+      "device": "mobile",
+      "theme": "light"
+    }
+  ],
+  "cross_round_identity_rule": "23 current originals byte-identical to round4; mappings retained without quality claims. Histories/brands never pool into quality.",
+  "capture_task_scoring": "None. No acceptance/quality scores generated."
+}
