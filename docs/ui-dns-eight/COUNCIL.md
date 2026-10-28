@@ -10,8 +10,8 @@ Current-round Opus alone controls progression. Exact raw scores and separate bra
 | 2 | opus | Reviewed | 36 | 683/90 | 7.6 | Below 8.0 |
 | 2 | sol | Reviewed | 36 | 253/30 | 8.4 | Does not control progression |
 | 2 | gemini | Unused: known exhausted quota; not retried | — | — | — | — |
-| 3 | opus | Pending | — | — | — | — |
-| 3 | sol | Pending | — | — | — | — |
+| 3 | opus | Reviewed | 36 | 1307/180 | 7.3 | Below 8.0 |
+| 3 | sol | Reviewed | 36 | 757/90 | 8.4 | Does not control progression |
 | 3 | gemini | Unused: known exhausted quota; not retried | — | — | — | — |
 
 Spreadsheet: [KyDNS-Council.xlsx](KyDNS-Council.xlsx). Per-file evidence: [ratings.csv](ratings.csv).

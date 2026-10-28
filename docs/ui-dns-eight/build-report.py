@@ -62,7 +62,7 @@ for turn in range(1, args.current_round + 1):
         # Opus R1 froze all vectors/reasons before deriving the three summary fields.
         frozen_rows = [{key: value for key, value in row.items() if key not in ('total', 'total_unrounded', 'ky_fit')} for row in rows] if reviewer == 'opus' and turn == 1 else rows
         frozen_bytes = json.dumps(frozen_rows, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()
-        assert hashlib.sha256(frozen_bytes).hexdigest() == freeze['sha256']
+        assert hashlib.sha256(frozen_bytes).hexdigest() == freeze.get('sha256', freeze.get('canonical_files_sha256'))
         assert {row['file'] for row in rows} in [{row['file'] for row in load(path)['rows']} for path in root.glob('inventory-v*.json')]
         assert len(rows) == len({row['file'] for row in rows})
         totals, surfaces = [], defaultdict(list)

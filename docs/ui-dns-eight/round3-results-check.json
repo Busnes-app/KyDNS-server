@@ -1,0 +1,31 @@
+{
+  "round": 3,
+  "source": "fde2314fde061ea9c094feab960da9d8ac6d28ce",
+  "current_captures_verified": 36,
+  "reports": {
+    "opus": {
+      "exact": "1307/180",
+      "rounded": "7.3",
+      "independent_satisfaction": false,
+      "files_freeze_sha256": "65507450c3b6023eba3eb8fa47a1c8261623b853411ef9f0bcfc23a24078ae52",
+      "files_freeze_bytes": 71914,
+      "parent_arithmetic_and_freeze_verified": true,
+      "raw_json_sha256": "6858e5d55e8b06748b9a2b46327e9862d84e364d52cd1c0c2da161d46947005a",
+      "raw_md_sha256": "dfbff7ec9d035f7babed40654cb12d428b957ea6caa94b6d285563513a5c0bb2"
+    },
+    "sol": {
+      "exact": "757/90",
+      "rounded": "8.4",
+      "independent_satisfaction": true,
+      "files_freeze_sha256": "b8309dbf5b15d8ec28b52400e61f1b5db54d85a7a93aabf8b28f47fcbf99add8",
+      "files_freeze_bytes": 91399,
+      "parent_arithmetic_and_freeze_verified": true,
+      "raw_json_sha256": "905a196dc8af9b92fe08b7a9cf2725ed8660c2ade9764b79a207ead05f9afcf8",
+      "raw_md_sha256": "ea55f4e5bfccda597db5fceff00117ff4ffe6eb1c6d3a98d10c7a21865d013f5"
+    }
+  },
+  "progression": "below 8.0; unchanged",
+  "audit": "running; preserve scores; distinguish reviewer calibration from product regressions",
+  "product_changes_this_checkpoint": false,
+  "dox": "Existing ownership and progression contracts unchanged. Exporter accepts the existing alternative hash key while verifying the same full-array digest."
+}

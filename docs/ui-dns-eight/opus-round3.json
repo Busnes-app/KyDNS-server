@@ -1,0 +1,3983 @@
+{
+ "schema": "ky-ui-council-scores/2",
+ "product": "KyDNS",
+ "round": 3,
+ "reviewer": "opus",
+ "requested_model": "claude-opus-5-5",
+ "actual_model": "claude-opus-5-5 (Opus 5.5)",
+ "evidence": {
+  "worktree": "kydns-server/.claude/worktrees/dns-eight",
+  "branch": "ui/dns-eight",
+  "evidence_head": "49bec5161f771427a8ea7ced047b5bd025af75d0",
+  "captured_product_source": "fde2314fde061ea9c094feab960da9d8ac6d28ce",
+  "note": "Scores describe captures of fde2314 (x/net 0.62.0 from main); the later HEAD changes evidence only."
+ },
+ "rubric": {
+  "version": "ky-suite-v2",
+  "authority_commit": "639e5882cada099dd189197beb2a3e3b4c188658",
+  "weights": {
+   "hierarchy": "0.2",
+   "typography": "0.15",
+   "density_layout": "0.2",
+   "color": "0.15",
+   "visible_affordances": "0.15",
+   "coherence": "0.15"
+  },
+  "total": "Decimal sum(weight*score) kept exact as total_unrounded; total half-up to 0.1",
+  "ky_fit": "equal-weight mean of non-N/A brand dimensions; never pooled with quality"
+ },
+ "pinned_input_hashes": {
+  "authority_files_match_pin": true,
+  "files": {
+   "skills/ky-suite-ui/SKILL.md": "6010ea39ac6e4e21926eb2a45d8a5a4894cd9e5e6eec07aca4cf60423233dcc2",
+   "skills/ky-suite-ui/references/rubric.md": "ad3516620420fbdc30f5273f82b7c72c76e1365d1b6296fcaa56be3cbebf2c41",
+   "skills/ky-suite-ui/references/design-contract.md": "392afb88c51fb3cfad6c94d6b841804b194d107a0431c31f35ff81d3a7a444d3",
+   "src/tokens.css": "639f8e73259aca02119b98a5340539d5e8e16d65fd5f6124b939fdfe9c5f86af",
+   "src/navigation.css": "fbd0aea3e45fa818f916ad1bc35832f6ac26e37124208ffde029b809048b4380"
+  }
+ },
+ "input_verification": {
+  "artifacts_checked": 112,
+  "roles": {
+   "current_round3": 36,
+   "historical_round1": 36,
+   "historical_round2": 36,
+   "brand_only": 4
+  },
+  "all_sha_bytes_ihdr_match": true,
+  "inventory_equals_disk_glob": true,
+  "matrix_9x2x2_complete": true,
+  "distinct_current_sha256": 36,
+  "brand_refs_sha_match": true,
+  "cross_round_exact_matches_verified_by_hash": 6,
+  "round1_exact_matches_to_current": 0,
+  "duplicate_audit": {
+   "same_size_pairs_expected": 306,
+   "same_size_pairs_present": 306,
+   "different_size_excluded": 324,
+   "threshold_logic_recomputed": "near_duplicate == (changed_fraction < 0.001 and max_delta <= 8) for all 306; 0 mismatches",
+   "exact_or_near_duplicates": 0,
+   "closest_pair": "discovered-desktop-dark vs records-desktop-dark, 4.32% changed, max delta 231",
+   "pixel_diff_repeated": false
+  },
+  "note": "brand-references.json purpose strings still say 'KyDrive'; hashes match, cosmetic."
+ },
+ "blind_access": {
+  "pre_freeze_reads": [
+   "/home/yoshi/git/busnes.app/AGENTS.md",
+   "AGENTS.md",
+   "docs/ui-dns-eight/AGENTS.md",
+   "review-inputs-v3.json",
+   "authority.json",
+   "authority/** (5 files)",
+   "inventory-v3.json",
+   "artifacts-v3.json",
+   "near-duplicate-audit-v3.json",
+   "brand-references.json",
+   "brand-references/*.png (4)",
+   "screenshots/kydns-02-after-*.png (36)"
+  ],
+  "pre_freeze_other": "git HEAD/branch/status of the worktree and a directory listing (names only).",
+  "never_opened": "peer pairs, round 1 reviews, disagreement audits, COUNCIL, CSV/XLSX, capture/source provenance bodies, capture checks, baseline plan/setup, git log/diff",
+  "post_freeze_reads": [
+   "round3-responses.json",
+   "opus-round2.md",
+   "opus-round2.json",
+   "8 matched round-2 originals listed in drift"
+  ]
+ },
+ "view_log": {
+  "method": "Each PNG opened individually with the native image Read tool on its original path, no contact sheet or thumbnail. Pixel positions are visual estimates. Internal resampling by the tool cannot be proven from inside it.",
+  "pre_freeze_current_36": [
+   "screenshots/kydns-02-after-appearance-desktop-dark.png",
+   "screenshots/kydns-02-after-appearance-desktop-light.png",
+   "screenshots/kydns-02-after-appearance-mobile-dark.png",
+   "screenshots/kydns-02-after-appearance-mobile-light.png",
+   "screenshots/kydns-02-after-blacklists-desktop-dark.png",
+   "screenshots/kydns-02-after-blacklists-desktop-light.png",
+   "screenshots/kydns-02-after-blacklists-mobile-dark.png",
+   "screenshots/kydns-02-after-blacklists-mobile-light.png",
+   "screenshots/kydns-02-after-dashboard-desktop-dark.png",
+   "screenshots/kydns-02-after-dashboard-desktop-light.png",
+   "screenshots/kydns-02-after-dashboard-mobile-dark.png",
+   "screenshots/kydns-02-after-dashboard-mobile-light.png",
+   "screenshots/kydns-02-after-dhcp-desktop-dark.png",
+   "screenshots/kydns-02-after-dhcp-desktop-light.png",
+   "screenshots/kydns-02-after-dhcp-mobile-dark.png",
+   "screenshots/kydns-02-after-dhcp-mobile-light.png",
+   "screenshots/kydns-02-after-discovered-desktop-dark.png",
+   "screenshots/kydns-02-after-discovered-desktop-light.png",
+   "screenshots/kydns-02-after-discovered-mobile-dark.png",
+   "screenshots/kydns-02-after-discovered-mobile-light.png",
+   "screenshots/kydns-02-after-login-desktop-dark.png",
+   "screenshots/kydns-02-after-login-desktop-light.png",
+   "screenshots/kydns-02-after-login-mobile-dark.png",
+   "screenshots/kydns-02-after-login-mobile-light.png",
+   "screenshots/kydns-02-after-records-desktop-dark.png",
+   "screenshots/kydns-02-after-records-desktop-light.png",
+   "screenshots/kydns-02-after-records-mobile-dark.png",
+   "screenshots/kydns-02-after-records-mobile-light.png",
+   "screenshots/kydns-02-after-services-desktop-dark.png",
+   "screenshots/kydns-02-after-services-desktop-light.png",
+   "screenshots/kydns-02-after-services-mobile-dark.png",
+   "screenshots/kydns-02-after-services-mobile-light.png",
+   "screenshots/kydns-02-after-settings-desktop-dark.png",
+   "screenshots/kydns-02-after-settings-desktop-light.png",
+   "screenshots/kydns-02-after-settings-mobile-dark.png",
+   "screenshots/kydns-02-after-settings-mobile-light.png"
+  ],
+  "pre_freeze_order": "login (dl, dd, ml, md), dashboard, services, records, discovered, blacklists, dhcp, settings, appearance; desktop light, desktop dark, mobile light, mobile dark per surface",
+  "pre_freeze_brand_4": [
+   "brand-references/kyidentity-02-after-users-manage-desktop-light.png",
+   "brand-references/kyidentity-02-after-users-manage-desktop-dark.png",
+   "brand-references/kyidentity-02-after-appearance-mobile-light.png",
+   "brand-references/kyidentity-02-after-appearance-mobile-dark.png"
+  ],
+  "pre_freeze_supplementary": "Two magnified crops (outside repo, /tmp) of current desktop-light page titles and wordmark to check typeface consistency; conclusion: all Space Grotesk, no finding raised.",
+  "post_freeze_r2_originals": [
+   "screenshots/kydns-01-after-blacklists-desktop-light.png",
+   "screenshots/kydns-01-after-blacklists-mobile-light.png",
+   "screenshots/kydns-01-after-records-desktop-light.png",
+   "screenshots/kydns-01-after-records-desktop-dark.png",
+   "screenshots/kydns-01-after-records-mobile-light.png",
+   "screenshots/kydns-01-after-services-mobile-light.png",
+   "screenshots/kydns-01-after-services-mobile-dark.png",
+   "screenshots/kydns-01-after-dhcp-desktop-light.png"
+  ],
+  "historical_pixels_before_freeze": "none decoded or viewed; hash/bytes/IHDR only"
+ },
+ "inventory": [
+  {
+   "file": "screenshots/kydns-02-after-appearance-desktop-dark.png",
+   "sha256": "3c442f4218b6d1d0deef8a61d4bd75fda5f50fd373c2ded5e0ac9c47496b19d6",
+   "bytes": 74291,
+   "width": 1280,
+   "height": 900,
+   "surface": "appearance",
+   "device": "desktop",
+   "theme": "dark",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-appearance-desktop-light.png",
+   "sha256": "b1796624b59ce3350dfd6deda938a45a680b692af2efff1fccb2c7f2bc091aad",
+   "bytes": 73519,
+   "width": 1280,
+   "height": 900,
+   "surface": "appearance",
+   "device": "desktop",
+   "theme": "light",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-appearance-mobile-dark.png",
+   "sha256": "70ed830cf877fe5f797bf6b20eda4be0b12b167bbd5e0e023278ae46f7f5ef27",
+   "bytes": 41121,
+   "width": 390,
+   "height": 844,
+   "surface": "appearance",
+   "device": "mobile",
+   "theme": "dark",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-appearance-mobile-light.png",
+   "sha256": "a5311fac55631cfe4cbd0b5a54cd0395be8f0fea33e64019cfbbc1f980eee941",
+   "bytes": 40467,
+   "width": 390,
+   "height": 844,
+   "surface": "appearance",
+   "device": "mobile",
+   "theme": "light",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-blacklists-desktop-dark.png",
+   "sha256": "36b665b1347eef4232e5c4157c054949f90ec85b137df069d50790a9203c86c9",
+   "bytes": 97304,
+   "width": 1280,
+   "height": 900,
+   "surface": "blacklists",
+   "device": "desktop",
+   "theme": "dark",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-blacklists-desktop-light.png",
+   "sha256": "b45c2ff66bfeb841f40cd8a9065061accc4f863343ae2a37a476b23a3fd5bcf2",
+   "bytes": 97183,
+   "width": 1280,
+   "height": 900,
+   "surface": "blacklists",
+   "device": "desktop",
+   "theme": "light",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-blacklists-mobile-dark.png",
+   "sha256": "beea4ebdf6cdd5c2e586418d4f890e79246ef7c124c861a64d6a0372edbf985e",
+   "bytes": 56702,
+   "width": 390,
+   "height": 844,
+   "surface": "blacklists",
+   "device": "mobile",
+   "theme": "dark",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-blacklists-mobile-light.png",
+   "sha256": "bd6e02b0c3e2a0128334e5aefa1a57711ace61ca09301467cf50eac377615387",
+   "bytes": 56898,
+   "width": 390,
+   "height": 844,
+   "surface": "blacklists",
+   "device": "mobile",
+   "theme": "light",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-dashboard-desktop-dark.png",
+   "sha256": "d4f6f7edaaed356dd28806d90959b9dd92df9215a5501230c91890b94eba5968",
+   "bytes": 68960,
+   "width": 1280,
+   "height": 900,
+   "surface": "dashboard",
+   "device": "desktop",
+   "theme": "dark",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-dashboard-desktop-light.png",
+   "sha256": "17871d203b3483372d63969b59e7b94f8ae8852df06aaac294adcf9d2a33982f",
+   "bytes": 68815,
+   "width": 1280,
+   "height": 900,
+   "surface": "dashboard",
+   "device": "desktop",
+   "theme": "light",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-dashboard-mobile-dark.png",
+   "sha256": "af6b4adb1edfa6ac05805d7cbf128fb03b26abcc6604d7e97265e31087ab4dca",
+   "bytes": 36420,
+   "width": 390,
+   "height": 844,
+   "surface": "dashboard",
+   "device": "mobile",
+   "theme": "dark",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-dashboard-mobile-light.png",
+   "sha256": "77f884974ec45f4f98bb9c517681107b252fdf5958dac2e4e827eeecc27a8c80",
+   "bytes": 36319,
+   "width": 390,
+   "height": 844,
+   "surface": "dashboard",
+   "device": "mobile",
+   "theme": "light",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-dhcp-desktop-dark.png",
+   "sha256": "c882c2e6dcd4507f373f5061a8e764b2d7203cfd942bcab99f39b927c501355d",
+   "bytes": 66502,
+   "width": 1280,
+   "height": 900,
+   "surface": "dhcp",
+   "device": "desktop",
+   "theme": "dark",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-dhcp-desktop-light.png",
+   "sha256": "794b841d14612c83ff48591a795c8c34340da81e3a1bc9f54902370256576d79",
+   "bytes": 66340,
+   "width": 1280,
+   "height": 900,
+   "surface": "dhcp",
+   "device": "desktop",
+   "theme": "light",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-dhcp-mobile-dark.png",
+   "sha256": "017f799337af412bb13e913afcc380072f5c09ced70f93fe0fe7351f430a012b",
+   "bytes": 36976,
+   "width": 390,
+   "height": 844,
+   "surface": "dhcp",
+   "device": "mobile",
+   "theme": "dark",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-dhcp-mobile-light.png",
+   "sha256": "bd00189f30962ccd0855ebb4dceddadafbf8c5496002f6766cfd86e9096d3f9e",
+   "bytes": 36884,
+   "width": 390,
+   "height": 844,
+   "surface": "dhcp",
+   "device": "mobile",
+   "theme": "light",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-discovered-desktop-dark.png",
+   "sha256": "5f4c16be5aa4c8cc35665d458ed03bea781962517810854be060a8910b95be28",
+   "bytes": 38118,
+   "width": 1280,
+   "height": 900,
+   "surface": "discovered",
+   "device": "desktop",
+   "theme": "dark",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-discovered-desktop-light.png",
+   "sha256": "d97c166cf5581f84b4300df803de5e4703cf215c0a7213aecccfdd57d90855ed",
+   "bytes": 38339,
+   "width": 1280,
+   "height": 900,
+   "surface": "discovered",
+   "device": "desktop",
+   "theme": "light",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-discovered-mobile-dark.png",
+   "sha256": "9b3215634cc241ee2bd76a34d10660d08f961583b6124d1be67244bd6f6c4177",
+   "bytes": 26292,
+   "width": 390,
+   "height": 844,
+   "surface": "discovered",
+   "device": "mobile",
+   "theme": "dark",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-discovered-mobile-light.png",
+   "sha256": "f6a9c3d309158d66b19f52dc14c63f54d90c63ccd1571558c3aba007b8002202",
+   "bytes": 26208,
+   "width": 390,
+   "height": 844,
+   "surface": "discovered",
+   "device": "mobile",
+   "theme": "light",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-login-desktop-dark.png",
+   "sha256": "852570f11b84974f69b8701cdd9fd48782983fa4ded9c46747ae19415ac749a0",
+   "bytes": 14652,
+   "width": 1280,
+   "height": 900,
+   "surface": "login",
+   "device": "desktop",
+   "theme": "dark",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-login-desktop-light.png",
+   "sha256": "28ccbf2e360abcb8aa2f22d7b814f362d5dc23ec8c9b07d1d341c473a8bfa39d",
+   "bytes": 14837,
+   "width": 1280,
+   "height": 900,
+   "surface": "login",
+   "device": "desktop",
+   "theme": "light",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-login-mobile-dark.png",
+   "sha256": "eb18df452965f9cbf21eddbc6103774cfbc516ec0894f33ee24dfd110f1ec471",
+   "bytes": 11801,
+   "width": 390,
+   "height": 844,
+   "surface": "login",
+   "device": "mobile",
+   "theme": "dark",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-login-mobile-light.png",
+   "sha256": "3813c7603cbc757bbbba1ced377cc6989166e5d804859d292798abb052f919f4",
+   "bytes": 11874,
+   "width": 390,
+   "height": 844,
+   "surface": "login",
+   "device": "mobile",
+   "theme": "light",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-records-desktop-dark.png",
+   "sha256": "da94dec616e3bf7ff4a599c02677deda44c9539801b3b841572847d98d242ff4",
+   "bytes": 62637,
+   "width": 1280,
+   "height": 900,
+   "surface": "records",
+   "device": "desktop",
+   "theme": "dark",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-records-desktop-light.png",
+   "sha256": "9fbdc2f0f6f670b4fcb0354b26035f8331fb998e4833a7cc6cbed6a7bb5e7809",
+   "bytes": 62749,
+   "width": 1280,
+   "height": 900,
+   "surface": "records",
+   "device": "desktop",
+   "theme": "light",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-records-mobile-dark.png",
+   "sha256": "3da8586321d12f65c0222694e0348e1aefa6841256a5e2576581bd6bea158aa0",
+   "bytes": 41325,
+   "width": 390,
+   "height": 844,
+   "surface": "records",
+   "device": "mobile",
+   "theme": "dark",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-records-mobile-light.png",
+   "sha256": "375852b00f8a4b5eba0720c3ae518a03bc3899f3230784ceed7e4e966a46a62d",
+   "bytes": 41140,
+   "width": 390,
+   "height": 844,
+   "surface": "records",
+   "device": "mobile",
+   "theme": "light",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-services-desktop-dark.png",
+   "sha256": "600e0a5bb1a58348f38efdba1d8740cb3dfd0e3f704fe3068b220891d75fffe8",
+   "bytes": 81887,
+   "width": 1280,
+   "height": 900,
+   "surface": "services",
+   "device": "desktop",
+   "theme": "dark",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-services-desktop-light.png",
+   "sha256": "863d95d2169e5fdf97947c9b69ec60fea1e03f41a0ef2e3fed375ef300abd2d5",
+   "bytes": 81679,
+   "width": 1280,
+   "height": 900,
+   "surface": "services",
+   "device": "desktop",
+   "theme": "light",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-services-mobile-dark.png",
+   "sha256": "83e11d7b328997d0b3b9ae506fcb788d3f0bfc07c011159c388bdaf6a7c02c04",
+   "bytes": 41450,
+   "width": 390,
+   "height": 844,
+   "surface": "services",
+   "device": "mobile",
+   "theme": "dark",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-services-mobile-light.png",
+   "sha256": "d9464adfd4d851a54899e5817330a7b914e2e99f7d30957fd7f4a752a855d9cc",
+   "bytes": 41450,
+   "width": 390,
+   "height": 844,
+   "surface": "services",
+   "device": "mobile",
+   "theme": "light",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-settings-desktop-dark.png",
+   "sha256": "34ea4e27673aa04011f7669e98cc40987ec6d992cea953bc1027492b986c2ff4",
+   "bytes": 66141,
+   "width": 1280,
+   "height": 900,
+   "surface": "settings",
+   "device": "desktop",
+   "theme": "dark",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-settings-desktop-light.png",
+   "sha256": "b903652771c3e706cefca41f8448049e3537f16b92b3232502245022e7467131",
+   "bytes": 66172,
+   "width": 1280,
+   "height": 900,
+   "surface": "settings",
+   "device": "desktop",
+   "theme": "light",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-settings-mobile-dark.png",
+   "sha256": "ef39220b4990261ecf3f55a0bcc657bfacb6ab85614dd68ddff66d189b1a7708",
+   "bytes": 38139,
+   "width": 390,
+   "height": 844,
+   "surface": "settings",
+   "device": "mobile",
+   "theme": "dark",
+   "duplicate_of": null,
+   "scored": true
+  },
+  {
+   "file": "screenshots/kydns-02-after-settings-mobile-light.png",
+   "sha256": "816ed0da2af913756719fc83c656c81d3d948927df094f14fc84a2f058807ca2",
+   "bytes": 37705,
+   "width": 390,
+   "height": 844,
+   "surface": "settings",
+   "device": "mobile",
+   "theme": "light",
+   "duplicate_of": null,
+   "scored": true
+  }
+ ],
+ "freeze": {
+  "frozen_at_utc": "2026-10-27T23:57:38+00:00",
+  "canonical_files_bytes": 71914,
+  "canonical_files_sha256": "65507450c3b6023eba3eb8fa47a1c8261623b853411ef9f0bcfc23a24078ae52",
+  "file_count": 36,
+  "serialization": "json.dumps(report['files'],ensure_ascii=False,sort_keys=True,separators=(',',':'),allow_nan=False).encode('utf-8'), no trailing newline",
+  "scope": "all 36 identities, dimensions, integer quality vectors, observations, ky_fit vectors/reasons, per-file exact and rounded totals",
+  "inputs_read_before_freeze": "blind allowlist only (AGENTS chain, authority.json + authority/**, inventory/artifacts/near-duplicate-audit/review-inputs v3, brand-references.json + 4 PNGs, 36 current PNGs); histories hash/IHDR only",
+  "stage1_file_sha256": "52646dc9cb5d4a22309d6cb609169a02696836c8ffae097033600ccfe592dcbd",
+  "published_array_reproduces_hash": true
+ },
+ "files": [
+  {
+   "file": "screenshots/kydns-02-after-appearance-desktop-dark.png",
+   "sha256": "3c442f4218b6d1d0deef8a61d4bd75fda5f50fd373c2ded5e0ac9c47496b19d6",
+   "bytes": 74291,
+   "width": 1280,
+   "height": 900,
+   "surface": "appearance",
+   "device": "desktop",
+   "theme": "dark",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "appearance theme picker",
+   "filename_matches_content": true,
+   "cohort": "settings",
+   "state": "populated",
+   "viewport": {
+    "class": "desktop",
+    "width": 1280,
+    "height": 900,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "Picker behaviour and saved-choice persistence not visible.",
+   "scores": {
+    "hierarchy": 8,
+    "typography": 8,
+    "density_layout": 8,
+    "color": 8,
+    "visible_affordances": 8,
+    "coherence": 8
+   },
+   "observations": {
+    "hierarchy": "Title, one-sentence explanation, 'Theme' label, then the card grid with Match system selected first.",
+    "typography": "Card names 14px/500 with 12px Light/Dark meta; consistent across all cards.",
+    "density_layout": "23 cards in a 5-column grid with even 12px gutters; last row holds three.",
+    "color": "Preview swatches carry each theme's own hues; selected card uses the accent border and filled radio.",
+    "visible_affordances": "Every card shows a radio; the selected one has a 2px accent border and filled dot.",
+    "coherence": "Identical card geometry throughout; no stray styles. Dark: charcoal panel sidebar/header, brown accent-soft selection."
+   },
+   "total_unrounded": "8.00",
+   "total": 8.0,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 8,
+     "shell": 7,
+     "accent_discipline": 8,
+     "suite_cohesion": 9
+    },
+    "observations": {
+     "palette_tokens": "Page tokens neutral; multi-hue swatches are theme data.",
+     "type_geometry": "Shared picker geometry and meta sizes.",
+     "shell": "Contract nav; account region differs.",
+     "accent_discipline": "Orange only on the selected card/radio and nav selection.",
+     "suite_cohesion": "Picker cards, copy and order match the KyIdentity Appearance reference card for card."
+    },
+    "na_reasons": {},
+    "total_unrounded": "8",
+    "total": 8.0
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-appearance-desktop-light.png",
+   "sha256": "b1796624b59ce3350dfd6deda938a45a680b692af2efff1fccb2c7f2bc091aad",
+   "bytes": 73519,
+   "width": 1280,
+   "height": 900,
+   "surface": "appearance",
+   "device": "desktop",
+   "theme": "light",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "appearance theme picker",
+   "filename_matches_content": true,
+   "cohort": "settings",
+   "state": "populated",
+   "viewport": {
+    "class": "desktop",
+    "width": 1280,
+    "height": 900,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "Picker behaviour and saved-choice persistence not visible.",
+   "scores": {
+    "hierarchy": 8,
+    "typography": 8,
+    "density_layout": 8,
+    "color": 8,
+    "visible_affordances": 8,
+    "coherence": 8
+   },
+   "observations": {
+    "hierarchy": "Title, one-sentence explanation, 'Theme' label, then the card grid with Match system selected first.",
+    "typography": "Card names 14px/500 with 12px Light/Dark meta; consistent across all cards.",
+    "density_layout": "23 cards in a 5-column grid with even 12px gutters; last row holds three.",
+    "color": "Preview swatches carry each theme's own hues; selected card uses the accent border and filled radio.",
+    "visible_affordances": "Every card shows a radio; the selected one has a 2px accent border and filled dot.",
+    "coherence": "Identical card geometry throughout; no stray styles."
+   },
+   "total_unrounded": "8.00",
+   "total": 8.0,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 8,
+     "shell": 7,
+     "accent_discipline": 8,
+     "suite_cohesion": 9
+    },
+    "observations": {
+     "palette_tokens": "Page tokens neutral; multi-hue swatches are theme data.",
+     "type_geometry": "Shared picker geometry and meta sizes.",
+     "shell": "Contract nav; account region differs.",
+     "accent_discipline": "Orange only on the selected card/radio and nav selection.",
+     "suite_cohesion": "Picker cards, copy and order match the KyIdentity Appearance reference card for card."
+    },
+    "na_reasons": {},
+    "total_unrounded": "8",
+    "total": 8.0
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-appearance-mobile-dark.png",
+   "sha256": "70ed830cf877fe5f797bf6b20eda4be0b12b167bbd5e0e023278ae46f7f5ef27",
+   "bytes": 41121,
+   "width": 390,
+   "height": 844,
+   "surface": "appearance",
+   "device": "mobile",
+   "theme": "dark",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "appearance theme picker",
+   "filename_matches_content": true,
+   "cohort": "settings",
+   "state": "populated",
+   "viewport": {
+    "class": "mobile",
+    "width": 390,
+    "height": 844,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "Picker behaviour and saved-choice persistence not visible. Remaining cards below fold.",
+   "scores": {
+    "hierarchy": 8,
+    "typography": 8,
+    "density_layout": 8,
+    "color": 8,
+    "visible_affordances": 8,
+    "coherence": 8
+   },
+   "observations": {
+    "hierarchy": "Title, one-sentence explanation, 'Theme' label, then the card grid with Match system selected first.",
+    "typography": "Card names 14px/500 with 12px Light/Dark meta; consistent across all cards.",
+    "density_layout": "Two-column cards with even gutters; four rows visible.",
+    "color": "Preview swatches carry each theme's own hues; selected card uses the accent border and filled radio.",
+    "visible_affordances": "Every card shows a radio; the selected one has a 2px accent border and filled dot.",
+    "coherence": "Identical card geometry throughout; no stray styles. Dark: charcoal panel sidebar/header, brown accent-soft selection."
+   },
+   "total_unrounded": "8.00",
+   "total": 8.0,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 8,
+     "shell": 7,
+     "accent_discipline": 8,
+     "suite_cohesion": 9
+    },
+    "observations": {
+     "palette_tokens": "Page tokens neutral; multi-hue swatches are theme data.",
+     "type_geometry": "Shared picker geometry and meta sizes.",
+     "shell": "Contract nav; account region differs.",
+     "accent_discipline": "Orange only on the selected card/radio and nav selection.",
+     "suite_cohesion": "Picker cards, copy and order match the KyIdentity Appearance reference card for card."
+    },
+    "na_reasons": {},
+    "total_unrounded": "8",
+    "total": 8.0
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-appearance-mobile-light.png",
+   "sha256": "a5311fac55631cfe4cbd0b5a54cd0395be8f0fea33e64019cfbbc1f980eee941",
+   "bytes": 40467,
+   "width": 390,
+   "height": 844,
+   "surface": "appearance",
+   "device": "mobile",
+   "theme": "light",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "appearance theme picker",
+   "filename_matches_content": true,
+   "cohort": "settings",
+   "state": "populated",
+   "viewport": {
+    "class": "mobile",
+    "width": 390,
+    "height": 844,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "Picker behaviour and saved-choice persistence not visible. Remaining cards below fold.",
+   "scores": {
+    "hierarchy": 8,
+    "typography": 8,
+    "density_layout": 8,
+    "color": 8,
+    "visible_affordances": 8,
+    "coherence": 8
+   },
+   "observations": {
+    "hierarchy": "Title, one-sentence explanation, 'Theme' label, then the card grid with Match system selected first.",
+    "typography": "Card names 14px/500 with 12px Light/Dark meta; consistent across all cards.",
+    "density_layout": "Two-column cards with even gutters; four rows visible.",
+    "color": "Preview swatches carry each theme's own hues; selected card uses the accent border and filled radio.",
+    "visible_affordances": "Every card shows a radio; the selected one has a 2px accent border and filled dot.",
+    "coherence": "Identical card geometry throughout; no stray styles."
+   },
+   "total_unrounded": "8.00",
+   "total": 8.0,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 8,
+     "shell": 7,
+     "accent_discipline": 8,
+     "suite_cohesion": 9
+    },
+    "observations": {
+     "palette_tokens": "Page tokens neutral; multi-hue swatches are theme data.",
+     "type_geometry": "Shared picker geometry and meta sizes.",
+     "shell": "Contract nav; account region differs.",
+     "accent_discipline": "Orange only on the selected card/radio and nav selection.",
+     "suite_cohesion": "Picker cards, copy and order match the KyIdentity Appearance reference card for card."
+    },
+    "na_reasons": {},
+    "total_unrounded": "8",
+    "total": 8.0
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-blacklists-desktop-dark.png",
+   "sha256": "36b665b1347eef4232e5c4157c054949f90ec85b137df069d50790a9203c86c9",
+   "bytes": 97304,
+   "width": 1280,
+   "height": 900,
+   "surface": "blacklists",
+   "device": "desktop",
+   "theme": "dark",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "blacklists (filtering + lists)",
+   "filename_matches_content": true,
+   "cohort": "admin-console",
+   "state": "sparse",
+   "viewport": {
+    "class": "desktop",
+    "width": 1280,
+    "height": 900,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "One disabled built-in list with honest never-loaded state; add form largely below fold.",
+   "scores": {
+    "hierarchy": 6,
+    "typography": 6,
+    "density_layout": 6,
+    "color": 7,
+    "visible_affordances": 7,
+    "coherence": 7
+   },
+   "observations": {
+    "hierarchy": "Filtering section with two equal outlined buttons, a lists table and a form; the only orange is the 'Add list' link, so no clear primary above the fold.",
+    "typography": "Source URL hard-breaks mid-word ('StevenBla|ck' / 'StevenBlac|k'); body 16px, description 13px, mono URL and mono pills mix four styles in one row.",
+    "density_layout": "Built-in list row stacks name, description and URL to ~150px tall with State pills and two buttons crowded at the right.",
+    "color": "Neutral 'on'/'off' pills and an amber 'never loaded' pill carry status with text.",
+    "visible_affordances": "Turn filtering off / Refresh all / Enable / Refresh are all the same outlined secondary.",
+    "coherence": "Pills, outlined buttons and table share one vocabulary; long prose paragraphs dominate. Dark: charcoal panel sidebar/header, brown accent-soft selection."
+   },
+   "total_unrounded": "6.45",
+   "total": 6.5,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 7,
+     "shell": 7,
+     "accent_discipline": 7,
+     "suite_cohesion": 7
+    },
+    "observations": {
+     "palette_tokens": "Token surfaces; warning pill uses the warning token.",
+     "type_geometry": "40px buttons; mid-word URL break.",
+     "shell": "Contract nav; account region differs.",
+     "accent_discipline": "Orange only on the header link; no primary uses it here.",
+     "suite_cohesion": "Pills and outlined buttons fit the suite vocabulary."
+    },
+    "na_reasons": {},
+    "total_unrounded": "7.2",
+    "total": 7.2
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-blacklists-desktop-light.png",
+   "sha256": "b45c2ff66bfeb841f40cd8a9065061accc4f863343ae2a37a476b23a3fd5bcf2",
+   "bytes": 97183,
+   "width": 1280,
+   "height": 900,
+   "surface": "blacklists",
+   "device": "desktop",
+   "theme": "light",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "blacklists (filtering + lists)",
+   "filename_matches_content": true,
+   "cohort": "admin-console",
+   "state": "sparse",
+   "viewport": {
+    "class": "desktop",
+    "width": 1280,
+    "height": 900,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "One disabled built-in list with honest never-loaded state; add form largely below fold.",
+   "scores": {
+    "hierarchy": 6,
+    "typography": 6,
+    "density_layout": 6,
+    "color": 7,
+    "visible_affordances": 7,
+    "coherence": 7
+   },
+   "observations": {
+    "hierarchy": "Filtering section with two equal outlined buttons, a lists table and a form; the only orange is the 'Add list' link, so no clear primary above the fold.",
+    "typography": "Source URL hard-breaks mid-word ('StevenBla|ck' / 'StevenBlac|k'); body 16px, description 13px, mono URL and mono pills mix four styles in one row.",
+    "density_layout": "Built-in list row stacks name, description and URL to ~150px tall with State pills and two buttons crowded at the right.",
+    "color": "Neutral 'on'/'off' pills and an amber 'never loaded' pill carry status with text.",
+    "visible_affordances": "Turn filtering off / Refresh all / Enable / Refresh are all the same outlined secondary.",
+    "coherence": "Pills, outlined buttons and table share one vocabulary; long prose paragraphs dominate."
+   },
+   "total_unrounded": "6.45",
+   "total": 6.5,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 7,
+     "shell": 7,
+     "accent_discipline": 7,
+     "suite_cohesion": 7
+    },
+    "observations": {
+     "palette_tokens": "Token surfaces; warning pill uses the warning token.",
+     "type_geometry": "40px buttons; mid-word URL break.",
+     "shell": "Contract nav; account region differs.",
+     "accent_discipline": "Orange only on the header link; no primary uses it here.",
+     "suite_cohesion": "Pills and outlined buttons fit the suite vocabulary."
+    },
+    "na_reasons": {},
+    "total_unrounded": "7.2",
+    "total": 7.2
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-blacklists-mobile-dark.png",
+   "sha256": "beea4ebdf6cdd5c2e586418d4f890e79246ef7c124c861a64d6a0372edbf985e",
+   "bytes": 56702,
+   "width": 390,
+   "height": 844,
+   "surface": "blacklists",
+   "device": "mobile",
+   "theme": "dark",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "blacklists (filtering + lists)",
+   "filename_matches_content": true,
+   "cohort": "admin-console",
+   "state": "sparse",
+   "viewport": {
+    "class": "mobile",
+    "width": 390,
+    "height": 844,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "One disabled built-in list with honest never-loaded state; add form largely below fold.",
+   "scores": {
+    "hierarchy": 6,
+    "typography": 6,
+    "density_layout": 6,
+    "color": 7,
+    "visible_affordances": 7,
+    "coherence": 7
+   },
+   "observations": {
+    "hierarchy": "Filtering section with two equal outlined buttons, a lists table and a form; the only orange is the 'Add list' link, so no clear primary above the fold.",
+    "typography": "Source URL hard-breaks mid-word ('StevenBla|ck' / 'StevenBlac|k'); body 16px, description 13px, mono URL and mono pills mix four styles in one row.",
+    "density_layout": "Built-in list row stacks name, description and URL to ~150px tall and the label grid leaves 'every 1440 min' under 'never' without a label.",
+    "color": "Neutral 'on'/'off' pills and an amber 'never loaded' pill carry status with text.",
+    "visible_affordances": "Turn filtering off / Refresh all / Enable / Refresh are all the same outlined secondary.",
+    "coherence": "Pills, outlined buttons and table share one vocabulary; long prose paragraphs dominate. Dark: charcoal panel sidebar/header, brown accent-soft selection."
+   },
+   "total_unrounded": "6.45",
+   "total": 6.5,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 7,
+     "shell": 7,
+     "accent_discipline": 7,
+     "suite_cohesion": 7
+    },
+    "observations": {
+     "palette_tokens": "Token surfaces; warning pill uses the warning token.",
+     "type_geometry": "40px buttons; mid-word URL break.",
+     "shell": "Contract nav; account region differs.",
+     "accent_discipline": "Orange only on the header link; no primary uses it here.",
+     "suite_cohesion": "Pills and outlined buttons fit the suite vocabulary."
+    },
+    "na_reasons": {},
+    "total_unrounded": "7.2",
+    "total": 7.2
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-blacklists-mobile-light.png",
+   "sha256": "bd6e02b0c3e2a0128334e5aefa1a57711ace61ca09301467cf50eac377615387",
+   "bytes": 56898,
+   "width": 390,
+   "height": 844,
+   "surface": "blacklists",
+   "device": "mobile",
+   "theme": "light",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "blacklists (filtering + lists)",
+   "filename_matches_content": true,
+   "cohort": "admin-console",
+   "state": "sparse",
+   "viewport": {
+    "class": "mobile",
+    "width": 390,
+    "height": 844,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "One disabled built-in list with honest never-loaded state; add form largely below fold.",
+   "scores": {
+    "hierarchy": 6,
+    "typography": 6,
+    "density_layout": 6,
+    "color": 7,
+    "visible_affordances": 7,
+    "coherence": 7
+   },
+   "observations": {
+    "hierarchy": "Filtering section with two equal outlined buttons, a lists table and a form; the only orange is the 'Add list' link, so no clear primary above the fold.",
+    "typography": "Source URL hard-breaks mid-word ('StevenBla|ck' / 'StevenBlac|k'); body 16px, description 13px, mono URL and mono pills mix four styles in one row.",
+    "density_layout": "Built-in list row stacks name, description and URL to ~150px tall and the label grid leaves 'every 1440 min' under 'never' without a label.",
+    "color": "Neutral 'on'/'off' pills and an amber 'never loaded' pill carry status with text.",
+    "visible_affordances": "Turn filtering off / Refresh all / Enable / Refresh are all the same outlined secondary.",
+    "coherence": "Pills, outlined buttons and table share one vocabulary; long prose paragraphs dominate."
+   },
+   "total_unrounded": "6.45",
+   "total": 6.5,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 7,
+     "shell": 7,
+     "accent_discipline": 7,
+     "suite_cohesion": 7
+    },
+    "observations": {
+     "palette_tokens": "Token surfaces; warning pill uses the warning token.",
+     "type_geometry": "40px buttons; mid-word URL break.",
+     "shell": "Contract nav; account region differs.",
+     "accent_discipline": "Orange only on the header link; no primary uses it here.",
+     "suite_cohesion": "Pills and outlined buttons fit the suite vocabulary."
+    },
+    "na_reasons": {},
+    "total_unrounded": "7.2",
+    "total": 7.2
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-dashboard-desktop-dark.png",
+   "sha256": "d4f6f7edaaed356dd28806d90959b9dd92df9215a5501230c91890b94eba5968",
+   "bytes": 68960,
+   "width": 1280,
+   "height": 900,
+   "surface": "dashboard",
+   "device": "desktop",
+   "theme": "dark",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "dashboard",
+   "filename_matches_content": true,
+   "cohort": "admin-console",
+   "state": "sparse",
+   "viewport": {
+    "class": "desktop",
+    "width": 1280,
+    "height": 900,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "Honest sparse fixture (24 queries in one minute); charts mostly flat. Table continues below the fold, unscored.",
+   "scores": {
+    "hierarchy": 7,
+    "typography": 7,
+    "density_layout": 7,
+    "color": 7,
+    "visible_affordances": 7,
+    "coherence": 7
+   },
+   "observations": {
+    "hierarchy": "Title, five-figure KPI strip, three charts, a second four-figure strip and a Metric/Value table restate the same counts (Blocked 6 appears in strip, legend and table row).",
+    "typography": "KPI numerals ~30px, chart axis labels 11px mono and table body ~16px: the table cell text is larger than KPI labels, inverting emphasis.",
+    "density_layout": "Queries chart spans ~915px for one spike at the far right; second KPI strip leaves the fifth column empty; table runs under the fold.",
+    "color": "Chart series use teal, orange and purple; the 'Forwarded' series reuses the accent orange.",
+    "visible_affordances": "Selected 'Dashboard' nav row has fill plus left accent rail; read-only page otherwise needs no controls.",
+    "coherence": "KPI strips share vertical dividers and the table uses quiet rules; chart blocks and strips use one flat surface. Dark: charcoal panel sidebar/header, brown accent-soft selection."
+   },
+   "total_unrounded": "7.00",
+   "total": 7.0,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 7,
+     "type_geometry": 8,
+     "shell": 7,
+     "accent_discipline": 6,
+     "suite_cohesion": 7
+    },
+    "observations": {
+     "palette_tokens": "Neutral surfaces are token-true; teal and purple chart series sit outside the palette (data, but not user data).",
+     "type_geometry": "Space Grotesk, 40px Sign out, 8px radius nav rows on an 8px rhythm.",
+     "shell": "240px sidebar, wordmark and accent-rail selection match; account region shows only 'Administrator' plus a full-width Sign out, unlike KyIdentity's name/role/icon block.",
+     "accent_discipline": "Orange used for the 'Forwarded' chart series as well as selection.",
+     "suite_cohesion": "Shell and selected-row treatment match KyIdentity; dashboard body has no counterpart and its account block differs."
+    },
+    "na_reasons": {},
+    "total_unrounded": "7",
+    "total": 7.0
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-dashboard-desktop-light.png",
+   "sha256": "17871d203b3483372d63969b59e7b94f8ae8852df06aaac294adcf9d2a33982f",
+   "bytes": 68815,
+   "width": 1280,
+   "height": 900,
+   "surface": "dashboard",
+   "device": "desktop",
+   "theme": "light",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "dashboard",
+   "filename_matches_content": true,
+   "cohort": "admin-console",
+   "state": "sparse",
+   "viewport": {
+    "class": "desktop",
+    "width": 1280,
+    "height": 900,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "Honest sparse fixture (24 queries in one minute); charts mostly flat. Table continues below the fold, unscored.",
+   "scores": {
+    "hierarchy": 7,
+    "typography": 7,
+    "density_layout": 7,
+    "color": 7,
+    "visible_affordances": 7,
+    "coherence": 7
+   },
+   "observations": {
+    "hierarchy": "Title, five-figure KPI strip, three charts, a second four-figure strip and a Metric/Value table restate the same counts (Blocked 6 appears in strip, legend and table row).",
+    "typography": "KPI numerals ~30px, chart axis labels 11px mono and table body ~16px: the table cell text is larger than KPI labels, inverting emphasis.",
+    "density_layout": "Queries chart spans ~915px for one spike at the far right; second KPI strip leaves the fifth column empty; table runs under the fold.",
+    "color": "Chart series use teal, orange and purple; the 'Forwarded' series reuses the accent orange.",
+    "visible_affordances": "Selected 'Dashboard' nav row has fill plus left accent rail; read-only page otherwise needs no controls.",
+    "coherence": "KPI strips share vertical dividers and the table uses quiet rules; chart blocks and strips use one flat surface."
+   },
+   "total_unrounded": "7.00",
+   "total": 7.0,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 7,
+     "type_geometry": 8,
+     "shell": 7,
+     "accent_discipline": 6,
+     "suite_cohesion": 7
+    },
+    "observations": {
+     "palette_tokens": "Neutral surfaces are token-true; teal and purple chart series sit outside the palette (data, but not user data).",
+     "type_geometry": "Space Grotesk, 40px Sign out, 8px radius nav rows on an 8px rhythm.",
+     "shell": "240px sidebar, wordmark and accent-rail selection match; account region shows only 'Administrator' plus a full-width Sign out, unlike KyIdentity's name/role/icon block.",
+     "accent_discipline": "Orange used for the 'Forwarded' chart series as well as selection.",
+     "suite_cohesion": "Shell and selected-row treatment match KyIdentity; dashboard body has no counterpart and its account block differs."
+    },
+    "na_reasons": {},
+    "total_unrounded": "7",
+    "total": 7.0
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-dashboard-mobile-dark.png",
+   "sha256": "af6b4adb1edfa6ac05805d7cbf128fb03b26abcc6604d7e97265e31087ab4dca",
+   "bytes": 36420,
+   "width": 390,
+   "height": 844,
+   "surface": "dashboard",
+   "device": "mobile",
+   "theme": "dark",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "dashboard",
+   "filename_matches_content": true,
+   "cohort": "admin-console",
+   "state": "sparse",
+   "viewport": {
+    "class": "mobile",
+    "width": 390,
+    "height": 844,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "Only KPIs and first two charts visible in the initial viewport.",
+   "scores": {
+    "hierarchy": 7,
+    "typography": 7,
+    "density_layout": 7,
+    "color": 7,
+    "visible_affordances": 7,
+    "coherence": 7
+   },
+   "observations": {
+    "hierarchy": "Title then a five-figure KPI grid and charts; same counts repeat in legend and KPIs, no single focal figure.",
+    "typography": "KPI numerals ~24px over 13px labels; chart axis text 11px mono; 28px title holds the top.",
+    "density_layout": "KPIs stack 2-up with Uptime orphaned on its own row; charts start at y≈420 and the query spike is a 4px sliver at the right edge.",
+    "color": "Chart series use teal, orange and purple; the 'Forwarded' series reuses the accent orange.",
+    "visible_affordances": "Horizontal tab row is clipped at the right edge ('Q' icon of Discovered) and a 'Scroll navigation' caption sits under the wordmark as the only scroll cue.",
+    "coherence": "Wordmark subtitle 'Scroll navigation' reads like a product tagline rather than a control hint; rest is flat and consistent. Dark: charcoal panel sidebar/header, brown accent-soft selection."
+   },
+   "total_unrounded": "7.00",
+   "total": 7.0,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 7,
+     "type_geometry": 8,
+     "shell": 7,
+     "accent_discipline": 6,
+     "suite_cohesion": 7
+    },
+    "observations": {
+     "palette_tokens": "Neutral token surfaces; teal/purple chart series off palette.",
+     "type_geometry": "40px Sign out and tab pills on 8px radius.",
+     "shell": "Top row brand + Sign out and a scrolling tab strip with bottom accent rail; KyIdentity reference puts account name/role there instead of a caption.",
+     "accent_discipline": "Orange 'Forwarded' series alongside the selected tab rail.",
+     "suite_cohesion": "Tab strip and selected pill match KyIdentity mobile; header content differs ('Scroll navigation' vs subtitle/account)."
+    },
+    "na_reasons": {},
+    "total_unrounded": "7",
+    "total": 7.0
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-dashboard-mobile-light.png",
+   "sha256": "77f884974ec45f4f98bb9c517681107b252fdf5958dac2e4e827eeecc27a8c80",
+   "bytes": 36319,
+   "width": 390,
+   "height": 844,
+   "surface": "dashboard",
+   "device": "mobile",
+   "theme": "light",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "dashboard",
+   "filename_matches_content": true,
+   "cohort": "admin-console",
+   "state": "sparse",
+   "viewport": {
+    "class": "mobile",
+    "width": 390,
+    "height": 844,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "Only KPIs and first two charts visible in the initial viewport.",
+   "scores": {
+    "hierarchy": 7,
+    "typography": 7,
+    "density_layout": 7,
+    "color": 7,
+    "visible_affordances": 7,
+    "coherence": 7
+   },
+   "observations": {
+    "hierarchy": "Title then a five-figure KPI grid and charts; same counts repeat in legend and KPIs, no single focal figure.",
+    "typography": "KPI numerals ~24px over 13px labels; chart axis text 11px mono; 28px title holds the top.",
+    "density_layout": "KPIs stack 2-up with Uptime orphaned on its own row; charts start at y≈420 and the query spike is a 4px sliver at the right edge.",
+    "color": "Chart series use teal, orange and purple; the 'Forwarded' series reuses the accent orange.",
+    "visible_affordances": "Horizontal tab row is clipped at the right edge ('Q' icon of Discovered) and a 'Scroll navigation' caption sits under the wordmark as the only scroll cue.",
+    "coherence": "Wordmark subtitle 'Scroll navigation' reads like a product tagline rather than a control hint; rest is flat and consistent."
+   },
+   "total_unrounded": "7.00",
+   "total": 7.0,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 7,
+     "type_geometry": 8,
+     "shell": 7,
+     "accent_discipline": 6,
+     "suite_cohesion": 7
+    },
+    "observations": {
+     "palette_tokens": "Neutral token surfaces; teal/purple chart series off palette.",
+     "type_geometry": "40px Sign out and tab pills on 8px radius.",
+     "shell": "Top row brand + Sign out and a scrolling tab strip with bottom accent rail; KyIdentity reference puts account name/role there instead of a caption.",
+     "accent_discipline": "Orange 'Forwarded' series alongside the selected tab rail.",
+     "suite_cohesion": "Tab strip and selected pill match KyIdentity mobile; header content differs ('Scroll navigation' vs subtitle/account)."
+    },
+    "na_reasons": {},
+    "total_unrounded": "7",
+    "total": 7.0
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-dhcp-desktop-dark.png",
+   "sha256": "c882c2e6dcd4507f373f5061a8e764b2d7203cfd942bcab99f39b927c501355d",
+   "bytes": 66502,
+   "width": 1280,
+   "height": 900,
+   "surface": "dhcp",
+   "device": "desktop",
+   "theme": "dark",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "DHCP (server off, no leases)",
+   "filename_matches_content": true,
+   "cohort": "admin-console",
+   "state": "empty",
+   "viewport": {
+    "class": "desktop",
+    "width": 1280,
+    "height": 900,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "DHCP legitimately disabled; no lease table.",
+   "scores": {
+    "hierarchy": 7,
+    "typography": 7,
+    "density_layout": 7,
+    "color": 8,
+    "visible_affordances": 7,
+    "coherence": 7
+   },
+   "observations": {
+    "hierarchy": "Status, Settings and Leases sections; filled 'Save' is the single primary at the foot of the form.",
+    "typography": "Section headings 17px, labels 13px, mono status pill; 'Second DNS server (optional)' wraps under its label.",
+    "density_layout": "Checkbox rows and 'Fill in from this interface' sit in the field column without labels; 86400 field is short; rhythm otherwise even.",
+    "color": "Neutral throughout except the orange Save.",
+    "visible_affordances": "Empty inputs show clear borders; outlined secondary 'Fill in' vs filled Save are distinct.",
+    "coherence": "Same form grid as Services/Records. Dark: charcoal panel sidebar/header, brown accent-soft selection."
+   },
+   "total_unrounded": "7.15",
+   "total": 7.2,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 8,
+     "shell": 7,
+     "accent_discipline": 8,
+     "suite_cohesion": 7
+    },
+    "observations": {
+     "palette_tokens": "Token surfaces.",
+     "type_geometry": "40px fields/buttons, 8px radius.",
+     "shell": "Contract nav; account region differs.",
+     "accent_discipline": "Orange only on Save and selection.",
+     "suite_cohesion": "Form idiom matches suite forms; label-left grid differs from label-above contract."
+    },
+    "na_reasons": {},
+    "total_unrounded": "7.6",
+    "total": 7.6
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-dhcp-desktop-light.png",
+   "sha256": "794b841d14612c83ff48591a795c8c34340da81e3a1bc9f54902370256576d79",
+   "bytes": 66340,
+   "width": 1280,
+   "height": 900,
+   "surface": "dhcp",
+   "device": "desktop",
+   "theme": "light",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "DHCP (server off, no leases)",
+   "filename_matches_content": true,
+   "cohort": "admin-console",
+   "state": "empty",
+   "viewport": {
+    "class": "desktop",
+    "width": 1280,
+    "height": 900,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "DHCP legitimately disabled; no lease table.",
+   "scores": {
+    "hierarchy": 7,
+    "typography": 7,
+    "density_layout": 7,
+    "color": 8,
+    "visible_affordances": 7,
+    "coherence": 7
+   },
+   "observations": {
+    "hierarchy": "Status, Settings and Leases sections; filled 'Save' is the single primary at the foot of the form.",
+    "typography": "Section headings 17px, labels 13px, mono status pill; 'Second DNS server (optional)' wraps under its label.",
+    "density_layout": "Checkbox rows and 'Fill in from this interface' sit in the field column without labels; 86400 field is short; rhythm otherwise even.",
+    "color": "Neutral throughout except the orange Save.",
+    "visible_affordances": "Empty inputs show clear borders; outlined secondary 'Fill in' vs filled Save are distinct.",
+    "coherence": "Same form grid as Services/Records."
+   },
+   "total_unrounded": "7.15",
+   "total": 7.2,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 8,
+     "shell": 7,
+     "accent_discipline": 8,
+     "suite_cohesion": 7
+    },
+    "observations": {
+     "palette_tokens": "Token surfaces.",
+     "type_geometry": "40px fields/buttons, 8px radius.",
+     "shell": "Contract nav; account region differs.",
+     "accent_discipline": "Orange only on Save and selection.",
+     "suite_cohesion": "Form idiom matches suite forms; label-left grid differs from label-above contract."
+    },
+    "na_reasons": {},
+    "total_unrounded": "7.6",
+    "total": 7.6
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-dhcp-mobile-dark.png",
+   "sha256": "017f799337af412bb13e913afcc380072f5c09ced70f93fe0fe7351f430a012b",
+   "bytes": 36976,
+   "width": 390,
+   "height": 844,
+   "surface": "dhcp",
+   "device": "mobile",
+   "theme": "dark",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "DHCP (server off, no leases)",
+   "filename_matches_content": true,
+   "cohort": "admin-console",
+   "state": "empty",
+   "viewport": {
+    "class": "mobile",
+    "width": 390,
+    "height": 844,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "Save and Leases below the fold.",
+   "scores": {
+    "hierarchy": 7,
+    "typography": 7,
+    "density_layout": 7,
+    "color": 8,
+    "visible_affordances": 7,
+    "coherence": 8
+   },
+   "observations": {
+    "hierarchy": "Status and Settings sections in order; Save primary is below the fold.",
+    "typography": "Section headings 17px, labels 13px, mono status pill; 'Second DNS server (optional)' wraps under its label.",
+    "density_layout": "Labels stack above full-width fields at an even 74px pitch.",
+    "color": "Neutral throughout except the orange Save.",
+    "visible_affordances": "Empty inputs show clear borders; outlined secondary 'Fill in' vs filled Save are distinct.",
+    "coherence": "Stacked label/field rhythm identical to Records mobile form. Dark: charcoal panel sidebar/header, brown accent-soft selection."
+   },
+   "total_unrounded": "7.30",
+   "total": 7.3,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 8,
+     "shell": 7,
+     "accent_discipline": 8,
+     "suite_cohesion": 7
+    },
+    "observations": {
+     "palette_tokens": "Token surfaces.",
+     "type_geometry": "40px fields, labels above.",
+     "shell": "Tab strip; header differs from KyIdentity.",
+     "accent_discipline": "Orange only on selection.",
+     "suite_cohesion": "Matches suite mobile forms."
+    },
+    "na_reasons": {},
+    "total_unrounded": "7.6",
+    "total": 7.6
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-dhcp-mobile-light.png",
+   "sha256": "bd00189f30962ccd0855ebb4dceddadafbf8c5496002f6766cfd86e9096d3f9e",
+   "bytes": 36884,
+   "width": 390,
+   "height": 844,
+   "surface": "dhcp",
+   "device": "mobile",
+   "theme": "light",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "DHCP (server off, no leases)",
+   "filename_matches_content": true,
+   "cohort": "admin-console",
+   "state": "empty",
+   "viewport": {
+    "class": "mobile",
+    "width": 390,
+    "height": 844,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "Save and Leases below the fold.",
+   "scores": {
+    "hierarchy": 7,
+    "typography": 7,
+    "density_layout": 7,
+    "color": 8,
+    "visible_affordances": 7,
+    "coherence": 8
+   },
+   "observations": {
+    "hierarchy": "Status and Settings sections in order; Save primary is below the fold.",
+    "typography": "Section headings 17px, labels 13px, mono status pill; 'Second DNS server (optional)' wraps under its label.",
+    "density_layout": "Labels stack above full-width fields at an even 74px pitch.",
+    "color": "Neutral throughout except the orange Save.",
+    "visible_affordances": "Empty inputs show clear borders; outlined secondary 'Fill in' vs filled Save are distinct.",
+    "coherence": "Stacked label/field rhythm identical to Records mobile form."
+   },
+   "total_unrounded": "7.30",
+   "total": 7.3,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 8,
+     "shell": 7,
+     "accent_discipline": 8,
+     "suite_cohesion": 7
+    },
+    "observations": {
+     "palette_tokens": "Token surfaces.",
+     "type_geometry": "40px fields, labels above.",
+     "shell": "Tab strip; header differs from KyIdentity.",
+     "accent_discipline": "Orange only on selection.",
+     "suite_cohesion": "Matches suite mobile forms."
+    },
+    "na_reasons": {},
+    "total_unrounded": "7.6",
+    "total": 7.6
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-discovered-desktop-dark.png",
+   "sha256": "5f4c16be5aa4c8cc35665d458ed03bea781962517810854be060a8910b95be28",
+   "bytes": 38118,
+   "width": 1280,
+   "height": 900,
+   "surface": "discovered",
+   "device": "desktop",
+   "theme": "dark",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "discovered (empty, discovery off)",
+   "filename_matches_content": true,
+   "cohort": "admin-console",
+   "state": "empty",
+   "viewport": {
+    "class": "desktop",
+    "width": 1280,
+    "height": 900,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "Legitimately empty fixture; no populated lease list to judge.",
+   "scores": {
+    "hierarchy": 7,
+    "typography": 7,
+    "density_layout": 6,
+    "color": 8,
+    "visible_affordances": 7,
+    "coherence": 8
+   },
+   "observations": {
+    "hierarchy": "Title then one sentence saying discovery is off and pointing to Settings; no button for the next step.",
+    "typography": "Body 15px with an inline mono `dhcp_lease_file` chip; title alone at top.",
+    "density_layout": "Two lines of guidance in the top-left with the rest of the 1000px canvas empty.",
+    "color": "Only accent is the underlined 'Settings' link; code chip on a quiet tint.",
+    "visible_affordances": "Next action is an inline text link, not a button.",
+    "coherence": "Plain flat page, nothing stray. Dark: charcoal panel sidebar/header, brown accent-soft selection."
+   },
+   "total_unrounded": "7.10",
+   "total": 7.1,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 8,
+     "shell": 7,
+     "accent_discipline": 7,
+     "suite_cohesion": 7
+    },
+    "observations": {
+     "palette_tokens": "Token surfaces only.",
+     "type_geometry": "Contract title/body sizes.",
+     "shell": "Contract nav; account region differs.",
+     "accent_discipline": "Orange for an inline text link, outside the primary/selection/focus roles.",
+     "suite_cohesion": "Plain page fits the suite; empty-state pattern untested against peers."
+    },
+    "na_reasons": {},
+    "total_unrounded": "7.4",
+    "total": 7.4
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-discovered-desktop-light.png",
+   "sha256": "d97c166cf5581f84b4300df803de5e4703cf215c0a7213aecccfdd57d90855ed",
+   "bytes": 38339,
+   "width": 1280,
+   "height": 900,
+   "surface": "discovered",
+   "device": "desktop",
+   "theme": "light",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "discovered (empty, discovery off)",
+   "filename_matches_content": true,
+   "cohort": "admin-console",
+   "state": "empty",
+   "viewport": {
+    "class": "desktop",
+    "width": 1280,
+    "height": 900,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "Legitimately empty fixture; no populated lease list to judge.",
+   "scores": {
+    "hierarchy": 7,
+    "typography": 7,
+    "density_layout": 6,
+    "color": 8,
+    "visible_affordances": 7,
+    "coherence": 8
+   },
+   "observations": {
+    "hierarchy": "Title then one sentence saying discovery is off and pointing to Settings; no button for the next step.",
+    "typography": "Body 15px with an inline mono `dhcp_lease_file` chip; title alone at top.",
+    "density_layout": "Two lines of guidance in the top-left with the rest of the 1000px canvas empty.",
+    "color": "Only accent is the underlined 'Settings' link; code chip on a quiet tint.",
+    "visible_affordances": "Next action is an inline text link, not a button.",
+    "coherence": "Plain flat page, nothing stray."
+   },
+   "total_unrounded": "7.10",
+   "total": 7.1,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 8,
+     "shell": 7,
+     "accent_discipline": 7,
+     "suite_cohesion": 7
+    },
+    "observations": {
+     "palette_tokens": "Token surfaces only.",
+     "type_geometry": "Contract title/body sizes.",
+     "shell": "Contract nav; account region differs.",
+     "accent_discipline": "Orange for an inline text link, outside the primary/selection/focus roles.",
+     "suite_cohesion": "Plain page fits the suite; empty-state pattern untested against peers."
+    },
+    "na_reasons": {},
+    "total_unrounded": "7.4",
+    "total": 7.4
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-discovered-mobile-dark.png",
+   "sha256": "9b3215634cc241ee2bd76a34d10660d08f961583b6124d1be67244bd6f6c4177",
+   "bytes": 26292,
+   "width": 390,
+   "height": 844,
+   "surface": "discovered",
+   "device": "mobile",
+   "theme": "dark",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "discovered (empty, discovery off)",
+   "filename_matches_content": true,
+   "cohort": "admin-console",
+   "state": "empty",
+   "viewport": {
+    "class": "mobile",
+    "width": 390,
+    "height": 844,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "Legitimately empty fixture; no populated lease list to judge.",
+   "scores": {
+    "hierarchy": 7,
+    "typography": 7,
+    "density_layout": 7,
+    "color": 8,
+    "visible_affordances": 7,
+    "coherence": 8
+   },
+   "observations": {
+    "hierarchy": "Title then one sentence saying discovery is off and pointing to Settings; no button for the next step.",
+    "typography": "Body 15px with an inline mono `dhcp_lease_file` chip; title alone at top.",
+    "density_layout": "Two lines of guidance in the top-left with the rest of the viewport below a footer line empty.",
+    "color": "Only accent is the underlined 'Settings' link; code chip on a quiet tint.",
+    "visible_affordances": "Inline 'Settings' link; tab strip auto-scrolled so 'Discovered' is visible and 'Dashboard' is clipped to 'oard'.",
+    "coherence": "Plain flat page, nothing stray. Dark: charcoal panel sidebar/header, brown accent-soft selection."
+   },
+   "total_unrounded": "7.30",
+   "total": 7.3,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 8,
+     "shell": 7,
+     "accent_discipline": 7,
+     "suite_cohesion": 7
+    },
+    "observations": {
+     "palette_tokens": "Token surfaces only.",
+     "type_geometry": "Contract title/body sizes.",
+     "shell": "Contract nav; account region differs.",
+     "accent_discipline": "Orange for an inline text link, outside the primary/selection/focus roles.",
+     "suite_cohesion": "Plain page fits the suite; empty-state pattern untested against peers."
+    },
+    "na_reasons": {},
+    "total_unrounded": "7.4",
+    "total": 7.4
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-discovered-mobile-light.png",
+   "sha256": "f6a9c3d309158d66b19f52dc14c63f54d90c63ccd1571558c3aba007b8002202",
+   "bytes": 26208,
+   "width": 390,
+   "height": 844,
+   "surface": "discovered",
+   "device": "mobile",
+   "theme": "light",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "discovered (empty, discovery off)",
+   "filename_matches_content": true,
+   "cohort": "admin-console",
+   "state": "empty",
+   "viewport": {
+    "class": "mobile",
+    "width": 390,
+    "height": 844,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "Legitimately empty fixture; no populated lease list to judge.",
+   "scores": {
+    "hierarchy": 7,
+    "typography": 7,
+    "density_layout": 7,
+    "color": 8,
+    "visible_affordances": 7,
+    "coherence": 8
+   },
+   "observations": {
+    "hierarchy": "Title then one sentence saying discovery is off and pointing to Settings; no button for the next step.",
+    "typography": "Body 15px with an inline mono `dhcp_lease_file` chip; title alone at top.",
+    "density_layout": "Two lines of guidance in the top-left with the rest of the viewport below a footer line empty.",
+    "color": "Only accent is the underlined 'Settings' link; code chip on a quiet tint.",
+    "visible_affordances": "Inline 'Settings' link; tab strip auto-scrolled so 'Discovered' is visible and 'Dashboard' is clipped to 'oard'.",
+    "coherence": "Plain flat page, nothing stray."
+   },
+   "total_unrounded": "7.30",
+   "total": 7.3,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 8,
+     "shell": 7,
+     "accent_discipline": 7,
+     "suite_cohesion": 7
+    },
+    "observations": {
+     "palette_tokens": "Token surfaces only.",
+     "type_geometry": "Contract title/body sizes.",
+     "shell": "Contract nav; account region differs.",
+     "accent_discipline": "Orange for an inline text link, outside the primary/selection/focus roles.",
+     "suite_cohesion": "Plain page fits the suite; empty-state pattern untested against peers."
+    },
+    "na_reasons": {},
+    "total_unrounded": "7.4",
+    "total": 7.4
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-login-desktop-dark.png",
+   "sha256": "852570f11b84974f69b8701cdd9fd48782983fa4ded9c46747ae19415ac749a0",
+   "bytes": 14652,
+   "width": 1280,
+   "height": 900,
+   "surface": "login",
+   "device": "desktop",
+   "theme": "dark",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "sign-in (signed out)",
+   "filename_matches_content": true,
+   "cohort": "auth",
+   "state": "empty",
+   "viewport": {
+    "class": "desktop",
+    "width": 1280,
+    "height": 900,
+    "dpr": 1
+   },
+   "artifacts": "none (autofocus ring is product state)",
+   "confidence": "high",
+   "caveat": "Signed-out password form only; no error, lockout or SSO state is shown. Focus ring is autofocus state.",
+   "scores": {
+    "hierarchy": 8,
+    "typography": 8,
+    "density_layout": 8,
+    "color": 8,
+    "visible_affordances": 8,
+    "coherence": 8
+   },
+   "observations": {
+    "hierarchy": "Wordmark, 'Sign in' title, one Password field and one full-width filled 'Sign in' button: a single unambiguous action.",
+    "typography": "Sign in title ~20px/600, 13px 'Password' label and 14px button label form three clear steps with no extra weights.",
+    "density_layout": "384px card with even 24px insets sits slightly above centre; field and button share one width.",
+    "color": "Accent appears only on the filled Sign in button and the autofocus ring; card, field and page stay neutral charcoal.",
+    "visible_affordances": "Password input has a visible field border plus the orange focus ring; button reads as the enabled primary.",
+    "coherence": "One card, one input, one button, all on the same 8px radius; no stray chrome. Dark: stamp icon tile merges into the charcoal page."
+   },
+   "total_unrounded": "8.00",
+   "total": 8.0,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 8,
+     "shell": "N/A",
+     "accent_discipline": 8,
+     "suite_cohesion": 8
+    },
+    "observations": {
+     "palette_tokens": "Cream/charcoal page, white or panel card and #bf3f18/#f5865f-family orange read as the token palette.",
+     "type_geometry": "40px input and button on 8px radius; Space Grotesk throughout.",
+     "shell": "N/A: signed-out screen has no sidebar or account region.",
+     "accent_discipline": "Orange only on the primary button and focus ring.",
+     "suite_cohesion": "Stamp + wordmark above a plain card matches the KyIdentity reference type and surfaces."
+    },
+    "na_reasons": {
+     "shell": "Signed-out login has no navigation shell to judge."
+    },
+    "total_unrounded": "8",
+    "total": 8.0
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-login-desktop-light.png",
+   "sha256": "28ccbf2e360abcb8aa2f22d7b814f362d5dc23ec8c9b07d1d341c473a8bfa39d",
+   "bytes": 14837,
+   "width": 1280,
+   "height": 900,
+   "surface": "login",
+   "device": "desktop",
+   "theme": "light",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "sign-in (signed out)",
+   "filename_matches_content": true,
+   "cohort": "auth",
+   "state": "empty",
+   "viewport": {
+    "class": "desktop",
+    "width": 1280,
+    "height": 900,
+    "dpr": 1
+   },
+   "artifacts": "none (autofocus ring is product state)",
+   "confidence": "high",
+   "caveat": "Signed-out password form only; no error, lockout or SSO state is shown. Focus ring is autofocus state.",
+   "scores": {
+    "hierarchy": 8,
+    "typography": 8,
+    "density_layout": 8,
+    "color": 8,
+    "visible_affordances": 8,
+    "coherence": 8
+   },
+   "observations": {
+    "hierarchy": "Wordmark, 'Sign in' title, one Password field and one full-width filled 'Sign in' button: a single unambiguous action.",
+    "typography": "Sign in title ~20px/600, 13px 'Password' label and 14px button label form three clear steps with no extra weights.",
+    "density_layout": "384px card with even 24px insets sits slightly above centre; field and button share one width.",
+    "color": "Accent appears only on the filled Sign in button and the autofocus ring; card, field and page stay neutral cream.",
+    "visible_affordances": "Password input has a visible field border plus the orange focus ring; button reads as the enabled primary.",
+    "coherence": "One card, one input, one button, all on the same 8px radius; no stray chrome."
+   },
+   "total_unrounded": "8.00",
+   "total": 8.0,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 8,
+     "shell": "N/A",
+     "accent_discipline": 8,
+     "suite_cohesion": 8
+    },
+    "observations": {
+     "palette_tokens": "Cream/charcoal page, white or panel card and #bf3f18/#f5865f-family orange read as the token palette.",
+     "type_geometry": "40px input and button on 8px radius; Space Grotesk throughout.",
+     "shell": "N/A: signed-out screen has no sidebar or account region.",
+     "accent_discipline": "Orange only on the primary button and focus ring.",
+     "suite_cohesion": "Stamp + wordmark above a plain card matches the KyIdentity reference type and surfaces."
+    },
+    "na_reasons": {
+     "shell": "Signed-out login has no navigation shell to judge."
+    },
+    "total_unrounded": "8",
+    "total": 8.0
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-login-mobile-dark.png",
+   "sha256": "eb18df452965f9cbf21eddbc6103774cfbc516ec0894f33ee24dfd110f1ec471",
+   "bytes": 11801,
+   "width": 390,
+   "height": 844,
+   "surface": "login",
+   "device": "mobile",
+   "theme": "dark",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "sign-in (signed out)",
+   "filename_matches_content": true,
+   "cohort": "auth",
+   "state": "empty",
+   "viewport": {
+    "class": "mobile",
+    "width": 390,
+    "height": 844,
+    "dpr": 1
+   },
+   "artifacts": "none (autofocus ring is product state)",
+   "confidence": "high",
+   "caveat": "Signed-out password form only; no error, lockout or SSO state is shown. Focus ring is autofocus state.",
+   "scores": {
+    "hierarchy": 8,
+    "typography": 8,
+    "density_layout": 8,
+    "color": 8,
+    "visible_affordances": 8,
+    "coherence": 8
+   },
+   "observations": {
+    "hierarchy": "Wordmark, 'Sign in' title, one Password field and one full-width filled 'Sign in' button: a single unambiguous action.",
+    "typography": "Sign in title ~20px/600, 13px 'Password' label and 14px button label form three clear steps with no extra weights.",
+    "density_layout": "358px card with even 24px insets sits slightly above centre; field and button share one width.",
+    "color": "Accent appears only on the filled Sign in button and the autofocus ring; card, field and page stay neutral charcoal.",
+    "visible_affordances": "Password input has a visible field border plus the orange focus ring; button reads as the enabled primary.",
+    "coherence": "One card, one input, one button, all on the same 8px radius; no stray chrome. Dark: stamp icon tile merges into the charcoal page."
+   },
+   "total_unrounded": "8.00",
+   "total": 8.0,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 8,
+     "shell": "N/A",
+     "accent_discipline": 8,
+     "suite_cohesion": 8
+    },
+    "observations": {
+     "palette_tokens": "Cream/charcoal page, white or panel card and #bf3f18/#f5865f-family orange read as the token palette.",
+     "type_geometry": "40px input and button on 8px radius; Space Grotesk throughout.",
+     "shell": "N/A: signed-out screen has no sidebar or account region.",
+     "accent_discipline": "Orange only on the primary button and focus ring.",
+     "suite_cohesion": "Stamp + wordmark above a plain card matches the KyIdentity reference type and surfaces."
+    },
+    "na_reasons": {
+     "shell": "Signed-out login has no navigation shell to judge."
+    },
+    "total_unrounded": "8",
+    "total": 8.0
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-login-mobile-light.png",
+   "sha256": "3813c7603cbc757bbbba1ced377cc6989166e5d804859d292798abb052f919f4",
+   "bytes": 11874,
+   "width": 390,
+   "height": 844,
+   "surface": "login",
+   "device": "mobile",
+   "theme": "light",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "sign-in (signed out)",
+   "filename_matches_content": true,
+   "cohort": "auth",
+   "state": "empty",
+   "viewport": {
+    "class": "mobile",
+    "width": 390,
+    "height": 844,
+    "dpr": 1
+   },
+   "artifacts": "none (autofocus ring is product state)",
+   "confidence": "high",
+   "caveat": "Signed-out password form only; no error, lockout or SSO state is shown. Focus ring is autofocus state.",
+   "scores": {
+    "hierarchy": 8,
+    "typography": 8,
+    "density_layout": 8,
+    "color": 8,
+    "visible_affordances": 8,
+    "coherence": 8
+   },
+   "observations": {
+    "hierarchy": "Wordmark, 'Sign in' title, one Password field and one full-width filled 'Sign in' button: a single unambiguous action.",
+    "typography": "Sign in title ~20px/600, 13px 'Password' label and 14px button label form three clear steps with no extra weights.",
+    "density_layout": "358px card with even 24px insets sits slightly above centre; field and button share one width.",
+    "color": "Accent appears only on the filled Sign in button and the autofocus ring; card, field and page stay neutral cream.",
+    "visible_affordances": "Password input has a visible field border plus the orange focus ring; button reads as the enabled primary.",
+    "coherence": "One card, one input, one button, all on the same 8px radius; no stray chrome."
+   },
+   "total_unrounded": "8.00",
+   "total": 8.0,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 8,
+     "shell": "N/A",
+     "accent_discipline": 8,
+     "suite_cohesion": 8
+    },
+    "observations": {
+     "palette_tokens": "Cream/charcoal page, white or panel card and #bf3f18/#f5865f-family orange read as the token palette.",
+     "type_geometry": "40px input and button on 8px radius; Space Grotesk throughout.",
+     "shell": "N/A: signed-out screen has no sidebar or account region.",
+     "accent_discipline": "Orange only on the primary button and focus ring.",
+     "suite_cohesion": "Stamp + wordmark above a plain card matches the KyIdentity reference type and surfaces."
+    },
+    "na_reasons": {
+     "shell": "Signed-out login has no navigation shell to judge."
+    },
+    "total_unrounded": "8",
+    "total": 8.0
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-records-desktop-dark.png",
+   "sha256": "da94dec616e3bf7ff4a599c02677deda44c9539801b3b841572847d98d242ff4",
+   "bytes": 62637,
+   "width": 1280,
+   "height": 900,
+   "surface": "records",
+   "device": "desktop",
+   "theme": "dark",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "records list + add form",
+   "filename_matches_content": true,
+   "cohort": "admin-console",
+   "state": "sparse",
+   "viewport": {
+    "class": "desktop",
+    "width": 1280,
+    "height": 900,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "Three sparse A records.",
+   "scores": {
+    "hierarchy": 7,
+    "typography": 6,
+    "density_layout": 7,
+    "color": 6,
+    "visible_affordances": 7,
+    "coherence": 7
+   },
+   "observations": {
+    "hierarchy": "Title with orange 'Add record' link, three rows, 'Add a record' form with a filled primary; explanatory note trails below.",
+    "typography": "Name placeholder is mono ('printer.home.arpa.') while Value placeholder is sans ('192.168.1.50'); 'all views' is larger sans beside mono cells.",
+    "density_layout": "Rows evenly spaced; the precedence note sits at x=280 under a form whose fields start at x=470, breaking the column.",
+    "color": "Dark salmon Remove outlines and orange 'Add record' link/button are close in hue; destructive and primary blur.",
+    "visible_affordances": "Field borders, native select chevrons and the outlined Remove are clear.",
+    "coherence": "Same table/form vocabulary as Services; 'A' type pill is the only badge. Dark: charcoal panel sidebar/header, brown accent-soft selection."
+   },
+   "total_unrounded": "6.70",
+   "total": 6.7,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 7,
+     "shell": 7,
+     "accent_discipline": 6,
+     "suite_cohesion": 7
+    },
+    "observations": {
+     "palette_tokens": "Token surfaces and danger.",
+     "type_geometry": "40px controls on 8px radius; mono/sans mix.",
+     "shell": "Contract nav; account region differs from KyIdentity.",
+     "accent_discipline": "Orange header link plus orange primary.",
+     "suite_cohesion": "Shares row/rule/button vocabulary with KyIdentity list."
+    },
+    "na_reasons": {},
+    "total_unrounded": "7",
+    "total": 7.0
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-records-desktop-light.png",
+   "sha256": "9fbdc2f0f6f670b4fcb0354b26035f8331fb998e4833a7cc6cbed6a7bb5e7809",
+   "bytes": 62749,
+   "width": 1280,
+   "height": 900,
+   "surface": "records",
+   "device": "desktop",
+   "theme": "light",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "records list + add form",
+   "filename_matches_content": true,
+   "cohort": "admin-console",
+   "state": "sparse",
+   "viewport": {
+    "class": "desktop",
+    "width": 1280,
+    "height": 900,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "Three sparse A records.",
+   "scores": {
+    "hierarchy": 7,
+    "typography": 6,
+    "density_layout": 7,
+    "color": 7,
+    "visible_affordances": 7,
+    "coherence": 7
+   },
+   "observations": {
+    "hierarchy": "Title with orange 'Add record' link, three rows, 'Add a record' form with a filled primary; explanatory note trails below.",
+    "typography": "Name placeholder is mono ('printer.home.arpa.') while Value placeholder is sans ('192.168.1.50'); 'all views' is larger sans beside mono cells.",
+    "density_layout": "Rows evenly spaced; the precedence note sits at x=280 under a form whose fields start at x=470, breaking the column.",
+    "color": "Red outlined Remove per row plus orange link and button; type 'A' pill neutral.",
+    "visible_affordances": "Field borders, native select chevrons and the outlined Remove are clear.",
+    "coherence": "Same table/form vocabulary as Services; 'A' type pill is the only badge."
+   },
+   "total_unrounded": "6.85",
+   "total": 6.9,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 7,
+     "shell": 7,
+     "accent_discipline": 6,
+     "suite_cohesion": 7
+    },
+    "observations": {
+     "palette_tokens": "Token surfaces and danger.",
+     "type_geometry": "40px controls on 8px radius; mono/sans mix.",
+     "shell": "Contract nav; account region differs from KyIdentity.",
+     "accent_discipline": "Orange header link plus orange primary.",
+     "suite_cohesion": "Shares row/rule/button vocabulary with KyIdentity list."
+    },
+    "na_reasons": {},
+    "total_unrounded": "7",
+    "total": 7.0
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-records-mobile-dark.png",
+   "sha256": "3da8586321d12f65c0222694e0348e1aefa6841256a5e2576581bd6bea158aa0",
+   "bytes": 41325,
+   "width": 390,
+   "height": 844,
+   "surface": "records",
+   "device": "mobile",
+   "theme": "dark",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "records list + add form",
+   "filename_matches_content": true,
+   "cohort": "admin-console",
+   "state": "sparse",
+   "viewport": {
+    "class": "mobile",
+    "width": 390,
+    "height": 844,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "Three sparse A records. Form continues below the fold.",
+   "scores": {
+    "hierarchy": 7,
+    "typography": 6,
+    "density_layout": 7,
+    "color": 6,
+    "visible_affordances": 7,
+    "coherence": 7
+   },
+   "observations": {
+    "hierarchy": "Title + 'Add record' link, three compact blocks, then a stacked form.",
+    "typography": "Bold mono names lead each block; 'all views' in 15px sans vs 14px mono value.",
+    "density_layout": "Blocks ~136px tall; Remove sits ~11px below the 'View' line rather than on it.",
+    "color": "Dark salmon Remove text and orange 'Add record' link/button are close in hue; destructive and primary blur.",
+    "visible_affordances": "Stacked label-above inputs with field borders; native select chevron.",
+    "coherence": "Matches Services mobile block pattern. Dark: charcoal panel sidebar/header, brown accent-soft selection."
+   },
+   "total_unrounded": "6.70",
+   "total": 6.7,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 7,
+     "shell": 7,
+     "accent_discipline": 6,
+     "suite_cohesion": 7
+    },
+    "observations": {
+     "palette_tokens": "Token surfaces and danger.",
+     "type_geometry": "40px controls on 8px radius; mono/sans mix.",
+     "shell": "Contract nav; account region differs from KyIdentity.",
+     "accent_discipline": "Orange header link plus orange primary.",
+     "suite_cohesion": "Shares row/rule/button vocabulary with KyIdentity list."
+    },
+    "na_reasons": {},
+    "total_unrounded": "7",
+    "total": 7.0
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-records-mobile-light.png",
+   "sha256": "375852b00f8a4b5eba0720c3ae518a03bc3899f3230784ceed7e4e966a46a62d",
+   "bytes": 41140,
+   "width": 390,
+   "height": 844,
+   "surface": "records",
+   "device": "mobile",
+   "theme": "light",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "records list + add form",
+   "filename_matches_content": true,
+   "cohort": "admin-console",
+   "state": "sparse",
+   "viewport": {
+    "class": "mobile",
+    "width": 390,
+    "height": 844,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "Three sparse A records. Form continues below the fold.",
+   "scores": {
+    "hierarchy": 7,
+    "typography": 6,
+    "density_layout": 7,
+    "color": 7,
+    "visible_affordances": 7,
+    "coherence": 7
+   },
+   "observations": {
+    "hierarchy": "Title + 'Add record' link, three compact blocks, then a stacked form.",
+    "typography": "Bold mono names lead each block; 'all views' in 15px sans vs 14px mono value.",
+    "density_layout": "Blocks ~136px tall; Remove sits ~11px below the 'View' line rather than on it.",
+    "color": "Red text Remove x3, orange link; neutral otherwise.",
+    "visible_affordances": "Stacked label-above inputs with field borders; native select chevron.",
+    "coherence": "Matches Services mobile block pattern."
+   },
+   "total_unrounded": "6.85",
+   "total": 6.9,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 7,
+     "shell": 7,
+     "accent_discipline": 6,
+     "suite_cohesion": 7
+    },
+    "observations": {
+     "palette_tokens": "Token surfaces and danger.",
+     "type_geometry": "40px controls on 8px radius; mono/sans mix.",
+     "shell": "Contract nav; account region differs from KyIdentity.",
+     "accent_discipline": "Orange header link plus orange primary.",
+     "suite_cohesion": "Shares row/rule/button vocabulary with KyIdentity list."
+    },
+    "na_reasons": {},
+    "total_unrounded": "7",
+    "total": 7.0
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-services-desktop-dark.png",
+   "sha256": "600e0a5bb1a58348f38efdba1d8740cb3dfd0e3f704fe3068b220891d75fffe8",
+   "bytes": 81887,
+   "width": 1280,
+   "height": 900,
+   "surface": "services",
+   "device": "desktop",
+   "theme": "dark",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "services list + add form",
+   "filename_matches_content": true,
+   "cohort": "admin-console",
+   "state": "sparse",
+   "viewport": {
+    "class": "desktop",
+    "width": 1280,
+    "height": 900,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "Three sparse rows; second form ('Add an address…') largely below the fold.",
+   "scores": {
+    "hierarchy": 7,
+    "typography": 6,
+    "density_layout": 7,
+    "color": 6,
+    "visible_affordances": 7,
+    "coherence": 7
+   },
+   "observations": {
+    "hierarchy": "Title with an underlined orange 'Add service' jump link at right, three rows, then the 'Add a service' form whose filled button is the primary.",
+    "typography": "Mono 14px names/addresses sit beside 15px sans 'all views' on a lower baseline in the same row.",
+    "density_layout": "Rows ~68px tall with a 40px outlined Remove each; form uses a 190px label column and a 546px field column with consistent 8px gaps.",
+    "color": "Dark danger (#ff8176-like salmon) Remove outlines sit next to the orange link and button at nearly the same hue; destructive and primary blur.",
+    "visible_affordances": "Inputs have clear field borders; selects show the native chevron; 'Direct' routing disclosure shows a chevron.",
+    "coherence": "Table, flat form and buttons share radius and border weight; native select arrows are the only off-vocabulary element. Dark: charcoal panel sidebar/header, brown accent-soft selection."
+   },
+   "total_unrounded": "6.70",
+   "total": 6.7,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 7,
+     "shell": 7,
+     "accent_discipline": 6,
+     "suite_cohesion": 7
+    },
+    "observations": {
+     "palette_tokens": "Surfaces, ink and danger read as tokens.",
+     "type_geometry": "40px inputs, selects and buttons on 8px radius; mixed mono/sans row sizes.",
+     "shell": "Contract sidebar/tab strip; account region differs from KyIdentity.",
+     "accent_discipline": "Orange used for both the header jump link and the primary button.",
+     "suite_cohesion": "Flat list differs from KyIdentity's bordered table container but shares rows, rules and buttons."
+    },
+    "na_reasons": {},
+    "total_unrounded": "7",
+    "total": 7.0
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-services-desktop-light.png",
+   "sha256": "863d95d2169e5fdf97947c9b69ec60fea1e03f41a0ef2e3fed375ef300abd2d5",
+   "bytes": 81679,
+   "width": 1280,
+   "height": 900,
+   "surface": "services",
+   "device": "desktop",
+   "theme": "light",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "services list + add form",
+   "filename_matches_content": true,
+   "cohort": "admin-console",
+   "state": "sparse",
+   "viewport": {
+    "class": "desktop",
+    "width": 1280,
+    "height": 900,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "Three sparse rows; second form ('Add an address…') largely below the fold.",
+   "scores": {
+    "hierarchy": 7,
+    "typography": 6,
+    "density_layout": 7,
+    "color": 7,
+    "visible_affordances": 7,
+    "coherence": 7
+   },
+   "observations": {
+    "hierarchy": "Title with an underlined orange 'Add service' jump link at right, three rows, then the 'Add a service' form whose filled button is the primary.",
+    "typography": "Mono 14px names/addresses sit beside 15px sans 'all views' on a lower baseline in the same row.",
+    "density_layout": "Rows ~68px tall with a 40px outlined Remove each; form uses a 190px label column and a 546px field column with consistent 8px gaps.",
+    "color": "Red outlined Remove on every row plus orange link and orange filled button: three saturated marks above the fold.",
+    "visible_affordances": "Inputs have clear field borders; selects show the native chevron; 'Direct' routing disclosure shows a chevron.",
+    "coherence": "Table, flat form and buttons share radius and border weight; native select arrows are the only off-vocabulary element."
+   },
+   "total_unrounded": "6.85",
+   "total": 6.9,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 7,
+     "shell": 7,
+     "accent_discipline": 6,
+     "suite_cohesion": 7
+    },
+    "observations": {
+     "palette_tokens": "Surfaces, ink and danger read as tokens.",
+     "type_geometry": "40px inputs, selects and buttons on 8px radius; mixed mono/sans row sizes.",
+     "shell": "Contract sidebar/tab strip; account region differs from KyIdentity.",
+     "accent_discipline": "Orange used for both the header jump link and the primary button.",
+     "suite_cohesion": "Flat list differs from KyIdentity's bordered table container but shares rows, rules and buttons."
+    },
+    "na_reasons": {},
+    "total_unrounded": "7",
+    "total": 7.0
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-services-mobile-dark.png",
+   "sha256": "83e11d7b328997d0b3b9ae506fcb788d3f0bfc07c011159c388bdaf6a7c02c04",
+   "bytes": 41450,
+   "width": 390,
+   "height": 844,
+   "surface": "services",
+   "device": "mobile",
+   "theme": "dark",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "services list + add form",
+   "filename_matches_content": true,
+   "cohort": "admin-console",
+   "state": "sparse",
+   "viewport": {
+    "class": "mobile",
+    "width": 390,
+    "height": 844,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "Form fields below the fold.",
+   "scores": {
+    "hierarchy": 7,
+    "typography": 6,
+    "density_layout": 6,
+    "color": 6,
+    "visible_affordances": 7,
+    "coherence": 7
+   },
+   "observations": {
+    "hierarchy": "Title + 'Add service' link, then three label/value blocks each ending in a red text Remove; form starts below.",
+    "typography": "Labels 13px, mono values 14px and sans 'all views' 15px mix three sizes inside each block.",
+    "density_layout": "Two-column label rows misalign (left 'Address' y≈249, right 'View' y≈252; 'Aliases' 280 vs 'Routing' 291) and each block spends ~50px on a lone Remove.",
+    "color": "Dark danger (#ff8176-like salmon) Remove text sit next to the orange link and button at nearly the same hue; destructive and primary blur.",
+    "visible_affordances": "Remove is text-only red, distinct from the outlined desktop version; routing chevron visible.",
+    "coherence": "Flat blocks divided by quiet rules; consistent with Records mobile. Dark: charcoal panel sidebar/header, brown accent-soft selection."
+   },
+   "total_unrounded": "6.50",
+   "total": 6.5,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 7,
+     "shell": 7,
+     "accent_discipline": 6,
+     "suite_cohesion": 7
+    },
+    "observations": {
+     "palette_tokens": "Surfaces, ink and danger read as tokens.",
+     "type_geometry": "40px inputs, selects and buttons on 8px radius; mixed mono/sans row sizes.",
+     "shell": "Contract sidebar/tab strip; account region differs from KyIdentity.",
+     "accent_discipline": "Orange used for both the header jump link and the primary button.",
+     "suite_cohesion": "Flat list differs from KyIdentity's bordered table container but shares rows, rules and buttons."
+    },
+    "na_reasons": {},
+    "total_unrounded": "7",
+    "total": 7.0
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-services-mobile-light.png",
+   "sha256": "d9464adfd4d851a54899e5817330a7b914e2e99f7d30957fd7f4a752a855d9cc",
+   "bytes": 41450,
+   "width": 390,
+   "height": 844,
+   "surface": "services",
+   "device": "mobile",
+   "theme": "light",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "services list + add form",
+   "filename_matches_content": true,
+   "cohort": "admin-console",
+   "state": "sparse",
+   "viewport": {
+    "class": "mobile",
+    "width": 390,
+    "height": 844,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "Form fields below the fold.",
+   "scores": {
+    "hierarchy": 7,
+    "typography": 6,
+    "density_layout": 6,
+    "color": 7,
+    "visible_affordances": 7,
+    "coherence": 7
+   },
+   "observations": {
+    "hierarchy": "Title + 'Add service' link, then three label/value blocks each ending in a red text Remove; form starts below.",
+    "typography": "Labels 13px, mono values 14px and sans 'all views' 15px mix three sizes inside each block.",
+    "density_layout": "Two-column label rows misalign (left 'Address' y≈249, right 'View' y≈252; 'Aliases' 280 vs 'Routing' 291) and each block spends ~50px on a lone Remove.",
+    "color": "Red text Remove three times plus orange link; otherwise neutral.",
+    "visible_affordances": "Remove is text-only red, distinct from the outlined desktop version; routing chevron visible.",
+    "coherence": "Flat blocks divided by quiet rules; consistent with Records mobile."
+   },
+   "total_unrounded": "6.65",
+   "total": 6.7,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 7,
+     "shell": 7,
+     "accent_discipline": 6,
+     "suite_cohesion": 7
+    },
+    "observations": {
+     "palette_tokens": "Surfaces, ink and danger read as tokens.",
+     "type_geometry": "40px inputs, selects and buttons on 8px radius; mixed mono/sans row sizes.",
+     "shell": "Contract sidebar/tab strip; account region differs from KyIdentity.",
+     "accent_discipline": "Orange used for both the header jump link and the primary button.",
+     "suite_cohesion": "Flat list differs from KyIdentity's bordered table container but shares rows, rules and buttons."
+    },
+    "na_reasons": {},
+    "total_unrounded": "7",
+    "total": 7.0
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-settings-desktop-dark.png",
+   "sha256": "34ea4e27673aa04011f7669e98cc40987ec6d992cea953bc1027492b986c2ff4",
+   "bytes": 66141,
+   "width": 1280,
+   "height": 900,
+   "surface": "settings",
+   "device": "desktop",
+   "theme": "dark",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "server settings form",
+   "filename_matches_content": true,
+   "cohort": "settings",
+   "state": "populated",
+   "viewport": {
+    "class": "desktop",
+    "width": 1280,
+    "height": 900,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "Below-fold API tokens, SSO, backup and upstream sections unscored.",
+   "scores": {
+    "hierarchy": 8,
+    "typography": 7,
+    "density_layout": 8,
+    "color": 8,
+    "visible_affordances": 8,
+    "coherence": 8
+   },
+   "observations": {
+    "hierarchy": "'Save settings' filled button sits right of 'Server settings', the only primary; groups Zone/Access/Upstreams are labelled.",
+    "typography": "Three stacked heading levels (Settings 24px, Server settings 17px, Zone 17px with rule) above the first field.",
+    "density_layout": "Label column 190px, fields 546px, group rules end at the form edge where Save also aligns.",
+    "color": "Neutral form with one orange button.",
+    "visible_affordances": "Textareas show resize grips; placeholder '0.0.0.0/0' is clearly dimmer than entered '127.0.0.0/8'.",
+    "coherence": "Group dividers, fields and buttons share one vocabulary. Dark: charcoal panel sidebar/header, brown accent-soft selection."
+   },
+   "total_unrounded": "7.85",
+   "total": 7.9,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 8,
+     "shell": 7,
+     "accent_discipline": 8,
+     "suite_cohesion": 8
+    },
+    "observations": {
+     "palette_tokens": "Token surfaces.",
+     "type_geometry": "40px fields/buttons, 8px rhythm.",
+     "shell": "Contract nav; account region differs.",
+     "accent_discipline": "Orange only on Save and selection.",
+     "suite_cohesion": "Settings form idiom fits the suite."
+    },
+    "na_reasons": {},
+    "total_unrounded": "7.8",
+    "total": 7.8
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-settings-desktop-light.png",
+   "sha256": "b903652771c3e706cefca41f8448049e3537f16b92b3232502245022e7467131",
+   "bytes": 66172,
+   "width": 1280,
+   "height": 900,
+   "surface": "settings",
+   "device": "desktop",
+   "theme": "light",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "server settings form",
+   "filename_matches_content": true,
+   "cohort": "settings",
+   "state": "populated",
+   "viewport": {
+    "class": "desktop",
+    "width": 1280,
+    "height": 900,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "Below-fold API tokens, SSO, backup and upstream sections unscored.",
+   "scores": {
+    "hierarchy": 8,
+    "typography": 7,
+    "density_layout": 8,
+    "color": 8,
+    "visible_affordances": 8,
+    "coherence": 8
+   },
+   "observations": {
+    "hierarchy": "'Save settings' filled button sits right of 'Server settings', the only primary; groups Zone/Access/Upstreams are labelled.",
+    "typography": "Three stacked heading levels (Settings 24px, Server settings 17px, Zone 17px with rule) above the first field.",
+    "density_layout": "Label column 190px, fields 546px, group rules end at the form edge where Save also aligns.",
+    "color": "Neutral form with one orange button.",
+    "visible_affordances": "Textareas show resize grips; placeholder '0.0.0.0/0' is clearly dimmer than entered '127.0.0.0/8'.",
+    "coherence": "Group dividers, fields and buttons share one vocabulary."
+   },
+   "total_unrounded": "7.85",
+   "total": 7.9,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 8,
+     "shell": 7,
+     "accent_discipline": 8,
+     "suite_cohesion": 8
+    },
+    "observations": {
+     "palette_tokens": "Token surfaces.",
+     "type_geometry": "40px fields/buttons, 8px rhythm.",
+     "shell": "Contract nav; account region differs.",
+     "accent_discipline": "Orange only on Save and selection.",
+     "suite_cohesion": "Settings form idiom fits the suite."
+    },
+    "na_reasons": {},
+    "total_unrounded": "7.8",
+    "total": 7.8
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-settings-mobile-dark.png",
+   "sha256": "ef39220b4990261ecf3f55a0bcc657bfacb6ab85614dd68ddff66d189b1a7708",
+   "bytes": 38139,
+   "width": 390,
+   "height": 844,
+   "surface": "settings",
+   "device": "mobile",
+   "theme": "dark",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "server settings form",
+   "filename_matches_content": true,
+   "cohort": "settings",
+   "state": "populated",
+   "viewport": {
+    "class": "mobile",
+    "width": 390,
+    "height": 844,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "Below-fold API tokens, SSO, backup and upstream sections unscored.",
+   "scores": {
+    "hierarchy": 8,
+    "typography": 7,
+    "density_layout": 8,
+    "color": 8,
+    "visible_affordances": 8,
+    "coherence": 8
+   },
+   "observations": {
+    "hierarchy": "'Save settings' filled button sits right of 'Server settings', the only primary; groups Zone/Access/Upstreams are labelled.",
+    "typography": "Three stacked heading levels (Settings 24px, Server settings 17px, Zone 17px with rule) above the first field.",
+    "density_layout": "Labels above full-width fields; Save shares the 'Server settings' row and the group rules run full width.",
+    "color": "Neutral form with one orange button.",
+    "visible_affordances": "Textareas show resize grips; placeholder '0.0.0.0/0' is clearly dimmer than entered '127.0.0.0/8'.",
+    "coherence": "Group dividers, fields and buttons share one vocabulary. Dark: charcoal panel sidebar/header, brown accent-soft selection."
+   },
+   "total_unrounded": "7.85",
+   "total": 7.9,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 8,
+     "shell": 7,
+     "accent_discipline": 8,
+     "suite_cohesion": 8
+    },
+    "observations": {
+     "palette_tokens": "Token surfaces.",
+     "type_geometry": "40px fields/buttons, 8px rhythm.",
+     "shell": "Contract nav; account region differs.",
+     "accent_discipline": "Orange only on Save and selection.",
+     "suite_cohesion": "Settings form idiom fits the suite."
+    },
+    "na_reasons": {},
+    "total_unrounded": "7.8",
+    "total": 7.8
+   }
+  },
+  {
+   "file": "screenshots/kydns-02-after-settings-mobile-light.png",
+   "sha256": "816ed0da2af913756719fc83c656c81d3d948927df094f14fc84a2f058807ca2",
+   "bytes": 37705,
+   "width": 390,
+   "height": 844,
+   "surface": "settings",
+   "device": "mobile",
+   "theme": "light",
+   "duplicate_of": null,
+   "observed_product": "KyDNS",
+   "observed_surface": "server settings form",
+   "filename_matches_content": true,
+   "cohort": "settings",
+   "state": "populated",
+   "viewport": {
+    "class": "mobile",
+    "width": 390,
+    "height": 844,
+    "dpr": 1
+   },
+   "artifacts": "none",
+   "confidence": "high",
+   "caveat": "Below-fold API tokens, SSO, backup and upstream sections unscored.",
+   "scores": {
+    "hierarchy": 8,
+    "typography": 7,
+    "density_layout": 8,
+    "color": 8,
+    "visible_affordances": 8,
+    "coherence": 8
+   },
+   "observations": {
+    "hierarchy": "'Save settings' filled button sits right of 'Server settings', the only primary; groups Zone/Access/Upstreams are labelled.",
+    "typography": "Three stacked heading levels (Settings 24px, Server settings 17px, Zone 17px with rule) above the first field.",
+    "density_layout": "Labels above full-width fields; Save shares the 'Server settings' row and the group rules run full width.",
+    "color": "Neutral form with one orange button.",
+    "visible_affordances": "Textareas show resize grips; placeholder '0.0.0.0/0' is clearly dimmer than entered '127.0.0.0/8'.",
+    "coherence": "Group dividers, fields and buttons share one vocabulary."
+   },
+   "total_unrounded": "7.85",
+   "total": 7.9,
+   "ky_fit": {
+    "scores": {
+     "palette_tokens": 8,
+     "type_geometry": 8,
+     "shell": 7,
+     "accent_discipline": 8,
+     "suite_cohesion": 8
+    },
+    "observations": {
+     "palette_tokens": "Token surfaces.",
+     "type_geometry": "40px fields/buttons, 8px rhythm.",
+     "shell": "Contract nav; account region differs.",
+     "accent_discipline": "Orange only on Save and selection.",
+     "suite_cohesion": "Settings form idiom fits the suite."
+    },
+    "na_reasons": {},
+    "total_unrounded": "7.8",
+    "total": 7.8
+   }
+  }
+ ],
+ "overall_quality": {
+  "n": 36,
+  "sum": "1307/5",
+  "mean_fraction": "1307/180",
+  "mean_exact": "7.26(1)",
+  "mean_half_up": "7.3",
+  "basis": "mean of the 36 rubric-rounded per-file totals (current round only; no peer, brand or history pooling)",
+  "unrounded_vector_mean": {
+   "n": 36,
+   "sum": "2607/10",
+   "mean_fraction": "869/120",
+   "mean_exact": "7.241(6)",
+   "mean_half_up": "7.2"
+  }
+ },
+ "dimension_means": {
+  "hierarchy": {
+   "n": 36,
+   "sum": "260",
+   "mean_fraction": "65/9",
+   "mean_exact": "7.(2)",
+   "mean_half_up": "7.2"
+  },
+  "typography": {
+   "n": 36,
+   "sum": "248",
+   "mean_fraction": "62/9",
+   "mean_exact": "6.(8)",
+   "mean_half_up": "6.9"
+  },
+  "density_layout": {
+   "n": 36,
+   "sum": "256",
+   "mean_fraction": "64/9",
+   "mean_exact": "7.(1)",
+   "mean_half_up": "7.1"
+  },
+  "color": {
+   "n": 36,
+   "sum": "268",
+   "mean_fraction": "67/9",
+   "mean_exact": "7.(4)",
+   "mean_half_up": "7.4"
+  },
+  "visible_affordances": {
+   "n": 36,
+   "sum": "264",
+   "mean_fraction": "22/3",
+   "mean_exact": "7.(3)",
+   "mean_half_up": "7.3"
+  },
+  "coherence": {
+   "n": 36,
+   "sum": "270",
+   "mean_fraction": "15/2",
+   "mean_exact": "7.5",
+   "mean_half_up": "7.5"
+  }
+ },
+ "device_means_not_ranking": {
+  "desktop": {
+   "n": 18,
+   "sum": "653/5",
+   "mean_fraction": "653/90",
+   "mean_exact": "7.2(5)",
+   "mean_half_up": "7.3"
+  },
+  "mobile": {
+   "n": 18,
+   "sum": "654/5",
+   "mean_fraction": "109/15",
+   "mean_exact": "7.2(6)",
+   "mean_half_up": "7.3"
+  }
+ },
+ "theme_means_not_ranking": {
+  "dark": {
+   "n": 18,
+   "sum": "1303/10",
+   "mean_fraction": "1303/180",
+   "mean_exact": "7.23(8)",
+   "mean_half_up": "7.2"
+  },
+  "light": {
+   "n": 18,
+   "sum": "1311/10",
+   "mean_fraction": "437/60",
+   "mean_exact": "7.28(3)",
+   "mean_half_up": "7.3"
+  }
+ },
+ "surface_means": {
+  "appearance": {
+   "n": 4,
+   "sum": "32",
+   "mean_fraction": "8",
+   "mean_exact": "8",
+   "mean_half_up": "8.0"
+  },
+  "blacklists": {
+   "n": 4,
+   "sum": "26",
+   "mean_fraction": "13/2",
+   "mean_exact": "6.5",
+   "mean_half_up": "6.5"
+  },
+  "dashboard": {
+   "n": 4,
+   "sum": "28",
+   "mean_fraction": "7",
+   "mean_exact": "7",
+   "mean_half_up": "7.0"
+  },
+  "dhcp": {
+   "n": 4,
+   "sum": "29",
+   "mean_fraction": "29/4",
+   "mean_exact": "7.25",
+   "mean_half_up": "7.3"
+  },
+  "discovered": {
+   "n": 4,
+   "sum": "144/5",
+   "mean_fraction": "36/5",
+   "mean_exact": "7.2",
+   "mean_half_up": "7.2"
+  },
+  "login": {
+   "n": 4,
+   "sum": "32",
+   "mean_fraction": "8",
+   "mean_exact": "8",
+   "mean_half_up": "8.0"
+  },
+  "records": {
+   "n": 4,
+   "sum": "136/5",
+   "mean_fraction": "34/5",
+   "mean_exact": "6.8",
+   "mean_half_up": "6.8"
+  },
+  "services": {
+   "n": 4,
+   "sum": "134/5",
+   "mean_fraction": "67/10",
+   "mean_exact": "6.7",
+   "mean_half_up": "6.7"
+  },
+  "settings": {
+   "n": 4,
+   "sum": "158/5",
+   "mean_fraction": "79/10",
+   "mean_exact": "7.9",
+   "mean_half_up": "7.9"
+  }
+ },
+ "cohort_rankings": {
+  "admin-console": {
+   "ky": {
+    "n": 24,
+    "sum": "829/5",
+    "mean_fraction": "829/120",
+    "mean_exact": "6.908(3)",
+    "mean_half_up": "6.9"
+   },
+   "competitors": "N/A (none captured)",
+   "ky_gap": "N/A",
+   "matched": "N/A"
+  },
+  "auth": {
+   "ky": {
+    "n": 4,
+    "sum": "32",
+    "mean_fraction": "8",
+    "mean_exact": "8",
+    "mean_half_up": "8.0"
+   },
+   "competitors": "N/A (none captured)",
+   "ky_gap": "N/A",
+   "matched": "N/A"
+  },
+  "settings": {
+   "ky": {
+    "n": 8,
+    "sum": "318/5",
+    "mean_fraction": "159/20",
+    "mean_exact": "7.95",
+    "mean_half_up": "8.0"
+   },
+   "competitors": "N/A (none captured)",
+   "ky_gap": "N/A",
+   "matched": "N/A"
+  }
+ },
+ "coverage_note": "Overall and surface means describe capture coverage, not a competitive ranking.",
+ "brand": {
+  "ky_fit_mean_of_rounded": {
+   "n": 36,
+   "sum": "268",
+   "mean_fraction": "67/9",
+   "mean_exact": "7.(4)",
+   "mean_half_up": "7.4"
+  },
+  "ky_fit_mean_unrounded": {
+   "n": 36,
+   "sum": "268",
+   "mean_fraction": "67/9",
+   "mean_exact": "7.(4)",
+   "mean_half_up": "7.4"
+  },
+  "per_dimension": {
+   "palette_tokens": {
+    "n": 36,
+    "sum": "284",
+    "mean_fraction": "71/9",
+    "mean_exact": "7.(8)",
+    "mean_half_up": "7.9"
+   },
+   "type_geometry": {
+    "n": 36,
+    "sum": "276",
+    "mean_fraction": "23/3",
+    "mean_exact": "7.(6)",
+    "mean_half_up": "7.7"
+   },
+   "shell": {
+    "n": 32,
+    "sum": "224",
+    "mean_fraction": "7",
+    "mean_exact": "7",
+    "mean_half_up": "7.0"
+   },
+   "accent_discipline": {
+    "n": 36,
+    "sum": "256",
+    "mean_fraction": "64/9",
+    "mean_exact": "7.(1)",
+    "mean_half_up": "7.1"
+   },
+   "suite_cohesion": {
+    "n": 36,
+    "sum": "268",
+    "mean_fraction": "67/9",
+    "mean_exact": "7.(4)",
+    "mean_half_up": "7.4"
+   }
+  },
+  "na": "shell N/A on 4 signed-out login captures (no shell); excluded from those files' denominators",
+  "references": "KyIdentity users-manage desktop light/dark and appearance mobile light/dark; brand only, never quality"
+ },
+ "progression": {
+  "rule": "Opus current-round overall quality mean, half-up one decimal, >= 8.0",
+  "value": "7.3",
+  "exact": "7.26(1)",
+  "threshold_exact_needed": "7.95",
+  "met": false
+ },
+ "drift": {
+  "basis": "own round 2 only (opus-round2.json) and its matched kydns-01-after originals, opened after the freeze; matched by canonical surface/device/theme. Prior judgments preserved unedited; current vectors not revised.",
+  "prior_overall": {
+   "n": 36,
+   "sum": "1366/5",
+   "mean_fraction": "683/90",
+   "mean_exact": "7.5(8)",
+   "mean_half_up": "7.6"
+  },
+  "current_overall": {
+   "n": 36,
+   "sum": "1307/5",
+   "mean_fraction": "1307/180",
+   "mean_exact": "7.26(1)",
+   "mean_half_up": "7.3"
+  },
+  "mean_delta": {
+   "n": 36,
+   "sum": "-59/5",
+   "mean_fraction": "-59/180",
+   "mean_exact": "-0.32(7)",
+   "mean_half_up": "-0.3"
+  },
+  "byte_identical_six": {
+   "files": [
+    "screenshots/kydns-02-after-appearance-desktop-dark.png",
+    "screenshots/kydns-02-after-appearance-desktop-light.png",
+    "screenshots/kydns-02-after-login-desktop-dark.png",
+    "screenshots/kydns-02-after-login-desktop-light.png",
+    "screenshots/kydns-02-after-login-mobile-dark.png",
+    "screenshots/kydns-02-after-login-mobile-light.png"
+   ],
+   "mean_delta": {
+    "n": 6,
+    "sum": "-4/5",
+    "mean_fraction": "-2/15",
+    "mean_exact": "-0.1(3)",
+    "mean_half_up": "-0.1"
+   },
+   "note": "Score movement on these six is reviewer variation by definition (pixels identical): four login -0.2 each, two desktop Appearance 0."
+  },
+  "rubric_change": "none (ky-suite-v2 pinned at ky-ui 639e588 both rounds)",
+  "competitor_drift": "N/A (no competitor files)",
+  "attribution_limit": "Cause labels are judgment bookkeeping per row. I do not claim exact causal contributions from scores; most negative movement falls on dimensions whose pixels did not change, i.e. this round's scoring is stricter than round 2's, not a product regression.",
+  "r2_originals_reopened_after_freeze": [
+   "screenshots/kydns-01-after-blacklists-desktop-light.png",
+   "screenshots/kydns-01-after-blacklists-mobile-light.png",
+   "screenshots/kydns-01-after-records-desktop-light.png",
+   "screenshots/kydns-01-after-records-desktop-dark.png",
+   "screenshots/kydns-01-after-records-mobile-light.png",
+   "screenshots/kydns-01-after-services-mobile-light.png",
+   "screenshots/kydns-01-after-services-mobile-dark.png",
+   "screenshots/kydns-01-after-dhcp-desktop-light.png"
+  ],
+  "not_reopened": "Other R2 originals: either byte-identical (6) or |delta|<0.5 for that surface/device; the dark twins of reopened light files differ from their light pair only in palette per the capture, and their dimension deltas match except the noted dark colour readings.",
+  "rows": [
+   {
+    "file": "screenshots/kydns-02-after-appearance-desktop-dark.png",
+    "prior_file": "screenshots/kydns-01-after-appearance-desktop-dark.png",
+    "surface": "appearance",
+    "device": "desktop",
+    "theme": "dark",
+    "byte_identical_to_prior": true,
+    "prior_total": "8.0",
+    "total": "8.0",
+    "delta": "0.0",
+    "abs_ge_0_5": false,
+    "dimension_deltas": {},
+    "cause": "none",
+    "explanation": "Byte-identical to round 2; same vector (8s). No movement.",
+    "prior_ky_fit": "8.6",
+    "ky_fit": "8.0"
+   },
+   {
+    "file": "screenshots/kydns-02-after-appearance-desktop-light.png",
+    "prior_file": "screenshots/kydns-01-after-appearance-desktop-light.png",
+    "surface": "appearance",
+    "device": "desktop",
+    "theme": "light",
+    "byte_identical_to_prior": true,
+    "prior_total": "8.0",
+    "total": "8.0",
+    "delta": "0.0",
+    "abs_ge_0_5": false,
+    "dimension_deltas": {},
+    "cause": "none",
+    "explanation": "Byte-identical to round 2; same vector (8s). No movement.",
+    "prior_ky_fit": "8.6",
+    "ky_fit": "8.0"
+   },
+   {
+    "file": "screenshots/kydns-02-after-appearance-mobile-dark.png",
+    "prior_file": "screenshots/kydns-01-after-appearance-mobile-dark.png",
+    "surface": "appearance",
+    "device": "mobile",
+    "theme": "dark",
+    "byte_identical_to_prior": false,
+    "prior_total": "7.9",
+    "total": "8.0",
+    "delta": "0.1",
+    "abs_ge_0_5": false,
+    "dimension_deltas": {
+     "visible_affordances": 1
+    },
+    "cause": "changed_pixels",
+    "explanation": "Phone header gained the 'Scroll navigation' caption; affordances 7->8 credits that cue. |delta|<0.5.",
+    "prior_ky_fit": "8.6",
+    "ky_fit": "8.0"
+   },
+   {
+    "file": "screenshots/kydns-02-after-appearance-mobile-light.png",
+    "prior_file": "screenshots/kydns-01-after-appearance-mobile-light.png",
+    "surface": "appearance",
+    "device": "mobile",
+    "theme": "light",
+    "byte_identical_to_prior": false,
+    "prior_total": "7.9",
+    "total": "8.0",
+    "delta": "0.1",
+    "abs_ge_0_5": false,
+    "dimension_deltas": {
+     "visible_affordances": 1
+    },
+    "cause": "changed_pixels",
+    "explanation": "Phone header gained the 'Scroll navigation' caption; affordances 7->8 credits that cue. |delta|<0.5.",
+    "prior_ky_fit": "8.6",
+    "ky_fit": "8.0"
+   },
+   {
+    "file": "screenshots/kydns-02-after-blacklists-desktop-dark.png",
+    "prior_file": "screenshots/kydns-01-after-blacklists-desktop-dark.png",
+    "surface": "blacklists",
+    "device": "desktop",
+    "theme": "dark",
+    "byte_identical_to_prior": false,
+    "prior_total": "7.3",
+    "total": "6.5",
+    "delta": "-0.8",
+    "abs_ge_0_5": true,
+    "dimension_deltas": {
+     "hierarchy": -2,
+     "typography": -1,
+     "color": -1,
+     "visible_affordances": -1
+    },
+    "cause": "mixed",
+    "explanation": "Changed pixels: filled header 'Add list' -> orange link, so no filled primary remains above the fold (hierarchy 8->6 is partly this change), and Name/description/URL merged into one column (row ~220px -> ~150px, not rewarded in density). Typography 7->6, colour 8->7 and affordances 8->7 fell on the unchanged URL break, pills and outlined buttons (reviewer variation).",
+    "prior_ky_fit": "8.0",
+    "ky_fit": "7.2"
+   },
+   {
+    "file": "screenshots/kydns-02-after-blacklists-desktop-light.png",
+    "prior_file": "screenshots/kydns-01-after-blacklists-desktop-light.png",
+    "surface": "blacklists",
+    "device": "desktop",
+    "theme": "light",
+    "byte_identical_to_prior": false,
+    "prior_total": "7.3",
+    "total": "6.5",
+    "delta": "-0.8",
+    "abs_ge_0_5": true,
+    "dimension_deltas": {
+     "hierarchy": -2,
+     "typography": -1,
+     "color": -1,
+     "visible_affordances": -1
+    },
+    "cause": "mixed",
+    "explanation": "Changed pixels: filled header 'Add list' -> orange link, so no filled primary remains above the fold (hierarchy 8->6 is partly this change), and Name/description/URL merged into one column (row ~220px -> ~150px, not rewarded in density). Typography 7->6, colour 8->7 and affordances 8->7 fell on the unchanged URL break, pills and outlined buttons (reviewer variation).",
+    "prior_ky_fit": "8.0",
+    "ky_fit": "7.2"
+   },
+   {
+    "file": "screenshots/kydns-02-after-blacklists-mobile-dark.png",
+    "prior_file": "screenshots/kydns-01-after-blacklists-mobile-dark.png",
+    "surface": "blacklists",
+    "device": "mobile",
+    "theme": "dark",
+    "byte_identical_to_prior": false,
+    "prior_total": "7.4",
+    "total": "6.5",
+    "delta": "-0.9",
+    "abs_ge_0_5": true,
+    "dimension_deltas": {
+     "hierarchy": -2,
+     "typography": -1,
+     "density_layout": -1,
+     "color": -1
+    },
+    "cause": "mixed",
+    "explanation": "Changed pixels: header button -> link and the 'Source' label dropped with the URL under the description. Hierarchy 8->6 is partly the lost filled primary; typography, density and colour each -1 on unchanged URL-break, label-grid and pill pixels (reviewer variation).",
+    "prior_ky_fit": "8.0",
+    "ky_fit": "7.2"
+   },
+   {
+    "file": "screenshots/kydns-02-after-blacklists-mobile-light.png",
+    "prior_file": "screenshots/kydns-01-after-blacklists-mobile-light.png",
+    "surface": "blacklists",
+    "device": "mobile",
+    "theme": "light",
+    "byte_identical_to_prior": false,
+    "prior_total": "7.4",
+    "total": "6.5",
+    "delta": "-0.9",
+    "abs_ge_0_5": true,
+    "dimension_deltas": {
+     "hierarchy": -2,
+     "typography": -1,
+     "density_layout": -1,
+     "color": -1
+    },
+    "cause": "mixed",
+    "explanation": "Changed pixels: header button -> link and the 'Source' label dropped with the URL under the description. Hierarchy 8->6 is partly the lost filled primary; typography, density and colour each -1 on unchanged URL-break, label-grid and pill pixels (reviewer variation).",
+    "prior_ky_fit": "8.0",
+    "ky_fit": "7.2"
+   },
+   {
+    "file": "screenshots/kydns-02-after-dashboard-desktop-dark.png",
+    "prior_file": "screenshots/kydns-01-after-dashboard-desktop-dark.png",
+    "surface": "dashboard",
+    "device": "desktop",
+    "theme": "dark",
+    "byte_identical_to_prior": false,
+    "prior_total": "7.3",
+    "total": "7.0",
+    "delta": "-0.3",
+    "abs_ge_0_5": false,
+    "dimension_deltas": {
+     "typography": -1,
+     "visible_affordances": -1
+    },
+    "cause": "reviewer_variation",
+    "explanation": "Typography 8->7 and affordances 8->7 on unchanged KPI/chart/table pixels; aligned metric tracks are a visible change I did not reward. |delta|<0.5.",
+    "prior_ky_fit": "7.4",
+    "ky_fit": "7.0"
+   },
+   {
+    "file": "screenshots/kydns-02-after-dashboard-desktop-light.png",
+    "prior_file": "screenshots/kydns-01-after-dashboard-desktop-light.png",
+    "surface": "dashboard",
+    "device": "desktop",
+    "theme": "light",
+    "byte_identical_to_prior": false,
+    "prior_total": "7.3",
+    "total": "7.0",
+    "delta": "-0.3",
+    "abs_ge_0_5": false,
+    "dimension_deltas": {
+     "typography": -1,
+     "visible_affordances": -1
+    },
+    "cause": "reviewer_variation",
+    "explanation": "Typography 8->7 and affordances 8->7 on unchanged KPI/chart/table pixels; aligned metric tracks are a visible change I did not reward. |delta|<0.5.",
+    "prior_ky_fit": "7.4",
+    "ky_fit": "7.0"
+   },
+   {
+    "file": "screenshots/kydns-02-after-dashboard-mobile-dark.png",
+    "prior_file": "screenshots/kydns-01-after-dashboard-mobile-dark.png",
+    "surface": "dashboard",
+    "device": "mobile",
+    "theme": "dark",
+    "byte_identical_to_prior": false,
+    "prior_total": "7.0",
+    "total": "7.0",
+    "delta": "0.0",
+    "abs_ge_0_5": false,
+    "dimension_deltas": {
+     "typography": -1,
+     "density_layout": 1
+    },
+    "cause": "mixed",
+    "explanation": "Density 6->7 tracks the removed stat inset (changed pixels); typography 8->7 is reviewer variation. Net 0.",
+    "prior_ky_fit": "7.2",
+    "ky_fit": "7.0"
+   },
+   {
+    "file": "screenshots/kydns-02-after-dashboard-mobile-light.png",
+    "prior_file": "screenshots/kydns-01-after-dashboard-mobile-light.png",
+    "surface": "dashboard",
+    "device": "mobile",
+    "theme": "light",
+    "byte_identical_to_prior": false,
+    "prior_total": "7.0",
+    "total": "7.0",
+    "delta": "0.0",
+    "abs_ge_0_5": false,
+    "dimension_deltas": {
+     "typography": -1,
+     "density_layout": 1
+    },
+    "cause": "mixed",
+    "explanation": "Density 6->7 tracks the removed stat inset (changed pixels); typography 8->7 is reviewer variation. Net 0.",
+    "prior_ky_fit": "7.2",
+    "ky_fit": "7.0"
+   },
+   {
+    "file": "screenshots/kydns-02-after-dhcp-desktop-dark.png",
+    "prior_file": "screenshots/kydns-01-after-dhcp-desktop-dark.png",
+    "surface": "dhcp",
+    "device": "desktop",
+    "theme": "dark",
+    "byte_identical_to_prior": false,
+    "prior_total": "7.7",
+    "total": "7.2",
+    "delta": "-0.5",
+    "abs_ge_0_5": true,
+    "dimension_deltas": {
+     "hierarchy": -1,
+     "visible_affordances": -1,
+     "coherence": -1
+    },
+    "cause": "reviewer_variation",
+    "explanation": "Changed pixels: checkboxes moved into the input column, the opening quote glyph fixed, Save moved down a row. These are what I asked for in round 2; hierarchy, affordances and coherence each 8->7 fell on unchanged form pixels, and my round-3 density note even cites the requested checkbox placement. Reviewer variation.",
+    "prior_ky_fit": "8.4",
+    "ky_fit": "7.6"
+   },
+   {
+    "file": "screenshots/kydns-02-after-dhcp-desktop-light.png",
+    "prior_file": "screenshots/kydns-01-after-dhcp-desktop-light.png",
+    "surface": "dhcp",
+    "device": "desktop",
+    "theme": "light",
+    "byte_identical_to_prior": false,
+    "prior_total": "7.7",
+    "total": "7.2",
+    "delta": "-0.5",
+    "abs_ge_0_5": true,
+    "dimension_deltas": {
+     "hierarchy": -1,
+     "visible_affordances": -1,
+     "coherence": -1
+    },
+    "cause": "reviewer_variation",
+    "explanation": "Changed pixels: checkboxes moved into the input column, the opening quote glyph fixed, Save moved down a row. These are what I asked for in round 2; hierarchy, affordances and coherence each 8->7 fell on unchanged form pixels, and my round-3 density note even cites the requested checkbox placement. Reviewer variation.",
+    "prior_ky_fit": "8.4",
+    "ky_fit": "7.6"
+   },
+   {
+    "file": "screenshots/kydns-02-after-dhcp-mobile-dark.png",
+    "prior_file": "screenshots/kydns-01-after-dhcp-mobile-dark.png",
+    "surface": "dhcp",
+    "device": "mobile",
+    "theme": "dark",
+    "byte_identical_to_prior": false,
+    "prior_total": "7.5",
+    "total": "7.3",
+    "delta": "-0.2",
+    "abs_ge_0_5": false,
+    "dimension_deltas": {
+     "density_layout": -1
+    },
+    "cause": "reviewer_variation",
+    "explanation": "Quote glyph fixed; caption added. Density 8->7 on an unchanged stacked form. |delta|<0.5.",
+    "prior_ky_fit": "8.4",
+    "ky_fit": "7.6"
+   },
+   {
+    "file": "screenshots/kydns-02-after-dhcp-mobile-light.png",
+    "prior_file": "screenshots/kydns-01-after-dhcp-mobile-light.png",
+    "surface": "dhcp",
+    "device": "mobile",
+    "theme": "light",
+    "byte_identical_to_prior": false,
+    "prior_total": "7.5",
+    "total": "7.3",
+    "delta": "-0.2",
+    "abs_ge_0_5": false,
+    "dimension_deltas": {
+     "density_layout": -1
+    },
+    "cause": "reviewer_variation",
+    "explanation": "Quote glyph fixed; caption added. Density 8->7 on an unchanged stacked form. |delta|<0.5.",
+    "prior_ky_fit": "8.4",
+    "ky_fit": "7.6"
+   },
+   {
+    "file": "screenshots/kydns-02-after-discovered-desktop-dark.png",
+    "prior_file": "screenshots/kydns-01-after-discovered-desktop-dark.png",
+    "surface": "discovered",
+    "device": "desktop",
+    "theme": "dark",
+    "byte_identical_to_prior": false,
+    "prior_total": "7.5",
+    "total": "7.1",
+    "delta": "-0.4",
+    "abs_ge_0_5": false,
+    "dimension_deltas": {
+     "typography": -1,
+     "density_layout": -1
+    },
+    "cause": "reviewer_variation",
+    "explanation": "Settings link is now underlined (changed pixels). Typography 8->7 and density 7->6 on the unchanged empty canvas. |delta|<0.5.",
+    "prior_ky_fit": "8.0",
+    "ky_fit": "7.4"
+   },
+   {
+    "file": "screenshots/kydns-02-after-discovered-desktop-light.png",
+    "prior_file": "screenshots/kydns-01-after-discovered-desktop-light.png",
+    "surface": "discovered",
+    "device": "desktop",
+    "theme": "light",
+    "byte_identical_to_prior": false,
+    "prior_total": "7.5",
+    "total": "7.1",
+    "delta": "-0.4",
+    "abs_ge_0_5": false,
+    "dimension_deltas": {
+     "typography": -1,
+     "density_layout": -1
+    },
+    "cause": "reviewer_variation",
+    "explanation": "Settings link is now underlined (changed pixels). Typography 8->7 and density 7->6 on the unchanged empty canvas. |delta|<0.5.",
+    "prior_ky_fit": "8.0",
+    "ky_fit": "7.4"
+   },
+   {
+    "file": "screenshots/kydns-02-after-discovered-mobile-dark.png",
+    "prior_file": "screenshots/kydns-01-after-discovered-mobile-dark.png",
+    "surface": "discovered",
+    "device": "mobile",
+    "theme": "dark",
+    "byte_identical_to_prior": false,
+    "prior_total": "7.5",
+    "total": "7.3",
+    "delta": "-0.2",
+    "abs_ge_0_5": false,
+    "dimension_deltas": {
+     "typography": -1
+    },
+    "cause": "reviewer_variation",
+    "explanation": "Underlined link plus caption. Typography 8->7 on unchanged copy. |delta|<0.5.",
+    "prior_ky_fit": "8.0",
+    "ky_fit": "7.4"
+   },
+   {
+    "file": "screenshots/kydns-02-after-discovered-mobile-light.png",
+    "prior_file": "screenshots/kydns-01-after-discovered-mobile-light.png",
+    "surface": "discovered",
+    "device": "mobile",
+    "theme": "light",
+    "byte_identical_to_prior": false,
+    "prior_total": "7.5",
+    "total": "7.3",
+    "delta": "-0.2",
+    "abs_ge_0_5": false,
+    "dimension_deltas": {
+     "typography": -1
+    },
+    "cause": "reviewer_variation",
+    "explanation": "Underlined link plus caption. Typography 8->7 on unchanged copy. |delta|<0.5.",
+    "prior_ky_fit": "8.0",
+    "ky_fit": "7.4"
+   },
+   {
+    "file": "screenshots/kydns-02-after-login-desktop-dark.png",
+    "prior_file": "screenshots/kydns-01-after-login-desktop-dark.png",
+    "surface": "login",
+    "device": "desktop",
+    "theme": "dark",
+    "byte_identical_to_prior": true,
+    "prior_total": "8.2",
+    "total": "8.0",
+    "delta": "-0.2",
+    "abs_ge_0_5": false,
+    "dimension_deltas": {
+     "hierarchy": -1
+    },
+    "cause": "reviewer_variation",
+    "explanation": "Byte-identical to round 2. Hierarchy 9->8 is my re-judgment of unchanged pixels, not a product change.",
+    "prior_ky_fit": "8.5",
+    "ky_fit": "8.0"
+   },
+   {
+    "file": "screenshots/kydns-02-after-login-desktop-light.png",
+    "prior_file": "screenshots/kydns-01-after-login-desktop-light.png",
+    "surface": "login",
+    "device": "desktop",
+    "theme": "light",
+    "byte_identical_to_prior": true,
+    "prior_total": "8.2",
+    "total": "8.0",
+    "delta": "-0.2",
+    "abs_ge_0_5": false,
+    "dimension_deltas": {
+     "hierarchy": -1
+    },
+    "cause": "reviewer_variation",
+    "explanation": "Byte-identical to round 2. Hierarchy 9->8 is my re-judgment of unchanged pixels, not a product change.",
+    "prior_ky_fit": "8.5",
+    "ky_fit": "8.0"
+   },
+   {
+    "file": "screenshots/kydns-02-after-login-mobile-dark.png",
+    "prior_file": "screenshots/kydns-01-after-login-mobile-dark.png",
+    "surface": "login",
+    "device": "mobile",
+    "theme": "dark",
+    "byte_identical_to_prior": true,
+    "prior_total": "8.2",
+    "total": "8.0",
+    "delta": "-0.2",
+    "abs_ge_0_5": false,
+    "dimension_deltas": {
+     "hierarchy": -1
+    },
+    "cause": "reviewer_variation",
+    "explanation": "Byte-identical to round 2. Hierarchy 9->8 is my re-judgment of unchanged pixels, not a product change.",
+    "prior_ky_fit": "8.5",
+    "ky_fit": "8.0"
+   },
+   {
+    "file": "screenshots/kydns-02-after-login-mobile-light.png",
+    "prior_file": "screenshots/kydns-01-after-login-mobile-light.png",
+    "surface": "login",
+    "device": "mobile",
+    "theme": "light",
+    "byte_identical_to_prior": true,
+    "prior_total": "8.2",
+    "total": "8.0",
+    "delta": "-0.2",
+    "abs_ge_0_5": false,
+    "dimension_deltas": {
+     "hierarchy": -1
+    },
+    "cause": "reviewer_variation",
+    "explanation": "Byte-identical to round 2. Hierarchy 9->8 is my re-judgment of unchanged pixels, not a product change.",
+    "prior_ky_fit": "8.5",
+    "ky_fit": "8.0"
+   },
+   {
+    "file": "screenshots/kydns-02-after-records-desktop-dark.png",
+    "prior_file": "screenshots/kydns-01-after-records-desktop-dark.png",
+    "surface": "records",
+    "device": "desktop",
+    "theme": "dark",
+    "byte_identical_to_prior": false,
+    "prior_total": "7.7",
+    "total": "6.7",
+    "delta": "-1.0",
+    "abs_ge_0_5": true,
+    "dimension_deltas": {
+     "typography": -2,
+     "density_layout": -1,
+     "color": -1,
+     "visible_affordances": -1,
+     "coherence": -1
+    },
+    "cause": "reviewer_variation",
+    "explanation": "Only changed pixels: filled header 'Add record' -> orange underlined link and the outlined submit -> filled (fixes my round-2 finding 1). Typography 8->6, density 8->7, affordances 8->7 and coherence 8->7 fell on unchanged table, placeholder and note pixels; dark colour 7->6 is a new reading of unchanged hues. Reviewer variation, not a regression.",
+    "prior_ky_fit": "8.2",
+    "ky_fit": "7.0"
+   },
+   {
+    "file": "screenshots/kydns-02-after-records-desktop-light.png",
+    "prior_file": "screenshots/kydns-01-after-records-desktop-light.png",
+    "surface": "records",
+    "device": "desktop",
+    "theme": "light",
+    "byte_identical_to_prior": false,
+    "prior_total": "7.7",
+    "total": "6.9",
+    "delta": "-0.8",
+    "abs_ge_0_5": true,
+    "dimension_deltas": {
+     "typography": -2,
+     "density_layout": -1,
+     "visible_affordances": -1,
+     "coherence": -1
+    },
+    "cause": "reviewer_variation",
+    "explanation": "Only changed pixels: filled header 'Add record' -> orange underlined link and the outlined submit -> filled (fixes my round-2 finding 1). Typography 8->6, density 8->7, affordances 8->7 and coherence 8->7 fell on unchanged table, placeholder and note pixels; dark colour 7->6 is a new reading of unchanged hues. Reviewer variation, not a regression.",
+    "prior_ky_fit": "8.2",
+    "ky_fit": "7.0"
+   },
+   {
+    "file": "screenshots/kydns-02-after-records-mobile-dark.png",
+    "prior_file": "screenshots/kydns-01-after-records-mobile-dark.png",
+    "surface": "records",
+    "device": "mobile",
+    "theme": "dark",
+    "byte_identical_to_prior": false,
+    "prior_total": "7.5",
+    "total": "6.7",
+    "delta": "-0.8",
+    "abs_ge_0_5": true,
+    "dimension_deltas": {
+     "hierarchy": -1,
+     "typography": -2,
+     "color": -1,
+     "coherence": -1
+    },
+    "cause": "reviewer_variation",
+    "explanation": "Changed pixels: header button -> link, outlined Remove -> red text, caption. Hierarchy 8->7, typography 8->6 and coherence 8->7 fell on unchanged row/label pixels; dark colour 7->6 as on desktop. Reviewer variation.",
+    "prior_ky_fit": "8.2",
+    "ky_fit": "7.0"
+   },
+   {
+    "file": "screenshots/kydns-02-after-records-mobile-light.png",
+    "prior_file": "screenshots/kydns-01-after-records-mobile-light.png",
+    "surface": "records",
+    "device": "mobile",
+    "theme": "light",
+    "byte_identical_to_prior": false,
+    "prior_total": "7.5",
+    "total": "6.9",
+    "delta": "-0.6",
+    "abs_ge_0_5": true,
+    "dimension_deltas": {
+     "hierarchy": -1,
+     "typography": -2,
+     "coherence": -1
+    },
+    "cause": "reviewer_variation",
+    "explanation": "Changed pixels: header button -> link, outlined Remove -> red text, caption. Hierarchy 8->7, typography 8->6 and coherence 8->7 fell on unchanged row/label pixels; dark colour 7->6 as on desktop. Reviewer variation.",
+    "prior_ky_fit": "8.2",
+    "ky_fit": "7.0"
+   },
+   {
+    "file": "screenshots/kydns-02-after-services-desktop-dark.png",
+    "prior_file": "screenshots/kydns-01-after-services-desktop-dark.png",
+    "surface": "services",
+    "device": "desktop",
+    "theme": "dark",
+    "byte_identical_to_prior": false,
+    "prior_total": "7.0",
+    "total": "6.7",
+    "delta": "-0.3",
+    "abs_ge_0_5": false,
+    "dimension_deltas": {
+     "typography": -1,
+     "color": -1
+    },
+    "cause": "mixed",
+    "explanation": "Header link replaced the filled header button and the form submit is filled (changed pixels, hierarchy held at 7); typography 7->6 is reviewer variation on unchanged mixed mono/sans cells; dark colour 7->6 is a new reading of the unchanged danger/accent hues. |delta|<0.5.",
+    "prior_ky_fit": "8.0",
+    "ky_fit": "7.0"
+   },
+   {
+    "file": "screenshots/kydns-02-after-services-desktop-light.png",
+    "prior_file": "screenshots/kydns-01-after-services-desktop-light.png",
+    "surface": "services",
+    "device": "desktop",
+    "theme": "light",
+    "byte_identical_to_prior": false,
+    "prior_total": "7.0",
+    "total": "6.9",
+    "delta": "-0.1",
+    "abs_ge_0_5": false,
+    "dimension_deltas": {
+     "typography": -1
+    },
+    "cause": "mixed",
+    "explanation": "Header link replaced the filled header button and the form submit is filled (changed pixels, hierarchy held at 7); typography 7->6 is reviewer variation on unchanged mixed mono/sans cells; dark colour 7->6 is a new reading of the unchanged danger/accent hues. |delta|<0.5.",
+    "prior_ky_fit": "8.0",
+    "ky_fit": "7.0"
+   },
+   {
+    "file": "screenshots/kydns-02-after-services-mobile-dark.png",
+    "prior_file": "screenshots/kydns-01-after-services-mobile-dark.png",
+    "surface": "services",
+    "device": "mobile",
+    "theme": "dark",
+    "byte_identical_to_prior": false,
+    "prior_total": "7.2",
+    "total": "6.5",
+    "delta": "-0.7",
+    "abs_ge_0_5": true,
+    "dimension_deltas": {
+     "hierarchy": -1,
+     "typography": -1,
+     "density_layout": -1,
+     "color": -1
+    },
+    "cause": "reviewer_variation",
+    "explanation": "Changed pixels: filled header button -> orange underlined link, outlined Remove -> red text, play marker -> chevron, 'Scroll navigation' caption. These answer my round-2 findings 1, 4 and 6, yet hierarchy 8->7, typography 7->6 and density 7->6 fell on the unchanged staggered two-column rows I already flagged in round 2; dark colour 7->6 is a new reading of unchanged danger/accent hues. The drop is reviewer variation, not a regression.",
+    "prior_ky_fit": "8.0",
+    "ky_fit": "7.0"
+   },
+   {
+    "file": "screenshots/kydns-02-after-services-mobile-light.png",
+    "prior_file": "screenshots/kydns-01-after-services-mobile-light.png",
+    "surface": "services",
+    "device": "mobile",
+    "theme": "light",
+    "byte_identical_to_prior": false,
+    "prior_total": "7.2",
+    "total": "6.7",
+    "delta": "-0.5",
+    "abs_ge_0_5": true,
+    "dimension_deltas": {
+     "hierarchy": -1,
+     "typography": -1,
+     "density_layout": -1
+    },
+    "cause": "reviewer_variation",
+    "explanation": "Changed pixels: filled header button -> orange underlined link, outlined Remove -> red text, play marker -> chevron, 'Scroll navigation' caption. These answer my round-2 findings 1, 4 and 6, yet hierarchy 8->7, typography 7->6 and density 7->6 fell on the unchanged staggered two-column rows I already flagged in round 2; dark colour 7->6 is a new reading of unchanged danger/accent hues. The drop is reviewer variation, not a regression.",
+    "prior_ky_fit": "8.0",
+    "ky_fit": "7.0"
+   },
+   {
+    "file": "screenshots/kydns-02-after-settings-desktop-dark.png",
+    "prior_file": "screenshots/kydns-01-after-settings-desktop-dark.png",
+    "surface": "settings",
+    "device": "desktop",
+    "theme": "dark",
+    "byte_identical_to_prior": false,
+    "prior_total": "7.8",
+    "total": "7.9",
+    "delta": "0.1",
+    "abs_ge_0_5": false,
+    "dimension_deltas": {
+     "typography": -1,
+     "density_layout": 1
+    },
+    "cause": "mixed",
+    "explanation": "Save settings now ends at the 1016px field edge: density 7->8 (changed pixels). Typography 8->7 is reviewer variation (stacked headings unchanged). |delta|<0.5.",
+    "prior_ky_fit": "8.4",
+    "ky_fit": "7.8"
+   },
+   {
+    "file": "screenshots/kydns-02-after-settings-desktop-light.png",
+    "prior_file": "screenshots/kydns-01-after-settings-desktop-light.png",
+    "surface": "settings",
+    "device": "desktop",
+    "theme": "light",
+    "byte_identical_to_prior": false,
+    "prior_total": "7.8",
+    "total": "7.9",
+    "delta": "0.1",
+    "abs_ge_0_5": false,
+    "dimension_deltas": {
+     "typography": -1,
+     "density_layout": 1
+    },
+    "cause": "mixed",
+    "explanation": "Save settings now ends at the 1016px field edge: density 7->8 (changed pixels). Typography 8->7 is reviewer variation (stacked headings unchanged). |delta|<0.5.",
+    "prior_ky_fit": "8.4",
+    "ky_fit": "7.8"
+   },
+   {
+    "file": "screenshots/kydns-02-after-settings-mobile-dark.png",
+    "prior_file": "screenshots/kydns-01-after-settings-mobile-dark.png",
+    "surface": "settings",
+    "device": "mobile",
+    "theme": "dark",
+    "byte_identical_to_prior": false,
+    "prior_total": "7.9",
+    "total": "7.9",
+    "delta": "0.0",
+    "abs_ge_0_5": false,
+    "dimension_deltas": {
+     "typography": -1,
+     "visible_affordances": 1
+    },
+    "cause": "mixed",
+    "explanation": "Affordances 7->8 and typography 8->7 net to 0; header caption added.",
+    "prior_ky_fit": "8.4",
+    "ky_fit": "7.8"
+   },
+   {
+    "file": "screenshots/kydns-02-after-settings-mobile-light.png",
+    "prior_file": "screenshots/kydns-01-after-settings-mobile-light.png",
+    "surface": "settings",
+    "device": "mobile",
+    "theme": "light",
+    "byte_identical_to_prior": false,
+    "prior_total": "7.9",
+    "total": "7.9",
+    "delta": "0.0",
+    "abs_ge_0_5": false,
+    "dimension_deltas": {
+     "typography": -1,
+     "visible_affordances": 1
+    },
+    "cause": "mixed",
+    "explanation": "Affordances 7->8 and typography 8->7 net to 0; header caption added.",
+    "prior_ky_fit": "8.4",
+    "ky_fit": "7.8"
+   }
+  ]
+ },
+ "gates": {
+  "keyboard": {
+   "status": "untested",
+   "evidence": "static screenshots and partial captures cannot pass a behaviour gate"
+  },
+  "focus": {
+   "status": "untested",
+   "evidence": "static screenshots and partial captures cannot pass a behaviour gate"
+  },
+  "contrast": {
+   "status": "untested",
+   "evidence": "static screenshots and partial captures cannot pass a behaviour gate"
+  },
+  "states": {
+   "status": "untested",
+   "evidence": "static screenshots and partial captures cannot pass a behaviour gate"
+  },
+  "responsive": {
+   "status": "untested",
+   "evidence": "static screenshots and partial captures cannot pass a behaviour gate"
+  }
+ },
+ "unscored": [
+  {
+   "item": "replication (4 combinations)",
+   "reason": "N/A: standalone fixture hides the link and /replication 303-redirects to Dashboard; no duplicate Dashboard scored"
+  },
+  {
+   "item": "below-fold sections",
+   "reason": "Settings API tokens/SSO/backup/upstream/config; lower forms on Services/Records/Blacklists/DHCP; Dashboard table remainder; phone Settings token scroller"
+  },
+  {
+   "item": "live integrations",
+   "reason": "replication, SSO, KyRecovery, forwarding, blacklist fetch"
+  },
+  {
+   "item": "ordinary-user workflows",
+   "reason": "N/A: KyDNS is administrator-only"
+  },
+  {
+   "item": "behaviour, keyboard, all-theme contrast, accessibility, security, production",
+   "reason": "outside static review"
+  }
+ ],
+ "satisfied": false,
+ "satisfaction_reasons": [
+  "Current overall quality 1307/180 = 7.26(1), half-up 7.3; the 8.0 line needs an exact mean of at least 7.95.",
+  "The fde2314 changes visibly answer most of my round-2 findings (submits now primary, quiet phone Remove, chevron disclosure, checkbox/help in the input column, DHCP quote glyph, Settings Save edge, scroll caption). My lower scores fall mainly on pixels that did not change, so round-over-round movement (-0.3) is reviewer variation, not regression. Under either round's calibration the gate is unmet (round 2 7.6, round 3 7.3).",
+  "Remaining defects are concrete and repeated across list pages: orange header jump links outside the accent roles, mixed mono/sans cell sizes and placeholders, staggered phone label grids, mid-token URL breaks, and dark-theme danger/accent hues that read nearly alike.",
+  "9/10 is not achieved; behaviour gates untested."
+ ],
+ "strongest_findings": [
+  {
+   "id": 1,
+   "surfaces": "services, records, blacklists (all)",
+   "finding": "Header jump links are orange underlined text, so each list page shows two accent marks (link + filled submit); on Blacklists the link is the only orange above the fold."
+  },
+  {
+   "id": 2,
+   "surfaces": "services, records (dark)",
+   "finding": "Danger salmon Remove (outline on desktop, text on phone) sits beside the orange link/button at nearly the same hue; destructive and primary blur at a glance."
+  },
+  {
+   "id": 3,
+   "surfaces": "services, records",
+   "finding": "Rows mix 14px mono values with 15px sans 'all views' on a lower baseline; Records placeholders switch face (Name mono, Value sans); the Records precedence note sits at x=280 outside the form column."
+  },
+  {
+   "id": 4,
+   "surfaces": "services, records (mobile)",
+   "finding": "Two-column label/value rows sit on staggered baselines and Remove floats below its row."
+  },
+  {
+   "id": 5,
+   "surfaces": "blacklists",
+   "finding": "Source URL still breaks mid-token (StevenBla|ck); one row mixes four type styles; four equal outlined buttons with no visible primary above the fold."
+  },
+  {
+   "id": 6,
+   "surfaces": "dashboard",
+   "finding": "Counts repeat across KPI strip, legend and table; orange doubles as the Forwarded series hue (declined and retained by owner; recorded, not re-argued)."
+  },
+  {
+   "id": 7,
+   "surfaces": "signed-in mobile (16)",
+   "finding": "The 'Scroll navigation' caption reads like a product tagline in the wordmark slot; it answers the cue finding but differs from the KyIdentity header (subtitle/account)."
+  },
+  {
+   "id": 8,
+   "surfaces": "settings",
+   "finding": "Three stacked headings (Settings / Server settings / Zone) precede the first field."
+  }
+ ],
+ "recommended_batch": {
+  "warranted": true,
+  "scope": "One bounded consistency batch on list pages; no new features, copy claims, routes or behaviour changes.",
+  "items": [
+   "Header jump links: neutral ink, underlined tertiary links, so orange marks only the submit, selection and focus.",
+   "Row typography: render 'all views'/View cells at the same size and baseline as the mono values (or both meta 13px); give Records placeholders one face; move the precedence note into the form column.",
+   "Phone label grids (Services/Records/Blacklists): one row track per label pair so left/right baselines align; Remove on the last row's baseline.",
+   "Blacklists URL: allow breaks only after '/' (e.g. <wbr> after slashes) instead of mid-token.",
+   "Dark danger vs accent: raise upstream in ky-ui (shared token), not a product override; out of this product batch."
+  ],
+  "expectation": "Even a clean execution is unlikely to add the +0.69 mean needed for 7.95 under this round's scoring; the outcome is unknown until recaptured and blind-scored."
+ },
+ "scope": "Static image review only. No product edits, builds, tests, browsers, installs, server mutation, subagents, commits, pushes, PR, MySlop or Gemini calls. Outputs: opus-round3.json and opus-round3.md only.",
+ "gemini": "Unused; quota exhausted; not a progression blocker.",
+ "phase": "published"
+}
