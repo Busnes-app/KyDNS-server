@@ -25,7 +25,7 @@ Chromium regressions for the shipped KyDNS dashboard, live refresh, Appearance, 
 
 ## Verification
 
-- `npm ci && npx playwright install chromium && npm test` in this directory.
+- `npm ci && npx playwright install chromium && npm test` in this directory; CI runs it in the pinned `mcr.microsoft.com/playwright` image of the lockfile's version instead of installing browsers.
 - CI and tag releases run the suite before publishing.
 
 ## Child DOX Index
