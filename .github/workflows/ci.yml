@@ -12,7 +12,7 @@ permissions:
 # A newer push to a PR supersedes its run. Every other run gets a group of its own: main's
 # push runs publish and are what dependency-release.yml reads, so none is ever cancelled.
 concurrency:
-  group: ci-${{ github.event.pull_request.number || github.run_id }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
