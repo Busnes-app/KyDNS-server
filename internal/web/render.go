@@ -5,6 +5,7 @@ import (
 	"embed"
 	"html/template"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -29,7 +30,9 @@ var pageTemplates = map[string]*template.Template{}
 
 // registerPage parses one full-chrome page. Screens call this from init.
 func registerPage(name string) {
-	pageTemplates[name] = template.Must(template.ParseFS(templateFS,
+	pageTemplates[name] = template.Must(template.New(name).Funcs(template.FuncMap{
+		"urlParts": func(value string) []string { return strings.SplitAfter(value, "/") },
+	}).ParseFS(templateFS,
 		"templates/base.html", "templates/layout.html", "templates/"+name))
 }
 

@@ -87,7 +87,7 @@ body { font-size: 15px; }
                font-weight: 600; line-height: 1.25; margin: 0 0 1.5rem; }
 .page-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
 .page-heading h1 { margin: 0; }
-.page-heading a { display: inline-flex; align-items: center; min-height: var(--ky-control-size); text-decoration: underline; text-underline-offset: 3px; font-size: var(--ky-type-nav); }
+.page-heading a { display: inline-flex; align-items: center; min-height: var(--ky-control-size); color: var(--ink); text-decoration: underline; text-underline-offset: 3px; font-size: var(--ky-type-nav); }
 .nav-scroll-hint { display: none; }
 .app-main h3 { font-family: var(--font-display); color: var(--ink-strong); font-size: var(--ky-type-section);
                font-weight: 600; margin-top: 0; }
@@ -157,6 +157,7 @@ table.grid th { text-align: left; color: var(--ink); font-weight: 500; font-size
                 background: var(--bg); position: sticky; top: 0; z-index: 1; white-space: nowrap; }
 table.grid td { padding: .6rem .75rem; border-bottom: 1px solid var(--line); color: var(--ink-strong);
                 vertical-align: middle; font-variant-numeric: tabular-nums; }
+table.data-list td { font-size: var(--ky-type-meta); line-height: 1.5; }
 table.grid tr:last-child td { border-bottom: 0; }
 table.grid tr:hover td { background: light-dark(rgba(0,0,0,.025), rgba(255,255,255,.02)); }
 table.grid td.muted { color: var(--ink); }
@@ -169,7 +170,7 @@ table.grid td:last-child:has(form) form { display: inline-flex; gap: .4rem; marg
 /* A list carries a paragraph of description and a URL that does not wrap on
    its own. Give the prose room and let the URL break. */
 table.grid.lists td:first-child { width: 44%; }
-.source-url { display: block; margin-top: .5rem; overflow-wrap: anywhere; font-weight: 400; }
+.source-url { display: block; margin-top: .5rem; overflow-wrap: break-word; font-weight: 400; }
 /* The timestamp and its interval already carry their own line break. */
 table.grid.lists td:nth-child(4) { white-space: nowrap; }
 table.grid.lists td:first-child .muted { display: block; margin-top: .2rem; font-size: var(--ky-type-meta);
@@ -302,7 +303,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px
   font-family: var(--font-display); font-size: var(--ky-type-meta); }
 
 /* Native disclosures keep optional routing edits out of the scan path. */
-.row-routing summary { cursor: pointer; min-height: var(--ky-control-size); display: flex; align-items: center; gap: .5rem; list-style: none; font: 500 var(--ky-type-nav)/1.5 var(--font-display); }
+.row-routing summary { cursor: pointer; min-height: var(--ky-control-size); display: flex; align-items: center; gap: .5rem; list-style: none; font: 500 var(--ky-type-meta)/1.5 var(--font-display); }
 .row-routing summary::-webkit-details-marker { display: none; }
 .row-routing summary::before { content: ""; width: 6px; height: 6px; flex: none; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg); }
 .row-routing[open] summary::before { transform: rotate(45deg); }
@@ -378,6 +379,15 @@ a { color: var(--accent); }
   table.responsive.lists td:nth-child(4) { white-space: normal; }
   table.responsive td.actions button.danger { border-color: transparent; padding-inline: .25rem; }
   table.responsive td .badge { width: fit-content; }
+  /* Name and action share the first track; paired metadata uses label/value
+     stacks so unlike typefaces and the routing target do not stagger labels. */
+  table.data-list td, table.data-list td:has(details) { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+  table.data-list td::before { display: block; margin: 0; }
+  table.data-list td:first-child { grid-column: 1; align-self: center; }
+  table.data-list td.actions { grid-row: 1; grid-column: 2; flex-direction: row; align-items: center; }
+  table.data-list td.actions form { margin: 0; }
+  table.data-list .row-routing summary { align-items: flex-start; }
+  table.data-list .row-routing summary::before { margin-top: 6px; }
   .row-routing[open] { min-width: 0; }
   .row-routing .address-row { flex-wrap: wrap; }
 

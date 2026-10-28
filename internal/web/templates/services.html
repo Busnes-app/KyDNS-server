@@ -1,6 +1,6 @@
 {{define "page"}}
 <div class="card">
-  <table class="grid responsive" aria-label="Services">
+  <table class="grid responsive data-list" aria-label="Services">
     <tr class="column-headings"><th scope="col">Name</th><th>Address</th><th>View</th><th>Aliases</th><th>Routing</th><th></th></tr>
     {{range .Services}}
       {{$svc := .}}

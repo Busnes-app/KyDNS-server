@@ -55,7 +55,7 @@
     <tr>
       <td colspan="2" data-label="Name and source">{{.Name}}{{if .Builtin}} <span class="badge">built-in</span>{{end}}
           {{if .Description}}<br><span class="muted">{{.Description}}</span>{{end}}
-          <span class="technical source-url">{{.URL}}</span></td>
+          <span class="technical source-url">{{range urlParts .URL}}{{.}}<wbr>{{end}}</span></td>
       <td data-label="Format">{{.Format}}</td>
       <td data-label="Entries">{{.Entries}}{{if .Skipped}} <span class="muted">({{.Skipped}} skipped)</span>{{end}}</td>
       <td data-label="Last update">{{.LastOK}}<br><span class="muted">every {{.Interval}}</span></td>
