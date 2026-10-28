@@ -16,9 +16,9 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  # The name the ruleset requires and publish needs: green only when both legs passed.
+  # The name the ruleset requires and publish needs: green only when every leg passed.
   test:
-    needs: [go, browser]
+    needs: [go, go-strong, browser]
     if: always()
     runs-on: ubuntu-latest
     steps:
@@ -127,18 +127,10 @@ jobs:
           git diff --exit-code go.mod go.sum
 
       # The race detector needs cgo, so this run cannot also prove the
-      # cgo-free build. The build job below does that. The default and the
-      # supported strong-crypto profile (GODEBUG=fips140=on) run side by side,
-      # each to its own log; the step fails if either does.
-      - name: test (default and strong-crypto profiles)
-        run: |
-          set +e
-          go test -race -count=1 -timeout 10m ./... > "$RUNNER_TEMP/default.log" 2>&1 & d=$!
-          GODEBUG=fips140=on go test -race -count=1 -timeout 10m ./... > "$RUNNER_TEMP/strong.log" 2>&1 & s=$!
-          wait "$d"; dx=$?; wait "$s"; sx=$?
-          echo "::group::default profile: exit $dx"; cat "$RUNNER_TEMP/default.log"; echo "::endgroup::"
-          echo "::group::strong-crypto profile: exit $sx"; cat "$RUNNER_TEMP/strong.log"; echo "::endgroup::"
-          [ "$dx" = 0 ] && [ "$sx" = 0 ]
+      # cgo-free build. The build job below does that. go-strong runs the
+      # strong-crypto profile beside it.
+      - name: test
+        run: go test -race -count=1 -timeout 10m ./...
 
       - name: profile preserves Compose configuration
         run: python3 scripts/check-strong-crypto-compose.py
@@ -150,6 +142,24 @@ jobs:
           sudo apt-get install -y -qq sqlite3
           scripts/restore-drill.sh
           scripts/backup-live-proof.sh
+
+  # The supported strong-crypto profile, in its own job: in one job with the default pass
+  # the two shared the runner's cores and took longer than both in turn.
+  go-strong:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # No cache: finishing first, this job would save a cache without the go job's builds.
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache: false
+
+      - name: test supported strong-crypto profile
+        env:
+          GODEBUG: fips140=on
+        run: go test -race -count=1 -timeout 10m ./...
 
   build:
     runs-on: ubuntu-latest
