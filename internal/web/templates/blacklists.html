@@ -8,7 +8,7 @@
 <div class="card">
   <h3>Filtering</h3>
   {{if .Enabled}}
-    <p>Filtering is <span class="badge">on</span>. Blocked names are
+    <p>Filtering is <strong>on</strong>. Blocked names are
        answered locally with NXDOMAIN and never sent to an upstream. Blocks are
        cached by clients for {{.BlockTTL}} seconds.</p>
   {{else}}
@@ -60,7 +60,7 @@
       <td data-label="Entries">{{.Entries}}{{if .Skipped}} <span class="muted">({{.Skipped}} skipped)</span>{{end}}</td>
       <td data-label="Last update">{{.LastOK}}<br><span class="muted">every {{.Interval}}</span></td>
       <td data-label="State">
-        {{if .Enabled}}<span class="badge">on</span>{{else}}<span class="badge">off</span>{{end}}
+        {{if .Enabled}}on{{else}}off{{end}}
         {{if .NeverLoaded}}<br><span class="badge warn">never loaded</span>{{end}}
         {{if .Stale}}<br><span class="badge warn">stale</span><br><span class="muted">{{.LastError}}</span>{{end}}
       </td>
