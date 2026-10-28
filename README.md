@@ -44,6 +44,8 @@ KyDNS is licensed under the [MIT License](LICENSE.txt). The web UI carries the
 notice and serves the full license text from its About popover, so an operator
 can always see the terms of what they are running.
 
+[![OctoCounts](https://api.octocounts.com/badge/Busnes-app/KyDNS-server/branch/main)](https://octocounts.com/github/Busnes-app/KyDNS-server/tree/main)
+
 ## What it can do
 
 - Private service names, DNS records and per-network views.
