@@ -2,7 +2,6 @@
 
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/15924/badge)](https://www.bestpractices.dev/projects/15924)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Busnes-app/KyDNS-server/badge)](https://scorecard.dev/viewer/?uri=github.com/Busnes-app/KyDNS-server)
-[![OctoCounts](https://api.octocounts.com/badge/Busnes-app/KyDNS-server/branch/main)](https://octocounts.com/github/Busnes-app/KyDNS-server/tree/main)
 
 **Start here:** [Standalone installation](INSTALL.md). Manage private DNS records, service names, filtering and optional replication. A native install can also serve DHCP. KyIdentity and KyRecovery are optional. Verify DNS over both UDP and TCP before changing client resolver settings; the web health page does not test DNS resolution.
 
@@ -44,6 +43,8 @@ without manually maintaining hosts files or opaque DNS rewrite rules.
 KyDNS is licensed under the [MIT License](LICENSE.txt). The web UI carries the
 notice and serves the full license text from its About popover, so an operator
 can always see the terms of what they are running.
+
+[![OctoCounts](https://api.octocounts.com/badge/Busnes-app/KyDNS-server/branch/main)](https://octocounts.com/github/Busnes-app/KyDNS-server/tree/main)
 
 ## What it can do
 
