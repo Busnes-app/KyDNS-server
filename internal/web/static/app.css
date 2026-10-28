@@ -98,6 +98,10 @@ body { font-size: 15px; }
 .section-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: .5rem; }
 .section-heading h3 { margin: 0; }
 .server-settings .section-heading { max-width: 46rem; }
+.section-heading form { margin: 0; }
+.section-heading .text-action { background: transparent; color: var(--ink); border-color: transparent; padding-inline: 0; text-decoration: underline; text-underline-offset: 3px; }
+.filtering-status { margin-bottom: var(--ky-space-4); }
+.filtering-status > p:last-child { margin-bottom: 0; }
 .card > p { max-width: 72ch; }
 .card > h3 { margin-bottom: .5rem; }
 .card > h3 + p.muted { margin-top: 0; }
@@ -137,6 +141,7 @@ body { font-size: 15px; }
 .legend .key[data-series="blocked"]::before { background: var(--series-3); }
 
 .chart .axis { fill: var(--ink-dim); font-family: var(--font-mono); font-size: 12px; }
+.chart .chart-empty { fill: var(--ink); font-family: var(--font-display); font-size: var(--ky-type-meta); }
 .chart .gridline { stroke: var(--line); stroke-width: 1; }
 .chart .crosshair { stroke: var(--ink); stroke-width: 1; stroke-dasharray: 3 3; }
 .chart .tip { position: absolute; top: 1.5rem; pointer-events: none; z-index: 2;

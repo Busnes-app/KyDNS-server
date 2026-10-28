@@ -37,6 +37,7 @@
     const w = Math.round(svg.getBoundingClientRect().width) || w0;
     svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
     while (svg.firstChild) svg.removeChild(svg.firstChild);
+    svg.removeAttribute("aria-description");
 
     const top = exact ? max : niceMax(max);
     const x = (i, n) => PAD.l + (i * (w - PAD.l - PAD.r)) / Math.max(n - 1, 1);
@@ -79,7 +80,17 @@
   // line draws a rate or an average. A null sample is a minute with nothing to
   // average, which breaks the path: drawing it as zero would claim a 0% hit
   // rate on a cache that was simply never asked.
-  function line(p, vals, color) {
+  function line(p, vals, color, emptyMessage) {
+    if (vals.every((v) => v === null)) {
+      const message = el("text", {
+        class: "chart-empty", x: (PAD.l + p.w - PAD.r) / 2,
+        y: (PAD.t + p.h - PAD.b) / 2, "text-anchor": "middle",
+      });
+      message.textContent = emptyMessage;
+      p.svg.appendChild(message);
+      p.svg.setAttribute("aria-description", emptyMessage);
+      return;
+    }
     const n = vals.length;
     let d = "", pen = false;
     for (let i = 0; i < n; i++) {
@@ -134,7 +145,7 @@
       return t ? Math.round((b.cache_hits * 100) / t) : null;
     });
     const p = plot(fig, 100, "%", true);
-    line(p, vals, hue("--series-1"));
+    line(p, vals, hue("--series-1"), "No cache lookups in this window");
     hover(fig, p, history, (b, i) =>
       [{ text: vals[i] === null ? "no lookups" : vals[i] + "% hit rate" }]);
   }
@@ -143,7 +154,7 @@
     const vals = history.map((b) =>
       (b.latency_count ? Math.round(b.latency_sum_ms / b.latency_count) : null));
     const p = plot(fig, Math.max(0, ...vals.filter((v) => v !== null)), "ms");
-    line(p, vals, hue("--series-1"));
+    line(p, vals, hue("--series-1"), "No query timings in this window");
     hover(fig, p, history, (b, i) =>
       [{ text: vals[i] === null ? "no queries" : vals[i] + " ms average" }]);
   }

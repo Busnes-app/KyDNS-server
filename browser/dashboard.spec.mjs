@@ -171,6 +171,24 @@ test('single sample and zero data have finite coordinates and unique axis labels
   expect(geometry).not.toMatch(/NaN|Infinity/);
 });
 
+test('empty chart windows explain missing samples and recover to valid zero values', async ({ page }) => {
+  await page.clock.install();
+  const value = stats([{ minute: 100 }, { minute: 101 }]);
+  await mockStats(page, value);
+  await expect(page.locator('#chart-cache .chart-empty')).toHaveText('No cache lookups in this window');
+  await expect(page.locator('#chart-latency .chart-empty')).toHaveText('No query timings in this window');
+  await expect(page.locator('#chart-cache svg')).toHaveAttribute('aria-description', 'No cache lookups in this window');
+  value.history = [{ minute: 102, cache_hits: 0, cache_misses: 1, latency_count: 1, latency_sum_ms: 0 }];
+  await page.clock.runFor(5000);
+  for (const id of ['cache', 'latency']) {
+    await expect(page.locator(`#chart-${id} .chart-empty`)).toHaveCount(0);
+    await expect(page.locator(`#chart-${id} svg`)).not.toHaveAttribute('aria-description');
+    await expect(page.locator(`#chart-${id} circle`)).toHaveCount(1);
+  }
+  const geometry = await page.locator('svg path, svg circle').evaluateAll(nodes => nodes.map(n => n.outerHTML).join(''));
+  expect(geometry).not.toMatch(/NaN|Infinity/);
+});
+
 for (const failure of ['http', 'json', 'network']) {
   test(`live refresh retains data after ${failure} failure and recovers`, async ({ page }) => {
     await page.clock.install();

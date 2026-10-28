@@ -5,7 +5,7 @@
 </div>
 {{else}}
 
-<div class="card">
+<div class="card filtering-status">
   <h3>Filtering</h3>
   {{if .Enabled}}
     <p>Filtering is <strong>on</strong>. Blocked names are
@@ -32,10 +32,6 @@
       <input type="hidden" name="csrf_token" value="{{.CSRF}}">
       <button class="ghost" type="submit"{{template "ro" $}}>{{if .Enabled}}Turn filtering off{{else}}Turn filtering on{{end}}</button>
     </form>
-    <form method="post" action="/blacklists/refresh">
-      <input type="hidden" name="csrf_token" value="{{.CSRF}}">
-      <button class="ghost" type="submit"{{template "ro" $}}>Refresh all lists</button>
-    </form>
   </div>
   <p class="muted">{{.BlockedTotal}} queries blocked since KyDNS started.</p>
 </div>
@@ -48,7 +44,13 @@
 {{end}}
 
 <div class="card">
-  <h3>Lists</h3>
+  <div class="section-heading">
+    <h3>Lists</h3>
+    <form method="post" action="/blacklists/refresh">
+      <input type="hidden" name="csrf_token" value="{{.CSRF}}">
+      <button class="text-action" type="submit"{{template "ro" $}}>Refresh all lists</button>
+    </form>
+  </div>
   <table class="grid lists responsive" aria-label="Blacklist sources">
     <tr class="column-headings"><th scope="col" colspan="2">Name and source</th><th>Format</th><th>Entries</th><th>Last update</th><th>State</th><th></th></tr>
     {{range .Lists}}
