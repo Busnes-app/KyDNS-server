@@ -1,0 +1,268 @@
+{
+  "round": 6,
+  "product_source": "6ce6fb505d6f2e4c24256953464efbf903758b21",
+  "reviewers": {
+    "opus": {
+      "exact": "241/30",
+      "decimal": "8.033333333333333333333333333",
+      "rounded": "8.0",
+      "unrounded_vector_mean": "1441/180",
+      "independent_satisfaction": true,
+      "separate_brand_exact": "49/6",
+      "files_freeze_sha256": "a7d3d037efb82f89051c3690a3bac4572027112a9364d1a2d4c68fd95e0584e2",
+      "files_freeze_bytes": 76471,
+      "parent_arithmetic_and_freeze_verified": true,
+      "raw_json_sha256": "6c0134fe48045f3001f219244b951c296d2add12d01e343aac56d7e51518c2ce",
+      "raw_md_sha256": "d7b3f1e692b8809911025dff6a19a6186a739964fc2b29d142dd773a0dccf267",
+      "cohorts": {
+        "settings": {
+          "n": 8,
+          "exact": "167/20"
+        },
+        "admin-console": {
+          "n": 24,
+          "exact": "157/20"
+        },
+        "auth": {
+          "n": 4,
+          "exact": "17/2"
+        }
+      }
+    },
+    "sol": {
+      "exact": "257/30",
+      "decimal": "8.566666666666666666666666667",
+      "rounded": "8.6",
+      "unrounded_vector_mean": "171/20",
+      "independent_satisfaction": true,
+      "separate_brand_exact": "26/3",
+      "files_freeze_sha256": "dd36505bff89c20992edc026e95cd6a6c199ed42ce4f3d83bfb779e00f31cf73",
+      "files_freeze_bytes": 82021,
+      "parent_arithmetic_and_freeze_verified": true,
+      "raw_json_sha256": "220d3e4c848663343b82e11933d203078ab76480baf5d83d3e20e5258a791954",
+      "raw_md_sha256": "efb57dcefb09c52d80b677903cd64407e22384662fd3cbfb688e34206c51b129",
+      "cohorts": {
+        "settings": {
+          "n": 12,
+          "exact": "26/3"
+        },
+        "admin-console": {
+          "n": 20,
+          "exact": "421/50"
+        },
+        "auth": {
+          "n": 4,
+          "exact": "9"
+        }
+      }
+    }
+  },
+  "disagreements": [
+    {
+      "file": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "category": "quality",
+      "dimension": "coherence",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Two button vocabularies (outlined buttons vs underlined text actions) and two pill styles (mono \"built-in\", amber \"never loaded\").",
+      "sol_observation": "Flat sections, quiet links and outlined controls share one vocabulary."
+    },
+    {
+      "file": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "category": "quality",
+      "dimension": "coherence",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Two button vocabularies (outlined buttons vs underlined text actions) and two pill styles (mono \"built-in\", amber \"never loaded\").",
+      "sol_observation": "Flat sections, quiet links and outlined controls share one vocabulary."
+    },
+    {
+      "file": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "category": "quality",
+      "dimension": "coherence",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "List row uses inline label-value pairs unlike the labels-above rows on Services/Records; two pill styles and two action styles.",
+      "sol_observation": "The list uses flat dividers and the same control language as the shell."
+    },
+    {
+      "file": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "category": "quality",
+      "dimension": "coherence",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "List row uses inline label-value pairs unlike the labels-above rows on Services/Records; two pill styles and two action styles.",
+      "sol_observation": "The list uses flat dividers and the same control language as the shell."
+    },
+    {
+      "file": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "category": "brand",
+      "dimension": "palette_tokens",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Neutral surfaces match tokens; chart series teal/purple are off-palette hues (system data, not user data).",
+      "sol_observation": "Charcoal surfaces, pale ink and salmon-orange accents visually match the dark Busnes reference."
+    },
+    {
+      "file": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "category": "brand",
+      "dimension": "accent_discipline",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Orange also encodes the Forwarded chart series, beyond primary/selection/focus.",
+      "sol_observation": "Orange marks primary actions, selection or focus; status and chart data use separate semantics."
+    },
+    {
+      "file": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "category": "brand",
+      "dimension": "palette_tokens",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Neutral surfaces match tokens; chart series teal/purple are off-palette hues (system data, not user data).",
+      "sol_observation": "Cream surfaces, dark ink and burnt-orange accents visually match the light Busnes reference."
+    },
+    {
+      "file": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "category": "brand",
+      "dimension": "accent_discipline",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Orange also encodes the Forwarded chart series, beyond primary/selection/focus.",
+      "sol_observation": "Orange marks primary actions, selection or focus; status and chart data use separate semantics."
+    },
+    {
+      "file": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "category": "brand",
+      "dimension": "palette_tokens",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Neutral surfaces match tokens; chart series teal/purple are off-palette hues (system data, not user data).",
+      "sol_observation": "Charcoal surfaces, pale ink and salmon-orange accents visually match the dark Busnes reference."
+    },
+    {
+      "file": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "category": "brand",
+      "dimension": "accent_discipline",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Orange also encodes the Forwarded chart series, beyond primary/selection/focus.",
+      "sol_observation": "Orange marks primary actions, selection or focus; status and chart data use separate semantics."
+    },
+    {
+      "file": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "category": "brand",
+      "dimension": "palette_tokens",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Neutral surfaces match tokens; chart series teal/purple are off-palette hues (system data, not user data).",
+      "sol_observation": "Cream surfaces, dark ink and burnt-orange accents visually match the light Busnes reference."
+    },
+    {
+      "file": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "category": "brand",
+      "dimension": "accent_discipline",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Orange also encodes the Forwarded chart series, beyond primary/selection/focus.",
+      "sol_observation": "Orange marks primary actions, selection or focus; status and chart data use separate semantics."
+    },
+    {
+      "file": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "category": "quality",
+      "dimension": "hierarchy",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Title plus one sentence; the only next action is the inline \"Settings\" link inside prose; the page does not say what will appear here.",
+      "sol_observation": "Discovered has one short explanation and a direct Settings next step."
+    },
+    {
+      "file": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "category": "quality",
+      "dimension": "visible_affordances",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Next step is a text link only; no button-weight action for the empty state.",
+      "sol_observation": "The underlined Settings link supplies an explicit route out of the disabled-discovery state."
+    },
+    {
+      "file": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "category": "quality",
+      "dimension": "hierarchy",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Title plus one sentence; the only next action is the inline \"Settings\" link inside prose; the page does not say what will appear here.",
+      "sol_observation": "Discovered has one short explanation and a direct Settings next step."
+    },
+    {
+      "file": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "category": "quality",
+      "dimension": "visible_affordances",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Next step is a text link only; no button-weight action for the empty state.",
+      "sol_observation": "The underlined Settings link supplies an explicit route out of the disabled-discovery state."
+    },
+    {
+      "file": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "category": "quality",
+      "dimension": "hierarchy",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Title plus one sentence; the only next action is the inline \"Settings\" link inside prose; the page does not say what will appear here.",
+      "sol_observation": "Discovered and the explanatory next step remain the only task hierarchy."
+    },
+    {
+      "file": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "category": "quality",
+      "dimension": "visible_affordances",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Next step is a text link only; no button-weight action for the empty state.",
+      "sol_observation": "Settings is visibly underlined, and the text says discovery is off."
+    },
+    {
+      "file": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "category": "quality",
+      "dimension": "hierarchy",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Title plus one sentence; the only next action is the inline \"Settings\" link inside prose; the page does not say what will appear here.",
+      "sol_observation": "Discovered and the explanatory next step remain the only task hierarchy."
+    },
+    {
+      "file": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "category": "quality",
+      "dimension": "visible_affordances",
+      "opus": 7,
+      "sol": 9,
+      "opus_observation": "Next step is a text link only; no button-weight action for the empty state.",
+      "sol_observation": "Settings is visibly underlined, and the text says discovery is off."
+    }
+  ],
+  "dox_pass": "Existing evidence-only contracts unchanged; no AGENTS edits required.",
+  "progression": "accepted",
+  "calibration_disclosure": {
+    "fact": "Before freeze and before any prior context, I tallied provisional per-surface vectors from my viewing notes (/tmp/opus-r6/notes.md, outside the repo), re-read the rubric anchors, then raised five dimension scores before freezing: login coherence 8->9 and affordances held at 8; settings hierarchy 8->9 and color 8->9; dhcp color 8->9; appearance affordances 8->9 (coherence 9 was already provisional). No dimension was lowered.",
+    "provisional_overall": "login 8.4, dashboard 7.7, services 8.0, records 8.0, discovered 7.7, blacklists 7.5, dhcp 8.0, settings 8.0, appearance 8.2 (appearance vector was in my reasoning, not the notes file): mean of rounded 143/18 = 7.9444, half-up 7.9.",
+    "frozen_overall": "241/30 = 8.0333, half-up 8.0.",
+    "assessment": "Each raise cites a visible fact in the frozen observations (nothing stray on login; one primary plus divider groups on settings; orange only on Save on settings/dhcp; unambiguous selection on appearance). But I knew the 8.0 threshold, all changes went up, and they move the rounded result across it. The gap between the two readings (0.089) is smaller than my own byte-identical drift from R5 (+0.157 mean). Treat the 8.0 as borderline and partly calibration-driven, not as a measured product gain."
+  },
+  "raw_scores_changed": false,
+  "hosted_test_evidence": {
+    "head": "700e6664e07666761ffd997f7820579ca8f9c333",
+    "job": "https://github.com/Busnes-app/KyDNS-server/actions/runs/40616487319/job/122580077759",
+    "conclusion": "SUCCESS",
+    "steps": [
+      "browser regressions",
+      "gofmt",
+      "go vet",
+      "release binaries are repeatable",
+      "go mod tidy is clean",
+      "race suite",
+      "FIPS race suite",
+      "Compose profile preservation",
+      "backup and restore proofs"
+    ],
+    "scope": "All successful at tested source; future evidence-only commit still needs its own remaining hosted checks and security clearance."
+  }
+}
