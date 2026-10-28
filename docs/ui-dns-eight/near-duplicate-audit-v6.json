@@ -1,0 +1,5011 @@
+{
+  "schema_version": 6,
+  "source": "manifest-06-after.json",
+  "scope": "Only36complete current stage06 originals; 180historical,8incomplete and4brand excluded from current-pair measurements and quality means.",
+  "method": "Sequential installed Pillow RGB/NumPy int16; at most two original-size arrays plus delta; no montage/crop/resize.",
+  "versions": {
+    "Pillow": "12.3.0",
+    "NumPy": "2.5.4"
+  },
+  "threshold": {
+    "changed_pixel_fraction_strictly_below": 0.001,
+    "maximum_channel_delta_at_most": 8,
+    "both_required": true
+  },
+  "total_possible_pairs": 630,
+  "same_size_comparisons": 306,
+  "different_size_pairs_excluded": 324,
+  "exact_duplicate_pairs": 0,
+  "near_duplicate_pairs": 0,
+  "duplicate_links": {},
+  "comparisons": [
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 979958,
+      "changed_pixel_fraction": 0.8506579861111111,
+      "changed_pixel_percent": 85.0657986111111,
+      "max_channel_delta": 224,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 536022,
+      "changed_pixel_fraction": 0.465296875,
+      "changed_pixel_percent": 46.5296875,
+      "max_channel_delta": 242,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1142718,
+      "changed_pixel_fraction": 0.9919427083333333,
+      "changed_pixel_percent": 99.19427083333333,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 531166,
+      "changed_pixel_fraction": 0.4610815972222222,
+      "changed_pixel_percent": 46.10815972222222,
+      "max_channel_delta": 242,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1140781,
+      "changed_pixel_fraction": 0.9902612847222222,
+      "changed_pixel_percent": 99.02612847222223,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 532035,
+      "changed_pixel_fraction": 0.4618359375,
+      "changed_pixel_percent": 46.18359375,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1142290,
+      "changed_pixel_fraction": 0.9915711805555556,
+      "changed_pixel_percent": 99.15711805555556,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 524998,
+      "changed_pixel_fraction": 0.45572743055555553,
+      "changed_pixel_percent": 45.572743055555556,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1142020,
+      "changed_pixel_fraction": 0.9913368055555556,
+      "changed_pixel_percent": 99.13368055555556,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 700749,
+      "changed_pixel_fraction": 0.6082890625,
+      "changed_pixel_percent": 60.82890625,
+      "max_channel_delta": 234,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-login-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1142721,
+      "changed_pixel_fraction": 0.9919453125,
+      "changed_pixel_percent": 99.19453125,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 526153,
+      "changed_pixel_fraction": 0.45673003472222223,
+      "changed_pixel_percent": 45.67300347222222,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-records-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1142264,
+      "changed_pixel_fraction": 0.9915486111111111,
+      "changed_pixel_percent": 99.15486111111112,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 529043,
+      "changed_pixel_fraction": 0.45923871527777776,
+      "changed_pixel_percent": 45.92387152777778,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-services-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1141859,
+      "changed_pixel_fraction": 0.9911970486111111,
+      "changed_pixel_percent": 99.11970486111112,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 532014,
+      "changed_pixel_fraction": 0.46181770833333335,
+      "changed_pixel_percent": 46.18177083333334,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1142140,
+      "changed_pixel_fraction": 0.9914409722222223,
+      "changed_pixel_percent": 99.14409722222223,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1145657,
+      "changed_pixel_fraction": 0.9944939236111111,
+      "changed_pixel_percent": 99.44939236111111,
+      "max_channel_delta": 242,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 532667,
+      "changed_pixel_fraction": 0.4623845486111111,
+      "changed_pixel_percent": 46.23845486111111,
+      "max_channel_delta": 255,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1145516,
+      "changed_pixel_fraction": 0.9943715277777778,
+      "changed_pixel_percent": 99.43715277777778,
+      "max_channel_delta": 255,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 526746,
+      "changed_pixel_fraction": 0.45724479166666665,
+      "changed_pixel_percent": 45.72447916666667,
+      "max_channel_delta": 255,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1145190,
+      "changed_pixel_fraction": 0.9940885416666667,
+      "changed_pixel_percent": 99.40885416666667,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 527968,
+      "changed_pixel_fraction": 0.4583055555555556,
+      "changed_pixel_percent": 45.830555555555556,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1145328,
+      "changed_pixel_fraction": 0.9942083333333334,
+      "changed_pixel_percent": 99.42083333333333,
+      "max_channel_delta": 233,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 520490,
+      "changed_pixel_fraction": 0.4518142361111111,
+      "changed_pixel_percent": 45.18142361111111,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1145607,
+      "changed_pixel_fraction": 0.9944505208333333,
+      "changed_pixel_percent": 99.44505208333332,
+      "max_channel_delta": 234,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-login-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 695931,
+      "changed_pixel_fraction": 0.6041067708333333,
+      "changed_pixel_percent": 60.41067708333333,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1145583,
+      "changed_pixel_fraction": 0.9944296875,
+      "changed_pixel_percent": 99.44296875,
+      "max_channel_delta": 232,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-records-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 521703,
+      "changed_pixel_fraction": 0.4528671875,
+      "changed_pixel_percent": 45.28671875,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1145380,
+      "changed_pixel_fraction": 0.9942534722222223,
+      "changed_pixel_percent": 99.42534722222223,
+      "max_channel_delta": 232,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-services-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 524490,
+      "changed_pixel_fraction": 0.4552864583333333,
+      "changed_pixel_percent": 45.52864583333333,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1145571,
+      "changed_pixel_fraction": 0.9944192708333334,
+      "changed_pixel_percent": 99.44192708333334,
+      "max_channel_delta": 239,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 527612,
+      "changed_pixel_fraction": 0.4579965277777778,
+      "changed_pixel_percent": 45.79965277777778,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 272324,
+      "changed_pixel_fraction": 0.8273301737756714,
+      "changed_pixel_percent": 82.73301737756714,
+      "max_channel_delta": 224,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 178423,
+      "changed_pixel_fraction": 0.5420555353019808,
+      "changed_pixel_percent": 54.20555353019808,
+      "max_channel_delta": 227,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 320252,
+      "changed_pixel_fraction": 0.9729371734111071,
+      "changed_pixel_percent": 97.2937173411107,
+      "max_channel_delta": 240,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 183810,
+      "changed_pixel_fraction": 0.5584214363835217,
+      "changed_pixel_percent": 55.84214363835217,
+      "max_channel_delta": 224,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 319249,
+      "changed_pixel_fraction": 0.9698900230890752,
+      "changed_pixel_percent": 96.98900230890753,
+      "max_channel_delta": 240,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 179106,
+      "changed_pixel_fraction": 0.5441305140357273,
+      "changed_pixel_percent": 54.41305140357273,
+      "max_channel_delta": 224,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 320116,
+      "changed_pixel_fraction": 0.9725240004860858,
+      "changed_pixel_percent": 97.25240004860858,
+      "max_channel_delta": 240,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 174843,
+      "changed_pixel_fraction": 0.5311793656580387,
+      "changed_pixel_percent": 53.117936565803866,
+      "max_channel_delta": 225,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 319894,
+      "changed_pixel_fraction": 0.9718495564467129,
+      "changed_pixel_percent": 97.18495564467129,
+      "max_channel_delta": 240,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 188934,
+      "changed_pixel_fraction": 0.5739883339409406,
+      "changed_pixel_percent": 57.39883339409406,
+      "max_channel_delta": 224,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-login-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 326933,
+      "changed_pixel_fraction": 0.9932342933527768,
+      "changed_pixel_percent": 99.32342933527768,
+      "max_channel_delta": 240,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 174555,
+      "changed_pixel_fraction": 0.5303044112285819,
+      "changed_pixel_percent": 53.030441122858186,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-records-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 319828,
+      "changed_pixel_fraction": 0.9716490460566289,
+      "changed_pixel_percent": 97.1649046056629,
+      "max_channel_delta": 240,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 180212,
+      "changed_pixel_fraction": 0.5474905820877385,
+      "changed_pixel_percent": 54.749058208773846,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-services-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 319660,
+      "changed_pixel_fraction": 0.9711386559727792,
+      "changed_pixel_percent": 97.11386559727792,
+      "max_channel_delta": 240,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 180322,
+      "changed_pixel_fraction": 0.5478247660712116,
+      "changed_pixel_percent": 54.782476607121154,
+      "max_channel_delta": 232,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 319847,
+      "changed_pixel_fraction": 0.9717067687446834,
+      "changed_pixel_percent": 97.17067687446834,
+      "max_channel_delta": 240,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 323965,
+      "changed_pixel_fraction": 0.9842174018714303,
+      "changed_pixel_percent": 98.42174018714303,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 174846,
+      "changed_pixel_fraction": 0.5311884797666788,
+      "changed_pixel_percent": 53.11884797666788,
+      "max_channel_delta": 255,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 323660,
+      "changed_pixel_fraction": 0.9832908008263459,
+      "changed_pixel_percent": 98.32908008263459,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 179496,
+      "changed_pixel_fraction": 0.5453153481589501,
+      "changed_pixel_percent": 54.531534815895014,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 323443,
+      "changed_pixel_fraction": 0.9826315469680399,
+      "changed_pixel_percent": 98.263154696804,
+      "max_channel_delta": 232,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 175322,
+      "changed_pixel_fraction": 0.5326345850042532,
+      "changed_pixel_percent": 53.26345850042532,
+      "max_channel_delta": 240,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 323448,
+      "changed_pixel_fraction": 0.9826467371491068,
+      "changed_pixel_percent": 98.26467371491067,
+      "max_channel_delta": 233,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 170824,
+      "changed_pixel_fraction": 0.5189694981164176,
+      "changed_pixel_percent": 51.896949811641754,
+      "max_channel_delta": 240,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 323526,
+      "changed_pixel_fraction": 0.9828837039737514,
+      "changed_pixel_percent": 98.28837039737513,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-login-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 191228,
+      "changed_pixel_fraction": 0.580957589014461,
+      "changed_pixel_percent": 58.0957589014461,
+      "max_channel_delta": 240,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 323414,
+      "changed_pixel_fraction": 0.9825434439178515,
+      "changed_pixel_percent": 98.25434439178515,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-records-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 170610,
+      "changed_pixel_fraction": 0.5183193583667517,
+      "changed_pixel_percent": 51.83193583667517,
+      "max_channel_delta": 240,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 323477,
+      "changed_pixel_fraction": 0.9827348401992951,
+      "changed_pixel_percent": 98.27348401992951,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-services-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 175930,
+      "changed_pixel_fraction": 0.5344817110219954,
+      "changed_pixel_percent": 53.44817110219954,
+      "max_channel_delta": 240,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 323536,
+      "changed_pixel_fraction": 0.9829140843358852,
+      "changed_pixel_percent": 98.29140843358853,
+      "max_channel_delta": 246,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 176447,
+      "changed_pixel_fraction": 0.5360523757443189,
+      "changed_pixel_percent": 53.60523757443188,
+      "max_channel_delta": 240,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1151308,
+      "changed_pixel_fraction": 0.9993993055555556,
+      "changed_pixel_percent": 99.93993055555556,
+      "max_channel_delta": 225,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 94225,
+      "changed_pixel_fraction": 0.08179253472222223,
+      "changed_pixel_percent": 8.179253472222223,
+      "max_channel_delta": 218,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1148833,
+      "changed_pixel_fraction": 0.9972508680555555,
+      "changed_pixel_percent": 99.72508680555555,
+      "max_channel_delta": 225,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 86832,
+      "changed_pixel_fraction": 0.075375,
+      "changed_pixel_percent": 7.5375,
+      "max_channel_delta": 222,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1150457,
+      "changed_pixel_fraction": 0.9986605902777778,
+      "changed_pixel_percent": 99.86605902777778,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 68322,
+      "changed_pixel_fraction": 0.059307291666666664,
+      "changed_pixel_percent": 5.930729166666667,
+      "max_channel_delta": 221,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1151072,
+      "changed_pixel_fraction": 0.9991944444444445,
+      "changed_pixel_percent": 99.91944444444445,
+      "max_channel_delta": 225,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 334283,
+      "changed_pixel_fraction": 0.29017621527777776,
+      "changed_pixel_percent": 29.017621527777777,
+      "max_channel_delta": 221,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-login-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1151504,
+      "changed_pixel_fraction": 0.9995694444444444,
+      "changed_pixel_percent": 99.95694444444445,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 83189,
+      "changed_pixel_fraction": 0.07221267361111111,
+      "changed_pixel_percent": 7.221267361111111,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-records-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1150754,
+      "changed_pixel_fraction": 0.9989184027777778,
+      "changed_pixel_percent": 99.89184027777777,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 92043,
+      "changed_pixel_fraction": 0.0798984375,
+      "changed_pixel_percent": 7.98984375,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-services-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1150119,
+      "changed_pixel_fraction": 0.9983671875,
+      "changed_pixel_percent": 99.83671875,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 86854,
+      "changed_pixel_fraction": 0.07539409722222222,
+      "changed_pixel_percent": 7.539409722222222,
+      "max_channel_delta": 233,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1150378,
+      "changed_pixel_fraction": 0.9985920138888889,
+      "changed_pixel_percent": 99.85920138888889,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "b": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1149821,
+      "changed_pixel_fraction": 0.9981085069444444,
+      "changed_pixel_percent": 99.81085069444444,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "b": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 94431,
+      "changed_pixel_fraction": 0.08197135416666666,
+      "changed_pixel_percent": 8.197135416666667,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "b": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1149829,
+      "changed_pixel_fraction": 0.9981154513888889,
+      "changed_pixel_percent": 99.81154513888889,
+      "max_channel_delta": 225,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "b": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 87171,
+      "changed_pixel_fraction": 0.07566927083333333,
+      "changed_pixel_percent": 7.566927083333333,
+      "max_channel_delta": 240,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1149806,
+      "changed_pixel_fraction": 0.9980954861111111,
+      "changed_pixel_percent": 99.80954861111111,
+      "max_channel_delta": 233,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 68575,
+      "changed_pixel_fraction": 0.05952690972222222,
+      "changed_pixel_percent": 5.952690972222222,
+      "max_channel_delta": 240,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "b": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1150094,
+      "changed_pixel_fraction": 0.9983454861111111,
+      "changed_pixel_percent": 99.8345486111111,
+      "max_channel_delta": 227,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "b": "screenshots/kydns-06-after-login-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 334553,
+      "changed_pixel_fraction": 0.29041059027777777,
+      "changed_pixel_percent": 29.041059027777777,
+      "max_channel_delta": 240,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "b": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1149875,
+      "changed_pixel_fraction": 0.9981553819444444,
+      "changed_pixel_percent": 99.81553819444444,
+      "max_channel_delta": 225,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "b": "screenshots/kydns-06-after-records-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 83458,
+      "changed_pixel_fraction": 0.07244618055555556,
+      "changed_pixel_percent": 7.244618055555556,
+      "max_channel_delta": 240,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "b": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1149895,
+      "changed_pixel_fraction": 0.9981727430555556,
+      "changed_pixel_percent": 99.81727430555556,
+      "max_channel_delta": 225,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "b": "screenshots/kydns-06-after-services-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 92421,
+      "changed_pixel_fraction": 0.0802265625,
+      "changed_pixel_percent": 8.02265625,
+      "max_channel_delta": 240,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1150000,
+      "changed_pixel_fraction": 0.9982638888888888,
+      "changed_pixel_percent": 99.82638888888889,
+      "max_channel_delta": 239,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 87202,
+      "changed_pixel_fraction": 0.07569618055555556,
+      "changed_pixel_percent": 7.569618055555556,
+      "max_channel_delta": 240,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 328468,
+      "changed_pixel_fraction": 0.997897678940333,
+      "changed_pixel_percent": 99.7897678940333,
+      "max_channel_delta": 224,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 50988,
+      "changed_pixel_fraction": 0.15490339044841414,
+      "changed_pixel_percent": 15.490339044841415,
+      "max_channel_delta": 242,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 327487,
+      "changed_pixel_fraction": 0.9949173654149958,
+      "changed_pixel_percent": 99.49173654149958,
+      "max_channel_delta": 242,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 45385,
+      "changed_pixel_fraction": 0.13788127354478066,
+      "changed_pixel_percent": 13.788127354478066,
+      "max_channel_delta": 218,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 327839,
+      "changed_pixel_fraction": 0.9959867541621096,
+      "changed_pixel_percent": 99.59867541621095,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 37172,
+      "changed_pixel_fraction": 0.11292988212419491,
+      "changed_pixel_percent": 11.292988212419491,
+      "max_channel_delta": 227,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 328232,
+      "changed_pixel_fraction": 0.9971807023939725,
+      "changed_pixel_percent": 99.71807023939725,
+      "max_channel_delta": 224,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 137655,
+      "changed_pixel_fraction": 0.4182008749544295,
+      "changed_pixel_percent": 41.82008749544295,
+      "max_channel_delta": 221,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-login-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 328775,
+      "changed_pixel_fraction": 0.9988303560578442,
+      "changed_pixel_percent": 99.88303560578441,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 40863,
+      "changed_pixel_fraction": 0.12414327378782355,
+      "changed_pixel_percent": 12.414327378782355,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-records-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 327718,
+      "changed_pixel_fraction": 0.9956191517802893,
+      "changed_pixel_percent": 99.56191517802893,
+      "max_channel_delta": 224,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 46169,
+      "changed_pixel_fraction": 0.14026309393607972,
+      "changed_pixel_percent": 14.026309393607972,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-services-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 327783,
+      "changed_pixel_fraction": 0.9958166241341597,
+      "changed_pixel_percent": 99.58166241341597,
+      "max_channel_delta": 224,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 45397,
+      "changed_pixel_fraction": 0.13791772997934135,
+      "changed_pixel_percent": 13.791772997934135,
+      "max_channel_delta": 221,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 327918,
+      "changed_pixel_fraction": 0.9962267590229675,
+      "changed_pixel_percent": 99.62267590229675,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "b": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 327329,
+      "changed_pixel_fraction": 0.9944373556932798,
+      "changed_pixel_percent": 99.44373556932798,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "b": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 51087,
+      "changed_pixel_fraction": 0.15520415603353993,
+      "changed_pixel_percent": 15.520415603353992,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "b": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 327282,
+      "changed_pixel_fraction": 0.9942945679912505,
+      "changed_pixel_percent": 99.42945679912505,
+      "max_channel_delta": 225,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "b": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 45591,
+      "changed_pixel_fraction": 0.13850710900473934,
+      "changed_pixel_percent": 13.850710900473933,
+      "max_channel_delta": 240,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 327375,
+      "changed_pixel_fraction": 0.9945771053590958,
+      "changed_pixel_percent": 99.45771053590958,
+      "max_channel_delta": 233,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 37341,
+      "changed_pixel_fraction": 0.1134433102442581,
+      "changed_pixel_percent": 11.344331024425811,
+      "max_channel_delta": 240,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "b": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 327581,
+      "changed_pixel_fraction": 0.9952029408190546,
+      "changed_pixel_percent": 99.52029408190546,
+      "max_channel_delta": 227,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "b": "screenshots/kydns-06-after-login-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 137781,
+      "changed_pixel_fraction": 0.4185836675173168,
+      "changed_pixel_percent": 41.85836675173168,
+      "max_channel_delta": 240,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "b": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 327350,
+      "changed_pixel_fraction": 0.9945011544537611,
+      "changed_pixel_percent": 99.45011544537611,
+      "max_channel_delta": 224,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "b": "screenshots/kydns-06-after-records-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 40993,
+      "changed_pixel_fraction": 0.12453821849556447,
+      "changed_pixel_percent": 12.453821849556448,
+      "max_channel_delta": 240,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "b": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 327359,
+      "changed_pixel_fraction": 0.9945284967796816,
+      "changed_pixel_percent": 99.45284967796816,
+      "max_channel_delta": 224,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "b": "screenshots/kydns-06-after-services-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 46307,
+      "changed_pixel_fraction": 0.14068234293352777,
+      "changed_pixel_percent": 14.068234293352777,
+      "max_channel_delta": 240,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 327445,
+      "changed_pixel_fraction": 0.9947897678940333,
+      "changed_pixel_percent": 99.47897678940333,
+      "max_channel_delta": 239,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 45665,
+      "changed_pixel_fraction": 0.13873192368453033,
+      "changed_pixel_percent": 13.873192368453033,
+      "max_channel_delta": 240,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1149131,
+      "changed_pixel_fraction": 0.9975095486111111,
+      "changed_pixel_percent": 99.75095486111111,
+      "max_channel_delta": 225,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 77725,
+      "changed_pixel_fraction": 0.06746961805555556,
+      "changed_pixel_percent": 6.746961805555555,
+      "max_channel_delta": 221,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1150569,
+      "changed_pixel_fraction": 0.9987578125,
+      "changed_pixel_percent": 99.87578124999999,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 57764,
+      "changed_pixel_fraction": 0.05014236111111111,
+      "changed_pixel_percent": 5.014236111111111,
+      "max_channel_delta": 227,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1151134,
+      "changed_pixel_fraction": 0.9992482638888889,
+      "changed_pixel_percent": 99.92482638888889,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 324238,
+      "changed_pixel_fraction": 0.2814565972222222,
+      "changed_pixel_percent": 28.14565972222222,
+      "max_channel_delta": 221,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-login-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1151561,
+      "changed_pixel_fraction": 0.9996189236111112,
+      "changed_pixel_percent": 99.96189236111111,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 74406,
+      "changed_pixel_fraction": 0.06458854166666667,
+      "changed_pixel_percent": 6.458854166666667,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-records-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1150632,
+      "changed_pixel_fraction": 0.9988125,
+      "changed_pixel_percent": 99.88125,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 83178,
+      "changed_pixel_fraction": 0.072203125,
+      "changed_pixel_percent": 7.2203125,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-services-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1150021,
+      "changed_pixel_fraction": 0.9982821180555556,
+      "changed_pixel_percent": 99.82821180555555,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 78968,
+      "changed_pixel_fraction": 0.06854861111111112,
+      "changed_pixel_percent": 6.854861111111112,
+      "max_channel_delta": 221,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1150400,
+      "changed_pixel_fraction": 0.9986111111111111,
+      "changed_pixel_percent": 99.86111111111111,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "b": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1148723,
+      "changed_pixel_fraction": 0.9971553819444444,
+      "changed_pixel_percent": 99.71553819444445,
+      "max_channel_delta": 225,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "b": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 77867,
+      "changed_pixel_fraction": 0.06759288194444445,
+      "changed_pixel_percent": 6.759288194444444,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1148960,
+      "changed_pixel_fraction": 0.9973611111111111,
+      "changed_pixel_percent": 99.73611111111111,
+      "max_channel_delta": 233,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 57803,
+      "changed_pixel_fraction": 0.050176215277777776,
+      "changed_pixel_percent": 5.017621527777778,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "b": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1149144,
+      "changed_pixel_fraction": 0.9975208333333333,
+      "changed_pixel_percent": 99.75208333333333,
+      "max_channel_delta": 227,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "b": "screenshots/kydns-06-after-login-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 324309,
+      "changed_pixel_fraction": 0.2815182291666667,
+      "changed_pixel_percent": 28.151822916666667,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "b": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1148756,
+      "changed_pixel_fraction": 0.9971840277777778,
+      "changed_pixel_percent": 99.71840277777778,
+      "max_channel_delta": 225,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "b": "screenshots/kydns-06-after-records-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 74521,
+      "changed_pixel_fraction": 0.06468836805555556,
+      "changed_pixel_percent": 6.468836805555556,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "b": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1148754,
+      "changed_pixel_fraction": 0.9971822916666667,
+      "changed_pixel_percent": 99.71822916666667,
+      "max_channel_delta": 225,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "b": "screenshots/kydns-06-after-services-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 83363,
+      "changed_pixel_fraction": 0.07236371527777778,
+      "changed_pixel_percent": 7.236371527777778,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1149116,
+      "changed_pixel_fraction": 0.9974965277777778,
+      "changed_pixel_percent": 99.74965277777777,
+      "max_channel_delta": 239,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 79112,
+      "changed_pixel_fraction": 0.06867361111111112,
+      "changed_pixel_percent": 6.867361111111111,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 327528,
+      "changed_pixel_fraction": 0.9950419248997449,
+      "changed_pixel_percent": 99.50419248997449,
+      "max_channel_delta": 225,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 38761,
+      "changed_pixel_fraction": 0.11775732166727428,
+      "changed_pixel_percent": 11.775732166727428,
+      "max_channel_delta": 225,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 327894,
+      "changed_pixel_fraction": 0.9961538461538462,
+      "changed_pixel_percent": 99.61538461538461,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 31846,
+      "changed_pixel_fraction": 0.09674930125167092,
+      "changed_pixel_percent": 9.67493012516709,
+      "max_channel_delta": 221,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 328294,
+      "changed_pixel_fraction": 0.9973690606392028,
+      "changed_pixel_percent": 99.73690606392029,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 129347,
+      "changed_pixel_fraction": 0.3929608700935715,
+      "changed_pixel_percent": 39.29608700935715,
+      "max_channel_delta": 221,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-login-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 328713,
+      "changed_pixel_fraction": 0.998641997812614,
+      "changed_pixel_percent": 99.86419978126139,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 33023,
+      "changed_pixel_fraction": 0.1003250698748329,
+      "changed_pixel_percent": 10.03250698748329,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-records-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 327670,
+      "changed_pixel_fraction": 0.9954733260420464,
+      "changed_pixel_percent": 99.54733260420464,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 32713,
+      "changed_pixel_fraction": 0.09938327864868149,
+      "changed_pixel_percent": 9.93832786486815,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-services-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 327742,
+      "changed_pixel_fraction": 0.9956920646494106,
+      "changed_pixel_percent": 99.56920646494106,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 41514,
+      "changed_pixel_fraction": 0.12612103536274152,
+      "changed_pixel_percent": 12.612103536274152,
+      "max_channel_delta": 221,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 327871,
+      "changed_pixel_fraction": 0.9960839713209382,
+      "changed_pixel_percent": 99.60839713209381,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "b": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 327459,
+      "changed_pixel_fraction": 0.9948323004010208,
+      "changed_pixel_percent": 99.48323004010207,
+      "max_channel_delta": 225,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "b": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 38841,
+      "changed_pixel_fraction": 0.11800036456434561,
+      "changed_pixel_percent": 11.800036456434562,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 327565,
+      "changed_pixel_fraction": 0.9951543322396403,
+      "changed_pixel_percent": 99.51543322396404,
+      "max_channel_delta": 233,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 31875,
+      "changed_pixel_fraction": 0.09683740430185928,
+      "changed_pixel_percent": 9.683740430185928,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "b": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 327731,
+      "changed_pixel_fraction": 0.9956586462510633,
+      "changed_pixel_percent": 99.56586462510633,
+      "max_channel_delta": 227,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "b": "screenshots/kydns-06-after-login-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 129410,
+      "changed_pixel_fraction": 0.3931522663750152,
+      "changed_pixel_percent": 39.315226637501524,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "b": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 327459,
+      "changed_pixel_fraction": 0.9948323004010208,
+      "changed_pixel_percent": 99.48323004010207,
+      "max_channel_delta": 224,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "b": "screenshots/kydns-06-after-records-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 33025,
+      "changed_pixel_fraction": 0.1003311459472597,
+      "changed_pixel_percent": 10.03311459472597,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "b": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 327412,
+      "changed_pixel_fraction": 0.9946895126989914,
+      "changed_pixel_percent": 99.46895126989914,
+      "max_channel_delta": 224,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "b": "screenshots/kydns-06-after-services-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 32729,
+      "changed_pixel_fraction": 0.09943188722809576,
+      "changed_pixel_percent": 9.943188722809577,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 327537,
+      "changed_pixel_fraction": 0.9950692672256654,
+      "changed_pixel_percent": 99.50692672256653,
+      "max_channel_delta": 239,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 41661,
+      "changed_pixel_fraction": 0.1265676266861101,
+      "changed_pixel_percent": 12.65676266861101,
+      "max_channel_delta": 248,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1151308,
+      "changed_pixel_fraction": 0.9993993055555556,
+      "changed_pixel_percent": 99.93993055555556,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 51517,
+      "changed_pixel_fraction": 0.044719618055555556,
+      "changed_pixel_percent": 4.471961805555556,
+      "max_channel_delta": 221,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1151007,
+      "changed_pixel_fraction": 0.9991380208333334,
+      "changed_pixel_percent": 99.91380208333334,
+      "max_channel_delta": 225,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 317931,
+      "changed_pixel_fraction": 0.2759817708333333,
+      "changed_pixel_percent": 27.59817708333333,
+      "max_channel_delta": 221,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-login-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1151577,
+      "changed_pixel_fraction": 0.9996328125,
+      "changed_pixel_percent": 99.96328125000001,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 67847,
+      "changed_pixel_fraction": 0.05889496527777778,
+      "changed_pixel_percent": 5.889496527777778,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-records-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1150536,
+      "changed_pixel_fraction": 0.9987291666666667,
+      "changed_pixel_percent": 99.87291666666667,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 76021,
+      "changed_pixel_fraction": 0.06599045138888888,
+      "changed_pixel_percent": 6.599045138888888,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-services-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1149926,
+      "changed_pixel_fraction": 0.9981996527777778,
+      "changed_pixel_percent": 99.81996527777778,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 71372,
+      "changed_pixel_fraction": 0.06195486111111111,
+      "changed_pixel_percent": 6.195486111111111,
+      "max_channel_delta": 221,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1150390,
+      "changed_pixel_fraction": 0.9986024305555555,
+      "changed_pixel_percent": 99.86024305555556,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1150509,
+      "changed_pixel_fraction": 0.9987057291666667,
+      "changed_pixel_percent": 99.87057291666666,
+      "max_channel_delta": 233,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 51702,
+      "changed_pixel_fraction": 0.04488020833333333,
+      "changed_pixel_percent": 4.488020833333333,
+      "max_channel_delta": 224,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "b": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1150890,
+      "changed_pixel_fraction": 0.9990364583333333,
+      "changed_pixel_percent": 99.90364583333333,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "b": "screenshots/kydns-06-after-login-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 318142,
+      "changed_pixel_fraction": 0.2761649305555556,
+      "changed_pixel_percent": 27.61649305555556,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "b": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1150411,
+      "changed_pixel_fraction": 0.9986206597222222,
+      "changed_pixel_percent": 99.86206597222223,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "b": "screenshots/kydns-06-after-records-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 68103,
+      "changed_pixel_fraction": 0.0591171875,
+      "changed_pixel_percent": 5.91171875,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "b": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1150425,
+      "changed_pixel_fraction": 0.9986328125,
+      "changed_pixel_percent": 99.86328125,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "b": "screenshots/kydns-06-after-services-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 76321,
+      "changed_pixel_fraction": 0.06625086805555555,
+      "changed_pixel_percent": 6.625086805555555,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1150534,
+      "changed_pixel_fraction": 0.9987274305555556,
+      "changed_pixel_percent": 99.87274305555556,
+      "max_channel_delta": 239,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 71660,
+      "changed_pixel_fraction": 0.062204861111111114,
+      "changed_pixel_percent": 6.220486111111112,
+      "max_channel_delta": 224,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 328468,
+      "changed_pixel_fraction": 0.997897678940333,
+      "changed_pixel_percent": 99.7897678940333,
+      "max_channel_delta": 225,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 26305,
+      "changed_pixel_fraction": 0.0799155425932677,
+      "changed_pixel_percent": 7.9915542593267705,
+      "max_channel_delta": 221,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 328167,
+      "changed_pixel_fraction": 0.996983230040102,
+      "changed_pixel_percent": 99.6983230040102,
+      "max_channel_delta": 225,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 129726,
+      "changed_pixel_fraction": 0.394112285818447,
+      "changed_pixel_percent": 39.411228581844696,
+      "max_channel_delta": 221,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-login-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 328700,
+      "changed_pixel_fraction": 0.9986025033418399,
+      "changed_pixel_percent": 99.86025033418399,
+      "max_channel_delta": 232,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 31886,
+      "changed_pixel_fraction": 0.09687082270020658,
+      "changed_pixel_percent": 9.687082270020658,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-records-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 327487,
+      "changed_pixel_fraction": 0.9949173654149958,
+      "changed_pixel_percent": 99.49173654149958,
+      "max_channel_delta": 225,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 34660,
+      "changed_pixel_fraction": 0.10529833515615507,
+      "changed_pixel_percent": 10.529833515615508,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-services-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 327614,
+      "changed_pixel_fraction": 0.9953031960140964,
+      "changed_pixel_percent": 99.53031960140964,
+      "max_channel_delta": 225,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 34945,
+      "changed_pixel_fraction": 0.10616417547697168,
+      "changed_pixel_percent": 10.616417547697168,
+      "max_channel_delta": 221,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 327863,
+      "changed_pixel_fraction": 0.996059667031231,
+      "changed_pixel_percent": 99.6059667031231,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 327907,
+      "changed_pixel_fraction": 0.9961933406246203,
+      "changed_pixel_percent": 99.61933406246203,
+      "max_channel_delta": 233,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 26436,
+      "changed_pixel_fraction": 0.08031352533722202,
+      "changed_pixel_percent": 8.031352533722202,
+      "max_channel_delta": 227,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "b": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 328422,
+      "changed_pixel_fraction": 0.9977579292745169,
+      "changed_pixel_percent": 99.77579292745169,
+      "max_channel_delta": 227,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "b": "screenshots/kydns-06-after-login-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 129667,
+      "changed_pixel_fraction": 0.39393304168185683,
+      "changed_pixel_percent": 39.393304168185686,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "b": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 327785,
+      "changed_pixel_fraction": 0.9958227002065865,
+      "changed_pixel_percent": 99.58227002065865,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "b": "screenshots/kydns-06-after-records-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 31992,
+      "changed_pixel_fraction": 0.0971928545388261,
+      "changed_pixel_percent": 9.71928545388261,
+      "max_channel_delta": 227,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "b": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 327756,
+      "changed_pixel_fraction": 0.9957345971563981,
+      "changed_pixel_percent": 99.57345971563981,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "b": "screenshots/kydns-06-after-services-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 34776,
+      "changed_pixel_fraction": 0.10565074735690849,
+      "changed_pixel_percent": 10.56507473569085,
+      "max_channel_delta": 224,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 327996,
+      "changed_pixel_fraction": 0.9964637258476121,
+      "changed_pixel_percent": 99.64637258476121,
+      "max_channel_delta": 239,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 35163,
+      "changed_pixel_fraction": 0.10682646737149107,
+      "changed_pixel_percent": 10.682646737149106,
+      "max_channel_delta": 228,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1151308,
+      "changed_pixel_fraction": 0.9993993055555556,
+      "changed_pixel_percent": 99.93993055555556,
+      "max_channel_delta": 224,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 301302,
+      "changed_pixel_fraction": 0.261546875,
+      "changed_pixel_percent": 26.1546875,
+      "max_channel_delta": 221,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-login-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1151504,
+      "changed_pixel_fraction": 0.9995694444444444,
+      "changed_pixel_percent": 99.95694444444445,
+      "max_channel_delta": 233,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 48098,
+      "changed_pixel_fraction": 0.04175173611111111,
+      "changed_pixel_percent": 4.175173611111111,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-records-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1150606,
+      "changed_pixel_fraction": 0.9987899305555555,
+      "changed_pixel_percent": 99.87899305555555,
+      "max_channel_delta": 233,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 57154,
+      "changed_pixel_fraction": 0.04961284722222222,
+      "changed_pixel_percent": 4.9612847222222225,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-services-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1149958,
+      "changed_pixel_fraction": 0.9982274305555555,
+      "changed_pixel_percent": 99.82274305555555,
+      "max_channel_delta": 233,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 52523,
+      "changed_pixel_fraction": 0.04559288194444444,
+      "changed_pixel_percent": 4.559288194444444,
+      "max_channel_delta": 221,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1150348,
+      "changed_pixel_fraction": 0.9985659722222222,
+      "changed_pixel_percent": 99.85659722222222,
+      "max_channel_delta": 233,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "b": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1151238,
+      "changed_pixel_fraction": 0.9993385416666667,
+      "changed_pixel_percent": 99.93385416666666,
+      "max_channel_delta": 227,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "b": "screenshots/kydns-06-after-login-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 301415,
+      "changed_pixel_fraction": 0.26164496527777775,
+      "changed_pixel_percent": 26.164496527777775,
+      "max_channel_delta": 225,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "b": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1151005,
+      "changed_pixel_fraction": 0.9991362847222223,
+      "changed_pixel_percent": 99.91362847222223,
+      "max_channel_delta": 225,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "b": "screenshots/kydns-06-after-records-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 48255,
+      "changed_pixel_fraction": 0.04188802083333333,
+      "changed_pixel_percent": 4.188802083333333,
+      "max_channel_delta": 224,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "b": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1150995,
+      "changed_pixel_fraction": 0.9991276041666667,
+      "changed_pixel_percent": 99.91276041666667,
+      "max_channel_delta": 225,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "b": "screenshots/kydns-06-after-services-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 57384,
+      "changed_pixel_fraction": 0.0498125,
+      "changed_pixel_percent": 4.98125,
+      "max_channel_delta": 224,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1151091,
+      "changed_pixel_fraction": 0.9992109375,
+      "changed_pixel_percent": 99.92109375,
+      "max_channel_delta": 239,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 52713,
+      "changed_pixel_fraction": 0.0457578125,
+      "changed_pixel_percent": 4.57578125,
+      "max_channel_delta": 224,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 328468,
+      "changed_pixel_fraction": 0.997897678940333,
+      "changed_pixel_percent": 99.7897678940333,
+      "max_channel_delta": 225,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 125105,
+      "changed_pixel_fraction": 0.38007352047636406,
+      "changed_pixel_percent": 38.0073520476364,
+      "max_channel_delta": 221,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-login-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 328664,
+      "changed_pixel_fraction": 0.9984931340381578,
+      "changed_pixel_percent": 99.84931340381577,
+      "max_channel_delta": 233,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 21950,
+      "changed_pixel_fraction": 0.06668489488394702,
+      "changed_pixel_percent": 6.668489488394702,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-records-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 327694,
+      "changed_pixel_fraction": 0.9955462389111678,
+      "changed_pixel_percent": 99.55462389111678,
+      "max_channel_delta": 233,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 27339,
+      "changed_pixel_fraction": 0.08305687203791469,
+      "changed_pixel_percent": 8.30568720379147,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-services-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 327722,
+      "changed_pixel_fraction": 0.9956313039251428,
+      "changed_pixel_percent": 99.56313039251428,
+      "max_channel_delta": 233,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 27527,
+      "changed_pixel_fraction": 0.08362802284603232,
+      "changed_pixel_percent": 8.362802284603232,
+      "max_channel_delta": 227,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 327891,
+      "changed_pixel_fraction": 0.9961447320452059,
+      "changed_pixel_percent": 99.61447320452059,
+      "max_channel_delta": 233,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "b": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 328398,
+      "changed_pixel_fraction": 0.9976850164053955,
+      "changed_pixel_percent": 99.76850164053955,
+      "max_channel_delta": 227,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "b": "screenshots/kydns-06-after-login-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 125215,
+      "changed_pixel_fraction": 0.3804077044598372,
+      "changed_pixel_percent": 38.04077044598372,
+      "max_channel_delta": 225,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "b": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 328165,
+      "changed_pixel_fraction": 0.9969771539676753,
+      "changed_pixel_percent": 99.69771539676753,
+      "max_channel_delta": 224,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "b": "screenshots/kydns-06-after-records-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 22019,
+      "changed_pixel_fraction": 0.06689451938267105,
+      "changed_pixel_percent": 6.689451938267105,
+      "max_channel_delta": 227,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "b": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 328155,
+      "changed_pixel_fraction": 0.9969467736055414,
+      "changed_pixel_percent": 99.69467736055414,
+      "max_channel_delta": 224,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "b": "screenshots/kydns-06-after-services-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 27416,
+      "changed_pixel_fraction": 0.08329080082634585,
+      "changed_pixel_percent": 8.329080082634585,
+      "max_channel_delta": 224,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 328251,
+      "changed_pixel_fraction": 0.997238425082027,
+      "changed_pixel_percent": 99.7238425082027,
+      "max_channel_delta": 239,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 27726,
+      "changed_pixel_fraction": 0.08423259205249727,
+      "changed_pixel_percent": 8.423259205249726,
+      "max_channel_delta": 228,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-login-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1150796,
+      "changed_pixel_fraction": 0.9989548611111111,
+      "changed_pixel_percent": 99.89548611111111,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 314312,
+      "changed_pixel_fraction": 0.27284027777777775,
+      "changed_pixel_percent": 27.284027777777776,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-records-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1150901,
+      "changed_pixel_fraction": 0.9990460069444445,
+      "changed_pixel_percent": 99.90460069444444,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 323487,
+      "changed_pixel_fraction": 0.2808046875,
+      "changed_pixel_percent": 28.080468749999998,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-services-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1150216,
+      "changed_pixel_fraction": 0.9984513888888888,
+      "changed_pixel_percent": 99.84513888888888,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 321913,
+      "changed_pixel_fraction": 0.27943836805555555,
+      "changed_pixel_percent": 27.943836805555556,
+      "max_channel_delta": 221,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1150510,
+      "changed_pixel_fraction": 0.9987065972222222,
+      "changed_pixel_percent": 99.87065972222223,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-desktop-light.png",
+      "b": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1151520,
+      "changed_pixel_fraction": 0.9995833333333334,
+      "changed_pixel_percent": 99.95833333333334,
+      "max_channel_delta": 232,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-desktop-light.png",
+      "b": "screenshots/kydns-06-after-records-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 314486,
+      "changed_pixel_fraction": 0.27299131944444444,
+      "changed_pixel_percent": 27.299131944444444,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-desktop-light.png",
+      "b": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1151520,
+      "changed_pixel_fraction": 0.9995833333333334,
+      "changed_pixel_percent": 99.95833333333334,
+      "max_channel_delta": 232,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-desktop-light.png",
+      "b": "screenshots/kydns-06-after-services-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 323737,
+      "changed_pixel_fraction": 0.2810217013888889,
+      "changed_pixel_percent": 28.102170138888887,
+      "max_channel_delta": 225,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1151506,
+      "changed_pixel_fraction": 0.9995711805555556,
+      "changed_pixel_percent": 99.95711805555555,
+      "max_channel_delta": 239,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 322140,
+      "changed_pixel_fraction": 0.2796354166666667,
+      "changed_pixel_percent": 27.963541666666668,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-login-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 327956,
+      "changed_pixel_fraction": 0.9963422043990764,
+      "changed_pixel_percent": 99.63422043990764,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 124919,
+      "changed_pixel_fraction": 0.3795084457406732,
+      "changed_pixel_percent": 37.95084457406732,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-records-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 328015,
+      "changed_pixel_fraction": 0.9965214485356666,
+      "changed_pixel_percent": 99.65214485356665,
+      "max_channel_delta": 227,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 124153,
+      "changed_pixel_fraction": 0.37718131000121524,
+      "changed_pixel_percent": 37.718131000121524,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-services-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 328131,
+      "changed_pixel_fraction": 0.9968738607364199,
+      "changed_pixel_percent": 99.68738607364199,
+      "max_channel_delta": 227,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 131713,
+      "changed_pixel_fraction": 0.4001488637744562,
+      "changed_pixel_percent": 40.01488637744562,
+      "max_channel_delta": 221,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 328016,
+      "changed_pixel_fraction": 0.99652448657188,
+      "changed_pixel_percent": 99.652448657188,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-mobile-light.png",
+      "b": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 328740,
+      "changed_pixel_fraction": 0.9987240247903755,
+      "changed_pixel_percent": 99.87240247903755,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-mobile-light.png",
+      "b": "screenshots/kydns-06-after-records-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 124999,
+      "changed_pixel_fraction": 0.37975148863774455,
+      "changed_pixel_percent": 37.97514886377446,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-mobile-light.png",
+      "b": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 328735,
+      "changed_pixel_fraction": 0.9987088346093086,
+      "changed_pixel_percent": 99.87088346093086,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-mobile-light.png",
+      "b": "screenshots/kydns-06-after-services-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 124235,
+      "changed_pixel_fraction": 0.3774304289707133,
+      "changed_pixel_percent": 37.743042897071334,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 328724,
+      "changed_pixel_fraction": 0.9986754162109612,
+      "changed_pixel_percent": 99.86754162109612,
+      "max_channel_delta": 246,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 131912,
+      "changed_pixel_fraction": 0.40075343298092114,
+      "changed_pixel_percent": 40.075343298092115,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-records-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1151308,
+      "changed_pixel_fraction": 0.9993993055555556,
+      "changed_pixel_percent": 99.93993055555556,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 52515,
+      "changed_pixel_fraction": 0.0455859375,
+      "changed_pixel_percent": 4.55859375,
+      "max_channel_delta": 221,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-services-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1150367,
+      "changed_pixel_fraction": 0.9985824652777778,
+      "changed_pixel_percent": 99.85824652777778,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 68284,
+      "changed_pixel_fraction": 0.05927430555555555,
+      "changed_pixel_percent": 5.9274305555555555,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1150265,
+      "changed_pixel_fraction": 0.9984939236111111,
+      "changed_pixel_percent": 99.84939236111111,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-desktop-light.png",
+      "b": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1150981,
+      "changed_pixel_fraction": 0.9991154513888889,
+      "changed_pixel_percent": 99.9115451388889,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-desktop-light.png",
+      "b": "screenshots/kydns-06-after-services-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 52779,
+      "changed_pixel_fraction": 0.04581510416666667,
+      "changed_pixel_percent": 4.581510416666667,
+      "max_channel_delta": 224,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1150664,
+      "changed_pixel_fraction": 0.9988402777777777,
+      "changed_pixel_percent": 99.88402777777777,
+      "max_channel_delta": 239,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 68552,
+      "changed_pixel_fraction": 0.059506944444444446,
+      "changed_pixel_percent": 5.950694444444444,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-records-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 328468,
+      "changed_pixel_fraction": 0.997897678940333,
+      "changed_pixel_percent": 99.7897678940333,
+      "max_channel_delta": 224,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 25855,
+      "changed_pixel_fraction": 0.07854842629724146,
+      "changed_pixel_percent": 7.854842629724146,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-services-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 327876,
+      "changed_pixel_fraction": 0.9960991615020051,
+      "changed_pixel_percent": 99.6099161502005,
+      "max_channel_delta": 224,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 32476,
+      "changed_pixel_fraction": 0.09866326406610766,
+      "changed_pixel_percent": 9.866326406610765,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 327835,
+      "changed_pixel_fraction": 0.9959746020172561,
+      "changed_pixel_percent": 99.59746020172561,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-mobile-light.png",
+      "b": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 327714,
+      "changed_pixel_fraction": 0.9956069996354356,
+      "changed_pixel_percent": 99.56069996354357,
+      "max_channel_delta": 224,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-mobile-light.png",
+      "b": "screenshots/kydns-06-after-services-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 25891,
+      "changed_pixel_fraction": 0.07865779560092356,
+      "changed_pixel_percent": 7.865779560092356,
+      "max_channel_delta": 224,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 327593,
+      "changed_pixel_fraction": 0.9952393972536152,
+      "changed_pixel_percent": 99.52393972536152,
+      "max_channel_delta": 239,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 32658,
+      "changed_pixel_fraction": 0.09921618665694495,
+      "changed_pixel_percent": 9.921618665694496,
+      "max_channel_delta": 228,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-services-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1151308,
+      "changed_pixel_fraction": 0.9993993055555556,
+      "changed_pixel_percent": 99.93993055555556,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 77255,
+      "changed_pixel_fraction": 0.06706163194444445,
+      "changed_pixel_percent": 6.706163194444445,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1150253,
+      "changed_pixel_fraction": 0.9984835069444444,
+      "changed_pixel_percent": 99.84835069444445,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-services-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "pixels": 1152000,
+      "changed_pixels": 1150009,
+      "changed_pixel_fraction": 0.9982717013888889,
+      "changed_pixel_percent": 99.82717013888889,
+      "max_channel_delta": 239,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-services-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 77597,
+      "changed_pixel_fraction": 0.06735850694444444,
+      "changed_pixel_percent": 6.735850694444443,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-services-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 328468,
+      "changed_pixel_fraction": 0.997897678940333,
+      "changed_pixel_percent": 99.7897678940333,
+      "max_channel_delta": 224,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 36716,
+      "changed_pixel_fraction": 0.11154453761088833,
+      "changed_pixel_percent": 11.154453761088833,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 327759,
+      "changed_pixel_fraction": 0.9957437112650382,
+      "changed_pixel_percent": 99.57437112650382,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-services-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "pixels": 329160,
+      "changed_pixels": 327682,
+      "changed_pixel_fraction": 0.9955097824766072,
+      "changed_pixel_percent": 99.55097824766071,
+      "max_channel_delta": 239,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-services-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 36902,
+      "changed_pixel_fraction": 0.11210961234657917,
+      "changed_pixel_percent": 11.210961234657917,
+      "max_channel_delta": 224,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "pixels": 1152000,
+      "changed_pixels": 1151308,
+      "changed_pixel_fraction": 0.9993993055555556,
+      "changed_pixel_percent": 99.93993055555556,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    },
+    {
+      "a": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "pixels": 329160,
+      "changed_pixels": 328468,
+      "changed_pixel_fraction": 0.997897678940333,
+      "changed_pixel_percent": 99.7897678940333,
+      "max_channel_delta": 231,
+      "exact_sha256": false,
+      "near_duplicate": false
+    }
+  ],
+  "excluded_pairs": [
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-login-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-records-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-services-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-login-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-records-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-services-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-login-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-records-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-services-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-login-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-records-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-services-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-appearance-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-login-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-records-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-services-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "b": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "b": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "b": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "b": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "b": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "b": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "b": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "b": "screenshots/kydns-06-after-login-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "b": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "b": "screenshots/kydns-06-after-records-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "b": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "b": "screenshots/kydns-06-after-services-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-login-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-records-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-services-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "b": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "b": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "b": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "b": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "b": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "b": "screenshots/kydns-06-after-login-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "b": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "b": "screenshots/kydns-06-after-records-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "b": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "b": "screenshots/kydns-06-after-services-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-blacklists-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-login-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-records-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-services-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "b": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "b": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "b": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "b": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "b": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "b": "screenshots/kydns-06-after-login-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "b": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "b": "screenshots/kydns-06-after-records-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "b": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "b": "screenshots/kydns-06-after-services-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-login-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-records-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-services-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "b": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "b": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "b": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "b": "screenshots/kydns-06-after-login-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "b": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "b": "screenshots/kydns-06-after-records-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "b": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "b": "screenshots/kydns-06-after-services-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dashboard-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-login-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-records-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-services-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "b": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "b": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "b": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "b": "screenshots/kydns-06-after-login-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "b": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "b": "screenshots/kydns-06-after-records-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "b": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "b": "screenshots/kydns-06-after-services-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-login-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-records-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-services-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "b": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "b": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "b": "screenshots/kydns-06-after-login-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "b": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "b": "screenshots/kydns-06-after-records-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "b": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "b": "screenshots/kydns-06-after-services-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-dhcp-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-login-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-records-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-services-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "b": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "b": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "b": "screenshots/kydns-06-after-login-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "b": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "b": "screenshots/kydns-06-after-records-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "b": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "b": "screenshots/kydns-06-after-services-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-login-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-records-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-services-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "b": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "b": "screenshots/kydns-06-after-login-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "b": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "b": "screenshots/kydns-06-after-records-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "b": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "b": "screenshots/kydns-06-after-services-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-discovered-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-login-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-records-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-services-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-desktop-light.png",
+      "b": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-desktop-light.png",
+      "b": "screenshots/kydns-06-after-login-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-desktop-light.png",
+      "b": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-desktop-light.png",
+      "b": "screenshots/kydns-06-after-records-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-desktop-light.png",
+      "b": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-desktop-light.png",
+      "b": "screenshots/kydns-06-after-services-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-records-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-services-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-mobile-light.png",
+      "b": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-mobile-light.png",
+      "b": "screenshots/kydns-06-after-records-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-mobile-light.png",
+      "b": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-mobile-light.png",
+      "b": "screenshots/kydns-06-after-services-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-login-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-records-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-services-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-desktop-light.png",
+      "b": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-desktop-light.png",
+      "b": "screenshots/kydns-06-after-records-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-desktop-light.png",
+      "b": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-desktop-light.png",
+      "b": "screenshots/kydns-06-after-services-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-services-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-mobile-light.png",
+      "b": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-mobile-light.png",
+      "b": "screenshots/kydns-06-after-services-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-records-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-services-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-services-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-services-desktop-light.png",
+      "b": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-services-desktop-light.png",
+      "b": "screenshots/kydns-06-after-services-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-services-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-services-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-services-mobile-dark.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-services-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-services-mobile-light.png",
+      "b": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-settings-desktop-dark.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-dark.png",
+      "reason": "different original dimensions; no resize"
+    },
+    {
+      "a": "screenshots/kydns-06-after-settings-desktop-light.png",
+      "b": "screenshots/kydns-06-after-settings-mobile-light.png",
+      "reason": "different original dimensions; no resize"
+    }
+  ]
+}
