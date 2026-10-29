@@ -1,7 +1,7 @@
 # The base images carry no systemd, and every claim this package makes is a
 # systemd claim — enabled or not, running as kydns, bound to a privileged
 # port, sandboxed by the unit's directives. So the test host installs one.
-ARG BASE=fedora:latest
+ARG BASE=fedora:44@sha256:43b29f65a41eb9c35e1cd5323e3bdf3b655c2357a9f4f1ff2f9c2798e5045d80
 FROM ${BASE}
 
 # --allowerasing: Rocky's minimal image ships curl-minimal, which conflicts

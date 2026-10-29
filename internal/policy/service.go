@@ -120,8 +120,13 @@ func (s *Service) PutList(l store.BlacklistList) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	s.logger.Info("blacklist list saved", "list", l.Name, "enabled", l.Enabled)
+	s.logger.Info("blacklist list saved", "list", oneLine(l.Name), "enabled", l.Enabled)
 	return id, s.h.Rebuild()
+}
+
+// oneLine strips CR and LF so a user-supplied value cannot forge log lines.
+func oneLine(s string) string {
+	return strings.ReplaceAll(strings.ReplaceAll(s, "\n", ""), "\r", "")
 }
 
 func validListURL(raw string) error {
@@ -179,7 +184,7 @@ func (s *Service) AddRule(kind, domain string) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	s.logger.Info("blacklist rule added", "kind", kind, "domain", n)
+	s.logger.Info("blacklist rule added", "kind", oneLine(kind), "domain", n)
 	return id, s.h.Rebuild()
 }
 
