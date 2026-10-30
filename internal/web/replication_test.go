@@ -659,14 +659,13 @@ func TestDashboardLineOnAReplicaShowsSyncAge(t *testing.T) {
 	st := &ReplicaStatus{Role: roleReplica, PrimaryAddr: replicaPrimaryAddr}
 	h, _, c, _, _ := replicationWeb(t, st, &fp, nil, &fakePromoter{status: st})
 
-	// Set immediately before the request: see the note in the replica screen
-	// test. Login runs argon2id, which is long enough to cross the second.
-	st.LastSyncUnix = time.Now().Add(-45 * time.Second).Unix()
+	// Minutes, not seconds: .Unix() floors, so a seconds age can read one high.
+	st.LastSyncUnix = time.Now().Add(-45 * time.Minute).Unix()
 	role, detail := dashboardReplication(t, h, c)
 	if role != roleReplica {
 		t.Errorf("dashboard role = %q, want replica", role)
 	}
-	if detail != "synced 45s ago" {
+	if detail != "synced 45m ago" {
 		t.Errorf("dashboard detail = %q, want the sync age", detail)
 	}
 }
