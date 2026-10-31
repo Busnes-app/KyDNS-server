@@ -1,45 +1,56 @@
 {{define "body"}}
-<div class="app">
-  <nav class="app-nav">
-    <div class="brand">{{template "mark"}}<p class="brand-name">KyDNS<span class="nav-scroll-hint" aria-hidden="true">Scroll navigation</span></p></div>
-    <div class="app-nav-links">
-      <a class="ky-nav-item" href="/"{{if eq .Nav "dashboard"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
-      <a class="ky-nav-item" href="/services"{{if eq .Nav "services"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="7" rx="2"/><rect x="3" y="14" width="18" height="7" rx="2"/><path d="M7 6.5h.01M7 17.5h.01"/></svg>Services</a>
-      <a class="ky-nav-item" href="/records"{{if eq .Nav "records"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3h8l4 4v14H4V3h4zm8 0v5h4M8 12h8M8 16h6"/></svg>Records</a>
-      <a class="ky-nav-item" href="/discovered"{{if eq .Nav "discovered"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg>Discovered</a>
-      <a class="ky-nav-item" href="/blacklists"{{if eq .Nav "blacklists"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3zM8 12h8"/></svg>Blacklists</a>
-      <a class="ky-nav-item" href="/dhcp"{{if eq .Nav "dhcp"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="3" width="8" height="6" rx="1"/><path d="M12 9v5M4 18v-4h16v4"/><path d="M2 18h4v3H2zM10 18h4v3h-4zM18 18h4v3h-4z"/></svg>DHCP</a>
-      {{if .ShowReplication}}<a class="ky-nav-item" href="/replication"{{if eq .Nav "replication"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h15l-4-4M20 17H5l4 4M20 7l-4 4M4 17l4-4"/></svg>Replication</a>{{end}}
-      <a class="ky-nav-item" href="/settings"{{if eq .Nav "settings"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3"/><circle cx="15" cy="17" r="3"/></svg>Settings</a>
-      <a class="ky-nav-item" href="/appearance"{{if eq .Nav "appearance"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/></svg>Appearance</a>
-    </div>
-    <footer class="app-footer">
-      <p class="account-role">Administrator</p>
+<div class="ky-app">
+  <header class="ky-sidebar">
+    <div class="ky-mobile-head">
+      <div class="ky-brand">{{template "mark"}}<span>KyDNS</span></div>
       <form method="post" action="/logout">
         <input type="hidden" name="csrf_token" value="{{.CSRF}}">
-        <button class="ghost" type="submit">Sign out</button>
+        <button class="ky-mobile-signout" type="submit" aria-label="Sign out">{{template "signout"}}</button>
       </form>
-      {{template "legal" .}}
-    </footer>
-  </nav>
-  <div id="about" popover class="license-window">
-    <header class="license-header">
-      <div>
-        <p class="license-app">KyDNS <span class="badge accent">v{{.Version}}</span></p>
-        <p>Developed by Busnes.app</p>
-        <p>&copy; {{.Year}} &middot; Licensed under the MIT License</p>
+    </div>
+    <nav class="ky-nav" aria-label="Primary">
+      <a class="ky-nav-item" href="/"{{if eq .Nav "dashboard"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Dashboard</span></a>
+      <a class="ky-nav-item" href="/services"{{if eq .Nav "services"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="7" rx="2"/><rect x="3" y="14" width="18" height="7" rx="2"/><path d="M7 6.5h.01M7 17.5h.01"/></svg><span>Services</span></a>
+      <a class="ky-nav-item" href="/records"{{if eq .Nav "records"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3h8l4 4v14H4V3h4zm8 0v5h4M8 12h8M8 16h6"/></svg><span>Records</span></a>
+      <a class="ky-nav-item" href="/discovered"{{if eq .Nav "discovered"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg><span>Discovered</span></a>
+      <a class="ky-nav-item" href="/blacklists"{{if eq .Nav "blacklists"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3zM8 12h8"/></svg><span>Blacklists</span></a>
+      <a class="ky-nav-item" href="/dhcp"{{if eq .Nav "dhcp"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="3" width="8" height="6" rx="1"/><path d="M12 9v5M4 18v-4h16v4"/><path d="M2 18h4v3H2zM10 18h4v3h-4zM18 18h4v3h-4z"/></svg><span>DHCP</span></a>
+      {{if .ShowReplication}}<a class="ky-nav-item" href="/replication"{{if eq .Nav "replication"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h15l-4-4M20 17H5l4 4M20 7l-4 4M4 17l4-4"/></svg><span>Replication</span></a>{{end}}
+      <a class="ky-nav-item" href="/settings"{{if eq .Nav "settings"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3"/><circle cx="15" cy="17" r="3"/></svg><span>Settings</span></a>
+      <a class="ky-nav-item" href="/appearance"{{if eq .Nav "appearance"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg><span>Appearance</span></a>
+    </nav>
+    <div class="ky-sidebar-foot">
+      <div class="ky-user">
+        <div class="ky-user-copy">
+          <p class="ky-user-name">admin</p>
+          <p class="ky-user-role">Administrator</p>
+        </div>
+        <form method="post" action="/logout">
+          <input type="hidden" name="csrf_token" value="{{.CSRF}}">
+          <button class="ky-user-signout" type="submit">{{template "signout"}}Sign out</button>
+        </form>
       </div>
-      <button type="button" class="ghost" popovertarget="about" popovertargetaction="hide">Close</button>
-    </header>
-    <iframe class="license-text" src="/license" loading="lazy"
-            title="MIT License"></iframe>
-  </div>
-  <main class="app-main">
-    <header class="page-heading">
-      <h1>{{.Title}}</h1>
-      {{if eq .Nav "services"}}<a href="#add-service">Add service</a>{{end}}
-      {{if eq .Nav "records"}}<a href="#add-record">Add record</a>{{end}}
-      {{if eq .Nav "blacklists"}}<a href="#add-list">Add list</a>{{end}}
+      <footer>{{template "legal" .}}</footer>
+    </div>
+  </header>
+  <dialog class="ky-about" id="ky-about" aria-label="About KyDNS" closedby="any">
+    <div class="ky-about-head">
+      <div>
+        <h2 class="ky-about-name">KyDNS <span class="ky-about-version">v{{.Version}}</span></h2>
+        <p class="ky-about-meta">Developed by Busnes.app</p>
+        <p class="ky-about-meta">&copy; {{.Year}} &middot; Licensed under the MIT License</p>
+      </div>
+      <form method="dialog"><button class="ky-about-close">Close</button></form>
+    </div>
+    <textarea class="ky-about-license" readonly aria-label="MIT License">{{.License}}</textarea>
+  </dialog>
+  <main class="ky-content">
+    <header class="ky-page-head">
+      <div>
+        <h1 class="ky-page-title">{{.Title}}</h1>
+        {{block "lede" .}}{{end}}
+      </div>
+      {{block "action" .}}{{end}}
     </header>
     {{with .ReplicaBanner}}
     <div class="banner">
@@ -51,16 +62,21 @@
     {{template "exposure" .}}
     {{if .Error}}<p class="error">{{.Error}}</p>{{end}}
     {{template "page" .}}
-    {{/* Phones keep the navigation to two rows; the licence moves below the page. */}}
-    <p class="page-legal">{{template "legal" .}}</p>
+    <footer class="ky-content-foot">{{template "legal" .}}</footer>
   </main>
 </div>
 <script src="/static/nav.js" defer></script>
 {{end}}
 
-{{define "legal"}}<button type="button" class="license-link" popovertarget="about">
-        v{{.Version}} &middot; &copy; {{.Year}} &middot; MIT License
-      </button>{{end}}
+{{define "signout"}}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>{{end}}
+
+{{define "legal"}}<button class="ky-license-link" type="button" commandfor="ky-about" command="show-modal">&copy; {{.Year}} &middot; MIT License</button>{{end}}
+
+{{/* The leading "+" of a page's create action, as in the shell's page head. */}}
+{{define "plus"}}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>{{end}}
+
+{{/* The ⋯ row-menu trigger, drawn so it matches the navigation icons. */}}
+{{define "dots"}}<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.75"/><circle cx="12" cy="12" r="1.75"/><circle cx="19" cy="12" r="1.75"/></svg>{{end}}
 
 {{/* "ro" disables an edit control on a replica and says who owns the change.
      Disabled rather than hidden: a control that vanishes reads as a bug. */}}

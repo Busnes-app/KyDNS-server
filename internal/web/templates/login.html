@@ -1,26 +1,27 @@
 {{define "body"}}
-<div class="auth">
-<div class="brand">{{template "mark"}}<h1>KyDNS</h1></div>
-<div class="centered card">
-  <h2>Sign in</h2>
-  {{if .Error}}<p class="error">{{.Error}}</p>{{end}}
-  {{if .SSOEnabled}}
-  <a href="/auth/sso/login" class="button sso-button">
-      <svg width="18" height="18" viewBox="0 0 64 64" fill="none" aria-hidden="true">
-        <path d="M32 10 L48 16 V30 C48 41.5 41.2 50.2 32 54 C22.8 50.2 16 41.5 16 30 V16 L32 10 Z" fill="#121820" stroke="#4deeea" stroke-width="4" stroke-linejoin="round"/>
-        <circle cx="32" cy="27" r="5" fill="#4deeea"/>
-        <path d="M32 32 V42 M29 42 H35" stroke="#4deeea" stroke-width="4" stroke-linecap="round"/>
-      </svg>
-      Continue with Single Sign On
-  </a>
-  <p class="or-divider">or local password</p>
-  {{end}}
-  <form class="stack" method="post" action="/login">
-    <label for="password">Password</label>
-    <input id="password" name="password" type="password" autocomplete="current-password" autofocus>
-    <button type="submit">Sign in</button>
-  </form>
-</div>
-</div>
+<main class="ky-auth">
+  <div class="ky-auth-theme"><select class="theme-selector" aria-label="Color theme" data-theme-shortcut></select></div>
+  <div class="ky-auth-body">
+    <div class="ky-auth-brand">
+      <img class="app-mark" src="/static/app-icon.png" width="56" height="56" alt="">
+      <h1>KyDNS</h1>
+      <p>Names and blocking for your home network.</p>
+    </div>
+    <div class="ky-auth-card">
+      {{if .Error}}<p class="error" role="alert">{{.Error}}</p>{{end}}
+      <form method="post" action="/login">
+        <div class="ky-auth-field">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" required autofocus>
+        </div>
+        <p class="ky-auth-check"></p>
+        <button class="ky-auth-submit" type="submit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>Sign in</button>
+      </form>
+      {{if .SSOEnabled}}
+      <hr class="ky-auth-divider">
+      <a class="ky-auth-sso" href="/auth/sso/login"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7.5" cy="15.5" r="3.5"/><path d="m10 13 9-9M16 7l2 2M14 9l2 2"/></svg>Continue with single sign-on</a>
+      {{end}}
+    </div>
+  </div>
+</main>
 {{end}}
-

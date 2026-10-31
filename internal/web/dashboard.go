@@ -34,22 +34,10 @@ func (s *Server) getDashboard(w http.ResponseWriter, r *http.Request) {
 		s.render(w, r, "dashboard.html", data)
 		return
 	}
-	svcs, err := s.o.Registry.Services()
-	if err != nil {
-		data["Error"] = err.Error()
-	}
-	recs, err := s.o.Registry.Records()
-	if err != nil {
-		data["Error"] = err.Error()
-	}
-
 	if b := TailscaleBanner(s.o.ACL, views, s.allowTailscale(), bannerWindow); b != nil {
 		banners = append(banners, b)
 	}
 	data["Banners"] = banners
-	data["Services"] = len(svcs)
-	data["Records"] = len(recs)
-	data["Views"] = len(views)
 	if s.o.ACL != nil {
 		st := s.o.ACL.Stats()
 		data["RefusedTotal"] = st.Total
@@ -65,6 +53,7 @@ func (s *Server) getDashboard(w http.ResponseWriter, r *http.Request) {
 	data["Queries"] = m
 	data["AvgMS"] = m.AvgMS()
 	data["CacheHitRate"] = m.CacheHitRate()
+	data["BlockedRate"] = m.BlockedRate()
 	data["Uptime"] = shortDuration(time.Duration(m.UptimeSeconds) * time.Second)
 	data["LastQuery"] = sinceText(m.LastQuery, time.Now())
 	if s.o.Policy != nil {

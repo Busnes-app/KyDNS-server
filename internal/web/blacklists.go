@@ -3,6 +3,7 @@ package web
 import (
 	"errors"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 	"time"
@@ -41,6 +42,7 @@ func agoOrNever(unix int64) string {
 func (s *Server) blacklistsData(errMsg string, result map[string]any) map[string]any {
 	data := map[string]any{
 		"Title": "Blacklists", "Nav": "blacklists", "Result": result,
+		"Form": url.Values{},
 	}
 	if s.o.Policy == nil {
 		data["Unavailable"] = true
@@ -165,7 +167,11 @@ func (s *Server) postBlacklistListNew(w http.ResponseWriter, r *http.Request) {
 		IntervalSeconds: interval,
 	}
 	if _, err := s.o.Policy.PutList(l); err != nil {
-		s.blacklistsError(w, r, err)
+		// Reopen the add dialog with what was typed and the reason beside it.
+		data := s.blacklistsData("", nil)
+		data["Form"], data["AddError"] = r.PostForm, err.Error()
+		w.WriteHeader(http.StatusBadRequest)
+		s.render(w, r, "blacklists.html", data)
 		return
 	}
 	http.Redirect(w, r, "/blacklists", http.StatusSeeOther)

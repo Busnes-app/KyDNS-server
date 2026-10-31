@@ -1,3 +1,4 @@
+{{define "lede"}}<p class="ky-page-lede">Linked KyDNS nodes: replicas follow the primary's configuration.</p>{{end}}
 {{define "page"}}
 
 {{if .Promoted}}
@@ -91,7 +92,7 @@
 
 <div class="card">
   <table class="grid">
-    <tr><th>Replica</th><th>Address</th><th>Last sync</th><th>Versions behind</th><th>State</th><th></th></tr>
+    <tr><th>Replica</th><th>Address</th><th>Last sync</th><th>Versions behind</th><th>State</th><th><span class="visually-hidden">Actions</span></th></tr>
     {{range .Peers}}
     <tr>
       <td>{{.Label}}<br><code class="muted">{{.NodeID}}</code></td>
@@ -105,13 +106,18 @@
           <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
           <input type="hidden" name="node_id" value="{{.NodeID}}">
           <input name="label" type="text" value="{{.Label}}" aria-label="Replica name" maxlength="64">
-          <button type="submit">Rename</button>
+          <button class="ghost" type="submit">Rename</button>
         </form>
-        <form method="post" action="/replication/remove">
-          <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
-          <input type="hidden" name="node_id" value="{{.NodeID}}">
-          <button class="danger" type="submit">Remove</button>
-        </form>
+        <details class="row-menu">
+          <summary aria-label="Actions for {{.Label}}">{{template "dots"}}</summary>
+          <div class="row-menu-list">
+            <form method="post" action="/replication/remove">
+              <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
+              <input type="hidden" name="node_id" value="{{.NodeID}}">
+              <button class="row-menu-item danger" type="submit">Remove</button>
+            </form>
+          </div>
+        </details>
       </td>
     </tr>
     {{else}}

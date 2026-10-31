@@ -151,3 +151,14 @@ func TestMetricsSnapshotCarriesNoClientIdentity(t *testing.T) {
 		t.Errorf("History has %d buckets, want %d", len(s.History), histSlots)
 	}
 }
+
+func TestBlockedRate(t *testing.T) {
+	for _, c := range []struct {
+		total, blocked uint64
+		want           int
+	}{{0, 0, 0}, {60, 24, 40}, {3, 2, 66}, {5, 5, 100}} {
+		if got := (MetricsSnapshot{Total: c.total, Blocked: c.blocked}).BlockedRate(); got != c.want {
+			t.Errorf("BlockedRate(%d of %d) = %d, want %d", c.blocked, c.total, got, c.want)
+		}
+	}
+}

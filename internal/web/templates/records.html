@@ -1,47 +1,64 @@
+{{define "lede"}}<p class="ky-page-lede">Manual A, AAAA, CNAME and PTR records this server answers.</p>{{end}}
+{{define "action"}}<button class="ky-page-action" type="button" commandfor="add-record" command="show-modal"{{template "ro" .}}>{{template "plus"}}Add record</button>{{end}}
 {{define "page"}}
 <div class="card">
-  <table class="grid responsive data-list record-list" aria-label="Records">
-    <tr class="column-headings"><th scope="col">Name</th><th>Type</th><th>Value</th><th>View</th><th></th></tr>
+  {{if .Records}}
+  <div class="table-tools">
+    <input type="search" class="table-filter" data-filter="record-table" placeholder="Filter by name, type or value" aria-label="Filter records" autocomplete="off" spellcheck="false">
+  </div>
+  {{end}}
+  <table class="grid responsive data-list record-list" id="record-table" aria-label="Records">
+    <tr class="column-headings"><th scope="col">Name</th><th>Type</th><th>Value</th><th>View</th><th><span class="visually-hidden">Actions</span></th></tr>
     {{range .Records}}
     <tr>
       <td class="technical" data-label="Name">{{.Name}}</td>
-      <td data-label="Type"><span class="badge">{{.Type}}</span></td>
+      <td class="technical" data-label="Type">{{.Type}}</td>
       <td class="technical" data-label="Value">{{.Value}}</td>
       <td data-label="View">{{if .View}}<span class="badge accent">{{.View}}</span>{{else}}<span class="muted nowrap">all views</span>{{end}}</td>
       <td class="actions" data-label="Actions">
-        <form method="post" action="/records/delete">
-          <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
-          <input type="hidden" name="id" value="{{.ID}}">
-          <button class="danger" type="submit"{{template "ro" $}}>Remove</button>
-        </form>
+        <details class="row-menu">
+          <summary aria-label="Actions for {{.Name}}">{{template "dots"}}</summary>
+          <div class="row-menu-list">
+            <form method="post" action="/records/delete">
+              <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
+              <input type="hidden" name="id" value="{{.ID}}">
+              <button class="row-menu-item danger" type="submit"{{template "ro" $}}>Remove</button>
+            </form>
+          </div>
+        </details>
       </td>
     </tr>
     {{else}}
       <tr><td colspan="5" class="muted">No manual records. Services cover most needs.</td></tr>
     {{end}}
+    <tr class="filter-empty" hidden><td colspan="5" class="muted">No records match.</td></tr>
   </table>
 </div>
 
-<div class="card">
-  <h3 id="add-record" tabindex="-1">Add a record</h3>
+<dialog class="form-dialog" id="add-record" aria-labelledby="add-record-title" closedby="any"{{if .AddError}} data-open{{end}}>
   <form class="stack" method="post" action="/records/new">
+    <h2 id="add-record-title">Add a record</h2>
     <input type="hidden" name="csrf_token" value="{{.CSRF}}">
+    {{with .AddError}}<p class="error" role="alert">{{.}}</p>{{end}}
     <label for="rname">Name</label>
-    <input id="rname" name="name" type="text" placeholder="printer.home.arpa.">
+    <input id="rname" name="name" type="text" placeholder="printer.home.arpa." value="{{.Form.Name}}" autocomplete="off" spellcheck="false" autofocus>
     <label for="rtype">Type</label>
     <select id="rtype" name="type">
-      {{range .Types}}<option value="{{.}}">{{.}}</option>{{end}}
+      {{range .Types}}<option value="{{.}}"{{if eq . $.Form.Type}} selected{{end}}>{{.}}</option>{{end}}
     </select>
     <label for="rvalue">Value</label>
-    <input id="rvalue" name="value" type="text" placeholder="192.168.1.50">
+    <input id="rvalue" name="value" type="text" placeholder="192.168.1.50" value="{{.Form.Value}}" autocomplete="off" spellcheck="false">
     <label for="rview">View</label>
     <select id="rview" name="view">
       <option value="">All views</option>
-      {{range .Views}}<option value="{{.Name}}">{{.Name}}</option>{{end}}
+      {{range .Views}}<option value="{{.Name}}"{{if eq .Name $.Form.View}} selected{{end}}>{{.Name}}</option>{{end}}
     </select>
     <p class="muted">A manual record takes precedence over a service or a
      discovered lease with the same name.</p>
-    <button type="submit"{{template "ro" $}}>Add record</button>
+    <div class="dialog-actions">
+      <button class="ghost" type="button" commandfor="add-record" command="close">Cancel</button>
+      <button type="submit"{{template "ro" $}}>Add record</button>
+    </div>
   </form>
-</div>
+</dialog>
 {{end}}

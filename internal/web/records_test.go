@@ -3,6 +3,7 @@ package web
 import (
 	"net/http"
 	"net/url"
+	"regexp"
 	"strings"
 	"testing"
 )
@@ -59,6 +60,28 @@ func TestRecordRejectsOutOfZoneName(t *testing.T) {
 	}
 }
 
+// A rejected record reopens the add dialog with what was typed and the reason
+// inside it, so the operator fixes one field instead of retyping the form.
+func TestRecordRejectionReopensTheAddDialog(t *testing.T) {
+	h, _, c, csrf := loggedIn(t)
+	rec := postForm(t, h, "/records/new", url.Values{
+		"name": {"typed.home.arpa."}, "type": {"AAAA"}, "value": {"not-an-address"}, "csrf_token": {csrf},
+	}, c)
+	if rec.Code != http.StatusBadRequest {
+		t.Fatalf("invalid record = %d, want 400", rec.Code)
+	}
+	body := rec.Body.String()
+	_, dialog, _ := strings.Cut(body, `<dialog class="form-dialog" id="add-record"`)
+	for _, want := range []string{` data-open>`, `<p class="error" role="alert">`, `value="typed.home.arpa."`, `value="not-an-address"`, `<option value="AAAA" selected>`} {
+		if !strings.Contains(dialog, want) {
+			t.Errorf("add dialog missing %s", want)
+		}
+	}
+	if clean := page(t, h, "/records", c); strings.Contains(clean, "data-open") {
+		t.Error("the add dialog opens on a plain visit")
+	}
+}
+
 // A PTR must live under in-addr.arpa, not merely under .arpa — the private
 // domain home.arpa is itself under .arpa.
 func TestRecordRejectsPTROutsideReverseNamespace(t *testing.T) {
@@ -102,5 +125,49 @@ func TestRecordDelete(t *testing.T) {
 	}
 	if strings.Contains(page(t, h, "/records", c), "temp.home.arpa.") {
 		t.Error("deleted record still listed")
+	}
+}
+
+// Services and Blacklists reopen their add dialogs the same way Records does.
+func TestAddDialogsReopenWithTypedValues(t *testing.T) {
+	h, _, c, csrf := loggedIn(t)
+	for _, tc := range []struct {
+		path, dialog string
+		form         url.Values
+		want         []string
+	}{
+		{"/services/new", "add-service", url.Values{"name": {"typed"}, "address": {"not-an-address"}, "aliases": {"web"}},
+			[]string{`value="typed"`, `value="not-an-address"`, `value="web"`}},
+		{"/blacklists/lists/new", "add-list", url.Values{"name": {"typed-list"}, "url": {"http://plain.example/hosts"}, "format": {"hosts"}, "interval": {"3600"}},
+			[]string{`value="typed-list"`, `value="http://plain.example/hosts"`, `<option value="hosts" selected>`, `value="3600"`}},
+	} {
+		tc.form.Set("csrf_token", csrf)
+		rec := postForm(t, h, tc.path, tc.form, c)
+		if rec.Code != http.StatusBadRequest {
+			t.Fatalf("%s = %d, want 400", tc.path, rec.Code)
+		}
+		_, dialog, _ := strings.Cut(rec.Body.String(), `<dialog class="form-dialog" id="`+tc.dialog+`"`)
+		for _, want := range append(tc.want, ` data-open>`, `<p class="error" role="alert">`) {
+			if !strings.Contains(dialog, want) {
+				t.Errorf("%s dialog missing %s", tc.dialog, want)
+			}
+		}
+	}
+}
+
+var elementID = regexp.MustCompile(` id="([^"]+)"`)
+
+// An add form moved into a dialog must leave no copy behind on the page: a
+// leftover half-form duplicated the Services field IDs once.
+func TestAddPagesHaveUniqueIDs(t *testing.T) {
+	h, _, c, _ := loggedIn(t)
+	for _, path := range []string{"/records", "/services", "/blacklists"} {
+		seen := map[string]bool{}
+		for _, m := range elementID.FindAllStringSubmatch(page(t, h, path, c), -1) {
+			if seen[m[1]] {
+				t.Errorf("%s repeats id %q", path, m[1])
+			}
+			seen[m[1]] = true
+		}
 	}
 }

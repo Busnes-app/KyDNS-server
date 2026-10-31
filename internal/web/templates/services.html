@@ -1,7 +1,9 @@
+{{define "lede"}}<p class="ky-page-lede">Names on your network and the addresses they answer with.</p>{{end}}
+{{define "action"}}<button class="ky-page-action" type="button" commandfor="add-service" command="show-modal"{{template "ro" .}}>{{template "plus"}}Add service</button>{{end}}
 {{define "page"}}
 <div class="card">
   <table class="grid responsive data-list" aria-label="Services">
-    <tr class="column-headings"><th scope="col">Name</th><th>Address</th><th>View</th><th>Aliases</th><th>Routing</th><th></th></tr>
+    <tr class="column-headings"><th scope="col">Name</th><th>Address</th><th>View</th><th>Aliases</th><th>Routing</th><th><span class="visually-hidden">Actions</span></th></tr>
     {{range .Services}}
       {{$svc := .}}
       {{range $i, $a := .Addresses}}
@@ -23,42 +25,22 @@
           </form>
           </details>{{end}}</td>
         <td class="actions" data-label="Actions">{{if eq $i 0}}
-          <form method="post" action="/services/delete">
-            <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
-            <input type="hidden" name="id" value="{{$svc.ID}}">
-            <button class="danger" type="submit"{{template "ro" $}}>Remove</button>
-          </form>{{end}}</td>
+          <details class="row-menu">
+            <summary aria-label="Actions for {{$svc.Name}}">{{template "dots"}}</summary>
+            <div class="row-menu-list">
+              <form method="post" action="/services/delete">
+                <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
+                <input type="hidden" name="id" value="{{$svc.ID}}">
+                <button class="row-menu-item danger" type="submit"{{template "ro" $}}>Remove</button>
+              </form>
+            </div>
+          </details>{{end}}</td>
       </tr>
       {{end}}
     {{else}}
       <tr><td colspan="6" class="muted">No services yet.</td></tr>
     {{end}}
   </table>
-</div>
-
-<div class="card">
-  <h3 id="add-service" tabindex="-1">Add a service</h3>
-  <form class="stack" method="post" action="/services/new">
-    <input type="hidden" name="csrf_token" value="{{.CSRF}}">
-    <label for="name">Name</label>
-    <input id="name" name="name" type="text" placeholder="kypost">
-    <label for="address">Address</label>
-    <div class="address-row">
-      <input id="address" name="address" type="text" placeholder="192.168.1.20">
-      <select name="view" aria-label="View">
-        <option value="">All views</option>
-        {{range .Views}}<option value="{{.Name}}">{{.Name}}</option>{{end}}
-      </select>
-    </div>
-    <label for="aliases">Aliases (comma separated)</label>
-    <input id="aliases" name="aliases" type="text" placeholder="webmail">
-    <label for="proxy_address">Proxy address (optional)</label>
-    <input id="proxy_address" name="proxy_address" type="text" placeholder="192.168.1.20">
-    <label><input name="route_via_proxy" type="checkbox"> Send DNS to the proxy</label>
-    <p class="muted">When routing is on, clients resolve to the proxy address
-       instead of the service's own address.</p>
-    <button type="submit"{{template "ro" $}}>Add service</button>
-  </form>
 </div>
 
 {{if .Services}}
@@ -84,4 +66,33 @@
   </form>
 </div>
 {{end}}
+
+<dialog class="form-dialog" id="add-service" aria-labelledby="add-service-title" closedby="any"{{if .AddError}} data-open{{end}}>
+  <form class="stack" method="post" action="/services/new">
+    <h2 id="add-service-title">Add a service</h2>
+    <input type="hidden" name="csrf_token" value="{{.CSRF}}">
+    {{with .AddError}}<p class="error" role="alert">{{.}}</p>{{end}}
+    <label for="name">Name</label>
+    <input id="name" name="name" type="text" placeholder="kypost" value="{{.Form.Get "name"}}" autocomplete="off" spellcheck="false" autofocus>
+    <label for="address">Address</label>
+    <div class="address-row">
+      <input id="address" name="address" type="text" placeholder="192.168.1.20" value="{{.Form.Get "address"}}" autocomplete="off" spellcheck="false">
+      <select name="view" aria-label="View">
+        <option value="">All views</option>
+        {{range .Views}}<option value="{{.Name}}"{{if eq .Name ($.Form.Get "view")}} selected{{end}}>{{.Name}}</option>{{end}}
+      </select>
+    </div>
+    <label for="aliases">Aliases (comma separated)</label>
+    <input id="aliases" name="aliases" type="text" placeholder="webmail" value="{{.Form.Get "aliases"}}" autocomplete="off">
+    <label for="proxy_address">Proxy address (optional)</label>
+    <input id="proxy_address" name="proxy_address" type="text" placeholder="192.168.1.20" value="{{.Form.Get "proxy_address"}}" autocomplete="off">
+    <label><input name="route_via_proxy" type="checkbox"{{if .Form.Get "route_via_proxy"}} checked{{end}}> Send DNS to the proxy</label>
+    <p class="muted">When routing is on, clients resolve to the proxy address
+       instead of the service's own address.</p>
+    <div class="dialog-actions">
+      <button class="ghost" type="button" commandfor="add-service" command="close">Cancel</button>
+      <button type="submit"{{template "ro" $}}>Add service</button>
+    </div>
+  </form>
+</dialog>
 {{end}}

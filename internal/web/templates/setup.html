@@ -1,19 +1,30 @@
 {{define "body"}}
-<div class="auth">
-<div class="brand">{{template "mark"}}<h1>KyDNS</h1></div>
-<div class="centered card">
-  <h2>Set up KyDNS</h2>
-  <p class="muted">The setup token is in the <code>setup-token</code> file in the KyDNS data directory (<code>sudo cat /var/lib/kydns/setup-token</code> on a package install). A container also prints it to its log.</p>
-  {{if .Error}}<p class="error">{{.Error}}</p>{{end}}
-  <form class="stack" method="post" action="/setup">
-    <label for="token">Setup token</label>
-    <input id="token" name="token" type="text" autofocus>
-    <label for="password">New password (12 characters or more)</label>
-    <input id="password" name="password" type="password" autocomplete="new-password">
-    <label for="confirm">Confirm password</label>
-    <input id="confirm" name="confirm" type="password" autocomplete="new-password">
-    <button type="submit">Create admin account</button>
-  </form>
-</div>
-</div>
+<main class="ky-auth">
+  <div class="ky-auth-theme"><select class="theme-selector" aria-label="Color theme" data-theme-shortcut></select></div>
+  <div class="ky-auth-body">
+    <div class="ky-auth-brand">
+      <img class="app-mark" src="/static/app-icon.png" width="56" height="56" alt="">
+      <h1>KyDNS</h1>
+      <p>Names and blocking for your home network.</p>
+    </div>
+    <form class="ky-auth-card" method="post" action="/setup">
+      <h2>Set up KyDNS</h2>
+      <p class="muted">The setup token is in the <code>setup-token</code> file in the KyDNS data directory (<code>sudo cat /var/lib/kydns/setup-token</code> on a package install). A container also prints it to its log.</p>
+      {{if .Error}}<p class="error" role="alert">{{.Error}}</p>{{end}}
+      <div class="ky-auth-field">
+        <label for="token">Setup token</label>
+        <input id="token" name="token" type="text" autocomplete="off" spellcheck="false" autofocus>
+      </div>
+      <div class="ky-auth-field">
+        <label for="password">New password (12 characters or more)</label>
+        <input id="password" name="password" type="password" autocomplete="new-password">
+      </div>
+      <div class="ky-auth-field">
+        <label for="confirm">Confirm password</label>
+        <input id="confirm" name="confirm" type="password" autocomplete="new-password">
+      </div>
+      <button class="ky-auth-submit" type="submit">Create admin account</button>
+    </form>
+  </div>
+</main>
 {{end}}

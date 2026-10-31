@@ -1,3 +1,4 @@
+{{define "lede"}}<p class="ky-page-lede">The built-in DHCPv4 server and the leases it has handed out.</p>{{end}}
 {{define "page"}}
 
 <div class="card">
@@ -102,7 +103,7 @@
         <form method="post" action="/dhcp/reserve">
           <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
           <input type="hidden" name="ip" value="{{.IP}}">
-          <button type="submit"{{template "ro" $}}>Reserve</button>
+          <button class="ghost" type="submit"{{template "ro" $}}>Reserve</button>
         </form>
         {{end}}
       </td>

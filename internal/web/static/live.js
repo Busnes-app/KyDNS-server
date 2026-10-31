@@ -34,6 +34,8 @@
         setStat(k, d.queries[k]);
       }
       setStat("avg_ms", d.queries.avg_ms);
+      // Mirrors MetricsSnapshot.BlockedRate: rounded down, 0 before the first query.
+      setStat("blocked_rate", d.queries.total ? Math.floor((d.queries.blocked * 100) / d.queries.total) : 0);
       setStat("hit_rate", d.cache.hit_rate);
       setStat("cache_entries", d.cache.entries);
       setStat("uptime", shortDuration(d.uptime_seconds));
@@ -43,6 +45,10 @@
       if (d.refusals) {
         setStat("refused_total", d.refusals.total);
         setStat("refused_cgnat", d.refusals.cgnat);
+      }
+      // A counter that reads 0 is noise on the facts line; show it once it counts.
+      for (const fact of document.querySelectorAll("[data-nonzero]")) {
+        fact.hidden = [...fact.querySelectorAll("[data-stat]")].every((n) => n.textContent === "0");
       }
       if (window.kydnsDrawCharts) window.kydnsDrawCharts(d.history);
     } catch (e) {

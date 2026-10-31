@@ -3,6 +3,7 @@ package web
 import (
 	"encoding/json"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 
@@ -52,6 +53,7 @@ func (s *Server) servicesData(errMsg string) map[string]any {
 	}
 	views, _ := s.o.Registry.Views()
 	return map[string]any{
+		"Form":  url.Values{},
 		"Title": "Services", "Nav": "services",
 		"Services": rows, "Views": views, "Error": errMsg,
 	}
@@ -106,7 +108,11 @@ func (s *Server) postServiceNew(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if _, err := s.o.Registry.PutService(svc); err != nil {
-		s.renderServicesError(w, r, err.Error())
+		// Reopen the add dialog with what was typed and the reason beside it.
+		data := s.servicesData("")
+		data["Form"], data["AddError"] = r.PostForm, err.Error()
+		w.WriteHeader(http.StatusBadRequest)
+		s.render(w, r, "services.html", data)
 		return
 	}
 	http.Redirect(w, r, "/services", http.StatusSeeOther)
@@ -130,7 +136,11 @@ func (s *Server) postServiceAddress(w http.ResponseWriter, r *http.Request) {
 		View:    r.PostFormValue("view"),
 	})
 	if _, err := s.o.Registry.PutService(svc); err != nil {
-		s.renderServicesError(w, r, err.Error())
+		// Reopen the add dialog with what was typed and the reason beside it.
+		data := s.servicesData("")
+		data["Form"], data["AddError"] = r.PostForm, err.Error()
+		w.WriteHeader(http.StatusBadRequest)
+		s.render(w, r, "services.html", data)
 		return
 	}
 	http.Redirect(w, r, "/services", http.StatusSeeOther)
@@ -154,7 +164,11 @@ func (s *Server) postServiceRouting(w http.ResponseWriter, r *http.Request) {
 	svc.ProxyAddress = strings.TrimSpace(r.PostFormValue("proxy_address"))
 	svc.RouteViaProxy = r.PostFormValue("route_via_proxy") != ""
 	if _, err := s.o.Registry.PutService(svc); err != nil {
-		s.renderServicesError(w, r, err.Error())
+		// Reopen the add dialog with what was typed and the reason beside it.
+		data := s.servicesData("")
+		data["Form"], data["AddError"] = r.PostForm, err.Error()
+		w.WriteHeader(http.StatusBadRequest)
+		s.render(w, r, "services.html", data)
 		return
 	}
 	http.Redirect(w, r, "/services", http.StatusSeeOther)

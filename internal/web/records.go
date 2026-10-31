@@ -21,6 +21,7 @@ func (s *Server) recordsData(errMsg string) map[string]any {
 	return map[string]any{
 		"Title": "Records", "Nav": "records",
 		"Records": recs, "Views": views, "Types": recordTypes, "Error": errMsg,
+		"Form": store.Record{Type: recordTypes[0]},
 	}
 }
 
@@ -41,7 +42,11 @@ func (s *Server) postRecordNew(w http.ResponseWriter, r *http.Request) {
 		View:  r.PostFormValue("view"),
 	}
 	if _, err := s.o.Registry.PutRecord(rec); err != nil {
-		s.renderRecordsError(w, r, err.Error())
+		// Reopen the add dialog with what was typed and the reason beside it.
+		data := s.recordsData("")
+		data["Form"], data["AddError"] = rec, err.Error()
+		w.WriteHeader(http.StatusBadRequest)
+		s.render(w, r, "records.html", data)
 		return
 	}
 	http.Redirect(w, r, "/records", http.StatusSeeOther)
