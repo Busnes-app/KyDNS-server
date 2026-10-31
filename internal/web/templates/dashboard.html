@@ -1,4 +1,4 @@
-{{define "lede"}}<p class="ky-page-lede">Queries since KyDNS started, and the last hour by the minute.</p>{{end}}
+{{define "lede"}}<p class="ky-page-lede">Queries since KyDNS started, and the last 24 hours of traffic.</p>{{end}}
 {{define "page"}}
 {{range .Banners}}
 <div class="banner">
@@ -38,14 +38,25 @@
   <noscript><p class="muted">Charts need JavaScript. Every total they draw is also in the counters above.</p></noscript>
   <figure class="chart" id="chart-queries" data-chart="queries">
     <figcaption>
-      Queries per minute <span class="muted">— last hour</span>
+      <span>Queries <span class="muted" data-window-label>— last 24 hours</span></span>
+      <span class="chart-window" role="group" aria-label="Time range">
+        <button type="button" data-window="day" aria-pressed="true">24 hours</button>
+        <button type="button" data-window="hour" aria-pressed="false">Last hour</button>
+      </span>
       <span class="legend">
         <span class="key" data-series="authoritative">Local <b>0</b></span>
         <span class="key" data-series="forwarded">Forwarded <b>0</b></span>
         <span class="key" data-series="blocked">Blocked <b>0</b></span>
       </span>
     </figcaption>
-    <svg viewBox="0 0 640 128" height="128" role="img" aria-label="Queries per minute for the last hour, split into local, forwarded and blocked"></svg>
+    <svg viewBox="0 0 640 184" height="184" role="img" aria-label="Queries per 10 minutes for the last 24 hours, split into local, forwarded and blocked"></svg>
+    <details class="chart-table">
+      <summary>Show as table</summary>
+      <table class="grid">
+        <thead><tr><th scope="col" data-table-time>Hour</th><th scope="col">Local</th><th scope="col">Forwarded</th><th scope="col">Blocked</th><th scope="col">Total</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </details>
   </figure>
   <div class="chart-pair">
     <figure class="chart" id="chart-cache" data-chart="cache">

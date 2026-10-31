@@ -82,6 +82,10 @@ body { font-size: 15px; }
 
 /* ---------- Charts ---------- */
 
+/* Light palettes take a darker local and forwarded step, so every mark keeps 3:1
+   on every light canvas (dataviz validate_palette.js, all twelve halves). */
+:root[data-scheme="light"] { --series-1: #00897a; --series-2: #b8652a; }
+
 .chart { margin: 0 0 1.1rem; position: relative; }
 .chart:last-child { margin-bottom: 0; }
 .chart figcaption { font-family: var(--font-mono); font-size: .76rem; color: var(--ink-strong);
@@ -114,6 +118,25 @@ body { font-size: 15px; }
                          border-radius: 2px; margin-right: .3rem; background: var(--series-1); }
 .chart .tip .k[data-series="forwarded"]::before { background: var(--series-2); }
 .chart .tip .k[data-series="blocked"]::before { background: var(--series-3); }
+
+/* Time range: one selected segment, in the accent, as everywhere else in the suite. */
+.chart-window { display: inline-flex; border: 1px solid var(--line-strong); border-radius: var(--r-control); overflow: hidden; }
+.chart-window button { min-height: 1.75rem; padding: 0 .65rem; border: 0; border-radius: 0; background: transparent;
+                       color: var(--ink); font: inherit; font-family: var(--font-display); cursor: pointer; }
+.chart-window button + button { border-left: 1px solid var(--line-strong); }
+.chart-window button:hover { background: var(--panel-hover, var(--raised)); color: var(--ink-strong); }
+.chart-window button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.chart-window button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.chart .axis-unit { font-family: var(--font-display); }
+.chart .tick { stroke: var(--line-strong); stroke-width: 1; }
+.chart .bar { stroke: var(--panel); stroke-width: 1; }
+.chart-table { margin-top: .75rem; font-size: var(--ky-type-meta); }
+.chart-table summary { cursor: pointer; color: var(--ink); width: fit-content; }
+.chart-table summary:hover { color: var(--ink-strong); }
+.chart-table table { margin-top: .5rem; max-width: 40rem; }
+.chart-table td, .chart-table th:not(:first-child) { font-variant-numeric: tabular-nums; }
+.chart-table :is(td, th):not(:first-child) { text-align: right; }
+.chart-table table.grid :is(td, th) { padding-block: .3rem; }
 
 /* ---------- Tables ---------- */
 
