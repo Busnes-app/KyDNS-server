@@ -184,3 +184,11 @@ func (m *Metrics) Snapshot() MetricsSnapshot {
 		History:       m.hist.snapshot(),
 	}
 }
+
+// Day is the last 24 hours in ten-minute buckets, for the dashboard's day chart.
+func (m *Metrics) Day() []Bucket {
+	if m == nil {
+		return newHistory(nil).snapshotDay()
+	}
+	return m.hist.snapshotDay()
+}

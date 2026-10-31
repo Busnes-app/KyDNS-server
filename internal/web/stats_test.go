@@ -83,6 +83,47 @@ func TestStatsJSONHistorySpansAnHourWhenIdle(t *testing.T) {
 	}
 }
 
+// The 24-hour chart needs a full, evenly spaced day of ten-minute bars holding
+// the queries the server answered, and nothing else: no cache or latency fields,
+// and zero counts left out, so the payload stays bounded.
+func TestStatsJSONHistoryDaySpansADay(t *testing.T) {
+	h, srv := newWeb(t)
+	setupAndLogin(t, h)
+	c := loginCookie(t, h)
+	withMetrics(srv)
+
+	var got struct {
+		Day []map[string]int64 `json:"history_day"`
+	}
+	if err := json.Unmarshal(get(t, h, "/stats.json", c).Body.Bytes(), &got); err != nil {
+		t.Fatal(err)
+	}
+	if len(got.Day) != 144 {
+		t.Fatalf("history_day has %d buckets, want 144", len(got.Day))
+	}
+	for i := 1; i < len(got.Day); i++ {
+		if got.Day[i]["minute"] != got.Day[i-1]["minute"]+10 {
+			t.Fatalf("bucket %d is not ten minutes after its predecessor", i)
+		}
+	}
+	// Summed, not read off the last bar: a ten-minute boundary may fall between
+	// recording and the request.
+	sum := map[string]int64{}
+	for _, b := range got.Day {
+		for k, v := range b {
+			if k != "minute" {
+				sum[k] += v
+			}
+		}
+	}
+	if len(sum) != 3 || sum["authoritative"] != 1 || sum["forwarded"] != 1 || sum["blocked"] != 1 {
+		t.Errorf("history_day totals %v, want one of each outcome and nothing else", sum)
+	}
+	if len(got.Day[0]) != 1 {
+		t.Errorf("an empty bucket carries %v; only its minute belongs", got.Day[0])
+	}
+}
+
 // live.js and the route have to name the same path, and nothing else checks it.
 func TestLiveJSPollsTheStatsRoute(t *testing.T) {
 	b, err := staticFS.ReadFile("static/live.js")
