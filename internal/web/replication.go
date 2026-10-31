@@ -45,9 +45,9 @@ type peerRow struct {
 // peerStatusText renders adminapi's states. The raw values are wire strings,
 // and "never_synced" on a screen reads like a column name.
 var peerStatusText = map[string]string{
-	adminapi.StatusInSync:      "in sync",
-	adminapi.StatusBehind:      "behind",
-	adminapi.StatusNeverSynced: "never synced",
+	adminapi.StatusInSync:      "In sync",
+	adminapi.StatusBehind:      "Behind",
+	adminapi.StatusNeverSynced: "Never synced",
 }
 
 // peerRows asks adminapi for the peers, so lag and status are computed once

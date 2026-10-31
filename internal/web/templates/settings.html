@@ -163,7 +163,7 @@ curl -fsSo ~/.agents/skills/kydns/SKILL.md {{.}}/agent/skills/kydns/SKILL.md</pr
     <tr><th>Name</th><th>Subnets</th><th>Used by</th><th><span class="visually-hidden">Actions</span></th></tr>
     {{range .Views}}
     <tr>
-      <td>{{.Name}}{{if .Unreachable}} <span class="badge warn">unreachable</span>{{end}}</td>
+      <td>{{.Name}}{{if .Unreachable}} <span class="ky-status" data-ky-status="danger">Unreachable</span>{{end}}</td>
       <td>{{.Subnets}}</td>
       <td>{{.References}}</td>
       <td class="actions">
@@ -408,7 +408,7 @@ curl -fsSo ~/.agents/skills/kydns/SKILL.md {{.}}/agent/skills/kydns/SKILL.md</pr
     {{range .Upstreams}}
     <tr>
       <td><code>{{.Spec}}</code></td>
-      <td>{{if .Secure}}encrypted{{else}}<span class="badge warn">plaintext</span>{{end}}</td>
+      <td>{{if .Secure}}<span class="ky-status" data-ky-status="success">Encrypted</span>{{else}}<span class="ky-status" data-ky-status="warning">Plaintext</span>{{end}}</td>
       <td>
         {{if .LastError}}<span class="error">{{.LastError}}</span>
           <span class="muted">at {{.LastErrAt.Format "2006-01-02 15:04:05 MST"}}</span>

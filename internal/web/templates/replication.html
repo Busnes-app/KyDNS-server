@@ -99,8 +99,7 @@
       <td>{{.Address}}</td>
       <td>{{.LastSync}}</td>
       <td>{{if .Synced}}{{.Lag}}{{else}}<span class="muted">&mdash;</span>{{end}}</td>
-      <td>{{if eq .Status "in sync"}}<span class="badge">{{.Status}}</span>
-          {{else}}<span class="badge warn">{{.Status}}</span>{{end}}</td>
+      <td><span class="ky-status" data-ky-status="{{if eq .Status "In sync"}}success{{else}}warning{{end}}">{{.Status}}</span></td>
       <td>
         <form class="address-row" method="post" action="/replication/rename">
           <input type="hidden" name="csrf_token" value="{{$.CSRF}}">

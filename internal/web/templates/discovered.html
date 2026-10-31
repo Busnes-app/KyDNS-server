@@ -7,8 +7,8 @@
     {{range .Leases}}
     <tr>
       <td>{{.Hostname}}</td><td class="technical">{{.IP}}</td><td class="technical muted">{{.MAC}}</td>
-      <td>{{if .Shadowed}}<span class="badge warn">shadowed</span>
-          {{else}}<span class="badge">resolving</span>{{end}}</td>
+      <td>{{if .Shadowed}}<span class="ky-status" data-ky-status="warning">Shadowed</span>
+          {{else}}<span class="ky-status" data-ky-status="success">Resolving</span>{{end}}</td>
       <td>
         {{if not .Shadowed}}
         <form method="post" action="/discovered/promote">

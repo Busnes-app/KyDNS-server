@@ -21,7 +21,7 @@ func TestBlacklistsTabIsLinkedAndRequiresASession(t *testing.T) {
 func TestBlacklistsPageShowsStateAndWarnings(t *testing.T) {
 	h, _, c, _ := loggedIn(t)
 	body := page(t, h, "/blacklists", c)
-	for _, want := range []string{"Blacklists", "steven-black", "never loaded"} {
+	for _, want := range []string{"Blacklists", "steven-black", "Never loaded"} {
 		if !strings.Contains(body, want) {
 			t.Errorf("page missing %q", want)
 		}

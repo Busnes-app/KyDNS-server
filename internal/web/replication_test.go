@@ -224,14 +224,14 @@ func TestPrimaryReplicasScreenListsPeers(t *testing.T) {
 	body := rec.Body.String()
 
 	one := rowFor(t, body, peerOneLabel)
-	for _, want := range []string{peerOneID, peerOneAddr, peerOneLag, "2h ago", ">behind<"} {
+	for _, want := range []string{peerOneID, peerOneAddr, peerOneLag, "2h ago", ">Behind<"} {
 		if !strings.Contains(one, want) {
 			t.Errorf("the %s row is missing %q:\n%s", peerOneLabel, want, one)
 		}
 	}
 
 	two := rowFor(t, body, peerTwoLabel)
-	if !strings.Contains(two, ">never synced<") {
+	if !strings.Contains(two, ">Never synced<") {
 		t.Errorf("the %s row does not say it has never synced:\n%s", peerTwoLabel, two)
 	}
 	// A peer that never answered has no age and no meaningful lag; showing a

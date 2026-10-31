@@ -31,7 +31,7 @@
   <div data-nonzero{{if not .Queries.ServFail}} hidden{{end}}><dt>SERVFAIL</dt><dd data-stat="servfail">{{.Queries.ServFail}}</dd></div>
   <div data-nonzero{{if not .RefusedTotal}} hidden{{end}}><dt>Refused queries</dt><dd><span data-stat="refused_total">{{.RefusedTotal}}</span> <span class="muted">(<span data-stat="refused_cgnat">{{.RefusedCGNAT}}</span> from the Tailscale range)</span></dd></div>
   <div data-nonzero{{if not .CacheEntries}} hidden{{end}}><dt>Cached names</dt><dd data-stat="cache_entries">{{.CacheEntries}}</dd></div>
-  <div><dt>Upstreams</dt><dd>{{range .Upstreams}}<span class="badge{{if or (not .Secure) .LastError}} warn{{end}}">{{.Spec}}</span> {{else}}<span class="muted">none</span>{{end}}</dd></div>
+  <div><dt>Upstreams</dt><dd>{{range .Upstreams}}<span class="upstream"><span class="badge">{{.Spec}}</span>{{if .LastError}}<span class="ky-status" data-ky-status="danger">Failing</span>{{else if not .Secure}}<span class="ky-status" data-ky-status="warning">Plaintext</span>{{end}}</span> {{else}}<span class="muted">none</span>{{end}}</dd></div>
 </dl>
 
 <div class="card">

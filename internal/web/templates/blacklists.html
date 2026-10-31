@@ -64,9 +64,11 @@
       <td data-label="Entries">{{.Entries}}{{if .Skipped}} <span class="muted">({{.Skipped}} skipped)</span>{{end}}</td>
       <td data-label="Last update">{{.LastOK}}<br><span class="muted">every {{.Interval}}</span></td>
       <td data-label="State">
-        {{if .Enabled}}on{{else}}off{{end}}
-        {{if .NeverLoaded}}<br><span class="badge warn">never loaded</span>{{end}}
-        {{if .Stale}}<br><span class="badge warn">stale</span><br><span class="muted">{{.LastError}}</span>{{end}}
+        {{if not .Enabled}}<span class="ky-status">Off</span>
+        {{else if .NeverLoaded}}<span class="ky-status" data-ky-status="warning">Never loaded</span>
+        {{else if .Stale}}<span class="ky-status" data-ky-status="warning">Stale</span>
+        {{else}}<span class="ky-status" data-ky-status="success">On</span>{{end}}
+        {{if .Stale}}<br><span class="muted">{{.LastError}}</span>{{end}}
       </td>
       <td class="actions" data-label="Actions">
         <details class="row-menu">
@@ -108,7 +110,7 @@
   <table class="grid">
     <tr><th>Kind</th><th>Domain</th><th><span class="visually-hidden">Actions</span></th></tr>
     {{range .Deny}}
-    <tr><td><span class="badge down">deny</span></td><td>{{.Domain}}</td>
+    <tr><td><span class="badge">deny</span></td><td>{{.Domain}}</td>
       <td class="actions">
         <details class="row-menu">
           <summary aria-label="Actions for {{.Domain}}">{{template "dots"}}</summary>
