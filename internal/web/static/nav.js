@@ -27,8 +27,21 @@
   // A form that came back with an error reopens with what was typed.
   for (const dialog of document.querySelectorAll("dialog[data-open]")) dialog.showModal();
 
-  // Row menus: one open at a time; Escape or a click elsewhere closes them.
+  // Row menus: one open at a time; Escape, a click elsewhere or a scroll closes them.
+  // The list is position: fixed beside its trigger, so a card that scrolls a wide
+  // table sideways cannot clip it; it opens upward near the bottom of the window.
   const menus = () => document.querySelectorAll("details.row-menu[open]");
+  document.addEventListener("toggle", (event) => {
+    const menu = event.target;
+    if (!(menu instanceof HTMLDetailsElement) || !menu.matches(".row-menu") || !menu.open) return;
+    const at = menu.querySelector("summary").getBoundingClientRect();
+    const list = menu.querySelector(".row-menu-list");
+    const below = at.bottom + 4 + list.offsetHeight <= innerHeight - 8;
+    list.style.top = (below ? at.bottom + 4 : at.top - 4 - list.offsetHeight) + "px";
+    list.style.left = Math.max(8, at.right - list.offsetWidth) + "px";
+  }, true);
+  addEventListener("scroll", () => { for (const menu of menus()) menu.open = false; }, { capture: true, passive: true });
+  addEventListener("resize", () => { for (const menu of menus()) menu.open = false; });
   document.addEventListener("click", (event) => {
     for (const menu of menus()) if (!menu.contains(event.target)) menu.open = false;
   });

@@ -164,6 +164,9 @@ table.grid code { overflow-wrap: anywhere; }
    line and against the right edge instead of wrapping the table wider. */
 table.grid td:last-child:has(form) { text-align: right; white-space: nowrap; width: 1%; }
 table.grid td:last-child:has(> form) form { display: inline-flex; gap: .4rem; margin: .25rem 0; }
+/* A row's single inline action is a compact outline button, so the column stays quiet. */
+table.grid td:last-child > form > button.ghost { min-height: 32px; padding: 0 .75rem; font-weight: 500; }
+table.grid td:last-child:has(> form > button.ghost) { padding-block: .3rem; }
 /* A list carries a paragraph of description and a URL that does not wrap on
    its own. Give the prose room and let the URL break. */
 table.grid.lists td:first-child { width: 44%; }
@@ -244,9 +247,6 @@ button.danger:hover { background: var(--danger-soft); filter: none; }
 
 /* Row actions live in a ⋯ menu so rows stay one quiet line. */
 table.data-list td.actions { padding-block: 0; }
-/* ponytail: the open menu overflows its card instead of scrolling inside it; a
-   table too wide for its card would need a top-layer popover with anchoring. */
-.card:has(.row-menu) { overflow: visible; }
 .row-menu { position: relative; display: inline-block; text-align: left; }
 .row-menu > summary { list-style: none; display: grid; place-items: center; width: 32px; height: 32px;
                       border-radius: var(--r-control); color: var(--ink); cursor: pointer; }
@@ -254,7 +254,7 @@ table.data-list td.actions { padding-block: 0; }
 .row-menu > summary svg { width: 18px; height: 18px; }
 .row-menu > summary:hover, .row-menu[open] > summary { background: var(--raised); color: var(--ink-strong); }
 .row-menu > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.row-menu-list { position: absolute; right: 0; top: calc(100% + 4px); z-index: 5; min-width: 10rem; padding: 4px;
+.row-menu-list { position: fixed; z-index: 5; min-width: 10rem; padding: 4px;
                  background: var(--panel); border: 1px solid var(--line-strong); border-radius: var(--r-control);
                  box-shadow: 0 8px 24px rgb(0 0 0 / .18); }
 .row-menu-list form { margin: 0; }

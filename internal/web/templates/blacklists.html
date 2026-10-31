@@ -54,7 +54,7 @@
     </form>
   </div>
   <table class="grid lists responsive" aria-label="Blacklist sources">
-    <tr class="column-headings"><th scope="col" colspan="2">Name and source</th><th>Format</th><th>Entries</th><th>Last update</th><th>State</th><th></th></tr>
+    <tr class="column-headings"><th scope="col" colspan="2">Name and source</th><th>Format</th><th>Entries</th><th>Last update</th><th>State</th><th><span class="visually-hidden">Actions</span></th></tr>
     {{range .Lists}}
     <tr>
       <td colspan="2" data-label="Name and source">{{.Name}}{{if .Builtin}} <span class="badge">built-in</span>{{end}}
@@ -68,24 +68,29 @@
         {{if .NeverLoaded}}<br><span class="badge warn">never loaded</span>{{end}}
         {{if .Stale}}<br><span class="badge warn">stale</span><br><span class="muted">{{.LastError}}</span>{{end}}
       </td>
-      <td class="actions wide" data-label="Actions">
-        <form class="address-row" method="post" action="/blacklists/lists/toggle">
-          <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
-          <input type="hidden" name="id" value="{{.ID}}">
-          <button class="ghost" type="submit"{{template "ro" $}}>{{if .Enabled}}Disable{{else}}Enable{{end}}</button>
-        </form>
-        <form class="address-row" method="post" action="/blacklists/refresh">
-          <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
-          <input type="hidden" name="id" value="{{.ID}}">
-          <button class="ghost" type="submit"{{template "ro" $}}>Refresh</button>
-        </form>
-        {{if not .Builtin}}
-        <form class="address-row" method="post" action="/blacklists/lists/delete">
-          <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
-          <input type="hidden" name="id" value="{{.ID}}">
-          <button class="danger" type="submit"{{template "ro" $}}>Remove</button>
-        </form>
-        {{end}}
+      <td class="actions" data-label="Actions">
+        <details class="row-menu">
+          <summary aria-label="Actions for {{.Name}}">{{template "dots"}}</summary>
+          <div class="row-menu-list">
+            <form method="post" action="/blacklists/lists/toggle">
+              <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
+              <input type="hidden" name="id" value="{{.ID}}">
+              <button class="row-menu-item" type="submit"{{template "ro" $}}>{{if .Enabled}}Disable{{else}}Enable{{end}}</button>
+            </form>
+            <form method="post" action="/blacklists/refresh">
+              <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
+              <input type="hidden" name="id" value="{{.ID}}">
+              <button class="row-menu-item" type="submit"{{template "ro" $}}>Refresh</button>
+            </form>
+            {{if not .Builtin}}
+            <form method="post" action="/blacklists/lists/delete">
+              <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
+              <input type="hidden" name="id" value="{{.ID}}">
+              <button class="row-menu-item danger" type="submit"{{template "ro" $}}>Remove</button>
+            </form>
+            {{end}}
+          </div>
+        </details>
       </td>
     </tr>
     {{else}}
@@ -123,22 +128,36 @@
      name and its subdomains. Neither can affect a name KyDNS answers for
      itself — local services and records are decided before any of this.</p>
   <table class="grid">
-    <tr><th>Kind</th><th>Domain</th><th></th></tr>
+    <tr><th>Kind</th><th>Domain</th><th><span class="visually-hidden">Actions</span></th></tr>
     {{range .Deny}}
     <tr><td><span class="badge down">deny</span></td><td>{{.Domain}}</td>
-      <td><form method="post" action="/blacklists/rules/delete">
-        <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
-        <input type="hidden" name="id" value="{{.ID}}">
-        <button class="danger" type="submit"{{template "ro" $}}>Remove</button>
-      </form></td></tr>
+      <td class="actions">
+        <details class="row-menu">
+          <summary aria-label="Actions for {{.Domain}}">{{template "dots"}}</summary>
+          <div class="row-menu-list">
+            <form method="post" action="/blacklists/rules/delete">
+              <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
+              <input type="hidden" name="id" value="{{.ID}}">
+              <button class="row-menu-item danger" type="submit"{{template "ro" $}}>Remove</button>
+            </form>
+          </div>
+        </details>
+      </td></tr>
     {{end}}
     {{range .Allow}}
     <tr><td><span class="badge">allow</span></td><td>{{.Domain}}</td>
-      <td><form method="post" action="/blacklists/rules/delete">
-        <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
-        <input type="hidden" name="id" value="{{.ID}}">
-        <button class="danger" type="submit"{{template "ro" $}}>Remove</button>
-      </form></td></tr>
+      <td class="actions">
+        <details class="row-menu">
+          <summary aria-label="Actions for {{.Domain}}">{{template "dots"}}</summary>
+          <div class="row-menu-list">
+            <form method="post" action="/blacklists/rules/delete">
+              <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
+              <input type="hidden" name="id" value="{{.ID}}">
+              <button class="row-menu-item danger" type="submit"{{template "ro" $}}>Remove</button>
+            </form>
+          </div>
+        </details>
+      </td></tr>
     {{end}}
     {{if and (not .Deny) (not .Allow)}}
     <tr><td colspan="3" class="muted">No one-off rules. The lists above decide everything.</td></tr>

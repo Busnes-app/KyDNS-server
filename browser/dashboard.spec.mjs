@@ -320,6 +320,32 @@ test('manual-record errors, addition, filtering and removal use actual server fo
   await expect(row).toHaveCount(0);
 });
 
+test('row menus stay whole and on top at mid widths', async ({ page }) => {
+  for (const width of [1024, 1280]) {
+    await page.setViewportSize({ width, height: 800 });
+    await page.goto('/blacklists');
+    // The last list row's menu, inside a card that scrolls its wide table.
+    const menu = page.locator('table.lists .row-menu').last();
+    await menu.locator('summary').click();
+    const list = menu.locator('.row-menu-list');
+    await expect(list).toBeVisible();
+    const box = await list.boundingBox();
+    expect(box.x).toBeGreaterThanOrEqual(0);
+    expect(box.x + box.width).toBeLessThanOrEqual(width);
+    expect(box.y).toBeGreaterThanOrEqual(0);
+    expect(box.y + box.height).toBeLessThanOrEqual(800);
+    // Every item is the topmost element at its centre, so nothing clips or covers it.
+    for (const item of await list.locator('button').all()) {
+      expect(await item.evaluate(node => {
+        const r = node.getBoundingClientRect();
+        return node.contains(document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2));
+      })).toBe(true);
+    }
+    await page.keyboard.press('Escape');
+    await expect(list).toBeHidden();
+  }
+});
+
 test('About opens from the licence line and closes with Escape', async ({ page }) => {
   await page.goto('/records');
   const link = page.getByRole('button', { name: /© \d{4} · MIT License/ });
