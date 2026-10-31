@@ -400,13 +400,21 @@ test('signed-out visitors cannot read the dashboard or Appearance', async ({ bro
 test('admin layouts retain reachable fields and routing actions at shipped sizes', async ({ page }) => {
   await page.goto('/discovered');
   const phone = page.viewportSize().width < 860;
-  const nav = await page.locator('nav').boundingBox();
+  const sidebar = await page.locator('.ky-sidebar').boundingBox();
+  const content = await page.locator('.ky-content').boundingBox();
   if (phone) {
-    expect(nav.height).toBeLessThan(160);
-    // The scroll cue is for assistive tech only.
-    await expect(page.locator('.nav-scroll-hint')).toHaveText(/scroll the navigation sideways/);
-    expect((await page.locator('.nav-scroll-hint').boundingBox()).width).toBeLessThanOrEqual(1);
-  } else expect(nav.width).toBe(240);
+    // One header row (brand, icon-only Sign out) above one row of tabs; no user block.
+    expect(sidebar.height).toBeLessThan(160);
+    await expect(page.locator('.ky-mobile-head').getByRole('button', { name: 'Sign out', exact: true })).toBeVisible();
+    await expect(page.locator('.ky-user')).toBeHidden();
+    expect(content.x).toBe(0);
+  } else {
+    expect(sidebar.width).toBe(240);
+    // Content starts at the shared inset; the user block and licence line close the sidebar.
+    expect((await page.locator('.ky-page-head').boundingBox()).x).toBe(272);
+    const foot = await page.locator('.ky-sidebar-foot').boundingBox();
+    expect(Math.abs(foot.y + foot.height - (sidebar.y + sidebar.height - 16))).toBeLessThan(1);
+  }
 
   await page.goto('/');
   // Four primary tiles: one row on desktop, two even columns on phones.
