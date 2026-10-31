@@ -1,5 +1,5 @@
 {{define "lede"}}<p class="ky-page-lede">Manual A, AAAA, CNAME and PTR records this server answers.</p>{{end}}
-{{define "action"}}<button class="ky-page-action" type="button" commandfor="add-record" command="show-modal"{{template "ro" .}}>Add record</button>{{end}}
+{{define "action"}}<button class="ky-page-action" type="button" commandfor="add-record" command="show-modal"{{template "ro" .}}>{{template "plus"}}Add record</button>{{end}}
 {{define "page"}}
 <div class="card">
   {{if .Records}}

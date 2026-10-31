@@ -123,6 +123,8 @@ test('real dashboard counters refresh without query traffic', async ({ page }) =
   expect(actual.queries.total).toBe(0);
   await expect(page.locator('#chart-queries svg path')).toHaveCount(6);
   await expect(page.locator('[data-stat="last_query"]')).toHaveText('never');
+  // Zero counters stay off the facts line.
+  await expect(page.getByText('NXDOMAIN / SERVFAIL')).toBeHidden();
 });
 
 test('stacked charts total the full window and separate missing samples', async ({ page }) => {
@@ -142,6 +144,8 @@ test('stacked charts total the full window and separate missing samples', async 
   }
   await expect(page.locator('[data-stat="uptime"]')).toHaveText('1d 1h');
   await expect(page.locator('[data-stat="refused_cgnat"]')).toHaveText('3');
+  // Counters that have counted join the facts line on refresh.
+  await expect(page.getByText('NXDOMAIN / SERVFAIL')).toBeVisible();
   const svg = page.locator('#chart-queries svg');
   const width = (await svg.boundingBox()).width;
   expect(Number((await svg.getAttribute('viewBox')).split(' ')[2])).toBe(Math.round(width));
@@ -346,6 +350,23 @@ test('row menus stay whole and on top at mid widths', async ({ page }) => {
   }
 });
 
+test('Blacklists adds a list from a page-head dialog', async ({ page }) => {
+  await page.goto('/blacklists');
+  await expect(page.getByRole('heading', { name: 'Add a list' })).toBeHidden();
+  await page.getByRole('button', { name: 'Add list', exact: true }).click();
+  const dialog = page.getByRole('dialog', { name: 'Add a list' });
+  await expect(dialog).toBeVisible();
+  await expect(page.locator('#bl-name')).toBeFocused();
+  // A plain-http source is refused and the dialog comes back with what was typed.
+  await page.locator('#bl-name').fill('browser-list');
+  await page.locator('#bl-url').fill('http://plain.example/hosts');
+  await dialog.getByRole('button', { name: 'Add list', exact: true }).click();
+  await expect(dialog.locator('.error')).toBeVisible();
+  await expect(page.locator('#bl-url')).toHaveValue('http://plain.example/hosts');
+  await dialog.getByRole('button', { name: 'Cancel', exact: true }).click();
+  await expect(dialog).toBeHidden();
+});
+
 test('About opens from the licence line and closes with Escape', async ({ page }) => {
   await page.goto('/records');
   const link = page.getByRole('button', { name: /© \d{4} · MIT License/ });
@@ -379,7 +400,9 @@ test('admin layouts retain reachable fields and routing actions at shipped sizes
   const nav = await page.locator('nav').boundingBox();
   if (phone) {
     expect(nav.height).toBeLessThan(160);
-    await expect(page.locator('.nav-scroll-hint')).toBeVisible();
+    // The scroll cue is for assistive tech only.
+    await expect(page.locator('.nav-scroll-hint')).toHaveText(/scroll the navigation sideways/);
+    expect((await page.locator('.nav-scroll-hint').boundingBox()).width).toBeLessThanOrEqual(1);
   } else expect(nav.width).toBe(240);
 
   await page.goto('/');
@@ -402,9 +425,12 @@ test('admin layouts retain reachable fields and routing actions at shipped sizes
   await expect(page.getByRole('button', { name: 'Save settings', exact: true })).toBeInViewport();
 
   await page.goto('/services');
+  await page.locator('.ky-page-head').getByRole('button', { name: 'Add service', exact: true }).click();
+  const addService = page.getByRole('dialog', { name: 'Add a service' });
   await page.locator('#name').fill('layout-check');
   await page.locator('#address').fill('192.0.2.42');
-  await page.getByRole('button', { name: 'Add service', exact: true }).click();
+  await addService.getByRole('button', { name: 'Add service', exact: true }).click();
+  await expect(addService).toBeHidden();
   const row = page.getByRole('row').filter({ hasText: 'layout-check' });
   try {
     await expect(row.locator('.row-menu summary')).toBeVisible();

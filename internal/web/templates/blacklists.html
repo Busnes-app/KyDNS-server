@@ -1,5 +1,5 @@
 {{define "lede"}}<p class="ky-page-lede">Block lists and one-off rules. Blocked names are answered with NXDOMAIN and never sent upstream.</p>{{end}}
-{{define "action"}}{{if not .Unavailable}}<a class="page-jump" href="#add-list">Add list</a>{{end}}{{end}}
+{{define "action"}}{{if not .Unavailable}}<button class="ky-page-action" type="button" commandfor="add-list" command="show-modal"{{template "ro" .}}>{{template "plus"}}Add list</button>{{end}}{{end}}
 {{define "page"}}
 {{if .Unavailable}}
 <div class="card">
@@ -99,28 +99,6 @@
   </table>
 </div>
 
-<div class="card">
-  <h3 id="add-list" tabindex="-1">Add a list</h3>
-  <p class="muted">A list URL is a trust decision: KyDNS downloads and applies
-     whatever it says. Only https sources are accepted, and no query names,
-     client addresses, or identifying headers are ever sent to the host.</p>
-  <form class="stack" method="post" action="/blacklists/lists/new">
-    <input type="hidden" name="csrf_token" value="{{.CSRF}}">
-    <label for="bl-name">Name</label>
-    <input id="bl-name" name="name" type="text" placeholder="my-list">
-    <label for="bl-url">Source URL</label>
-    <input id="bl-url" name="url" type="text" placeholder="https://lists.example/hosts">
-    <label for="bl-format">Format</label>
-    <select id="bl-format" name="format">
-      <option value="domains">domains — one name per line</option>
-      <option value="hosts">hosts — 0.0.0.0 name</option>
-      <option value="adblock">adblock — ||name^</option>
-    </select>
-    <label for="bl-interval">Refresh every (seconds)</label>
-    <input id="bl-interval" name="interval" type="text" value="86400">
-    <button type="submit"{{template "ro" $}}>Add list</button>
-  </form>
-</div>
 
 <div class="card">
   <h3>One-off rules</h3>
@@ -193,5 +171,33 @@
   </form>
 </div>
 
+
+<dialog class="form-dialog" id="add-list" aria-labelledby="add-list-title" closedby="any"{{if .AddError}} data-open{{end}}>
+  <form class="stack" method="post" action="/blacklists/lists/new">
+    <h2 id="add-list-title">Add a list</h2>
+    <input type="hidden" name="csrf_token" value="{{.CSRF}}">
+    {{with .AddError}}<p class="error" role="alert">{{.}}</p>{{end}}
+    <p class="muted dialog-intro">A list URL is a trust decision: KyDNS downloads and applies
+       whatever it says. Only https sources are accepted, and no query names,
+       client addresses, or identifying headers are ever sent to the host.</p>
+    <label for="bl-name">Name</label>
+    <input id="bl-name" name="name" type="text" placeholder="my-list" value="{{.Form.Get "name"}}" autocomplete="off" autofocus>
+    <label for="bl-url">Source URL</label>
+    <input id="bl-url" name="url" type="text" placeholder="https://lists.example/hosts" value="{{.Form.Get "url"}}" autocomplete="off" spellcheck="false">
+    <label for="bl-format">Format</label>
+    <select id="bl-format" name="format">
+      {{$f := .Form.Get "format"}}
+      <option value="domains"{{if eq $f "domains"}} selected{{end}}>domains — one name per line</option>
+      <option value="hosts"{{if eq $f "hosts"}} selected{{end}}>hosts — 0.0.0.0 name</option>
+      <option value="adblock"{{if eq $f "adblock"}} selected{{end}}>adblock — ||name^</option>
+    </select>
+    <label for="bl-interval">Refresh every (seconds)</label>
+    <input id="bl-interval" name="interval" type="text" value="{{with .Form.Get "interval"}}{{.}}{{else}}86400{{end}}">
+    <div class="dialog-actions">
+      <button class="ghost" type="button" commandfor="add-list" command="close">Cancel</button>
+      <button type="submit"{{template "ro" $}}>Add list</button>
+    </div>
+  </form>
+</dialog>
 {{end}}
 {{end}}

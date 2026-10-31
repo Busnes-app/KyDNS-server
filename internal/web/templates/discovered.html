@@ -2,11 +2,11 @@
 {{define "page"}}
 {{if .Enabled}}
 <div class="card">
-  <table class="grid" id="lease-table">
-    <tr><th>Hostname</th><th>Address</th><th>MAC</th><th>State</th><th></th></tr>
+  <table class="grid lease-list" id="lease-table">
+    <tr><th>Hostname</th><th>Address</th><th>MAC</th><th>State</th><th><span class="visually-hidden">Actions</span></th></tr>
     {{range .Leases}}
     <tr>
-      <td>{{.Hostname}}</td><td>{{.IP}}</td><td class="muted">{{.MAC}}</td>
+      <td>{{.Hostname}}</td><td class="technical">{{.IP}}</td><td class="technical muted">{{.MAC}}</td>
       <td>{{if .Shadowed}}<span class="badge warn">shadowed</span>
           {{else}}<span class="badge">resolving</span>{{end}}</td>
       <td>

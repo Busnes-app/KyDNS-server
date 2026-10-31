@@ -66,8 +66,6 @@ body { font-size: 15px; }
    the whole page instead of scrolling inside its own card. */
 .app > * { min-width: 0; }
 .app-main { padding: 2rem 2.5rem 3rem; max-width: var(--max-width); }
-/* A quiet jump to a page's add form, where the real submit is the primary button. */
-.page-jump { display: inline-flex; align-items: center; min-height: var(--ky-control-size); color: var(--ink); text-decoration: underline; text-underline-offset: 3px; font-size: var(--ky-type-nav); }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 [hidden] { display: none !important; }
 .nav-scroll-hint { display: none; }
@@ -102,13 +100,12 @@ body { font-size: 15px; }
                line-height: 1.1; color: var(--ink-strong); }
 .stat .label { font-family: var(--font-mono); font-size: .74rem; color: var(--ink); margin-top: .2rem; }
 
-/* Secondary counters: one compact line each for traffic and the registry. */
-.facts { display: flex; flex-wrap: wrap; gap: .25rem 1.5rem; margin: 0 0 .4rem; font-size: var(--ky-type-meta); line-height: 1.6; color: var(--ink); }
-.facts:last-of-type { margin-bottom: 2rem; }
-.facts > div { display: flex; flex-wrap: wrap; align-items: baseline; gap: .4rem; }
+/* Secondary counters: one muted line. */
+.facts { display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem 0; margin: 0 0 2rem; font-size: var(--ky-type-meta); line-height: 1.6; color: var(--ink); }
+.facts > div { display: flex; flex-wrap: wrap; align-items: baseline; gap: .35rem; }
+.facts > div:not([hidden]) ~ div::before { content: "·"; margin: 0 .6rem; }
 .facts dt, .facts dd { margin: 0; }
-.facts dd { color: var(--ink-strong); font-weight: 500; font-variant-numeric: tabular-nums; }
-.facts dd .muted { font-weight: 400; }
+.facts dd { font-variant-numeric: tabular-nums; }
 
 /* ---------- Charts ---------- */
 
@@ -165,8 +162,11 @@ table.grid code { overflow-wrap: anywhere; }
 table.grid td:last-child:has(form) { text-align: right; white-space: nowrap; width: 1%; }
 table.grid td:last-child:has(> form) form { display: inline-flex; gap: .4rem; margin: .25rem 0; }
 /* A row's single inline action is a compact outline button, so the column stays quiet. */
-table.grid td:last-child > form > button.ghost { min-height: 32px; padding: 0 .75rem; font-weight: 500; }
+table.grid td:last-child:has(> form > button.ghost) form { margin: 0; }
+table.grid td:last-child > form > button.ghost { min-height: 28px; padding: 0 .65rem; font-size: var(--ky-type-meta); font-weight: 500; }
 table.grid td:last-child:has(> form > button.ghost) { padding-block: .3rem; }
+/* Leases read like Records: one quiet 40px line each. */
+table.lease-list td { padding-block: .5rem; font-size: var(--ky-type-meta); line-height: 1.5; }
 /* A list carries a paragraph of description and a URL that does not wrap on
    its own. Give the prose room and let the URL break. */
 table.grid.lists td:first-child { width: 44%; }
@@ -232,7 +232,8 @@ input[type=checkbox] { width: 1rem; height: 1rem; accent-color: var(--accent); f
 .field-set { border: 0; border-top: 1px solid var(--line); padding: 1rem 0 0; margin: 0; min-width: 0; }
 .field-set legend { font-size: var(--ky-type-section); font-weight: 600; color: var(--ink-strong); padding: 0 1rem 0 0; }
 .field-set:disabled { opacity: .6; }
-input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--glow); }
+/* One ring: the focus-visible outline below. The border keeps its colour. */
+input:focus, select:focus, textarea:focus { outline: none; }
 button, .button { display: inline-flex; align-items: center; justify-content: center; gap: .45rem;
          background: var(--accent); color: var(--button-text); border: 1px solid transparent;
          border-radius: var(--r-control); padding: .5rem 1rem; font-family: var(--font-display);
@@ -272,8 +273,8 @@ input.table-filter { width: min(20rem, 100%); min-height: var(--ky-control-size)
                border: 1px solid var(--line); border-radius: 14px; background: var(--panel); color: var(--ink-strong);
                box-shadow: var(--ky-shadow-overlay); }
 .form-dialog::backdrop { background: rgb(12 12 18 / .68); }
-.form-dialog form.stack { margin: 0; max-width: none; grid-template-columns: minmax(4.5rem, 6rem) minmax(0, 1fr); }
-.form-dialog form.stack > :is(h2, .error, .dialog-actions) { grid-column: 1 / -1; }
+.form-dialog form.stack { margin: 0; max-width: none; grid-template-columns: minmax(5rem, 8.5rem) minmax(0, 1fr); }
+.form-dialog form.stack > :is(h2, .error, .dialog-intro, .dialog-actions) { grid-column: 1 / -1; }
 .form-dialog h2 { margin: 0 0 .5rem; font-size: var(--ky-type-section); font-weight: 600; }
 .form-dialog .error { margin: 0; }
 .dialog-actions { display: flex; justify-content: flex-end; gap: .5rem; margin-top: .5rem; }
@@ -307,7 +308,9 @@ select.theme-selector { width: auto; min-height: 0; padding: .3rem .5rem; font-f
 .app-nav a { min-height: var(--ky-control-size); margin: 0 .75rem; padding: 0 .75rem; font-size: var(--ky-type-nav); }
 button, .button, select, input[type=text], input[type=password], input[type=number], input[type=url] { min-height: var(--ky-control-size); }
 input[type=text], input[type=password], input[type=number], input[type=url], textarea, select { border-color: var(--ky-field-border); }
-input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* One ring: the outline sits on the field's own border instead of 2px outside it. */
+input:focus-visible, select:focus-visible, textarea:focus-visible,
+.ky-auth .ky-auth-field > input:focus-visible { outline: 2px solid var(--accent); outline-offset: -1px; }
 
 /* Mono is for data (names, addresses, counts); labels and captions are sans meta text. */
 .stat .label, .chart figcaption, table.grid th, form.stack > label, .fields > label {
@@ -369,7 +372,8 @@ a { color: var(--accent); }
   .app-nav { position: static; height: auto; flex-flow: row wrap; align-items: center; gap: 8px 12px;
              padding: 12px 16px 0; border-right: 0; border-bottom: 1px solid var(--line); }
   .brand { margin: 0; flex: 1; }
-  .nav-scroll-hint { display: block; color: var(--ink); font: 400 var(--ky-type-meta)/1.3 var(--font-display); letter-spacing: normal; }
+  /* Told to assistive tech only; the clipped row and nav.js already show it scrolls. */
+  .nav-scroll-hint { display: inline; position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .app-nav-links { order: 2; flex: 1 0 100%; flex-direction: row; overflow-x: auto; scrollbar-width: none;
                margin: 0 -16px; padding: 4px 16px 8px; }
   .app-nav a { flex: none; margin: 0; padding: 0 12px; white-space: nowrap; }
@@ -386,6 +390,9 @@ a { color: var(--accent); }
   .stat-row.metrics .stat:last-child:nth-child(odd) { grid-column: 1 / -1; }
   .stat, .stat:first-child { padding: 0; border-left: 0; }
   .stat .value { font-size: 1.6rem; }
+  /* Wrapped dots would start lines; phones separate facts with space alone. */
+  .facts { gap: .25rem 1.25rem; }
+  .facts > div:not([hidden]) ~ div::before { content: none; }
   form.stack, .fields { grid-template-columns: minmax(0, 1fr); gap: .3rem; }
   form.stack > label, .fields > label { grid-column: 1; text-align: left; padding-top: .4rem; }
   form.stack > :not(label), .fields > :not(label) { grid-column: 1; }

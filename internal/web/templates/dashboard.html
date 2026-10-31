@@ -22,20 +22,14 @@
   <div class="stat"><div class="value"><span data-stat="avg_ms">{{.AvgMS}}</span>ms</div><div class="label">Avg response</div></div>
 </div>
 
-<dl class="facts">
-  <div><dt>Answered locally</dt><dd data-stat="authoritative">{{.Queries.Authoritative}}</dd></div>
-  <div><dt>Forwarded</dt><dd data-stat="forwarded">{{.Queries.Forwarded}}</dd></div>
-  <div><dt>Blocked</dt><dd data-stat="blocked">{{.Queries.Blocked}}</dd></div>
-  <div><dt>NXDOMAIN / SERVFAIL</dt><dd><span data-stat="nxdomain">{{.Queries.NXDomain}}</span> / <span data-stat="servfail">{{.Queries.ServFail}}</span></dd></div>
-  <div><dt>Refused queries</dt><dd><span data-stat="refused_total">{{.RefusedTotal}}</span> <span class="muted">(<span data-stat="refused_cgnat">{{.RefusedCGNAT}}</span> from the Tailscale range)</span></dd></div>
-  <div><dt>Last query</dt><dd data-stat="last_query">{{.LastQuery}}</dd></div>
-</dl>
+{{/* One muted line. The chart legend carries the local/forwarded/blocked split;
+     counters marked data-nonzero stay hidden while they read 0 (live.js). */}}
 <dl class="facts">
   <div><dt>Uptime</dt><dd data-stat="uptime">{{.Uptime}}</dd></div>
-  <div><dt>Services</dt><dd>{{.Services}}</dd></div>
-  <div><dt>Records</dt><dd>{{.Records}}</dd></div>
-  <div><dt>Views</dt><dd>{{.Views}}</dd></div>
-  <div><dt>Cached</dt><dd data-stat="cache_entries">{{.CacheEntries}}</dd></div>
+  <div><dt>Last query</dt><dd data-stat="last_query">{{.LastQuery}}</dd></div>
+  <div data-nonzero{{if not (or .Queries.NXDomain .Queries.ServFail)}} hidden{{end}}><dt>NXDOMAIN / SERVFAIL</dt><dd><span data-stat="nxdomain">{{.Queries.NXDomain}}</span> / <span data-stat="servfail">{{.Queries.ServFail}}</span></dd></div>
+  <div data-nonzero{{if not .RefusedTotal}} hidden{{end}}><dt>Refused queries</dt><dd><span data-stat="refused_total">{{.RefusedTotal}}</span> <span class="muted">(<span data-stat="refused_cgnat">{{.RefusedCGNAT}}</span> from the Tailscale range)</span></dd></div>
+  <div data-nonzero{{if not .CacheEntries}} hidden{{end}}><dt>Cached names</dt><dd data-stat="cache_entries">{{.CacheEntries}}</dd></div>
   <div><dt>Upstreams</dt><dd>{{range .Upstreams}}<span class="badge{{if or (not .Secure) .LastError}} warn{{end}}">{{.Spec}}</span> {{else}}<span class="muted">none</span>{{end}}</dd></div>
 </dl>
 

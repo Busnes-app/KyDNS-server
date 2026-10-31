@@ -34,22 +34,10 @@ func (s *Server) getDashboard(w http.ResponseWriter, r *http.Request) {
 		s.render(w, r, "dashboard.html", data)
 		return
 	}
-	svcs, err := s.o.Registry.Services()
-	if err != nil {
-		data["Error"] = err.Error()
-	}
-	recs, err := s.o.Registry.Records()
-	if err != nil {
-		data["Error"] = err.Error()
-	}
-
 	if b := TailscaleBanner(s.o.ACL, views, s.allowTailscale(), bannerWindow); b != nil {
 		banners = append(banners, b)
 	}
 	data["Banners"] = banners
-	data["Services"] = len(svcs)
-	data["Records"] = len(recs)
-	data["Views"] = len(views)
 	if s.o.ACL != nil {
 		st := s.o.ACL.Stats()
 		data["RefusedTotal"] = st.Total

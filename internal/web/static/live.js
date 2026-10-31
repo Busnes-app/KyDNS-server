@@ -46,6 +46,10 @@
         setStat("refused_total", d.refusals.total);
         setStat("refused_cgnat", d.refusals.cgnat);
       }
+      // A counter that reads 0 is noise on the facts line; show it once it counts.
+      for (const fact of document.querySelectorAll("[data-nonzero]")) {
+        fact.hidden = [...fact.querySelectorAll("[data-stat]")].every((n) => n.textContent === "0");
+      }
       if (window.kydnsDrawCharts) window.kydnsDrawCharts(d.history);
     } catch (e) {
       /* transient: the next tick tries again */

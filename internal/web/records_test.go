@@ -126,3 +126,30 @@ func TestRecordDelete(t *testing.T) {
 		t.Error("deleted record still listed")
 	}
 }
+
+// Services and Blacklists reopen their add dialogs the same way Records does.
+func TestAddDialogsReopenWithTypedValues(t *testing.T) {
+	h, _, c, csrf := loggedIn(t)
+	for _, tc := range []struct {
+		path, dialog string
+		form         url.Values
+		want         []string
+	}{
+		{"/services/new", "add-service", url.Values{"name": {"typed"}, "address": {"not-an-address"}, "aliases": {"web"}},
+			[]string{`value="typed"`, `value="not-an-address"`, `value="web"`}},
+		{"/blacklists/lists/new", "add-list", url.Values{"name": {"typed-list"}, "url": {"http://plain.example/hosts"}, "format": {"hosts"}, "interval": {"3600"}},
+			[]string{`value="typed-list"`, `value="http://plain.example/hosts"`, `<option value="hosts" selected>`, `value="3600"`}},
+	} {
+		tc.form.Set("csrf_token", csrf)
+		rec := postForm(t, h, tc.path, tc.form, c)
+		if rec.Code != http.StatusBadRequest {
+			t.Fatalf("%s = %d, want 400", tc.path, rec.Code)
+		}
+		_, dialog, _ := strings.Cut(rec.Body.String(), `<dialog class="form-dialog" id="`+tc.dialog+`"`)
+		for _, want := range append(tc.want, ` data-open>`, `<p class="error" role="alert">`) {
+			if !strings.Contains(dialog, want) {
+				t.Errorf("%s dialog missing %s", tc.dialog, want)
+			}
+		}
+	}
+}

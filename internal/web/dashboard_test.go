@@ -161,18 +161,3 @@ func TestDashboardListsTopBlockedNames(t *testing.T) {
 		t.Errorf("the blocked name is not on the dashboard:\n%s", body)
 	}
 }
-
-func TestDashboardCountsEntities(t *testing.T) {
-	h, srv := newWeb(t)
-	setupAndLogin(t, h)
-	c := loginCookie(t, h)
-	if _, err := srv.o.Registry.PutService(store.Service{
-		Name: "kypost", Addresses: []store.Address{{Address: "192.168.1.20"}},
-	}); err != nil {
-		t.Fatal(err)
-	}
-	body := get(t, h, "/", c).Body.String()
-	if !strings.Contains(body, "Services") {
-		t.Error("dashboard missing the services stat")
-	}
-}
