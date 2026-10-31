@@ -13,33 +13,38 @@
       <a class="ky-nav-item" href="/settings"{{if eq .Nav "settings"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3"/><circle cx="15" cy="17" r="3"/></svg>Settings</a>
       <a class="ky-nav-item" href="/appearance"{{if eq .Nav "appearance"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/></svg>Appearance</a>
     </div>
-    <footer class="app-footer">
-      <p class="account-role">Administrator</p>
-      <form method="post" action="/logout">
-        <input type="hidden" name="csrf_token" value="{{.CSRF}}">
-        <button class="ghost" type="submit">Sign out</button>
-      </form>
-      {{template "legal" .}}
-    </footer>
-  </nav>
-  <div id="about" popover class="license-window">
-    <header class="license-header">
-      <div>
-        <p class="license-app">KyDNS <span class="badge accent">v{{.Version}}</span></p>
-        <p>Developed by Busnes.app</p>
-        <p>&copy; {{.Year}} &middot; Licensed under the MIT License</p>
+    <div class="app-footer">
+      <div class="ky-user">
+        <div class="ky-user-copy">
+          <p class="ky-user-name">admin</p>
+          <p class="ky-user-role">Administrator</p>
+        </div>
+        <form method="post" action="/logout">
+          <input type="hidden" name="csrf_token" value="{{.CSRF}}">
+          <button class="ky-user-signout" type="submit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>Sign out</button>
+        </form>
       </div>
-      <button type="button" class="ghost" popovertarget="about" popovertargetaction="hide">Close</button>
-    </header>
-    <iframe class="license-text" src="/license" loading="lazy"
-            title="MIT License"></iframe>
-  </div>
+      <footer>{{template "legal" .}}</footer>
+    </div>
+  </nav>
+  <dialog class="ky-about" id="ky-about" aria-label="About KyDNS" closedby="any">
+    <div class="ky-about-head">
+      <div>
+        <h2 class="ky-about-name">KyDNS <span class="ky-about-version">v{{.Version}}</span></h2>
+        <p class="ky-about-meta">Developed by Busnes.app</p>
+        <p class="ky-about-meta">&copy; {{.Year}} &middot; Licensed under the MIT License</p>
+      </div>
+      <form method="dialog"><button class="ky-about-close">Close</button></form>
+    </div>
+    <textarea class="ky-about-license" readonly aria-label="MIT License">{{.License}}</textarea>
+  </dialog>
   <main class="app-main">
-    <header class="page-heading">
-      <h1>{{.Title}}</h1>
-      {{if eq .Nav "services"}}<a href="#add-service">Add service</a>{{end}}
-      {{if eq .Nav "records"}}<a href="#add-record">Add record</a>{{end}}
-      {{if eq .Nav "blacklists"}}<a href="#add-list">Add list</a>{{end}}
+    <header class="ky-page-head">
+      <div>
+        <h1 class="ky-page-title">{{.Title}}</h1>
+        {{block "lede" .}}{{end}}
+      </div>
+      {{block "action" .}}{{end}}
     </header>
     {{with .ReplicaBanner}}
     <div class="banner">
@@ -52,15 +57,16 @@
     {{if .Error}}<p class="error">{{.Error}}</p>{{end}}
     {{template "page" .}}
     {{/* Phones keep the navigation to two rows; the licence moves below the page. */}}
-    <p class="page-legal">{{template "legal" .}}</p>
+    <footer class="page-legal">{{template "legal" .}}</footer>
   </main>
 </div>
 <script src="/static/nav.js" defer></script>
 {{end}}
 
-{{define "legal"}}<button type="button" class="license-link" popovertarget="about">
-        v{{.Version}} &middot; &copy; {{.Year}} &middot; MIT License
-      </button>{{end}}
+{{define "legal"}}<button class="ky-license-link" type="button" commandfor="ky-about" command="show-modal">&copy; {{.Year}} &middot; MIT License</button>{{end}}
+
+{{/* The ⋯ row-menu trigger, drawn so it matches the navigation icons. */}}
+{{define "dots"}}<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.75"/><circle cx="12" cy="12" r="1.75"/><circle cx="19" cy="12" r="1.75"/></svg>{{end}}
 
 {{/* "ro" disables an edit control on a replica and says who owns the change.
      Disabled rather than hidden: a control that vanishes reads as a bug. */}}

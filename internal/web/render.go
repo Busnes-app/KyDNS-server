@@ -9,8 +9,8 @@ import (
 	"time"
 )
 
-// Version is the release shown in the About popover. main sets it from the
-// version stamped at link time, so the popover and `kydns version` cannot
+// Version is the release shown in the About dialog. main sets it from the
+// version stamped at link time, so the dialog and `kydns version` cannot
 // disagree — and nobody has to remember to bump it here.
 var Version = "dev"
 
@@ -73,6 +73,7 @@ func (s *Server) render(w http.ResponseWriter, r *http.Request, page string, dat
 	data["ShowReplication"] = s.replicating()
 	data["Version"] = Version
 	data["Year"] = time.Now().Year()
+	data["License"] = licenseText
 	// Exposure is standing state, not an event: every screen warns about it.
 	data["PublicRanges"] = s.publicRanges()
 	// Every screen carries the replica chrome: the edit controls explain
@@ -98,9 +99,8 @@ func (s *Server) execute(w http.ResponseWriter, t *template.Template, data map[s
 	w.Write(buf.Bytes())
 }
 
-// licenseText is the same bytes StaticHandler serves at /static/mit.txt,
-// read once so the About popover can show it on the app's own dark chrome
-// instead of a bare browser text frame.
+// licenseText is the same bytes StaticHandler serves at /static/mit.txt, read
+// once so the About dialog shows it verbatim.
 var licenseText = string(must(staticFS.ReadFile("static/mit.txt")))
 
 func must(b []byte, err error) []byte {
@@ -108,14 +108,6 @@ func must(b []byte, err error) []byte {
 		panic(err)
 	}
 	return b
-}
-
-// getLicense renders the licence inside the site theme, for the About popover's
-// frame and for anyone who opens /license directly.
-func (s *Server) getLicense(w http.ResponseWriter, r *http.Request) {
-	s.renderBare(w, "license.html", map[string]any{
-		"Title": "License", "License": licenseText,
-	})
 }
 
 // StaticHandler serves the embedded stylesheet, app CSS, and fonts. Embedding

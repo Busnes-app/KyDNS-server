@@ -27,17 +27,38 @@
     return 10 * pow;
   }
 
-  // plot is the shared frame: it clears the svg, draws the y axis and its grid,
-  // and hands back the functions that map a sample onto it.
-  function plot(fig, max, suffix, exact) {
+  // canvas clears the svg and sizes it in CSS pixels: the viewBox follows the
+  // rendered width, so text keeps its size on a phone instead of shrinking.
+  function canvas(fig) {
     const svg = fig.querySelector("svg");
-    // Draw in CSS pixels: the viewBox follows the rendered width, so axis text
-    // keeps its size on a phone instead of shrinking with the drawing.
     const [, , w0, h] = svg.getAttribute("viewBox").split(" ").map(Number);
     const w = Math.round(svg.getBoundingClientRect().width) || w0;
     svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
     while (svg.firstChild) svg.removeChild(svg.firstChild);
     svg.removeAttribute("aria-description");
+    return { svg, w, h };
+  }
+
+  // empty replaces a chart that has no samples with a panel that says why,
+  // instead of an axis and gridlines that suggest a flat zero.
+  function empty(fig, title, hint) {
+    const { svg, w, h } = canvas(fig);
+    svg.appendChild(el("rect", { class: "chart-empty-bg", x: 0.5, y: 0.5, width: w - 1, height: h - 1, rx: 8 }));
+    const lines = [[title, "chart-empty", h / 2 - 3], [hint, "chart-empty-hint", h / 2 + 15]];
+    for (const [text, cls, y] of lines) {
+      const t = el("text", { class: cls, x: w / 2, y, "text-anchor": "middle" });
+      t.textContent = text;
+      svg.appendChild(t);
+    }
+    svg.setAttribute("aria-description", title);
+    const tip = fig.querySelector(".tip");
+    if (tip) tip.style.display = "none";
+  }
+
+  // plot is the shared frame: it draws the y axis and its grid on a cleared
+  // canvas and hands back the functions that map a sample onto it.
+  function plot(fig, max, suffix, exact) {
+    const { svg, w, h } = canvas(fig);
 
     const top = exact ? max : niceMax(max);
     const x = (i, n) => PAD.l + (i * (w - PAD.l - PAD.r)) / Math.max(n - 1, 1);
@@ -80,17 +101,7 @@
   // line draws a rate or an average. A null sample is a minute with nothing to
   // average, which breaks the path: drawing it as zero would claim a 0% hit
   // rate on a cache that was simply never asked.
-  function line(p, vals, color, emptyMessage) {
-    if (vals.every((v) => v === null)) {
-      const message = el("text", {
-        class: "chart-empty", x: (PAD.l + p.w - PAD.r) / 2,
-        y: (PAD.t + p.h - PAD.b) / 2, "text-anchor": "middle",
-      });
-      message.textContent = emptyMessage;
-      p.svg.appendChild(message);
-      p.svg.setAttribute("aria-description", emptyMessage);
-      return;
-    }
+  function line(p, vals, color) {
     const n = vals.length;
     let d = "", pen = false;
     for (let i = 0; i < n; i++) {
@@ -144,8 +155,11 @@
       const t = (b.cache_hits || 0) + (b.cache_misses || 0);
       return t ? Math.round((b.cache_hits * 100) / t) : null;
     });
+    if (vals.every((v) => v === null)) {
+      return empty(fig, "No cache lookups in this window", "Only forwarded queries use the cache.");
+    }
     const p = plot(fig, 100, "%", true);
-    line(p, vals, hue("--series-1"), "No cache lookups in this window");
+    line(p, vals, hue("--series-1"));
     hover(fig, p, history, (b, i) =>
       [{ text: vals[i] === null ? "no lookups" : vals[i] + "% hit rate" }]);
   }
@@ -153,8 +167,11 @@
   function drawLatency(fig, history) {
     const vals = history.map((b) =>
       (b.latency_count ? Math.round(b.latency_sum_ms / b.latency_count) : null));
+    if (vals.every((v) => v === null)) {
+      return empty(fig, "No query timings in this window", "Timings appear once queries arrive.");
+    }
     const p = plot(fig, Math.max(0, ...vals.filter((v) => v !== null)), "ms");
-    line(p, vals, hue("--series-1"), "No query timings in this window");
+    line(p, vals, hue("--series-1"));
     hover(fig, p, history, (b, i) =>
       [{ text: vals[i] === null ? "no queries" : vals[i] + " ms average" }]);
   }

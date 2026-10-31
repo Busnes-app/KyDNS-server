@@ -12,6 +12,7 @@ render those classes; Busnes app defaults set --glow to transparent. */}}
 <link rel="stylesheet" href="/static/app.css">
 <link rel="stylesheet" href="/static/ky-ui/tokens.css">
 <link rel="stylesheet" href="/static/ky-ui/navigation.css">
+<link rel="stylesheet" href="/static/ky-ui/shell.css">
 <link rel="stylesheet" href="/static/ky-ui/appearance.css">
 <link rel="stylesheet" href="/static/ky-ui/appearance-themes.css">
 <script src="/static/ky-ui/themes-browser.js"></script>
@@ -21,4 +22,4 @@ render those classes; Busnes app defaults set --glow to transparent. */}}
 </html>{{end}}
 
 {{/* The favicon's delegation tree, inline so it can sit beside the wordmark. */}}
-{{define "mark"}}<img src="/static/app-icon.png" width="32" height="32" alt="">{{end}}
+{{define "mark"}}<img class="app-mark" src="/static/app-icon.png" width="32" height="32" alt="">{{end}}

@@ -1,3 +1,5 @@
+{{define "lede"}}<p class="ky-page-lede">Block lists and one-off rules. Blocked names are answered with NXDOMAIN and never sent upstream.</p>{{end}}
+{{define "action"}}{{if not .Unavailable}}<a class="page-jump" href="#add-list">Add list</a>{{end}}{{end}}
 {{define "page"}}
 {{if .Unavailable}}
 <div class="card">

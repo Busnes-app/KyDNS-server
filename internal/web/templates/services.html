@@ -1,7 +1,9 @@
+{{define "lede"}}<p class="ky-page-lede">Names on your network and the addresses they answer with.</p>{{end}}
+{{define "action"}}<a class="page-jump" href="#add-service">Add service</a>{{end}}
 {{define "page"}}
 <div class="card">
   <table class="grid responsive data-list" aria-label="Services">
-    <tr class="column-headings"><th scope="col">Name</th><th>Address</th><th>View</th><th>Aliases</th><th>Routing</th><th></th></tr>
+    <tr class="column-headings"><th scope="col">Name</th><th>Address</th><th>View</th><th>Aliases</th><th>Routing</th><th><span class="visually-hidden">Actions</span></th></tr>
     {{range .Services}}
       {{$svc := .}}
       {{range $i, $a := .Addresses}}
@@ -23,11 +25,16 @@
           </form>
           </details>{{end}}</td>
         <td class="actions" data-label="Actions">{{if eq $i 0}}
-          <form method="post" action="/services/delete">
-            <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
-            <input type="hidden" name="id" value="{{$svc.ID}}">
-            <button class="danger" type="submit"{{template "ro" $}}>Remove</button>
-          </form>{{end}}</td>
+          <details class="row-menu">
+            <summary aria-label="Actions for {{$svc.Name}}">{{template "dots"}}</summary>
+            <div class="row-menu-list">
+              <form method="post" action="/services/delete">
+                <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
+                <input type="hidden" name="id" value="{{$svc.ID}}">
+                <button class="row-menu-item danger" type="submit"{{template "ro" $}}>Remove</button>
+              </form>
+            </div>
+          </details>{{end}}</td>
       </tr>
       {{end}}
     {{else}}

@@ -71,6 +71,15 @@ func (s MetricsSnapshot) AvgMS() int64 {
 	return int64(s.LatencySum / s.LatencyCount)
 }
 
+// BlockedRate is the percentage of queries policy blocked, rounded down like
+// CacheHitRate; live.js computes the same figure from /stats.json.
+func (s MetricsSnapshot) BlockedRate() int {
+	if s.Total == 0 {
+		return 0
+	}
+	return int(s.Blocked * 100 / s.Total)
+}
+
 // CacheHitRate is the percentage of forwarded lookups the cache answered.
 func (s MetricsSnapshot) CacheHitRate() int {
 	total := s.CacheHits + s.CacheMisses

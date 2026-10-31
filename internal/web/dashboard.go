@@ -65,6 +65,7 @@ func (s *Server) getDashboard(w http.ResponseWriter, r *http.Request) {
 	data["Queries"] = m
 	data["AvgMS"] = m.AvgMS()
 	data["CacheHitRate"] = m.CacheHitRate()
+	data["BlockedRate"] = m.BlockedRate()
 	data["Uptime"] = shortDuration(time.Duration(m.UptimeSeconds) * time.Second)
 	data["LastQuery"] = sinceText(m.LastQuery, time.Now())
 	if s.o.Policy != nil {

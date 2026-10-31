@@ -1,6 +1,6 @@
 # Purpose
 
-Chromium regressions for the shipped KyDNS dashboard, live refresh, Appearance, record forms and responsive administrator layouts.
+Chromium regressions for the shipped KyDNS dashboard, live refresh, Appearance pairs, the About dialog, the Records add dialog, filter and row menu, and responsive administrator layouts.
 
 ## Ownership
 
@@ -19,7 +19,7 @@ Chromium regressions for the shipped KyDNS dashboard, live refresh, Appearance, 
 ## Work Guidance
 
 - Use Playwright's assertions and clock; no fixed sleeps or retries hiding failures.
-- The responsive administrator regression checks short-page navigation and its scroll cue, Dashboard metric alignment, Settings containment and top Save, then opens service routing by keyboard and persists a real edit. Keep the owned service cleanup in its `finally` block.
+- The responsive administrator regression checks short-page navigation and its scroll cue, the four Dashboard tiles, Settings containment and top Save, then opens service routing by keyboard and persists a real edit. Keep the owned service cleanup in its `finally` block.
 - The empty-chart regression uses a real stats refresh to distinguish no samples from valid 0% cache hits and 0ms latency, and verifies the visible and accessible empty descriptions clear.
 - Keep the package private and the browser tool dependency exactly pinned.
 

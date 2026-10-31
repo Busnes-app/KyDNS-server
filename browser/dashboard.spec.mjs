@@ -235,24 +235,40 @@ test('401 stops dashboard polling', async ({ page }) => {
   expect(calls).toBe(1);
 });
 
-test('Appearance persists names, follows OS and synchronizes another tab', async ({ page, context }) => {
+test('Appearance pairs persist IDs, follow OS, keep old names and synchronize another tab', async ({ page, context }) => {
   await page.emulateMedia({ colorScheme: 'light' });
   await page.goto('/appearance');
-  const radios = page.locator('[data-theme-picker] input');
-  const catalog = await page.evaluate(() => window.kyThemes.THEME_CATALOG);
-  await expect(radios).toHaveCount(catalog.length + 1);
+  const pairs = await page.evaluate(() => window.kyThemes.THEME_PAIRS.length);
+  await expect(page.locator('.appearance-pair')).toHaveCount(pairs);
+  // One radio group across every pair: Match system, Light and Dark each.
+  await expect(page.locator('[data-theme-picker] input[name="kydns-theme"]')).toHaveCount(pairs * 3);
   await expect(page.locator('input[value="system"]')).toBeChecked();
+  await expect(page.locator('.appearance-mode:has(:checked) .appearance-check')).toBeVisible();
+  await expect(page.locator('.appearance-check:visible')).toHaveCount(1);
   await expect(page.locator('html')).toHaveAttribute('style', /color-scheme: light/);
   await page.emulateMedia({ colorScheme: 'dark' });
   await expect(page.locator('html')).toHaveAttribute('style', /color-scheme: dark/);
-  await page.locator('input[value="ocean"]').check();
-  expect(await page.evaluate(() => localStorage.getItem('kydns-theme'))).toBe('Ocean');
+  await expect(page.locator('html')).toHaveAttribute('data-scheme', 'dark');
+  await page.getByRole('group', { name: 'Ocean', exact: true }).getByRole('radio', { name: 'Dark', exact: true }).check();
+  await expect(page.locator('input[value="ocean"]')).toBeChecked();
+  expect(await page.evaluate(() => localStorage.getItem('kydns-theme'))).toBe('ocean');
   await page.reload();
   await expect(page.locator('input[value="ocean"]')).toBeChecked();
+  // A pair follows the OS.
+  await page.locator('input[value="forest-pair"]').check();
+  await expect(page.locator('html')).toHaveAttribute('style', /color-scheme: dark/);
+  await page.emulateMedia({ colorScheme: 'light' });
+  await expect(page.locator('html')).toHaveAttribute('style', /color-scheme: light/);
+  // Names saved by earlier releases still resolve; removed palettes fall back to system.
+  for (const [saved, checked] of [['Ocean', 'ocean'], ['Coffee', 'system']]) {
+    await page.evaluate(value => localStorage.setItem('kydns-theme', value), saved);
+    await page.reload();
+    await expect(page.locator(`input[value="${checked}"]`)).toBeChecked();
+  }
   const second = await context.newPage();
   await second.goto('/appearance');
-  await second.locator('input[value="coffee"]').check();
-  await expect(page.locator('input[value="coffee"]')).toBeChecked();
+  await second.locator('input[value="nord-pair"]').check();
+  await expect(page.locator('input[value="nord-pair"]')).toBeChecked();
   await second.locator('input[value="system"]').check();
   await expect(page.locator('input[value="system"]')).toBeChecked();
   expect(await page.evaluate(() => localStorage.getItem('kydns-theme'))).toBeNull();
@@ -265,22 +281,56 @@ test('Appearance applies choices when browser storage is unavailable', async ({ 
   await expect(page.locator('html')).toHaveAttribute('style', /color-scheme: dark/);
 });
 
-test('manual-record errors, addition and removal use actual server forms', async ({ page }) => {
+test('manual-record errors, addition, filtering and removal use actual server forms', async ({ page }) => {
   await page.goto('/records');
+  const dialog = page.getByRole('dialog', { name: 'Add a record' });
+  await expect(dialog).toBeHidden();
+  await page.getByRole('button', { name: 'Add record', exact: true }).click();
+  await expect(dialog).toBeVisible();
+  await expect(page.locator('#rname')).toBeFocused();
   await page.locator('#rname').fill('browser.home.arpa.');
   await page.locator('#rtype').selectOption('A');
   await page.locator('#rvalue').fill('invalid-address');
-  await page.getByRole('button', { name: 'Add record', exact: true }).click();
-  await expect(page.locator('.error')).toBeVisible();
+  await dialog.getByRole('button', { name: 'Add record', exact: true }).click();
+  // The server's refusal reopens the dialog with the typed values beside the reason.
+  await expect(dialog.locator('.error')).toBeVisible();
+  await expect(page.locator('#rname')).toHaveValue('browser.home.arpa.');
   await expect(page.getByRole('row').filter({ hasText: 'browser.home.arpa.' })).toHaveCount(0);
-  await page.locator('#rname').fill('browser.home.arpa.');
-  await page.locator('#rtype').selectOption('A');
   await page.locator('#rvalue').fill('192.0.2.42');
-  await page.getByRole('button', { name: 'Add record', exact: true }).click();
+  await dialog.getByRole('button', { name: 'Add record', exact: true }).click();
+  await expect(dialog).toBeHidden();
   const row = page.getByRole('row').filter({ hasText: 'browser.home.arpa.' });
   await expect(row).toContainText('192.0.2.42');
+  // Cancel closes without posting.
+  await page.getByRole('button', { name: 'Add record', exact: true }).click();
+  await dialog.getByRole('button', { name: 'Cancel', exact: true }).click();
+  await expect(dialog).toBeHidden();
+  // The filter hides other rows and says when nothing matches.
+  const filter = page.getByRole('searchbox', { name: 'Filter records' });
+  await filter.fill('192.0.2.42');
+  await expect(page.locator('#record-table tr:not(.column-headings):visible')).toHaveCount(1);
+  await filter.fill('no-such-record');
+  await expect(page.getByText('No records match.')).toBeVisible();
+  await filter.fill('');
+  await expect(row).toBeVisible();
+  // Remove sits in the row's ⋯ menu.
+  await expect(row.getByRole('button', { name: 'Remove' })).toBeHidden();
+  await row.locator('summary').click();
   await row.getByRole('button', { name: 'Remove' }).click();
   await expect(row).toHaveCount(0);
+});
+
+test('About opens from the licence line and closes with Escape', async ({ page }) => {
+  await page.goto('/records');
+  const link = page.getByRole('button', { name: /© \d{4} · MIT License/ });
+  await link.click();
+  const about = page.getByRole('dialog', { name: 'About KyDNS' });
+  await expect(about).toBeVisible();
+  await expect(about.locator('.ky-about-version')).toHaveText(/^v/);
+  await expect(about.getByRole('textbox', { name: 'MIT License' })).toHaveValue(/Permission is hereby granted/);
+  await page.keyboard.press('Escape');
+  await expect(about).toBeHidden();
+  await expect(link).toBeFocused();
 });
 
 test('signed-out visitors cannot read the dashboard or Appearance', async ({ browser, instance }) => {
@@ -290,7 +340,8 @@ test('signed-out visitors cannot read the dashboard or Appearance', async ({ bro
     for (const path of ['/', '/appearance']) {
       await page.goto(instance.url + path);
       await expect(page).toHaveURL(instance.url + '/login');
-      await expect(page.getByRole('heading', { name: 'Sign in', exact: true })).toBeVisible();
+      await expect(page.getByRole('heading', { level: 1, name: 'KyDNS', exact: true })).toBeVisible();
+      await expect(page.getByRole('button', { name: 'Sign in', exact: true })).toBeVisible();
     }
     expect((await context.request.get(instance.url + '/stats.json')).status()).toBe(401);
   } finally { await context.close(); }
@@ -306,15 +357,15 @@ test('admin layouts retain reachable fields and routing actions at shipped sizes
   } else expect(nav.width).toBe(240);
 
   await page.goto('/');
-  const metricRows = page.locator('.stat-row.metrics');
-  const upper = await metricRows.first().locator('.stat').all();
-  const lower = await metricRows.last().locator('.stat').all();
-  for (let index = 0; index < (phone ? 2 : lower.length); index++) {
-    const a = await upper[index].boundingBox();
-    const b = await lower[index].boundingBox();
-    expect(Math.abs(a.x - b.x)).toBeLessThan(1);
-  }
-  if (phone) expect((await upper[0].boundingBox()).x).toBe(16);
+  // Four primary tiles: one row on desktop, two even columns on phones.
+  const tiles = await page.locator('.stat-row.metrics .stat').all();
+  expect(tiles).toHaveLength(4);
+  const boxes = await Promise.all(tiles.map(tile => tile.boundingBox()));
+  if (phone) {
+    expect(boxes[0].x).toBe(16);
+    expect(Math.abs(boxes[0].x - boxes[2].x)).toBeLessThan(1);
+    expect(Math.abs(boxes[1].x - boxes[3].x)).toBeLessThan(1);
+  } else for (const box of boxes) expect(Math.abs(box.y - boxes[0].y)).toBeLessThan(1);
 
   await page.goto('/settings');
   for (const group of await page.locator('.field-set').all()) {
@@ -330,8 +381,8 @@ test('admin layouts retain reachable fields and routing actions at shipped sizes
   await page.getByRole('button', { name: 'Add service', exact: true }).click();
   const row = page.getByRole('row').filter({ hasText: 'layout-check' });
   try {
-    await expect(row.getByRole('button', { name: 'Remove', exact: true })).toBeVisible();
-    const disclosure = row.locator('summary');
+    await expect(row.locator('.row-menu summary')).toBeVisible();
+    const disclosure = row.locator('.row-routing summary');
     await disclosure.focus();
     await disclosure.press('Enter');
     const proxy = row.getByRole('textbox', { name: 'Proxy address for layout-check', exact: true });
@@ -339,18 +390,19 @@ test('admin layouts retain reachable fields and routing actions at shipped sizes
     await proxy.fill('192.0.2.43');
     await row.getByRole('checkbox', { name: 'Route', exact: true }).check();
     await row.getByRole('button', { name: 'Save', exact: true }).click();
-    await expect(row.locator('summary')).toHaveText('Via proxy');
-    await row.locator('summary').click();
+    await expect(row.locator('.row-routing summary')).toHaveText('Via proxy');
+    await row.locator('.row-routing summary').click();
     await expect(proxy).toHaveValue('192.0.2.43');
     await expect(row.getByRole('checkbox', { name: 'Route', exact: true })).toBeChecked();
     if (phone) {
-      for (const control of await row.locator('input:not([type=hidden]),button,summary').all()) {
+      for (const control of await row.locator('input:not([type=hidden]),button,summary').filter({ visible: true }).all()) {
         const bounds = await control.boundingBox();
         expect(bounds.x).toBeGreaterThanOrEqual(0);
         expect(bounds.x + bounds.width).toBeLessThanOrEqual(page.viewportSize().width);
       }
     }
   } finally {
+    await row.locator('.row-menu summary').click();
     await row.getByRole('button', { name: 'Remove', exact: true }).click();
     await expect(row).toHaveCount(0);
   }

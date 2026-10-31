@@ -59,6 +59,28 @@ func TestRecordRejectsOutOfZoneName(t *testing.T) {
 	}
 }
 
+// A rejected record reopens the add dialog with what was typed and the reason
+// inside it, so the operator fixes one field instead of retyping the form.
+func TestRecordRejectionReopensTheAddDialog(t *testing.T) {
+	h, _, c, csrf := loggedIn(t)
+	rec := postForm(t, h, "/records/new", url.Values{
+		"name": {"typed.home.arpa."}, "type": {"AAAA"}, "value": {"not-an-address"}, "csrf_token": {csrf},
+	}, c)
+	if rec.Code != http.StatusBadRequest {
+		t.Fatalf("invalid record = %d, want 400", rec.Code)
+	}
+	body := rec.Body.String()
+	_, dialog, _ := strings.Cut(body, `<dialog class="form-dialog" id="add-record"`)
+	for _, want := range []string{` data-open>`, `<p class="error" role="alert">`, `value="typed.home.arpa."`, `value="not-an-address"`, `<option value="AAAA" selected>`} {
+		if !strings.Contains(dialog, want) {
+			t.Errorf("add dialog missing %s", want)
+		}
+	}
+	if clean := page(t, h, "/records", c); strings.Contains(clean, "data-open") {
+		t.Error("the add dialog opens on a plain visit")
+	}
+}
+
 // A PTR must live under in-addr.arpa, not merely under .arpa — the private
 // domain home.arpa is itself under .arpa.
 func TestRecordRejectsPTROutsideReverseNamespace(t *testing.T) {

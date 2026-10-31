@@ -34,6 +34,8 @@
         setStat(k, d.queries[k]);
       }
       setStat("avg_ms", d.queries.avg_ms);
+      // Mirrors MetricsSnapshot.BlockedRate: rounded down, 0 before the first query.
+      setStat("blocked_rate", d.queries.total ? Math.floor((d.queries.blocked * 100) / d.queries.total) : 0);
       setStat("hit_rate", d.cache.hit_rate);
       setStat("cache_entries", d.cache.entries);
       setStat("uptime", shortDuration(d.uptime_seconds));

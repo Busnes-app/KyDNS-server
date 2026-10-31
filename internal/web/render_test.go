@@ -1,6 +1,7 @@
 package web
 
 import (
+	"html/template"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -72,7 +73,7 @@ func TestThemeScriptIsLinkedAndEmbedded(t *testing.T) {
 		t.Errorf("GET /appearance without a session = %d, want a redirect to sign in", anon.Code)
 	}
 	body = get(t, h, "/appearance", loginCookie(t, h)).Body.String()
-	for _, want := range []string{`<h1>Appearance</h1>`, `data-theme-picker`, `href="/static/ky-ui/appearance.css"`, `href="/static/ky-ui/appearance-themes.css"`, `href="/appearance" aria-current="page"`} {
+	for _, want := range []string{`<h1 class="ky-page-title">Appearance</h1>`, `data-theme-picker`, `href="/static/ky-ui/appearance.css"`, `href="/static/ky-ui/appearance-themes.css"`, `href="/appearance" aria-current="page"`} {
 		if !strings.Contains(body, want) {
 			t.Errorf("appearance page missing %s", want)
 		}
@@ -153,63 +154,45 @@ func TestRenderIncludesNavAndAssets(t *testing.T) {
 }
 
 // The operator should always be able to see what they are running and on what
-// terms, so the nav footer, the About popover and the embedded license text
-// are checked together.
+// terms, so the sidebar licence line, the About dialog and the embedded licence
+// text are checked together.
 func TestNavFooterOpensLicense(t *testing.T) {
 	h, srv := newWeb(t)
 	setupAndLogin(t, h)
 	c := loginCookie(t, h)
 
+	year := strconv.Itoa(time.Now().Year())
 	body := get(t, h, "/", c).Body.String()
 	for _, want := range []string{
-		`popovertarget="about"`,
-		"Licensed under the MIT License",
-		"KyDNS <span class=\"badge accent\">v" + Version,
+		// The shared licence line opens the native About dialog without script.
+		`commandfor="ky-about" command="show-modal">&copy; ` + year + ` &middot; MIT License</button>`,
+		`<dialog class="ky-about" id="ky-about" aria-label="About KyDNS"`,
+		`KyDNS <span class="ky-about-version">v` + Version + `</span>`,
 		"Developed by Busnes.app",
-		`src="/license"`,
-		"&copy; " + strconv.Itoa(time.Now().Year()),
+		"&copy; " + year + " &middot; Licensed under the MIT License",
+		// The licence itself, verbatim, rather than a frame of another page.
+		`aria-label="MIT License">` + template.HTMLEscapeString(licenseText) + `</textarea>`,
 	} {
 		if !strings.Contains(body, want) {
 			t.Errorf("rendered page missing %q", want)
 		}
 	}
-
-	// The popover frames /license, which must carry the site chrome rather
-	// than a bare browser text frame, and must not need a session.
-	lic := get(t, h, "/license", nil)
-	if lic.Code != http.StatusOK {
-		t.Fatalf("GET /license = %d", lic.Code)
-	}
-	for _, want := range []string{"MIT License", "/static/app.css", `class="license-body"`} {
-		if !strings.Contains(lic.Body.String(), want) {
-			t.Errorf("/license missing %q", want)
-		}
+	// The version lives in the About pill only, as in the other Ky apps.
+	if n := strings.Count(body, "v"+Version); n != 1 {
+		t.Errorf("version appears %d times, want once (the About pill)", n)
 	}
 
 	rec := static(t, srv, "/static/mit.txt")
 	if rec.Code != http.StatusOK {
 		t.Fatalf("GET /static/mit.txt = %d, want the license to be embedded", rec.Code)
 	}
-	// A display rule outside :popover-open beats the UA rule that hides a
-	// closed popover, which pins the panel over every page with no way to
-	// close it.
-	css := static(t, srv, "/static/app.css").Body.String()
-	if !strings.Contains(css, ".license-window:popover-open { display: flex;") {
-		t.Error("the license popover is not shown via :popover-open")
-	}
-	_, rest, _ := strings.Cut(css, ".license-window {")
-	block, _, _ := strings.Cut(rest, "}")
-	if strings.Contains(block, "display") {
-		t.Errorf(".license-window sets display while closed, so it never hides:\n%s", block)
-	}
-
 	// The served copy is what the operator reads, so it must stay identical to
 	// the license the project ships under.
 	want, err := os.ReadFile("../../LICENSE.txt")
 	if err != nil {
 		t.Fatalf("read LICENSE.txt: %v", err)
 	}
-	if rec.Body.String() != string(want) {
+	if rec.Body.String() != string(want) || licenseText != string(want) {
 		t.Error("embedded mit.txt has drifted from LICENSE.txt")
 	}
 }

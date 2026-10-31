@@ -56,38 +56,20 @@ body { font-size: 15px; }
 .app-nav a[aria-current="page"] { color: var(--ink-strong); background: var(--raised); }
 .app-nav-links { display: flex; flex-direction: column; gap: 4px; }
 .page-legal { display: none; }
-.app-footer form { margin-bottom: 1rem; }
-.app-footer form button { width: 100%; }
+/* The shared user block and licence line (ky-ui shell.css) close the sidebar. */
 .app-footer { margin-top: auto; padding: 1.25rem .75rem 0; }
-.license-link { display: block; background: none; border: 0; padding: 0; text-align: left; cursor: pointer;
-                font-family: var(--font-mono); font-size: .7rem; line-height: 1.5; color: var(--ink-dim); }
-.license-link:hover { color: var(--accent); text-decoration: underline; }
-.license-window { width: min(44rem, 92vw); height: min(32rem, 82vh); margin: auto;
-                  border: 1px solid var(--line-strong); border-radius: var(--r-card); background: var(--panel);
-                  color: var(--ink-strong); padding: 0; overflow: hidden;
-                  box-shadow: 0 18px 48px rgba(0,0,0,.55); }
-/* Scoped to :popover-open: an unconditional display would beat the UA rule
-   that keeps a closed popover hidden. */
-.license-window:popover-open { display: flex; flex-direction: column; }
-.license-window::backdrop { background: rgba(0,0,0,.6); backdrop-filter: blur(2px); }
-.license-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;
-                  padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--line); }
-.license-header p { margin: 0; font-family: var(--font-mono); font-size: .78rem; color: var(--ink); }
-.license-header .license-app { font-family: var(--font-display); font-size: 1.25rem;
-                               color: var(--ink-strong); margin-bottom: .4rem; }
-.license-text { flex: 1; width: 100%; border: 0; background: var(--bg); }
-.license-body { margin: 0; padding: 1.5rem; font-family: var(--font-mono); font-size: .75rem;
-                line-height: 1.6; color: var(--ink); white-space: pre-wrap; }
+.app-footer footer { padding-top: .5rem; }
+/* The suite mark is a dark tile; on a dark palette it becomes a light tile with a dark mark. */
+:root[data-scheme="dark"] .app-mark { filter: invert(1) hue-rotate(180deg); }
 
 /* A grid item defaults to min-content width, which lets a wide table stretch
    the whole page instead of scrolling inside its own card. */
 .app > * { min-width: 0; }
 .app-main { padding: 2rem 2.5rem 3rem; max-width: var(--max-width); }
-.app-main h1 { font-family: var(--font-display); color: var(--ink-strong); font-size: var(--ky-type-title);
-               font-weight: 600; line-height: 1.25; margin: 0 0 1.5rem; }
-.page-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
-.page-heading h1 { margin: 0; }
-.page-heading a { display: inline-flex; align-items: center; min-height: var(--ky-control-size); color: var(--ink); text-decoration: underline; text-underline-offset: 3px; font-size: var(--ky-type-nav); }
+/* A quiet jump to a page's add form, where the real submit is the primary button. */
+.page-jump { display: inline-flex; align-items: center; min-height: var(--ky-control-size); color: var(--ink); text-decoration: underline; text-underline-offset: 3px; font-size: var(--ky-type-nav); }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+[hidden] { display: none !important; }
 .nav-scroll-hint { display: none; }
 .app-main h3 { font-family: var(--font-display); color: var(--ink-strong); font-size: var(--ky-type-section);
                font-weight: 600; margin-top: 0; }
@@ -112,13 +94,21 @@ body { font-size: 15px; }
 /* ---------- Stats ---------- */
 
 .stat-row { display: flex; gap: 0; flex-wrap: wrap; padding: 0; }
-.stat-row.metrics { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.stat-row.metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-bottom: 1rem; }
 .stat { flex: 1 1 8rem; padding: .25rem 1.5rem; border-left: 1px solid var(--line); }
 .stat:first-child { border-left: 0; padding-left: 0; }
 .stat .value { font-family: var(--font-display); font-size: 2.1rem; font-weight: 500;
                font-variant-numeric: tabular-nums; letter-spacing: -.03em;
                line-height: 1.1; color: var(--ink-strong); }
 .stat .label { font-family: var(--font-mono); font-size: .74rem; color: var(--ink); margin-top: .2rem; }
+
+/* Secondary counters: one compact line each for traffic and the registry. */
+.facts { display: flex; flex-wrap: wrap; gap: .25rem 1.5rem; margin: 0 0 .4rem; font-size: var(--ky-type-meta); line-height: 1.6; color: var(--ink); }
+.facts:last-of-type { margin-bottom: 2rem; }
+.facts > div { display: flex; flex-wrap: wrap; align-items: baseline; gap: .4rem; }
+.facts dt, .facts dd { margin: 0; }
+.facts dd { color: var(--ink-strong); font-weight: 500; font-variant-numeric: tabular-nums; }
+.facts dd .muted { font-weight: 400; }
 
 /* ---------- Charts ---------- */
 
@@ -141,7 +131,9 @@ body { font-size: 15px; }
 .legend .key[data-series="blocked"]::before { background: var(--series-3); }
 
 .chart .axis { fill: var(--ink-dim); font-family: var(--font-mono); font-size: 12px; }
-.chart .chart-empty { fill: var(--ink); font-family: var(--font-display); font-size: var(--ky-type-meta); }
+.chart .chart-empty-bg { fill: color-mix(in srgb, var(--ink-strong) 3%, transparent); stroke: var(--line); stroke-dasharray: 4 4; }
+.chart .chart-empty { fill: var(--ink-strong); font-family: var(--font-display); font-size: var(--ky-type-meta); font-weight: 500; }
+.chart .chart-empty-hint { fill: var(--ink); font-family: var(--font-display); font-size: 12px; }
 .chart .gridline { stroke: var(--line); stroke-width: 1; }
 .chart .crosshair { stroke: var(--ink); stroke-width: 1; stroke-dasharray: 3 3; }
 .chart .tip { position: absolute; top: 1.5rem; pointer-events: none; z-index: 2;
@@ -171,7 +163,7 @@ table.grid code { overflow-wrap: anywhere; }
 /* The trailing column of a grid is always its row's controls. Keep them on one
    line and against the right edge instead of wrapping the table wider. */
 table.grid td:last-child:has(form) { text-align: right; white-space: nowrap; width: 1%; }
-table.grid td:last-child:has(form) form { display: inline-flex; gap: .4rem; margin: .25rem 0; }
+table.grid td:last-child:has(> form) form { display: inline-flex; gap: .4rem; margin: .25rem 0; }
 /* A list carries a paragraph of description and a URL that does not wrap on
    its own. Give the prose room and let the URL break. */
 table.grid.lists td:first-child { width: 44%; }
@@ -249,42 +241,55 @@ button.ghost, .button.ghost { background: transparent; color: var(--ink-strong);
 button.ghost:hover, .button.ghost:hover { background: var(--raised); filter: none; }
 button.danger { background: transparent; color: var(--danger); border-color: var(--danger); }
 button.danger:hover { background: var(--danger-soft); filter: none; }
-table.data-list td.actions button.danger { border-color: transparent; padding-inline: .25rem; }
-button:focus-visible, .button:focus-visible, a:focus-visible, .license-link:focus-visible {
+
+/* Row actions live in a ⋯ menu so rows stay one quiet line. */
+table.data-list td.actions { padding-block: 0; }
+/* ponytail: the open menu overflows its card instead of scrolling inside it; a
+   table too wide for its card would need a top-layer popover with anchoring. */
+.card:has(.row-menu) { overflow: visible; }
+.row-menu { position: relative; display: inline-block; text-align: left; }
+.row-menu > summary { list-style: none; display: grid; place-items: center; width: 32px; height: 32px;
+                      border-radius: var(--r-control); color: var(--ink); cursor: pointer; }
+.row-menu > summary::-webkit-details-marker { display: none; }
+.row-menu > summary svg { width: 18px; height: 18px; }
+.row-menu > summary:hover, .row-menu[open] > summary { background: var(--raised); color: var(--ink-strong); }
+.row-menu > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.row-menu-list { position: absolute; right: 0; top: calc(100% + 4px); z-index: 5; min-width: 10rem; padding: 4px;
+                 background: var(--panel); border: 1px solid var(--line-strong); border-radius: var(--r-control);
+                 box-shadow: 0 8px 24px rgb(0 0 0 / .18); }
+.row-menu-list form { margin: 0; }
+button.row-menu-item { width: 100%; justify-content: flex-start; min-height: 36px; padding: 0 .75rem;
+                       background: transparent; color: var(--ink-strong); border: 0; font-weight: 500; }
+button.row-menu-item:hover { background: var(--raised); filter: none; }
+button.row-menu-item.danger { color: var(--danger); }
+
+/* Table filter and the focused add dialog. */
+.table-tools { margin-bottom: .75rem; }
+input.table-filter { width: min(20rem, 100%); min-height: var(--ky-control-size); box-sizing: border-box; padding: .5rem .7rem;
+                     background: var(--bg); border: 1px solid var(--ky-field-border); border-radius: var(--r-control);
+                     color: var(--ink-strong); font: inherit; font-size: var(--ky-type-body); }
+.form-dialog { box-sizing: border-box; width: min(36rem, calc(100vw - 2rem)); padding: var(--ky-space-4);
+               border: 1px solid var(--line); border-radius: 14px; background: var(--panel); color: var(--ink-strong);
+               box-shadow: var(--ky-shadow-overlay); }
+.form-dialog::backdrop { background: rgb(12 12 18 / .68); }
+.form-dialog form.stack { margin: 0; max-width: none; grid-template-columns: minmax(4.5rem, 6rem) minmax(0, 1fr); }
+.form-dialog form.stack > :is(h2, .error, .dialog-actions) { grid-column: 1 / -1; }
+.form-dialog h2 { margin: 0 0 .5rem; font-size: var(--ky-type-section); font-weight: 600; }
+.form-dialog .error { margin: 0; }
+.dialog-actions { display: flex; justify-content: flex-end; gap: .5rem; margin-top: .5rem; }
+/* Shared shell buttons draw their own hover. */
+:is(.ky-user-signout, .ky-license-link, .ky-about-close, .ky-page-action, .ky-auth-submit, .ky-auth-sso):hover { filter: none; }
+.ky-user-signout { justify-content: flex-start; }
+button:focus-visible, .button:focus-visible, a:focus-visible {
   outline: 2px solid var(--accent); outline-offset: 2px; }
 .error { color: var(--danger); font-family: var(--font-mono); font-size: .82rem; line-height: 1.6; }
 .warn { color: var(--warn); }
 
-/* ---------- Sign-in and setup ---------- */
+/* ---------- Sign-in and setup (ky-ui shell.css) ---------- */
 
-/* Sign-in and setup are one narrow column. Side labels need a width these
-   cards do not have, so they keep the stacked form. The column is sized
-   explicitly: left to auto, setup's long paragraph widened it past the card
-   and the card sat left of the centred logo. */
-.auth { min-height: 100vh; display: grid; grid-template-columns: min(24rem, 100%);
-        place-content: center; gap: 1.5rem; padding: 2rem 1rem;
-        position: relative; isolation: isolate; }
-/* The only decoration in the app: the marketing site's rain, faint, behind the
-   door. */
-.auth::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
-                background: radial-gradient(ellipse 60% 45% at 50% 40%, var(--glow), transparent 70%);
-                opacity: .35; }
-.auth .brand { justify-content: center; margin: 0; }
-.auth .brand img { width: 36px; height: 36px; }
-.auth .brand h1 { font-size: 1.4rem; }
-.centered { width: min(24rem, 100%); margin: 0; padding: 1.75rem 1.75rem 1.5rem;
-            background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-card); }
-.centered h2 { font-family: var(--font-display); font-size: 1.3rem; font-weight: 600;
-               letter-spacing: -.01em; margin: 0 0 .5rem; }
-.centered form.stack { grid-template-columns: minmax(0, 1fr); gap: .35rem; margin-top: 1rem; }
-.centered form.stack > label { grid-column: 1; text-align: left; padding-top: .45rem; }
-.centered form.stack > :not(label) { grid-column: 1; }
-.centered form.stack > button { width: 100%; margin-top: .75rem; }
-.sso-button { width: 100%; background: var(--accent-soft); color: var(--accent); border-color: transparent; }
-.sso-button:hover { background: var(--accent-soft); filter: brightness(1.15); }
-.or-divider { display: flex; align-items: center; gap: .75rem; margin: 1rem 0 .25rem;
-              font-family: var(--font-mono); font-size: .74rem; color: var(--ink-dim); }
-.or-divider::before, .or-divider::after { content: ""; flex: 1; height: 1px; background: var(--line-strong); }
+.ky-auth-card p { margin: 0; }
+.ky-auth-card .muted { font-size: var(--ky-type-meta); line-height: 1.55; }
+select.theme-selector { width: auto; min-height: 0; padding: .3rem .5rem; font-family: var(--font-display); font-size: var(--ky-type-meta); }
 
 /* ---------- SSO settings ---------- */
 
@@ -317,7 +322,29 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px
 .row-routing .address-row { margin: .5rem 0; }
 .row-routing .address-row label { font-family: var(--font-display); }
 .app-nav a svg { width: 16px; height: 16px; flex: none; }
-.account-role { margin: 0 0 .75rem; font-size: var(--ky-type-meta); color: var(--ink); }
+
+/* ---------- Appearance: six pairs, one native radio group (KyCalendar's reference) ---------- */
+
+.ky-appearance .ky-appearance-grid.appearance-pairs { grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); gap: var(--ky-space-3); }
+.appearance-pair { display: grid; gap: var(--ky-space-3); min-width: 0; padding: var(--ky-space-3); border: 1px solid var(--line-strong); border-radius: var(--r-card); background: var(--panel); }
+.appearance-pair:has(:checked) { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.appearance-pair-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0 var(--ky-space-2); }
+.appearance-pair-name { margin: 0; font-size: 1rem; font-weight: 600; color: var(--ink-strong); }
+.appearance-pair-halves { color: var(--ink); font-size: var(--ky-type-meta); }
+.appearance-pair .ky-appearance-preview { block-size: 56px; }
+.appearance-modes { display: flex; border: 1px solid var(--line-strong); border-radius: var(--r-control); overflow: hidden; }
+.appearance-mode { position: relative; flex: 1 1 auto; display: flex; align-items: center; justify-content: center; gap: .3rem; min-height: 40px; padding: 0 var(--ky-space-2); color: var(--ink); font-size: .85rem; white-space: nowrap; cursor: pointer; }
+.appearance-mode + .appearance-mode { border-left: 1px solid var(--line-strong); }
+.appearance-mode > input[type="radio"] { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.appearance-check { display: none; width: 14px; height: 14px; flex: none; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.appearance-mode:hover { background: var(--raised); color: var(--ink-strong); }
+.appearance-mode:has(:checked) { background: var(--accent); color: var(--button-text); font-weight: 600; }
+.appearance-mode:has(:checked) .appearance-check { display: block; }
+.appearance-mode:has(:focus-visible) { outline: 2px solid var(--ink-strong); outline-offset: -4px; }
+@media (forced-colors: active) {
+  .appearance-pair:has(:checked) { border-color: Highlight; }
+  .appearance-mode:has(:checked) { outline: 2px solid Highlight; outline-offset: -3px; }
+}
 
 /* ---------- Misc ---------- */
 
@@ -349,9 +376,9 @@ a { color: var(--accent); }
   /* The nav is horizontal from here, earlier than ky-ui's 720px switch. */
   .app-nav a.ky-nav-item[aria-current="page"] { box-shadow: inset 0 -3px var(--accent); }
   .app-footer { margin: 0; padding: 0; }
-  .app-footer form { margin: 0; }
-  .app-footer form button { width: auto; }
-  .app-footer .license-link { display: none; }
+  .app-footer .ky-user { padding: 0; border: 0; }
+  .app-footer .ky-user-copy, .app-footer footer { display: none; }
+  .ky-user-signout { width: auto; padding-inline: .75rem; }
   .page-legal { display: block; margin: 2rem 0 0; }
   .app-main { padding: 1.25rem 1rem 2rem; }
   /* Two even columns, so every value starts on one of two edges. */
@@ -363,8 +390,6 @@ a { color: var(--accent); }
   form.stack > label, .fields > label { grid-column: 1; text-align: left; padding-top: .4rem; }
   form.stack > :not(label), .fields > :not(label) { grid-column: 1; }
   form.stack > label:has(input[type=checkbox]), .fields > label:has(input[type=checkbox]) { grid-column: 1; }
-  .app-footer .account-role { display: none; }
-  .card.centered { padding: 1.5rem; }
   /* Preserve the table and its headers; expose every row field on phones. */
   table.responsive, table.responsive tbody { display: block; }
   table.responsive .column-headings { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
@@ -383,7 +408,6 @@ a { color: var(--accent); }
   table.responsive td:last-child:has(form) { width: auto; white-space: normal; }
   table.responsive.lists td:first-child, table.responsive.lists td:nth-child(2) { width: auto; min-width: 0; }
   table.responsive.lists td:nth-child(4) { white-space: normal; }
-  table.responsive td.actions button.danger { border-color: transparent; padding-inline: .25rem; }
   table.responsive td .badge { width: fit-content; }
   /* Name and action share the first track; paired metadata uses label/value
      stacks so unlike typefaces and the routing target do not stagger labels. */
