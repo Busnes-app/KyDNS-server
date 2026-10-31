@@ -124,7 +124,8 @@ test('real dashboard counters refresh without query traffic', async ({ page }) =
   await expect(page.locator('#chart-queries svg path')).toHaveCount(6);
   await expect(page.locator('[data-stat="last_query"]')).toHaveText('never');
   // Zero counters stay off the facts line.
-  await expect(page.getByText('NXDOMAIN / SERVFAIL')).toBeHidden();
+  await expect(page.getByText('NXDOMAIN', { exact: true })).toBeHidden();
+  await expect(page.getByText('SERVFAIL', { exact: true })).toBeHidden();
 });
 
 test('stacked charts total the full window and separate missing samples', async ({ page }) => {
@@ -145,7 +146,9 @@ test('stacked charts total the full window and separate missing samples', async 
   await expect(page.locator('[data-stat="uptime"]')).toHaveText('1d 1h');
   await expect(page.locator('[data-stat="refused_cgnat"]')).toHaveText('3');
   // Counters that have counted join the facts line on refresh.
-  await expect(page.getByText('NXDOMAIN / SERVFAIL')).toBeVisible();
+  // Each counter stands alone: SERVFAIL 1 and NXDOMAIN 2 both count here.
+  await expect(page.locator('.facts div', { hasText: 'NXDOMAIN' })).toHaveText(/NXDOMAIN\s*2/);
+  await expect(page.locator('.facts div', { hasText: 'SERVFAIL' })).toBeVisible();
   const svg = page.locator('#chart-queries svg');
   const width = (await svg.boundingBox()).width;
   expect(Number((await svg.getAttribute('viewBox')).split(' ')[2])).toBe(Math.round(width));

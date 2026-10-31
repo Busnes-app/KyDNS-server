@@ -280,7 +280,6 @@ input.table-filter { width: min(20rem, 100%); min-height: var(--ky-control-size)
 .dialog-actions { display: flex; justify-content: flex-end; gap: .5rem; margin-top: .5rem; }
 /* Shared shell buttons draw their own hover. */
 :is(.ky-user-signout, .ky-license-link, .ky-about-close, .ky-page-action, .ky-auth-submit, .ky-auth-sso):hover { filter: none; }
-.ky-user-signout { justify-content: flex-start; }
 button:focus-visible, .button:focus-visible, a:focus-visible {
   outline: 2px solid var(--accent); outline-offset: 2px; }
 .error { color: var(--danger); font-family: var(--font-mono); font-size: .82rem; line-height: 1.6; }
@@ -309,8 +308,7 @@ select.theme-selector { width: auto; min-height: 0; padding: .3rem .5rem; font-f
 button, .button, select, input[type=text], input[type=password], input[type=number], input[type=url] { min-height: var(--ky-control-size); }
 input[type=text], input[type=password], input[type=number], input[type=url], textarea, select { border-color: var(--ky-field-border); }
 /* One ring: the outline sits on the field's own border instead of 2px outside it. */
-input:focus-visible, select:focus-visible, textarea:focus-visible,
-.ky-auth .ky-auth-field > input:focus-visible { outline: 2px solid var(--accent); outline-offset: -1px; }
+input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: -1px; }
 
 /* Mono is for data (names, addresses, counts); labels and captions are sans meta text. */
 .stat .label, .chart figcaption, table.grid th, form.stack > label, .fields > label {

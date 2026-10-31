@@ -3,6 +3,7 @@ package web
 import (
 	"net/http"
 	"net/url"
+	"regexp"
 	"strings"
 	"testing"
 )
@@ -150,6 +151,23 @@ func TestAddDialogsReopenWithTypedValues(t *testing.T) {
 			if !strings.Contains(dialog, want) {
 				t.Errorf("%s dialog missing %s", tc.dialog, want)
 			}
+		}
+	}
+}
+
+var elementID = regexp.MustCompile(` id="([^"]+)"`)
+
+// An add form moved into a dialog must leave no copy behind on the page: a
+// leftover half-form duplicated the Services field IDs once.
+func TestAddPagesHaveUniqueIDs(t *testing.T) {
+	h, _, c, _ := loggedIn(t)
+	for _, path := range []string{"/records", "/services", "/blacklists"} {
+		seen := map[string]bool{}
+		for _, m := range elementID.FindAllStringSubmatch(page(t, h, path, c), -1) {
+			if seen[m[1]] {
+				t.Errorf("%s repeats id %q", path, m[1])
+			}
+			seen[m[1]] = true
 		}
 	}
 }
