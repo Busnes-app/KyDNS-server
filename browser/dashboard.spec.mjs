@@ -120,7 +120,12 @@ test('real dashboard counters refresh without query traffic', async ({ page }) =
   expect(response.ok()).toBeTruthy();
   const actual = await response.json();
   expect(actual.history).toHaveLength(60);
+  expect(actual.history_day).toHaveLength(144);
   expect(actual.queries.total).toBe(0);
+  // The 24-hour view opens first: a quiet day draws a labelled axis and no bars.
+  await expect(page.locator('#chart-queries .axis-unit')).toHaveText(/^Queries per \d+ min$/);
+  await expect(page.locator('#chart-queries .bar')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Last hour', exact: true }).click();
   await expect(page.locator('#chart-queries svg path')).toHaveCount(6);
   await expect(page.locator('[data-stat="last_query"]')).toHaveText('never');
   // Zero counters stay off the facts line.
@@ -134,6 +139,7 @@ test('stacked charts total the full window and separate missing samples', async 
     { minute: 101 },
     { minute: 102, authoritative: 5, forwarded: 1, blocked: 2, cache_hits: 3, cache_misses: 1, latency_count: 1, latency_sum_ms: 1 },
   ]));
+  await page.getByRole('button', { name: 'Last hour', exact: true }).click();
   await expect(page.locator('[data-series="authoritative"] b')).toHaveText('7');
   await expect(page.locator('[data-series="forwarded"] b')).toHaveText('4');
   await expect(page.locator('[data-series="blocked"] b')).toHaveText('3');
@@ -153,6 +159,62 @@ test('stacked charts total the full window and separate missing samples', async 
   const width = (await svg.boundingBox()).width;
   expect(Number((await svg.getAttribute('viewBox')).split(' ')[2])).toBe(Math.round(width));
   await expect(page.locator('#chart-cache .axis')).toHaveText(['0%', '50%', '100%']);
+});
+
+// 144 ten-minute slots ending at 10:00 local time, one query of each kind per slot.
+function day(end = new Date(2026, 9, 28, 10, 0)) {
+  const last = Math.floor(end.getTime() / 60000);
+  return Array.from({ length: 144 }, (_, i) => ({ minute: last - (143 - i) * 10, authoritative: 1, forwarded: 1, blocked: 1 }));
+}
+
+test('24-hour view labels both axes, totals the day and offers the table and the last hour', async ({ page }, info) => {
+  test.skip(info.project.name === 'phone', 'phone bars are merged; the next test covers them');
+  const value = stats([{ minute: 100, authoritative: 2 }]);
+  value.history_day = day();
+  await mockStats(page, value);
+  const chart = page.locator('#chart-queries');
+  await expect(chart.getByRole('button', { name: '24 hours', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await expect(chart.locator('.bar')).toHaveCount(144 * 3);
+  await expect(chart.locator('.axis-unit')).toHaveText('Queries per 10 min');
+  // Every time label is a round clock time; 1440 wide gives one each 2 hours.
+  const times = await chart.locator('.axis[text-anchor="middle"]').allTextContents();
+  expect(times.length).toBeGreaterThanOrEqual(6);
+  for (const t of times) expect(t).toMatch(/^\d{1,2}:00$/);
+  await expect(chart.locator('[data-series="blocked"] b')).toHaveText('144');
+  await expect(chart.locator('svg')).toHaveAttribute('aria-label', /last 24 hours/);
+  await expect(chart.locator('svg')).toHaveAttribute('aria-description', /432 queries/);
+
+  await chart.getByText('Show as table').click();
+  // 144 slots from 10:10 to 10:00 touch 25 clock hours: 10:10-10:59 and 10:00-10:09 are partial.
+  await expect(chart.locator('tbody tr')).toHaveCount(25);
+  await expect(chart.locator('tbody tr').first()).toHaveText(/10:00\s*5\s*5\s*5\s*15/);
+  await expect(chart.locator('tbody tr').last()).toHaveText(/10:00\s*1\s*1\s*1\s*3/);
+
+  const svg = chart.locator('svg');
+  const box = await svg.boundingBox();
+  await page.mouse.move(box.x + box.width - 8, box.y + box.height / 2);
+  await expect(chart.locator('.tip')).toContainText('10:00–10:10');
+
+  await chart.getByRole('button', { name: 'Last hour', exact: true }).click();
+  await expect(chart.getByRole('button', { name: '24 hours', exact: true })).toHaveAttribute('aria-pressed', 'false');
+  await expect(chart.locator('.bar')).toHaveCount(0);
+  await expect(chart.locator('[data-series="authoritative"] b')).toHaveText('2');
+  await expect(chart.locator('[data-window-label]')).toHaveText('— last hour');
+  await expect(chart.locator('.axis-unit')).toHaveText('Queries per minute');
+  await expect(chart.locator('[data-table-time]')).toHaveText('From');
+});
+
+test('24-hour bars keep their width on a phone by merging slots', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  const value = stats([{ minute: 100 }]);
+  value.history_day = day();
+  await mockStats(page, value);
+  const chart = page.locator('#chart-queries');
+  await expect(chart.locator('.axis-unit')).toHaveText(/Queries per (20|30|60) min/);
+  const widths = await chart.locator('.bar').evaluateAll((bars) => bars.map((b) => Number(b.getAttribute('width'))));
+  expect(Math.min(...widths)).toBeGreaterThanOrEqual(2);
+  await expect(chart.locator('[data-series="blocked"] b')).toHaveText('144');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
 });
 
 test('hover shows the selected minute and clears crosshair on leave', async ({ page }) => {

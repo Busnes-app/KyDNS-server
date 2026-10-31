@@ -4,10 +4,10 @@
 <div class="card">
   <h3>Status</h3>
   {{if .Running}}
-    <p>The DHCP server is <span class="badge accent">running</span>. Devices on
-       this network get their address, gateway, and DNS server from KyDNS.</p>
+    <p><span class="ky-status" data-ky-status="success">Running</span></p>
+    <p>Devices on this network get their address, gateway, and DNS server from KyDNS.</p>
   {{else}}
-    <p>The DHCP server is <span class="badge">not running</span>.</p>
+    <p><span class="ky-status">Not running</span></p>
   {{end}}
   {{if .StartError}}
     <p class="error">DHCP is switched on but the listener did not start:

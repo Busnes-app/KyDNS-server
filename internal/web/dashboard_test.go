@@ -79,7 +79,7 @@ func TestDashboardBannerWhenEveryUpstreamIsDown(t *testing.T) {
 	if !strings.Contains(body, "i/o timeout") {
 		t.Error("banner does not report why the upstreams failed")
 	}
-	if !strings.Contains(body, `class="badge warn"`) {
+	if !strings.Contains(body, `data-ky-status="danger">Failing<`) {
 		t.Error("a failing encrypted upstream still renders as a healthy chip")
 	}
 }
@@ -97,7 +97,7 @@ func TestDashboardQuietWhenUpstreamsAreHealthy(t *testing.T) {
 	if strings.Contains(body, `class="banner"`) {
 		t.Errorf("banner rendered with a healthy encrypted upstream:\n%s", body)
 	}
-	if strings.Contains(body, `class="badge warn"`) {
+	if strings.Contains(body, `data-ky-status=`) {
 		t.Error("healthy encrypted upstream chip is badged as a warning")
 	}
 }

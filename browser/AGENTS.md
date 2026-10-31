@@ -1,6 +1,6 @@
 # Purpose
 
-Chromium regressions for the shipped KyDNS dashboard, live refresh, Appearance pairs, the About dialog, the Records add dialog, filter and row menu, and responsive administrator layouts.
+Chromium regressions for the shipped KyDNS dashboard (including the 24-hour queries view, its table and phone bar merging), live refresh, Appearance pairs, the About dialog, the Records add dialog, filter and row menu, and responsive administrator layouts.
 
 ## Ownership
 

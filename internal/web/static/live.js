@@ -50,7 +50,7 @@
       for (const fact of document.querySelectorAll("[data-nonzero]")) {
         fact.hidden = [...fact.querySelectorAll("[data-stat]")].every((n) => n.textContent === "0");
       }
-      if (window.kydnsDrawCharts) window.kydnsDrawCharts(d.history);
+      if (window.kydnsDrawCharts) window.kydnsDrawCharts(d.history, d.history_day);
     } catch (e) {
       /* transient: the next tick tries again */
     }

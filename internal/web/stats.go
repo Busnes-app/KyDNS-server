@@ -3,10 +3,31 @@ package web
 import (
 	"encoding/json"
 	"net/http"
+
+	"github.com/Busnes-app/kydns-server/internal/dnsserver"
 )
 
 // topBlockedShown is how many blocked names the dashboard card lists.
 const topBlockedShown = 10
+
+// dayBucket is one bar of the 24-hour queries chart: the three graphed
+// outcomes, with zero counts left out. The day is at most 144 of these
+// (roughly 14 KB), so the five-second poll stays small.
+type dayBucket struct {
+	Minute        int64  `json:"minute"`
+	Authoritative uint64 `json:"authoritative,omitempty"`
+	Forwarded     uint64 `json:"forwarded,omitempty"`
+	Blocked       uint64 `json:"blocked,omitempty"`
+}
+
+func dayHistory(m *dnsserver.Metrics) []dayBucket {
+	day := m.Day()
+	out := make([]dayBucket, len(day))
+	for i, b := range day {
+		out[i] = dayBucket{b.Minute, b.Authoritative, b.Forwarded, b.Blocked}
+	}
+	return out
+}
 
 // statsPayload is what the dashboard polls. Every field is a count or a
 // timestamp: the payload cannot name a client because there is no client
@@ -32,6 +53,7 @@ func (s *Server) statsPayload() map[string]any {
 		},
 		"uptime_seconds": m.UptimeSeconds,
 		"history":        m.History,
+		"history_day":    dayHistory(s.o.Metrics),
 	}
 	if s.o.Cache != nil {
 		out["cache"].(map[string]any)["entries"] = s.o.Cache.Len()

@@ -98,3 +98,53 @@ func TestHistoryCountsCacheHitsPerMinute(t *testing.T) {
 		t.Errorf("hits/misses = %d/%d, want 2/1", last.CacheHits, last.CacheMisses)
 	}
 }
+
+// The day ring files traffic by ten minutes, aligned to the clock, so 10:07 and
+// 10:03 share a bar and 10:10 starts the next.
+func TestHistoryDayBucketsByTenMinutes(t *testing.T) {
+	base := time.Unix(1_700_000_000, 0).Truncate(10 * time.Minute)
+	now := atMinute(base, 3)
+	h := newHistory(func() time.Time { return now })
+
+	h.add(outcomeBlocked, time.Millisecond)
+	now = atMinute(base, 7)
+	h.add(outcomeBlocked, time.Millisecond)
+	now = atMinute(base, 10)
+	h.add(outcomeForwarded, time.Millisecond)
+
+	got := h.snapshotDay()
+	if n := len(got); n != daySlots {
+		t.Fatalf("day has %d buckets, want %d", n, daySlots)
+	}
+	if prev := got[daySlots-2]; prev.Blocked != 2 || prev.Minute != base.Unix()/60 {
+		t.Errorf("previous bucket = %+v, want 2 blocked starting at minute %d", prev, base.Unix()/60)
+	}
+	if last := got[daySlots-1]; last.Forwarded != 1 || last.Blocked != 0 {
+		t.Errorf("current bucket = %+v, want 1 forwarded only", last)
+	}
+	// 24 hours, evenly spaced, so the x axis is honest.
+	for i := 1; i < len(got); i++ {
+		if got[i].Minute != got[i-1].Minute+daySpan {
+			t.Fatalf("bucket %d minute %d does not follow %d", i, got[i].Minute, got[i-1].Minute)
+		}
+	}
+	if span := got[daySlots-1].Minute - got[0].Minute + daySpan; span != 24*60 {
+		t.Errorf("day spans %d minutes, want %d", span, 24*60)
+	}
+}
+
+// A day-old slot must not be reported as today's traffic.
+func TestHistoryDayStaleSlotReadsAsEmpty(t *testing.T) {
+	base := time.Unix(1_700_000_000, 0).Truncate(10 * time.Minute)
+	now := base
+	h := newHistory(func() time.Time { return now })
+
+	h.add(outcomeForwarded, time.Millisecond)
+	now = base.Add(24 * time.Hour) // exactly one lap later
+
+	for i, b := range h.snapshotDay() {
+		if b.Forwarded != 0 {
+			t.Fatalf("bucket %d still reports %d forwarded a day later", i, b.Forwarded)
+		}
+	}
+}
