@@ -256,9 +256,9 @@ Without an installer, connect KyIdentity under **Settings → Single sign-on**:
    `kydns.admin` as the administrator (`internal/store/installer_directory.go`).
 3. Under **Settings → Single sign-on**, tick **OpenID Connect provider**. Enter **Issuer URL**
    (KyIdentity's `https://` address), **Client ID** and **Client secret**, then click **Save SSO
-   settings**. While signed in with the local password, click **Link SSO identity** and sign in
+   settings**. While signed in with the local password, open **Settings → Account**, click **Link SSO identity** and sign in
    as the administrator.
 
-If a node was linked to a different KyIdentity before, unlink it under Settings, or with
+If a node was linked to a different KyIdentity before, unlink it under **Settings → Account**, or with
 `kydns admin reset-password` ([Running](RUNNING.md)), then link again.
 

@@ -210,7 +210,7 @@ func TestManagedSettingsNeverRenderInstallerSecrets(t *testing.T) {
 	managed := &http.Cookie{Name: auth.CookieName, Value: srv.o.Sessions.CreateSSO(issuer, "owner", 0).ID}
 	populated := regexp.MustCompile(`name="client_secret"[^>]*value="[^"]+"`)
 	for name, c := range map[string]*http.Cookie{"managed": managed, "local recovery": local} {
-		rec := get(t, h, "/settings", c)
+		rec := get(t, h, "/settings/sso", c)
 		body := rec.Body.String()
 		if rec.Code != 200 || strings.Contains(body, "fixture-directory-secret-at-least-16") || populated.MatchString(body) {
 			t.Fatalf("%s settings %d exposes the installer client secret", name, rec.Code)

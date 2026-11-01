@@ -143,7 +143,7 @@ func (s *Server) postServerSettings(w http.ResponseWriter, r *http.Request) {
 		s.serverSettingsError(w, r, v, err)
 		return
 	}
-	http.Redirect(w, r, "/settings", http.StatusSeeOther)
+	backToSettings(w, r)
 }
 
 // renameRow is one record the rename will move.
@@ -205,7 +205,7 @@ func (s *Server) planZoneRename(from, to string) *zoneRename {
 // serverSettingsRename re-renders the form with everything the operator typed
 // still in it, plus what saving would rewrite. Saving again authorizes it.
 func (s *Server) serverSettingsRename(w http.ResponseWriter, r *http.Request, attempted store.Settings, plan *zoneRename) {
-	data := s.settingsData("", "")
+	data := s.settingsData(r, "", "")
 	data["Server"] = attempted
 	data["Rename"] = plan
 	s.render(w, r, "settings.html", data)
@@ -215,7 +215,7 @@ func (s *Server) serverSettingsRename(w http.ResponseWriter, r *http.Request, at
 // Discarding what the operator typed is the fastest way to lose a long
 // upstream list to a typo in one field.
 func (s *Server) serverSettingsError(w http.ResponseWriter, r *http.Request, attempted store.Settings, err error) {
-	data := s.settingsData("", "")
+	data := s.settingsData(r, "", "")
 	data["Server"] = attempted
 	// FieldError already reads as "field: what is wrong with it", so the one
 	// message both names the box and says why.

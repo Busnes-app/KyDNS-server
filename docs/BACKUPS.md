@@ -8,7 +8,7 @@ Commands and unlinked file paths below are relative to the repository root.
 
 Backups are sealed to the suite recovery key and this server never holds what opens them.
 The key arrives by pairing with KyRecovery, or is pasted from the ceremony page for a
-server with no KyRecovery. **Settings → Disaster recovery** does both, and shows the
+server with no KyRecovery. **Settings → Backups → Disaster recovery** does both, and shows the
 pinned key, the destinations, the schedule and the newest local copy. Every capsule is
 sealed to that key and goes to each configured destination: KyRecovery when paired, and
 `KYDNS_BACKUP_DIR` when set, as `KyDNS.<capsule-id>.kycap` at mode 0600. The newest

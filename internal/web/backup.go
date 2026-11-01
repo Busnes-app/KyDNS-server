@@ -42,7 +42,7 @@ func backupMessage(err error) string {
 // bare status code on a blank tab.
 func (s *Server) backupError(w http.ResponseWriter, r *http.Request, err error) {
 	w.WriteHeader(http.StatusBadRequest)
-	s.render(w, r, "settings.html", s.settingsData(backupMessage(err), ""))
+	s.render(w, r, "settings.html", s.settingsData(r, backupMessage(err), ""))
 }
 
 // auditBackup records one attempt. outcome follows err, so a refusal leaves the same
@@ -98,7 +98,7 @@ func (s *Server) postBackupPair(w http.ResponseWriter, r *http.Request) {
 		s.backupError(w, r, err)
 		return
 	}
-	http.Redirect(w, r, "/settings", http.StatusSeeOther)
+	backToSettings(w, r)
 }
 
 func (s *Server) postBackupPinKey(w http.ResponseWriter, r *http.Request) {
@@ -121,7 +121,7 @@ func (s *Server) postBackupPinKey(w http.ResponseWriter, r *http.Request) {
 		s.backupError(w, r, err)
 		return
 	}
-	http.Redirect(w, r, "/settings", http.StatusSeeOther)
+	backToSettings(w, r)
 }
 
 func (s *Server) postBackupUnpair(w http.ResponseWriter, r *http.Request) {
@@ -136,7 +136,7 @@ func (s *Server) postBackupUnpair(w http.ResponseWriter, r *http.Request) {
 		s.backupError(w, r, err)
 		return
 	}
-	http.Redirect(w, r, "/settings", http.StatusSeeOther)
+	backToSettings(w, r)
 }
 
 func (s *Server) postBackupSchedule(w http.ResponseWriter, r *http.Request) {
@@ -159,7 +159,7 @@ func (s *Server) postBackupSchedule(w http.ResponseWriter, r *http.Request) {
 		s.backupError(w, r, err)
 		return
 	}
-	http.Redirect(w, r, "/settings", http.StatusSeeOther)
+	backToSettings(w, r)
 }
 func (s *Server) postBackupDeposit(w http.ResponseWriter, r *http.Request) {
 	b := s.o.Backup
@@ -179,7 +179,7 @@ func (s *Server) postBackupDeposit(w http.ResponseWriter, r *http.Request) {
 		s.backupError(w, r, err)
 		return
 	}
-	http.Redirect(w, r, "/settings", http.StatusSeeOther)
+	backToSettings(w, r)
 }
 
 func (s *Server) postBackupDrill(w http.ResponseWriter, r *http.Request) {
@@ -201,7 +201,7 @@ func (s *Server) postBackupDrill(w http.ResponseWriter, r *http.Request) {
 		s.backupError(w, r, err)
 		return
 	}
-	http.Redirect(w, r, "/settings", http.StatusSeeOther)
+	backToSettings(w, r)
 }
 
 func (s *Server) getBackupExport(w http.ResponseWriter, r *http.Request) {

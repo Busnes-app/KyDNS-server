@@ -639,7 +639,7 @@ func TestSSOLinkFromSettingsLinksAndEnables(t *testing.T) {
 		t.Fatal("link start did not mark the flow as a link")
 	}
 
-	if rec := ssoCallback(t, h, true, c); rec.Code != http.StatusSeeOther || rec.Header().Get("Location") != "/settings" {
+	if rec := ssoCallback(t, h, true, c); rec.Code != http.StatusSeeOther || rec.Header().Get("Location") != "/settings/account" {
 		t.Fatalf("link callback = %d to %q", rec.Code, rec.Header().Get("Location"))
 	}
 	ident, _ := srv.o.Store.AdminIdentity()
@@ -751,7 +751,7 @@ func TestSettingsPageRendersWithLinkedSSO(t *testing.T) {
 	c := loginCookie(t, h)
 
 	// 1. Render when unlinked
-	rec := get(t, h, "/settings", c)
+	rec := get(t, h, "/settings/account", c)
 	if rec.Code != http.StatusOK {
 		t.Fatalf("settings page status = %d, want 200", rec.Code)
 	}
@@ -761,7 +761,7 @@ func TestSettingsPageRendersWithLinkedSSO(t *testing.T) {
 
 	// 2. Link identity and render again
 	_ = srv.o.Store.LinkAdminSSO("sso-sub-xyz", "yoshi_admin", "yoshi@example.com")
-	rec = get(t, h, "/settings", c)
+	rec = get(t, h, "/settings/account", c)
 	if rec.Code != http.StatusOK {
 		t.Fatalf("settings page status = %d, want 200", rec.Code)
 	}

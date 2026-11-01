@@ -1,36 +1,61 @@
-{{define "lede"}}<p class="ky-page-lede">Server, views, API tokens, single sign-on and backups.</p>{{end}}
-{{define "page"}}
-{{with .NewToken}}
-<div class="banner">
-  <strong>Token for “{{$.NewTokenFor}}”: {{$.NewTokenAccess}}.</strong>
-  <p>Copy it now. It is shown once and cannot be recovered. If you did not just create a token
-     for “{{$.NewTokenFor}}”, revoke it below.</p>
-  <p><code>{{.}}</code></p>
-  {{with $.AgentURL}}
-  <p>Put the token in <code>KYDNS_AGENT_TOKEN</code> where the agent runs, then add the server.
-     OpenClaw:</p>
-<pre>"mcp": { "servers": { "kydns": {
-  "url": "{{.}}/mcp",
-  "transport": "streamable-http",
-  "headers": { "Authorization": "Bearer ${KYDNS_AGENT_TOKEN}" }
-}}}</pre>
-  <p>Hermes Agent:</p>
-<pre>mcp_servers:
-  kydns:
-    url: "{{.}}/mcp"
-    headers:
-      Authorization: "Bearer ${KYDNS_AGENT_TOKEN}"</pre>
-  <p>Install the KyDNS skill, which teaches the agent the tools and when to ask you first:</p>
-<pre># Hermes Agent
-hermes skills install {{.}}/agent/skills/kydns/SKILL.md --category homelab
-
-# OpenClaw
-mkdir -p ~/.agents/skills/kydns
-curl -fsSo ~/.agents/skills/kydns/SKILL.md {{.}}/agent/skills/kydns/SKILL.md</pre>
+{{define "lede"}}<p class="ky-page-lede">Your account, how KyDNS looks, and how the server runs.</p>{{end}}
+{{define "subnav"}}
+<nav class="ky-settings-tabs" aria-label="Settings sections">
+  {{range .Tabs}}<a class="ky-nav-item" href="/settings/{{.ID}}"{{if eq .ID $.Tab}} aria-current="page"{{end}}>{{.Label}}</a>
   {{end}}
+</nav>
+{{end}}
+{{define "page"}}
+{{if eq .Tab "account"}}
+<section class="settings-section" aria-label="Account">
+<div class="card">
+  <h3>Account</h3>
+  <table class="grid account-facts">
+    <tr><th>Username</th><td>admin</td></tr>
+    <tr><th>Role</th><td>Administrator</td></tr>
+    <tr><th>Password</th><td>Reset it on the server with <code>kydns admin reset-password</code>.</td></tr>
+  </table>
+</div>
+{{if .AdminIdentity}}
+<div class="card">
+  <h3>Single sign-on identity</h3>
+  <p class="muted">The provider identity that may sign in as this administrator. The provider is set up under <a href="/settings/sso">Single sign-on</a>.</p>
+  {{with .AdminIdentity}}
+  {{if .SSOSub}}
+  <div class="sso-linked">
+    <div>
+      <strong>SSO identity linked</strong>
+      <div class="muted">
+        Account: <code>{{.SSOUsername}}</code> {{if .SSOEmail}}({{.SSOEmail}}){{end}}<br>
+        Subject: <code>{{.SSOSub}}</code>
+      </div>
+    </div>
+    <form method="post" action="/settings/sso/unlink">
+      <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
+      <button type="submit" class="danger"{{template "ro" $}}>Unlink SSO account</button>
+    </form>
+  </div>
+  {{else}}
+  <form method="post" action="/settings/sso/link">
+    <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
+    <button type="submit" class="ghost"{{template "ro" $}}>Link SSO identity</button>
+  </form>
+  {{end}}
+{{end}}
 </div>
 {{end}}
-
+</section>
+{{else if eq .Tab "appearance"}}
+<section class="settings-section" aria-label="Appearance">
+<p class="muted appearance-intro">Pick a palette and how it handles light and dark. Match system switches with your device’s setting; Light or Dark keeps one. Your choice applies straight away and is saved in this browser only.</p>
+<noscript><p class="muted">Choosing a theme needs JavaScript.</p></noscript>
+<fieldset class="ky-appearance" data-theme-picker>
+  <legend class="ky-appearance-legend">Theme</legend>
+  <div class="ky-appearance-grid appearance-pairs"></div>
+</fieldset>
+</section>
+{{else if eq .Tab "server"}}
+<section class="settings-section" aria-label="Server">
 {{with .Restart}}
 <div class="banner">
   <strong>Restart to apply.</strong>
@@ -157,6 +182,45 @@ curl -fsSo ~/.agents/skills/kydns/SKILL.md {{.}}/agent/skills/kydns/SKILL.md</pr
 </div>
 {{end}}
 
+{{if .Upstreams}}
+<div class="card">
+  <h3>Upstreams</h3>
+  <p class="muted">Tried in order. Edit the list under Server settings above.</p>
+  <table class="grid">
+    <tr><th>Upstream</th><th>Channel</th><th>Last result</th></tr>
+    {{range .Upstreams}}
+    <tr>
+      <td><code>{{.Spec}}</code></td>
+      <td>{{if .Secure}}<span class="ky-status" data-ky-status="success">Encrypted</span>{{else}}<span class="ky-status" data-ky-status="warning">Plaintext</span>{{end}}</td>
+      <td>
+        {{if .LastError}}<span class="error">{{.LastError}}</span>
+          <span class="muted">at {{.LastErrAt.Format "2006-01-02 15:04:05 MST"}}</span>
+        {{else if .LastOKAt.IsZero}}<span class="muted">not used yet</span>
+        {{else}}ok{{end}}
+      </td>
+    </tr>
+    {{end}}
+  </table>
+  <p class="muted">An answer over a plaintext channel is served with the
+     authenticated-data flag cleared, because nothing authenticated it.</p>
+</div>
+{{end}}
+
+{{if .Config}}
+<div class="card">
+  <h3>Configuration</h3>
+  <p class="muted">{{.RestartNote}}</p>
+  <table class="grid">
+    <tr><th>Setting</th><th>Value</th></tr>
+    {{range .Config}}
+    <tr><td><code>{{.Key}}</code></td><td>{{.Value}}</td></tr>
+    {{end}}
+  </table>
+</div>
+{{end}}
+</section>
+{{else if eq .Tab "views"}}
+<section class="settings-section" aria-label="Views">
 <div class="card">
   <h3>Views</h3>
   <table class="grid">
@@ -186,7 +250,7 @@ curl -fsSo ~/.agents/skills/kydns/SKILL.md {{.}}/agent/skills/kydns/SKILL.md</pr
   {{range .Views}}{{if .Unreachable}}
   <p class="error">The view {{.Name}} covers Tailscale addresses, but the query ACL
      refuses that range, so those clients are rejected before the view is considered.
-     Tick <code>allow_tailscale</code> under Server settings above and save; it
+     Tick <code>allow_tailscale</code> under <a href="/settings/server">Server</a> and save; it
      applies at once.</p>
   {{end}}{{end}}
   <form class="stack" method="post" action="/settings/views/new">
@@ -198,6 +262,40 @@ curl -fsSo ~/.agents/skills/kydns/SKILL.md {{.}}/agent/skills/kydns/SKILL.md</pr
     <button type="submit"{{template "ro" $}}>Add view</button>
   </form>
 </div>
+
+</section>
+{{else if eq .Tab "tokens"}}
+<section class="settings-section" aria-label="API tokens">
+{{with .NewToken}}
+<div class="banner">
+  <strong>Token for “{{$.NewTokenFor}}”: {{$.NewTokenAccess}}.</strong>
+  <p>Copy it now. It is shown once and cannot be recovered. If you did not just create a token
+     for “{{$.NewTokenFor}}”, revoke it below.</p>
+  <p><code>{{.}}</code></p>
+  {{with $.AgentURL}}
+  <p>Put the token in <code>KYDNS_AGENT_TOKEN</code> where the agent runs, then add the server.
+     OpenClaw:</p>
+<pre>"mcp": { "servers": { "kydns": {
+  "url": "{{.}}/mcp",
+  "transport": "streamable-http",
+  "headers": { "Authorization": "Bearer ${KYDNS_AGENT_TOKEN}" }
+}}}</pre>
+  <p>Hermes Agent:</p>
+<pre>mcp_servers:
+  kydns:
+    url: "{{.}}/mcp"
+    headers:
+      Authorization: "Bearer ${KYDNS_AGENT_TOKEN}"</pre>
+  <p>Install the KyDNS skill, which teaches the agent the tools and when to ask you first:</p>
+<pre># Hermes Agent
+hermes skills install {{.}}/agent/skills/kydns/SKILL.md --category homelab
+
+# OpenClaw
+mkdir -p ~/.agents/skills/kydns
+curl -fsSo ~/.agents/skills/kydns/SKILL.md {{.}}/agent/skills/kydns/SKILL.md</pre>
+  {{end}}
+</div>
+{{end}}
 
 <div class="card">
   <h3>API tokens</h3>
@@ -259,32 +357,12 @@ curl -fsSo ~/.agents/skills/kydns/SKILL.md {{.}}/agent/skills/kydns/SKILL.md</pr
   </form>
 </div>
 
+</section>
+{{else if eq .Tab "sso"}}
+<section class="settings-section" aria-label="Single sign-on">
 <div class="card">
   <h3>Single sign-on</h3>
-  <p class="muted">Connect KyIdentity, Authentik, Keycloak, or any standard OpenID Connect provider with PKCE.</p>
-
-  {{with .AdminIdentity}}
-    {{if .SSOSub}}
-    <div class="sso-linked">
-      <div>
-        <strong>SSO identity linked</strong>
-        <div class="muted">
-          Account: <code>{{.SSOUsername}}</code> {{if .SSOEmail}}({{.SSOEmail}}){{end}}<br>
-          Subject: <code>{{.SSOSub}}</code>
-        </div>
-      </div>
-      <form method="post" action="/settings/sso/unlink">
-        <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
-        <button type="submit" class="danger"{{template "ro" $}}>Unlink SSO account</button>
-      </form>
-    </div>
-    {{else}}
-    <form method="post" action="/settings/sso/link">
-      <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
-      <button type="submit" class="ghost"{{template "ro" $}}>Link SSO identity</button>
-    </form>
-    {{end}}
-  {{end}}
+  <p class="muted">Link your own identity under <a href="/settings/account">Account</a>. Connect KyIdentity, Authentik, Keycloak, or any standard OpenID Connect provider with PKCE.</p>
 
   <form method="post" action="/settings/sso">
     <input type="hidden" name="csrf_token" value="{{.CSRF}}">
@@ -314,6 +392,9 @@ curl -fsSo ~/.agents/skills/kydns/SKILL.md {{.}}/agent/skills/kydns/SKILL.md</pr
   </form>
 </div>
 
+</section>
+{{else if eq .Tab "backups"}}
+<section class="settings-section" aria-label="Backups">
 <div class="card">
   <h3>Backup and maintenance</h3>
   <p><a href="/settings/export?format=yaml">Download YAML export</a> &middot;
@@ -399,40 +480,6 @@ curl -fsSo ~/.agents/skills/kydns/SKILL.md {{.}}/agent/skills/kydns/SKILL.md</pr
 </div>
 {{end}}
 
-{{if .Upstreams}}
-<div class="card">
-  <h3>Upstreams</h3>
-  <p class="muted">Tried in order. Edit the list under Server settings above.</p>
-  <table class="grid">
-    <tr><th>Upstream</th><th>Channel</th><th>Last result</th></tr>
-    {{range .Upstreams}}
-    <tr>
-      <td><code>{{.Spec}}</code></td>
-      <td>{{if .Secure}}<span class="ky-status" data-ky-status="success">Encrypted</span>{{else}}<span class="ky-status" data-ky-status="warning">Plaintext</span>{{end}}</td>
-      <td>
-        {{if .LastError}}<span class="error">{{.LastError}}</span>
-          <span class="muted">at {{.LastErrAt.Format "2006-01-02 15:04:05 MST"}}</span>
-        {{else if .LastOKAt.IsZero}}<span class="muted">not used yet</span>
-        {{else}}ok{{end}}
-      </td>
-    </tr>
-    {{end}}
-  </table>
-  <p class="muted">An answer over a plaintext channel is served with the
-     authenticated-data flag cleared, because nothing authenticated it.</p>
-</div>
-{{end}}
-
-{{if .Config}}
-<div class="card">
-  <h3>Configuration</h3>
-  <p class="muted">{{.RestartNote}}</p>
-  <table class="grid">
-    <tr><th>Setting</th><th>Value</th></tr>
-    {{range .Config}}
-    <tr><td><code>{{.Key}}</code></td><td>{{.Value}}</td></tr>
-    {{end}}
-  </table>
-</div>
+</section>
 {{end}}
 {{end}}

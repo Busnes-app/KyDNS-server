@@ -202,7 +202,7 @@ var openFieldset = regexp.MustCompile(`<fieldset class="field-set"([^>]*)>`)
 // One disabled fieldset per group takes every input inside it with it.
 func TestReplicaDisablesTheSettingsFieldsets(t *testing.T) {
 	h, _, _, status, c, _ := replicaWeb(t)
-	body := get(t, h, "/settings", c).Body.String()
+	body := get(t, h, "/settings/server", c).Body.String()
 	if !strings.Contains(body, `name="log_queries"`) {
 		t.Fatalf("the log_queries checkbox is missing; a control that vanishes reads as a bug:\n%s", body)
 	}
@@ -217,7 +217,7 @@ func TestReplicaDisablesTheSettingsFieldsets(t *testing.T) {
 	}
 
 	status.Role = "primary"
-	body = get(t, h, "/settings", c).Body.String()
+	body = get(t, h, "/settings/server", c).Body.String()
 	for _, m := range openFieldset.FindAllStringSubmatch(body, -1) {
 		if strings.Contains(m[1], "disabled") {
 			t.Errorf("a primary renders its settings field-sets disabled: <fieldset class=\"field-set\"%s>", m[1])
@@ -237,7 +237,7 @@ func TestReplicaShowsStaleBannerOnTheStaleFlag(t *testing.T) {
 
 	status.Stale = true
 	status.LastSyncUnix = time.Now().Add(-61 * time.Second).Unix()
-	for _, path := range []string{"/", "/services", "/records", "/settings"} {
+	for _, path := range []string{"/", "/services", "/records", "/settings/server"} {
 		body := get(t, h, path, c).Body.String()
 		if !strings.Contains(body, staleBannerTitle) {
 			t.Errorf("GET %s shows no stale banner for a stale replica:\n%s", path, body)
@@ -291,7 +291,7 @@ func TestStaleBannerCarriesTheLastError(t *testing.T) {
 // Reads are a replica's own and stay live.
 func TestReplicaDashboardStillRenders(t *testing.T) {
 	h, _, _, _, c, _ := replicaWeb(t)
-	for _, path := range []string{"/", "/services", "/records", "/blacklists", "/settings", "/stats.json"} {
+	for _, path := range []string{"/", "/services", "/records", "/blacklists", "/settings/server", "/stats.json"} {
 		rec := get(t, h, path, c)
 		if rec.Code != http.StatusOK {
 			t.Errorf("GET %s on a replica = %d, want 200", path, rec.Code)

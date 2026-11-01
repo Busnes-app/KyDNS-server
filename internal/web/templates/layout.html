@@ -3,10 +3,7 @@
   <header class="ky-sidebar">
     <div class="ky-mobile-head">
       <div class="ky-brand">{{template "mark"}}<span>KyDNS</span></div>
-      <form method="post" action="/logout">
-        <input type="hidden" name="csrf_token" value="{{.CSRF}}">
-        <button class="ky-mobile-signout" type="submit" aria-label="Sign out">{{template "signout"}}</button>
-      </form>
+      <div class="ky-mobile-actions">{{template "signout-form" .}}</div>
     </div>
     <nav class="ky-nav" aria-label="Primary">
       <a class="ky-nav-item" href="/"{{if eq .Nav "dashboard"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Dashboard</span></a>
@@ -17,7 +14,6 @@
       <a class="ky-nav-item" href="/dhcp"{{if eq .Nav "dhcp"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="3" width="8" height="6" rx="1"/><path d="M12 9v5M4 18v-4h16v4"/><path d="M2 18h4v3H2zM10 18h4v3h-4zM18 18h4v3h-4z"/></svg><span>DHCP</span></a>
       {{if .ShowReplication}}<a class="ky-nav-item" href="/replication"{{if eq .Nav "replication"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h15l-4-4M20 17H5l4 4M20 7l-4 4M4 17l4-4"/></svg><span>Replication</span></a>{{end}}
       <a class="ky-nav-item" href="/settings"{{if eq .Nav "settings"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3"/><circle cx="15" cy="17" r="3"/></svg><span>Settings</span></a>
-      <a class="ky-nav-item" href="/appearance"{{if eq .Nav "appearance"}} aria-current="page"{{end}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg><span>Appearance</span></a>
     </nav>
     <div class="ky-sidebar-foot">
       <div class="ky-user">
@@ -25,10 +21,7 @@
           <p class="ky-user-name">admin</p>
           <p class="ky-user-role">Administrator</p>
         </div>
-        <form method="post" action="/logout">
-          <input type="hidden" name="csrf_token" value="{{.CSRF}}">
-          <button class="ky-user-signout" type="submit">{{template "signout"}}Sign out</button>
-        </form>
+        <div class="ky-user-actions">{{template "signout-form" .}}</div>
       </div>
       <footer>{{template "legal" .}}</footer>
     </div>
@@ -52,6 +45,7 @@
       </div>
       {{block "action" .}}{{end}}
     </header>
+    {{block "subnav" .}}{{end}}
     {{with .ReplicaBanner}}
     <div class="banner">
       <strong>{{.Title}}</strong>
@@ -67,6 +61,13 @@
 </div>
 <script src="/static/nav.js" defer></script>
 {{end}}
+
+{{/* The account footer's and phone header's one action. KyDNS is an admin console: its
+     Settings is a navigation item, so no Settings icon button sits beside this one. */}}
+{{define "signout-form"}}<form method="post" action="/logout">
+  <input type="hidden" name="csrf_token" value="{{.CSRF}}">
+  <button class="ky-icon-button" type="submit" aria-label="Sign out" title="Sign out">{{template "signout"}}</button>
+</form>{{end}}
 
 {{define "signout"}}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>{{end}}
 
@@ -90,8 +91,8 @@
   <strong>KyDNS is an open resolver for {{range .}}<code>{{.}}</code> {{end}}</strong>
   <p>Anyone who can reach this server on port 53 can use it, and open resolvers
      are used to amplify attacks.</p>
-  <p>Remove the range from <code>allow_query</code> under Settings, Server
-     settings, unless you meant to do this.</p>
+  <p>Remove the range from <code>allow_query</code> under
+     <a href="/settings/server">Settings, Server</a>, unless you meant to do this.</p>
 </div>
 {{end}}
 {{end}}
