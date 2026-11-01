@@ -5,7 +5,7 @@ party. That is the point.
 
 | What | Where it comes from | Who holds it |
 | --- | --- | --- |
-| The sealed capsule | KyRecovery (Capsules → newest `KyDNS`), or a local copy `KyDNS.<capsule-id>.kycap` in `KYDNS_BACKUP_DIR`, or **Settings → Disaster recovery → Download capsule**, or `kydns export-capsule --out path` | the operator |
+| The sealed capsule | KyRecovery (Capsules → newest `KyDNS`), or a local copy `KyDNS.<capsule-id>.kycap` in `KYDNS_BACKUP_DIR`, or **Settings → Backups → Download capsule**, or `kydns export-capsule --out path` | the operator |
 | k custodian shares | printed cards, one line each, beginning `ky2-` | k of your custodians, in person |
 | A machine to restore onto | any host with the `kydns` binary or the image | the operator |
 
@@ -205,7 +205,7 @@ was not found, which means the copy went somewhere other than `$vol`.
   from the restored registry.
 - Log in to the admin UI on port 8053 with the **old** password. The hash came
   from the capsule.
-- **Settings → Disaster recovery** still shows the pinned key id, its k-of-n, and
+- **Settings → Backups → Disaster recovery** still shows the pinned key id, its k-of-n, and
   the KyRecovery URL: all three live in the database, which the capsule carried.
 - **Run drill** still passes: it seals and reopens with an ephemeral key and
   never needs the pinned one, so it is a good check that the restored database

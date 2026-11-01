@@ -33,7 +33,7 @@ func validForm(csrf string) url.Values {
 func TestSettingsPageRendersTheForm(t *testing.T) {
 	h, srv, c, _ := loggedIn(t)
 	srv.o.Config = testConfig()
-	body := page(t, h, "/settings", c)
+	body := page(t, h, "/settings/server", c)
 
 	for _, want := range []string{
 		`name="private_domain"`, `name="upstreams"`, `name="allow_query"`,
@@ -72,7 +72,7 @@ func TestPostServerSettingsSaves(t *testing.T) {
 	if cur.LogClientIP {
 		t.Error("an unchecked box was read as unchanged instead of off")
 	}
-	if !strings.Contains(page(t, h, "/settings", c), `value="120"`) {
+	if !strings.Contains(page(t, h, "/settings/server", c), `value="120"`) {
 		t.Error("the saved value is not shown back in the form")
 	}
 }
@@ -178,7 +178,7 @@ func TestPostServerSettingsAcceptsConfirmedPublicRange(t *testing.T) {
 		t.Error("no standing warning after a public range was allowed")
 	}
 	// Wherever the operator lands, not only the dashboard and settings.
-	for _, path := range []string{"/settings", "/services", "/records"} {
+	for _, path := range []string{"/settings/server", "/services", "/records"} {
 		if body := page(t, h, path, c); !strings.Contains(body, "open resolver") {
 			t.Errorf("%s does not warn about the exposure", path)
 		}
@@ -235,7 +235,7 @@ func TestRestartPendingBanner(t *testing.T) {
 			Key: "dns.private_domain", Running: "home.arpa", Stored: "lab.example",
 		}}
 	}
-	body := page(t, h, "/settings", c)
+	body := page(t, h, "/settings/server", c)
 	// "Restart to apply" is the banner's own text: "restart" and "home.arpa"
 	// appear on the page with no banner at all, from the form's labels.
 	for _, want := range []string{"Restart to apply", "home.arpa", "lab.example"} {
@@ -250,7 +250,7 @@ func TestRestartPendingBanner(t *testing.T) {
 func TestConfigTableHoldsOnlyFileOwnedKeys(t *testing.T) {
 	h, srv, c, _ := loggedIn(t)
 	srv.o.Config = testConfig()
-	body := page(t, h, "/settings", c)
+	body := page(t, h, "/settings/server", c)
 	for _, want := range []string{"data_dir", "dns.listen", "admin.listen"} {
 		if !strings.Contains(body, want) {
 			t.Errorf("config table missing %q", want)

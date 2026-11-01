@@ -335,7 +335,7 @@ func (s *Server) getSSOCallback(w http.ResponseWriter, r *http.Request) {
 		}
 		if err := s.o.Store.LinkAdminSSO(claims.Sub, claims.Username, claims.Email); err != nil {
 			s.o.Logger.Error("failed to link sso identity", "error", err)
-			http.Redirect(w, r, "/settings?error=Failed+to+link+identity", http.StatusSeeOther)
+			http.Redirect(w, r, "/settings/account?error=Failed+to+link+identity", http.StatusSeeOther)
 			return
 		}
 		sso.Enabled = true
@@ -343,7 +343,7 @@ func (s *Server) getSSOCallback(w http.ResponseWriter, r *http.Request) {
 			s.o.Logger.Error("failed to enable sso after linking", "error", err)
 		}
 		s.o.Logger.Info("sso identity linked to admin", "sub", claims.Sub, "username", claims.Username)
-		http.Redirect(w, r, "/settings", http.StatusSeeOther)
+		http.Redirect(w, r, "/settings/account", http.StatusSeeOther)
 		return
 	}
 

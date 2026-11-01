@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -55,7 +56,48 @@ func (s *Server) configRows() []configRow {
 	}
 }
 
-func (s *Server) settingsData(errMsg, newToken string) map[string]any {
+// settingsTab is one tab of the Settings page: the personal sections first
+// (Account, Appearance), then the server's own.
+type settingsTab struct{ ID, Label string }
+
+var settingsTabs = []settingsTab{
+	{"account", "Account"},
+	{"appearance", "Appearance"},
+	{"server", "Server"},
+	{"views", "Views"},
+	{"tokens", "API tokens"},
+	{"sso", "Single sign-on"},
+	{"backups", "Backups"},
+}
+
+// tabFor names the Settings tab a request belongs to: the tab a GET opens, or the one
+// a form under /settings/ posts from, so its redirect or error lands where it was sent.
+func tabFor(r *http.Request) string {
+	if t := r.PathValue("tab"); t != "" {
+		return t
+	}
+	p := strings.TrimPrefix(r.URL.Path, "/settings/")
+	switch {
+	case strings.HasPrefix(p, "views/"):
+		return "views"
+	case strings.HasPrefix(p, "tokens/"):
+		return "tokens"
+	case strings.HasPrefix(p, "sso/"):
+		return "account" // linking and unlinking the admin's own identity
+	case p == "sso":
+		return "sso"
+	case strings.HasPrefix(p, "backup/"), p == "cache/flush":
+		return "backups"
+	}
+	return "server"
+}
+
+// backToSettings sends a successful form post back to the tab it came from.
+func backToSettings(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, "/settings/"+tabFor(r), http.StatusSeeOther)
+}
+
+func (s *Server) settingsData(r *http.Request, errMsg, newToken string) map[string]any {
 	views, err := s.o.Registry.Views()
 	if err != nil && errMsg == "" {
 		errMsg = err.Error()
@@ -104,7 +146,7 @@ func (s *Server) settingsData(errMsg, newToken string) map[string]any {
 	sso, _ := s.o.Store.SSOSettings()
 
 	data := map[string]any{
-		"Title": "Settings", "Nav": "settings",
+		"Title": "Settings", "Nav": "settings", "Tab": tabFor(r), "Tabs": settingsTabs,
 		"Views": rows, "Tokens": tokRows, "NewToken": newToken,
 		"Config": s.configRows(), "RestartNote": restartNote, "Error": errMsg,
 		"Upstreams":     s.upstreams(),
@@ -128,12 +170,16 @@ func (s *Server) settingsData(errMsg, newToken string) map[string]any {
 }
 
 func (s *Server) getSettings(w http.ResponseWriter, r *http.Request) {
-	s.render(w, r, "settings.html", s.settingsData("", ""))
+	if !slices.ContainsFunc(settingsTabs, func(t settingsTab) bool { return t.ID == r.PathValue("tab") }) {
+		http.NotFound(w, r)
+		return
+	}
+	s.render(w, r, "settings.html", s.settingsData(r, "", ""))
 }
 
 func (s *Server) settingsError(w http.ResponseWriter, r *http.Request, err error) {
 	w.WriteHeader(http.StatusBadRequest)
-	s.render(w, r, "settings.html", s.settingsData(err.Error(), ""))
+	s.render(w, r, "settings.html", s.settingsData(r, err.Error(), ""))
 }
 
 func (s *Server) postViewNew(w http.ResponseWriter, r *http.Request) {
@@ -147,7 +193,7 @@ func (s *Server) postViewNew(w http.ResponseWriter, r *http.Request) {
 		s.settingsError(w, r, err)
 		return
 	}
-	http.Redirect(w, r, "/settings", http.StatusSeeOther)
+	backToSettings(w, r)
 }
 
 func (s *Server) postViewDelete(w http.ResponseWriter, r *http.Request) {
@@ -155,7 +201,7 @@ func (s *Server) postViewDelete(w http.ResponseWriter, r *http.Request) {
 		s.settingsError(w, r, err)
 		return
 	}
-	http.Redirect(w, r, "/settings", http.StatusSeeOther)
+	backToSettings(w, r)
 }
 
 // tokenRow is a token as the settings page lists it.
@@ -186,7 +232,7 @@ func (s *Server) postTokenNew(w http.ResponseWriter, r *http.Request) {
 		s.settingsError(w, r, err)
 		return
 	}
-	data := s.settingsData("", plaintext)
+	data := s.settingsData(r, "", plaintext)
 	data["NewTokenFor"], data["NewTokenAccess"] = strings.TrimSpace(label), registry.AccessText(scope, queryLog)
 	if store.IsMCPScope(scope) {
 		_ = s.o.Registry.Audit(store.AuditEvent{Actor: "admin", Action: "agent_token.create", Resource: "label:" + label,
@@ -209,7 +255,7 @@ func (s *Server) postTokenAccess(w http.ResponseWriter, r *http.Request) {
 	}
 	_ = s.o.Registry.Audit(store.AuditEvent{Actor: "admin", Action: "agent_token.access_change", Resource: fmt.Sprintf("token:%d", id),
 		Details: fmt.Sprintf("scope %s, query_log %t", scope, queryLog), IP: s.sourceKey(r), Outcome: "success"})
-	http.Redirect(w, r, "/settings", http.StatusSeeOther)
+	backToSettings(w, r)
 }
 
 func (s *Server) postTokenDelete(w http.ResponseWriter, r *http.Request) {
@@ -221,14 +267,14 @@ func (s *Server) postTokenDelete(w http.ResponseWriter, r *http.Request) {
 		s.settingsError(w, r, err)
 		return
 	}
-	http.Redirect(w, r, "/settings", http.StatusSeeOther)
+	backToSettings(w, r)
 }
 
 func (s *Server) postCacheFlush(w http.ResponseWriter, r *http.Request) {
 	if s.o.Cache != nil {
 		s.o.Cache.Flush()
 	}
-	http.Redirect(w, r, "/settings", http.StatusSeeOther)
+	backToSettings(w, r)
 }
 
 // getExport reuses the API's document builder so the two transports cannot
@@ -278,7 +324,7 @@ func (s *Server) postSSOSettings(w http.ResponseWriter, r *http.Request) {
 		s.settingsError(w, r, err)
 		return
 	}
-	http.Redirect(w, r, "/settings", http.StatusSeeOther)
+	backToSettings(w, r)
 }
 
 func (s *Server) postSSOUnlink(w http.ResponseWriter, r *http.Request) {
@@ -286,5 +332,5 @@ func (s *Server) postSSOUnlink(w http.ResponseWriter, r *http.Request) {
 		s.settingsError(w, r, err)
 		return
 	}
-	http.Redirect(w, r, "/settings", http.StatusSeeOther)
+	backToSettings(w, r)
 }

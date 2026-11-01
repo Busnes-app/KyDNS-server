@@ -65,7 +65,7 @@ func TestResetAdminEndsLiveSessions(t *testing.T) {
 	h, srv := newWeb(t)
 	setupAndLogin(t, h)
 	c := loginCookie(t, h)
-	if rec := get(t, h, "/settings", c); rec.Code != http.StatusOK {
+	if rec := get(t, h, "/settings/server", c); rec.Code != http.StatusOK {
 		t.Fatalf("settings before reset = %d", rec.Code)
 	}
 	hash, err := auth.HashPassword("a-brand-new-password")
@@ -75,7 +75,7 @@ func TestResetAdminEndsLiveSessions(t *testing.T) {
 	if err := srv.o.Store.ResetAdmin(hash, time.Now()); err != nil {
 		t.Fatal(err)
 	}
-	if rec := get(t, h, "/settings", c); rec.Code != http.StatusSeeOther {
+	if rec := get(t, h, "/settings/server", c); rec.Code != http.StatusSeeOther {
 		t.Fatalf("settings after reset = %d, want a redirect to /login", rec.Code)
 	}
 }
@@ -145,7 +145,7 @@ func TestSSOClientSecretIsNeverRendered(t *testing.T) {
 	}
 
 	save(url.Values{"client_secret": {"s3cret-value"}})
-	if body := get(t, h, "/settings", c).Body.String(); strings.Contains(body, "s3cret-value") {
+	if body := get(t, h, "/settings/sso", c).Body.String(); strings.Contains(body, "s3cret-value") {
 		t.Fatal("client secret rendered into the settings page")
 	}
 	save(nil)
@@ -175,13 +175,13 @@ func TestResetRejectsOverlappingPasswordLogin(t *testing.T) {
 	}
 	t.Cleanup(func() { verifyPassword = auth.VerifyPassword })
 	c := loginCookie(t, h)
-	if rec := get(t, h, "/settings", c); rec.Code != http.StatusSeeOther {
+	if rec := get(t, h, "/settings/server", c); rec.Code != http.StatusSeeOther {
 		t.Fatalf("overlapping old-password login accessed settings: %d", rec.Code)
 	}
 	verifyPassword = auth.VerifyPassword
 	rec := postForm(t, h, "/login", url.Values{"password": {"a-brand-new-password"}}, nil)
 	for _, cookie := range rec.Result().Cookies() {
-		if cookie.Name == auth.CookieName && get(t, h, "/settings", cookie).Code == http.StatusOK {
+		if cookie.Name == auth.CookieName && get(t, h, "/settings/server", cookie).Code == http.StatusOK {
 			return
 		}
 	}

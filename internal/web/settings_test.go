@@ -22,7 +22,7 @@ func TestViewCreateAndList(t *testing.T) {
 	if rec.Code != http.StatusSeeOther {
 		t.Fatalf("create view = %d: %s", rec.Code, rec.Body)
 	}
-	body := page(t, h, "/settings", c)
+	body := page(t, h, "/settings/views", c)
 	if !strings.Contains(body, "tailnet") || !strings.Contains(body, "100.64.0.0/10") {
 		t.Errorf("settings page missing the view:\n%s", body)
 	}
@@ -35,7 +35,7 @@ func TestUnreachableViewFlaggedInline(t *testing.T) {
 	postForm(t, h, "/settings/views/new", url.Values{
 		"name": {"tailnet"}, "subnets": {"100.64.0.0/10"}, "csrf_token": {csrf},
 	}, c)
-	body := page(t, h, "/settings", c)
+	body := page(t, h, "/settings/views", c)
 	if !strings.Contains(strings.ToLower(body), "unreachable") {
 		t.Errorf("CGNAT view not flagged as unreachable:\n%s", body)
 	}
@@ -50,7 +50,7 @@ func TestReachableViewNotFlagged(t *testing.T) {
 	postForm(t, h, "/settings/views/new", url.Values{
 		"name": {"tailnet"}, "subnets": {"100.64.0.0/10"}, "csrf_token": {csrf},
 	}, c)
-	if strings.Contains(strings.ToLower(page(t, h, "/settings", c)), "unreachable") {
+	if strings.Contains(strings.ToLower(page(t, h, "/settings/views", c)), "unreachable") {
 		t.Error("view flagged unreachable while allow_tailscale is on")
 	}
 }
@@ -66,7 +66,7 @@ func TestViewShowsReferenceCount(t *testing.T) {
 	if err != nil || len(views) != 1 {
 		t.Fatalf("Views() = %v, %v", views, err)
 	}
-	if !strings.Contains(page(t, h, "/settings", c), "Used by") {
+	if !strings.Contains(page(t, h, "/settings/views", c), "Used by") {
 		t.Error("settings page does not show a reference count column")
 	}
 }
@@ -101,7 +101,7 @@ func TestDeleteUnusedView(t *testing.T) {
 	}, c); rec.Code != http.StatusSeeOther {
 		t.Fatalf("delete = %d: %s", rec.Code, rec.Body)
 	}
-	if strings.Contains(page(t, h, "/settings", c), "spare") {
+	if strings.Contains(page(t, h, "/settings/views", c), "spare") {
 		t.Error("deleted view still listed")
 	}
 }
@@ -121,7 +121,7 @@ func TestTokenShownOnceThenNever(t *testing.T) {
 		t.Fatal("plaintext token not shown on creation")
 	}
 	plaintext := body[idx : idx+70]
-	later := page(t, h, "/settings", c)
+	later := page(t, h, "/settings/tokens", c)
 	if strings.Contains(later, plaintext) {
 		t.Error("token plaintext still visible on a later page load")
 	}
@@ -176,7 +176,7 @@ func TestCacheFlushButton(t *testing.T) {
 func TestSettingsShowsReadOnlyConfig(t *testing.T) {
 	h, srv, c, _ := loggedIn(t)
 	srv.o.Config = testConfig()
-	body := page(t, h, "/settings", c)
+	body := page(t, h, "/settings/server", c)
 	for _, want := range []string{
 		"data_dir", "/var/lib/kydns", "dns.listen", "admin.listen", "127.0.0.1:8053",
 	} {
@@ -194,7 +194,7 @@ func TestSettingsShowsReadOnlyConfig(t *testing.T) {
 func TestConfigViewAbsentWithoutConfig(t *testing.T) {
 	h, srv, c, _ := loggedIn(t)
 	srv.o.Config = nil
-	if strings.Contains(page(t, h, "/settings", c), "dns.listen") {
+	if strings.Contains(page(t, h, "/settings/server", c), "dns.listen") {
 		t.Error("config section rendered with no config loaded")
 	}
 }
@@ -205,7 +205,7 @@ func TestConfigViewCarriesNoSecrets(t *testing.T) {
 	h, srv, c, csrf := loggedIn(t)
 	srv.o.Config = &config.Config{DataDir: "/tmp", DNS: config.DNSConfig{Listen: ":53"}}
 	postForm(t, h, "/settings/tokens/new", url.Values{"label": {"x"}, "csrf_token": {csrf}}, c)
-	body := page(t, h, "/settings", c)
+	body := page(t, h, "/settings/server", c)
 	for _, forbidden := range []string{"password_hash", "argon2", "kydns_"} {
 		if strings.Contains(body, forbidden) {
 			t.Errorf("settings page leaked %q", forbidden)
@@ -226,7 +226,7 @@ func TestSettingsShowsUpstreamStatus(t *testing.T) {
 			{Spec: "udp://192.168.1.1:53"},
 		}
 	}
-	body := page(t, h, "/settings", c)
+	body := page(t, h, "/settings/server", c)
 	for _, want := range []string{
 		"tls://1.1.1.1:853",
 		"i/o timeout",
@@ -245,7 +245,7 @@ func TestSettingsShowsUpstreamStatus(t *testing.T) {
 // With no forwarder wired the card is absent rather than an empty table.
 func TestSettingsOmitsUpstreamsWhenUnset(t *testing.T) {
 	h, _, c, _ := loggedIn(t)
-	if strings.Contains(page(t, h, "/settings", c), "<h3>Upstreams</h3>") {
+	if strings.Contains(page(t, h, "/settings/server", c), "<h3>Upstreams</h3>") {
 		t.Error("settings renders an upstream card with no forwarder wired")
 	}
 }
@@ -274,7 +274,7 @@ func TestAgentTokenCreatedAndChanged(t *testing.T) {
 	if agent.Scope != store.ScopeMCPRead || !agent.QueryLog {
 		t.Fatalf("created %+v", agent)
 	}
-	if later := page(t, h, "/settings", c); !strings.Contains(later, "Revoked if unused by") {
+	if later := page(t, h, "/settings/tokens", c); !strings.Contains(later, "Revoked if unused by") {
 		t.Error("the agent token's revocation date is not shown")
 	}
 	id := strconv.FormatInt(agent.ID, 10)
@@ -304,5 +304,55 @@ func TestPausedBlockingIsShownAndResumable(t *testing.T) {
 	}
 	if !srv.o.Policy.PausedUntil().IsZero() {
 		t.Error("blocking is still paused")
+	}
+}
+
+// Settings is one page of tabs: /settings and the old /appearance page land on a tab,
+// each tab has its own URL, and a form returns to the tab it was posted from.
+func TestSettingsTabsAndOldRoutes(t *testing.T) {
+	h, _, c, csrf := loggedIn(t)
+	for old, want := range map[string]string{"/settings": "/settings/account", "/appearance": "/settings/appearance"} {
+		rec := get(t, h, old, c)
+		if rec.Code != http.StatusMovedPermanently || rec.Header().Get("Location") != want {
+			t.Errorf("GET %s = %d to %q, want 301 to %s", old, rec.Code, rec.Header().Get("Location"), want)
+		}
+	}
+	for _, tab := range settingsTabs {
+		body := page(t, h, "/settings/"+tab.ID, c)
+		if !strings.Contains(body, `<section class="settings-section" aria-label="`+tab.Label+`">`) || !strings.Contains(body, `href="/settings/`+tab.ID+`" aria-current="page"`) {
+			t.Errorf("/settings/%s does not open its own section", tab.ID)
+		}
+		if strings.Count(body, `aria-current="page"`) != 2 { // the tab and the Settings nav row
+			t.Errorf("/settings/%s marks %d items current, want the tab and the nav row", tab.ID, strings.Count(body, `aria-current="page"`))
+		}
+	}
+	if rec := get(t, h, "/settings/nope", c); rec.Code != http.StatusNotFound {
+		t.Errorf("GET /settings/nope = %d, want 404", rec.Code)
+	}
+	if rec := get(t, h, "/settings/export", c); rec.Code == http.StatusNotFound {
+		t.Error("the export download must not be taken for a tab")
+	}
+	rec := postForm(t, h, "/settings/views/new", url.Values{"name": {"lan"}, "subnets": {"10.0.0.0/8"}, "csrf_token": {csrf}}, c)
+	if rec.Header().Get("Location") != "/settings/views" {
+		t.Errorf("adding a view returns to %q, want /settings/views", rec.Header().Get("Location"))
+	}
+	rec = postForm(t, h, "/settings/views/new", url.Values{"name": {"bad"}, "subnets": {"not-a-cidr"}, "csrf_token": {csrf}}, c)
+	if rec.Code != http.StatusBadRequest || !strings.Contains(rec.Body.String(), `<section class="settings-section" aria-label="Views">`) {
+		t.Errorf("a rejected view = %d, want 400 on the Views tab", rec.Code)
+	}
+}
+
+// The account footer and phone header carry Sign out as an icon button only, and an
+// admin console has no Settings button beside it: Settings is a navigation item.
+func TestAccountFooterSignOutIsAnIconButton(t *testing.T) {
+	h, _, c, _ := loggedIn(t)
+	body := page(t, h, "/", c)
+	if n := strings.Count(body, `<button class="ky-icon-button" type="submit" aria-label="Sign out" title="Sign out">`); n != 2 {
+		t.Errorf("found %d icon Sign out buttons, want the footer's and the phone header's", n)
+	}
+	for _, gone := range []string{`ky-user-signout`, `ky-mobile-signout`, `href="/appearance"`, `aria-label="Settings"`, `>Sign out<`} {
+		if strings.Contains(body, gone) {
+			t.Errorf("app frame still renders %s", gone)
+		}
 	}
 }

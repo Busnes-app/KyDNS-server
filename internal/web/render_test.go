@@ -72,8 +72,12 @@ func TestThemeScriptIsLinkedAndEmbedded(t *testing.T) {
 	if anon := get(t, h, "/appearance", nil); anon.Code != http.StatusSeeOther {
 		t.Errorf("GET /appearance without a session = %d, want a redirect to sign in", anon.Code)
 	}
-	body = get(t, h, "/appearance", loginCookie(t, h)).Body.String()
-	for _, want := range []string{`<h1 class="ky-page-title">Appearance</h1>`, `data-theme-picker`, `href="/static/ky-ui/appearance.css"`, `href="/static/ky-ui/appearance-themes.css"`, `href="/appearance" aria-current="page"`} {
+	// Appearance is a Settings tab; its old page redirects there.
+	if old := get(t, h, "/appearance", loginCookie(t, h)); old.Code != http.StatusMovedPermanently || old.Header().Get("Location") != "/settings/appearance" {
+		t.Errorf("GET /appearance = %d to %q, want 301 to /settings/appearance", old.Code, old.Header().Get("Location"))
+	}
+	body = get(t, h, "/settings/appearance", loginCookie(t, h)).Body.String()
+	for _, want := range []string{`<h1 class="ky-page-title">Settings</h1>`, `data-theme-picker`, `href="/static/ky-ui/appearance.css"`, `href="/static/ky-ui/appearance-themes.css"`, `href="/settings/appearance" aria-current="page"`, `href="/settings" aria-current="page"`} {
 		if !strings.Contains(body, want) {
 			t.Errorf("appearance page missing %s", want)
 		}

@@ -51,7 +51,7 @@ func pinViaService(t *testing.T, srv *Server) {
 
 func TestBackupSectionWarnsWithoutKeyAndDestination(t *testing.T) {
 	h, _, c, _ := loggedInWithBackup(t, "")
-	body := get(t, h, "/settings", c).Body.String()
+	body := get(t, h, "/settings/backups", c).Body.String()
 	for _, want := range []string{"No recovery key", "Nowhere to put a capsule", "Pin the suite key by hand"} {
 		if !strings.Contains(body, want) {
 			t.Errorf("settings page lacks %q", want)
@@ -74,7 +74,7 @@ func TestBackupPinKeyThenRunWritesLocalCopy(t *testing.T) {
 	if len(copies) != 1 {
 		t.Fatalf("copies = %d", len(copies))
 	}
-	body := get(t, h, "/settings", c).Body.String()
+	body := get(t, h, "/settings/backups", c).Body.String()
 	if !strings.Contains(body, copies[0].Name) || !strings.Contains(body, "Schedule") {
 		t.Fatal("settings page does not show the local copy and schedule card")
 	}
@@ -96,7 +96,7 @@ func TestBackupPageNeverShowsTheToken(t *testing.T) {
 	if err := recoveryclient.StorePairing(srv.o.Backup.Settings(), srv.o.Backup.Sealer(), "https://recovery.example", "plain-secret-token"); err != nil {
 		t.Fatal(err)
 	}
-	body := get(t, h, "/settings", c).Body.String()
+	body := get(t, h, "/settings/backups", c).Body.String()
 	if strings.Contains(body, "plain-secret-token") {
 		t.Fatal("token rendered")
 	}

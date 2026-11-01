@@ -306,7 +306,9 @@ test('401 stops dashboard polling', async ({ page }) => {
 
 test('Appearance pairs persist IDs, follow OS, keep old names and synchronize another tab', async ({ page, context }) => {
   await page.emulateMedia({ colorScheme: 'light' });
+  // The old Appearance page is now a Settings tab.
   await page.goto('/appearance');
+  await expect(page).toHaveURL(/\/settings\/appearance$/);
   const pairs = await page.evaluate(() => window.kyThemes.THEME_PAIRS.length);
   await expect(page.locator('.appearance-pair')).toHaveCount(pairs);
   // One radio group across every pair: Match system, Light and Dark each.
@@ -335,7 +337,7 @@ test('Appearance pairs persist IDs, follow OS, keep old names and synchronize an
     await expect(page.locator(`input[value="${checked}"]`)).toBeChecked();
   }
   const second = await context.newPage();
-  await second.goto('/appearance');
+  await second.goto('/settings/appearance');
   await second.locator('input[value="nord-pair"]').check();
   await expect(page.locator('input[value="nord-pair"]')).toBeChecked();
   await second.locator('input[value="system"]').check();
@@ -345,9 +347,37 @@ test('Appearance pairs persist IDs, follow OS, keep old names and synchronize an
 
 test('Appearance applies choices when browser storage is unavailable', async ({ page }) => {
   await page.addInitScript(() => Object.defineProperty(window, 'localStorage', { get() { throw new DOMException('disabled', 'SecurityError'); } }));
-  await page.goto('/appearance');
+  await page.goto('/settings/appearance');
   await page.locator('input[value="busnes-dark"]').check();
   await expect(page.locator('html')).toHaveAttribute('style', /color-scheme: dark/);
+});
+
+test('Settings tabs hold Account, Appearance and the server sections, one URL each', async ({ page }) => {
+  await page.goto('/');
+  // Admin console: Settings is a navigation item; the footer has only the icon Sign out.
+  const nav = page.getByRole('navigation', { name: 'Primary' });
+  await expect(nav.getByRole('link', { name: 'Appearance' })).toHaveCount(0);
+  if (page.viewportSize().width > 720) {
+    const user = page.locator('.ky-user');
+    await expect(user.getByRole('button', { name: 'Sign out', exact: true })).toBeVisible();
+    await expect(user).not.toContainText('Sign out');
+    await expect(user.getByRole('link', { name: 'Settings' })).toHaveCount(0);
+  }
+  await nav.getByRole('link', { name: 'Settings', exact: true }).click();
+  await expect(page).toHaveURL(/\/settings\/account$/);
+  await expect(nav.getByRole('link', { name: 'Settings', exact: true })).toHaveAttribute('aria-current', 'page');
+  const tabs = page.getByRole('navigation', { name: 'Settings sections' });
+  await expect(tabs.getByRole('link')).toHaveText(['Account', 'Appearance', 'Server', 'Views', 'API tokens', 'Single sign-on', 'Backups']);
+  await expect(tabs.getByRole('link', { name: 'Account' })).toHaveAttribute('aria-current', 'page');
+  await expect(page.getByRole('region', { name: 'Account' })).toContainText('Administrator');
+  await tabs.getByRole('link', { name: 'Views' }).click();
+  await expect(page).toHaveURL(/\/settings\/views$/);
+  await expect(page.getByRole('region', { name: 'Views' })).toBeVisible();
+  await expect(page.getByRole('region', { name: 'Account' })).toHaveCount(0);
+  await page.goBack();
+  await expect(page).toHaveURL(/\/settings\/account$/);
+  // The tab row never widens the page.
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
 });
 
 test('manual-record errors, addition, filtering and removal use actual server forms', async ({ page }) => {
@@ -449,7 +479,7 @@ test('signed-out visitors cannot read the dashboard or Appearance', async ({ bro
   const context = await browser.newContext({ storageState: { cookies: [], origins: [] } });
   try {
     const page = await context.newPage();
-    for (const path of ['/', '/appearance']) {
+    for (const path of ['/', '/appearance', '/settings/appearance']) {
       await page.goto(instance.url + path);
       await expect(page).toHaveURL(instance.url + '/login');
       await expect(page.getByRole('heading', { level: 1, name: 'KyDNS', exact: true })).toBeVisible();
@@ -489,7 +519,7 @@ test('admin layouts retain reachable fields and routing actions at shipped sizes
     expect(Math.abs(boxes[1].x - boxes[3].x)).toBeLessThan(1);
   } else for (const box of boxes) expect(Math.abs(box.y - boxes[0].y)).toBeLessThan(1);
 
-  await page.goto('/settings');
+  await page.goto('/settings/server');
   for (const group of await page.locator('.field-set').all()) {
     const bounds = await group.boundingBox();
     expect(bounds.x).toBeGreaterThanOrEqual(0);

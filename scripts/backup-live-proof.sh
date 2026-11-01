@@ -103,7 +103,7 @@ code=$(curl -sS -o /dev/null -w '%{http_code}' -c "$work/cookies" -X POST \
 
 # Consume the complete HTML in grep checks: grep -q can close the pipe early
 # and make curl fail under pipefail even when the expected text was found.
-settings() { curl -sS -b "$work/cookies" "http://$admin_addr/settings"; }
+settings() { curl -sS -b "$work/cookies" "http://$admin_addr/settings/backups"; }
 
 echo "== before pinning: no recovery key"
 status=$(api GET /api/v1/backup/status)

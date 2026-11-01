@@ -11,7 +11,6 @@ func init() {
 	registerPage("blacklists.html")
 	registerPage("dhcp.html")
 	registerPage("replication.html")
-	registerPage("appearance.html")
 }
 
 // pageRoutes registers the application screens.
@@ -61,8 +60,11 @@ func (s *Server) pageRoutes(mux registrar) {
 	mux.HandleFunc("POST "+PathPromote, s.requireCSRF(s.postReplicaPromote))
 	mux.HandleFunc("POST "+PathJoin, s.requireCSRF(s.postReplicaJoin))
 
-	mux.HandleFunc("GET /settings", s.requireSession(s.getSettings))
-	mux.HandleFunc("GET /appearance", s.requireSession(s.getAppearance))
+	// Settings opens on its first tab. /appearance was its own page before
+	// Appearance became a Settings tab; old links and bookmarks still land on it.
+	mux.HandleFunc("GET /settings", s.requireSession(redirectTo("/settings/"+settingsTabs[0].ID)))
+	mux.HandleFunc("GET /settings/{tab}", s.requireSession(s.getSettings))
+	mux.HandleFunc("GET /appearance", s.requireSession(redirectTo("/settings/appearance")))
 	mux.HandleFunc("GET /settings/export", s.requireSession(s.getExport))
 	mux.HandleFunc("GET /settings/backup/export", s.requireSession(s.getBackupExport))
 	mux.HandleFunc("POST /settings/backup/pair", s.requireCSRF(s.postBackupPair))
@@ -83,8 +85,9 @@ func (s *Server) pageRoutes(mux registrar) {
 	mux.HandleFunc("POST /settings/sso/unlink", s.requireCSRF(s.postSSOUnlink))
 }
 
-// getAppearance draws the theme picker. The choice lives in this browser only;
-// theme.js fills and applies it, so the server holds no state for it.
-func (s *Server) getAppearance(w http.ResponseWriter, r *http.Request) {
-	s.render(w, r, "appearance.html", map[string]any{"Title": "Appearance", "Nav": "appearance"})
+// redirectTo answers a GET for a page that moved with a permanent redirect.
+func redirectTo(path string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, path, http.StatusMovedPermanently)
+	}
 }
