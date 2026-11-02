@@ -5,14 +5,21 @@ import (
 	"embed"
 	"html/template"
 	"net/http"
+	"regexp"
 	"strings"
 	"time"
 )
 
-// Version is the release shown in the About dialog. main sets it from the
-// version stamped at link time, so the dialog and `kydns version` cannot
-// disagree — and nobody has to remember to bump it here.
+// Version is the version stamped at link time. main sets it, so nobody has to
+// remember to bump it here. `kydns version`, backups and MCP report it whole.
 var Version = "dev"
+
+// describeSHA is the "-g<sha>" git describe adds after the commit count.
+var describeSHA = regexp.MustCompile(`(-[0-9]+)-g[0-9a-f]{4,}`)
+
+// displayVersion is Version as the About dialog shows it: 0.5.0-5-g0685d6e
+// reads 0.5.0-5. The sha is for support, and `kydns version` still prints it.
+func displayVersion(v string) string { return describeSHA.ReplaceAllString(v, "$1") }
 
 //go:embed templates/*.html
 var templateFS embed.FS
@@ -71,7 +78,7 @@ func (s *Server) render(w http.ResponseWriter, r *http.Request, page string, dat
 	// A standalone node has no replication screen, so it gets no way to reach
 	// one: the nav entry is the only link to it.
 	data["ShowReplication"] = s.replicating()
-	data["Version"] = Version
+	data["Version"] = displayVersion(Version)
 	data["Year"] = time.Now().Year()
 	data["License"] = licenseText
 	// Exposure is standing state, not an event: every screen warns about it.

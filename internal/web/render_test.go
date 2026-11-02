@@ -202,6 +202,36 @@ func TestNavFooterOpensLicense(t *testing.T) {
 }
 
 // Every full page carries the session's CSRF token, so its forms can post.
+// Issue #101: the About pill showed v0.5.0-5-g0685d6e. Users see the release
+// and the commits since it; the sha stays in `kydns version`.
+func TestAboutVersionDropsDescribeSHA(t *testing.T) {
+	for in, want := range map[string]string{
+		"0.5.0-5-g0685d6e":         "0.5.0-5",
+		"0.5.0-5-g0685d6e-dirty":   "0.5.0-5-dirty",
+		"0.5.0.2-12-gabcdef012345": "0.5.0.2-12",
+		"0.5.0":                    "0.5.0",
+		"0.5.0-dirty":              "0.5.0-dirty",
+		"0.0.0-dev+0685d6e":        "0.0.0-dev+0685d6e",
+		"dev":                      "dev",
+	} {
+		if got := displayVersion(in); got != want {
+			t.Errorf("displayVersion(%q) = %q, want %q", in, got, want)
+		}
+	}
+
+	defer func(v string) { Version = v }(Version)
+	Version = "0.5.0-5-g0685d6e"
+	h, _ := newWeb(t)
+	setupAndLogin(t, h)
+	body := get(t, h, "/", loginCookie(t, h)).Body.String()
+	if want := `<span class="ky-about-version">v0.5.0-5</span>`; !strings.Contains(body, want) {
+		t.Errorf("About pill missing %q", want)
+	}
+	if strings.Contains(body, "0685d6e") {
+		t.Error("rendered page still shows the commit sha")
+	}
+}
+
 func TestRenderIncludesCSRFToken(t *testing.T) {
 	h, srv := newWeb(t)
 	setupAndLogin(t, h)
