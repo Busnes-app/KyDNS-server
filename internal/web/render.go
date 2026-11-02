@@ -103,6 +103,11 @@ func (s *Server) execute(w http.ResponseWriter, t *template.Template, data map[s
 		return
 	}
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	// A page names the running build's scripts and stylesheets: browsers revalidate it, so
+	// after an upgrade it shows the new build. A stricter header set earlier stays.
+	if w.Header().Get("Cache-Control") == "" {
+		w.Header().Set("Cache-Control", "no-cache")
+	}
 	w.Write(buf.Bytes())
 }
 
