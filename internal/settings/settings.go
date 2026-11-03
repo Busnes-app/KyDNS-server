@@ -196,6 +196,17 @@ func (s *Service) CheckWrite(v store.Settings, confirmPublic string) error {
 // write succeeds nothing after it can fail: the snapshot is already built, and
 // publishing it does no I/O.
 func (s *Service) Set(v store.Settings, confirmPublic string) error {
+	return s.set(v, confirmPublic, true)
+}
+
+// SetKeepingRecords is Set for a replace import, whose records were just
+// written already under the new private domain: moving them as a rename would
+// rewrite them a second time.
+func (s *Service) SetKeepingRecords(v store.Settings, confirmPublic string) error {
+	return s.set(v, confirmPublic, false)
+}
+
+func (s *Service) set(v store.Settings, confirmPublic string, renameRecords bool) error {
 	s.writeMu.Lock()
 	defer s.writeMu.Unlock()
 
@@ -224,7 +235,7 @@ func (s *Service) Set(v store.Settings, confirmPublic string) error {
 	// Renaming the private zone moves the manual records with it. Records are
 	// stored as full names, so leaving them behind would strand every one of
 	// them outside the zone the server now serves.
-	if from, to := store.ZoneSuffix(prev.PrivateDomain), store.ZoneSuffix(v.PrivateDomain); from != "" && from != to {
+	if from, to := store.ZoneSuffix(prev.PrivateDomain), store.ZoneSuffix(v.PrivateDomain); renameRecords && from != "" && from != to {
 		if _, err := s.w.PutSettingsRenamingZone(v, from, to); err != nil {
 			return err
 		}

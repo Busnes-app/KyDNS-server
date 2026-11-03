@@ -93,3 +93,47 @@ func TestImportReplaceRefusedByTheStoreLeavesTheDomain(t *testing.T) {
 		t.Errorf("private domain = %q after a refused import", cur.PrivateDomain)
 	}
 }
+
+// A replace brings the document's records as they are. Its domain change must
+// not run them through the rename that moves a node's own records: with
+// overlapping domains that would turn nas.lan.home.arpa. into
+// nas.lan.lan.home.arpa., and rewrite a target in the old domain.
+func TestImportReplaceKeepsTheDocumentsRecordsVerbatim(t *testing.T) {
+	s, err := store.Open(filepath.Join(t.TempDir(), "kydns.db"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { s.Close() })
+	if err := s.PutSettings(validStoredSettings()); err != nil {
+		t.Fatal(err)
+	}
+	reg := registry.New(s, "home.arpa.", func() error { return nil })
+	tok, _ := reg.CreateToken("test")
+	h := settings.NewHolder(func() (store.Settings, error) { v, _, err := s.Settings(); return v, err })
+	if err := h.Rebuild(); err != nil {
+		t.Fatal(err)
+	}
+	svc := settings.NewService(s, h, func(snap *settings.Snapshot) { reg.SetZone(snap.Raw.PrivateDomain) }, notAReplica)
+	srv := &testSrv{h: NewAPI(reg, nil, nil).WithSettings(svc).Handler(), tok: tok}
+
+	dto := toSettingsDTO(validStoredSettings())
+	dto.PrivateDomain = "lan.home.arpa"
+	doc, _ := json.Marshal(map[string]any{
+		"records": []map[string]string{
+			{"name": "nas.lan.home.arpa.", "type": "A", "value": "192.168.1.5"},
+			{"name": "web.lan.home.arpa.", "type": "CNAME", "value": "printer.home.arpa."},
+		},
+		"settings": dto,
+	})
+	if rec := srv.do(t, "POST", "/api/v1/import?mode=replace", string(doc)); rec.Code != http.StatusOK {
+		t.Fatalf("import: %d %s", rec.Code, rec.Body)
+	}
+	got := map[string]string{}
+	recs, _ := reg.Records()
+	for _, r := range recs {
+		got[r.Name] = r.Value
+	}
+	if len(got) != 2 || got["nas.lan.home.arpa."] != "192.168.1.5" || got["web.lan.home.arpa."] != "printer.home.arpa." {
+		t.Errorf("records = %v, want the document's own", got)
+	}
+}

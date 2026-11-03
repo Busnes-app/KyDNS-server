@@ -952,7 +952,8 @@ func (a *API) importDoc(w http.ResponseWriter, r *http.Request) {
 			writeRegistryErr(w, err)
 			return
 		}
-		if err := a.applySettingsDoc(doc.Settings); err != nil {
+		// The records just written are the document's own, already in its zone.
+		if err := a.applySettingsDocKeepingRecords(doc.Settings); err != nil {
 			a.writeSettingsErr(w, err)
 			return
 		}
@@ -1013,6 +1014,15 @@ func (a *API) applySettingsDoc(doc *settingsDTO) error {
 		return nil
 	}
 	return a.settings.Set(fromSettingsDTO(*doc), "")
+}
+
+// applySettingsDocKeepingRecords is applySettingsDoc after a replace: a domain
+// change must not rename the records the document itself just supplied.
+func (a *API) applySettingsDocKeepingRecords(doc *settingsDTO) error {
+	if doc == nil || a.settings == nil {
+		return nil
+	}
+	return a.settings.SetKeepingRecords(fromSettingsDTO(*doc), "")
 }
 
 func (a *API) listLeases(w http.ResponseWriter, _ *http.Request) {
