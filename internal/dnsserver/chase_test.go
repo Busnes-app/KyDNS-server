@@ -146,3 +146,27 @@ func TestClientUDPSizeCapped(t *testing.T) {
 		t.Errorf("clientUDPSize = %d, want the smaller advertised 800", got)
 	}
 }
+
+// An allow rule overrides every list (docs/FEATURES.md): the name the operator
+// allowed answers even when its CNAME target is on a list.
+func TestAllowedNameIsNotBlockedByItsCNAMETarget(t *testing.T) {
+	s := chaseServer(t, chainUpstream(), map[string]string{"final.example.net.": "steven-black"}, nil)
+	s.o.Policy.(*stubPolicy).allowed = map[string]bool{"shop.example.com.": true}
+	m := serve(s, "shop.example.com.")
+	if m.Rcode != dns.RcodeSuccess || len(m.Answer) == 0 {
+		t.Errorf("rcode %s answer %v, want the allowed name answered", dns.RcodeToString[m.Rcode], m.Answer)
+	}
+}
+
+// The query log stores names in one case, so a 0x20-randomised query matches
+// a search for the name as anyone would type it.
+func TestQueryLogLowercasesNames(t *testing.T) {
+	s := chaseServer(t, chainUpstream(), nil, nil)
+	s.SetLogging(true, false)
+	serve(s, "WWW.Example.COM.")
+	var got []QueryEntry
+	s.QueryLog().Each(QueryFilter{Domain: "example.com"}, func(e QueryEntry) bool { got = append(got, e); return true })
+	if len(got) != 1 || got[0].Name != "www.example.com" {
+		t.Errorf("entries = %+v, want www.example.com", got)
+	}
+}

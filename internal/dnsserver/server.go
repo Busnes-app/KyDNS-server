@@ -175,9 +175,13 @@ func (s *Server) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 		fail(dns.RcodeServerFailure, "forward")
 		return
 	}
-	if blocked, decision, ttl := s.cloaked(resp.Answer); blocked {
-		block(ttl, decision)
-		return
+	// An allow rule overrides every list (docs/FEATURES.md), so the operator who
+	// allowed this name gets its answer whatever its CNAME targets match.
+	if policy != policyAllow {
+		if blocked, decision, ttl := s.cloaked(resp.Answer); blocked {
+			block(ttl, decision)
+			return
+		}
 	}
 	out := resp.Copy()
 	rcode := resp.Rcode
@@ -189,6 +193,10 @@ func (s *Server) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 	}
 	reply(out, "forward", view, policy)
 }
+
+// policyAllow is policy.PolicyAllow, the decision an allow rule returns; the
+// policy package is not imported here.
+const policyAllow = "allow"
 
 // forwardTimeout bounds one upstream resolution.
 const forwardTimeout = 10 * time.Second
@@ -355,7 +363,7 @@ func (s *Server) logQuery(r, m *dns.Msg, w dns.ResponseWriter, source, view, pol
 		"policy", policy,
 		"duration_ms", d.Milliseconds(),
 	}
-	e := QueryEntry{Time: time.Now(), Name: strings.TrimSuffix(q.Name, "."), Type: dns.TypeToString[q.Qtype],
+	e := QueryEntry{Time: time.Now(), Name: strings.ToLower(strings.TrimSuffix(q.Name, ".")), Type: dns.TypeToString[q.Qtype],
 		Rcode: dns.RcodeToString[m.Rcode], Source: source, Policy: policy}
 	if s.logClientIP.Load() {
 		args = append(args, "client", w.RemoteAddr().String())
