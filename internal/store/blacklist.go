@@ -136,17 +136,25 @@ func (s *Store) PutBlacklistList(l BlacklistList) (int64, error) {
 // SetBlacklistSnapshot replaces a list's body in one statement, which is what
 // makes a refresh transactional: readers see the old body or the new one.
 func (s *Store) SetBlacklistSnapshot(id int64, domains []string, skipped int, etag, lastModified string, at int64) error {
+	return s.InstallBlacklistFetch(BlacklistList{ID: id}, domains, skipped, etag, lastModified, at)
+}
+
+// InstallBlacklistFetch is SetBlacklistSnapshot for a download of l: it lands
+// only while the row still has the URL and format l was fetched with, so a list
+// edited (or replaced under the same ID) during the download keeps its own
+// source. An empty URL skips that check.
+func (s *Store) InstallBlacklistFetch(l BlacklistList, domains []string, skipped int, etag, lastModified string, at int64) error {
 	res, err := s.db.Exec(`
 		UPDATE blacklist_lists
 		SET snapshot = ?, entry_count = ?, skipped_count = ?, etag = ?, last_modified = ?,
 		    last_ok_at = ?, last_attempt_at = ?, last_error = ''
-		WHERE id = ?`,
-		strings.Join(domains, "\n"), len(domains), skipped, etag, lastModified, at, at, id)
+		WHERE id = ? AND (? = '' OR (url = ? AND format = ?))`,
+		strings.Join(domains, "\n"), len(domains), skipped, etag, lastModified, at, at, l.ID, l.URL, l.URL, l.Format)
 	if err != nil {
 		return err
 	}
 	if n, _ := res.RowsAffected(); n == 0 {
-		return fmt.Errorf("%w: blacklist list %d", ErrNotFound, id)
+		return fmt.Errorf("%w: blacklist list %d with that source", ErrNotFound, l.ID)
 	}
 	return nil
 }

@@ -265,3 +265,35 @@ func TestNotModifiedKeepsTheSnapshotAndClearsTheError(t *testing.T) {
 		t.Error("a 304 dropped the snapshot")
 	}
 }
+
+// A list edited while its old source is still downloading keeps its own
+// source: the old body must not land under the new URL, nor its failure.
+func TestRefreshDiscardsADownloadForASourceThatChanged(t *testing.T) {
+	var st *store.Store
+	var id int64
+	srv := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// The operator points the list somewhere else mid-download.
+		if _, err := st.PutBlacklistList(store.BlacklistList{ID: id, Name: "l1", URL: "https://elsewhere.example/list",
+			Format: FormatDomains, Enabled: true, IntervalSeconds: 3600}); err != nil {
+			t.Error(err)
+		}
+		w.Write([]byte("ads.example\n"))
+	}))
+	defer srv.Close()
+	var ref *Refresher
+	var h *Holder
+	st, ref, h = newRefresher(t, srv)
+	var err error
+	id, err = st.PutBlacklistList(store.BlacklistList{Name: "l1", URL: srv.URL, Format: FormatDomains, Enabled: true, IntervalSeconds: 3600})
+	if err != nil {
+		t.Fatal(err)
+	}
+	_ = ref.RefreshList(context.Background(), id)
+	got, _ := st.BlacklistListByID(id)
+	if got.EntryCount != 0 || got.LastError != "" {
+		t.Errorf("= %+v, want the old source's body and failure both discarded", got)
+	}
+	if blocked, _, _ := h.Decide("ads.example"); blocked {
+		t.Error("the old source's body is blocking under the new one")
+	}
+}
