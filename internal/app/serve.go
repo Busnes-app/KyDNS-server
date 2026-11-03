@@ -331,7 +331,7 @@ func Serve(ctx context.Context, cfgPath string, logger *slog.Logger) error {
 			onPromote: func() { dhcpRun.Reconcile(settingsHolder.Current().Raw) }})
 	// Pairing needs this node's key, so it is offered only where there is one.
 	if repl.id != nil {
-		api = api.WithReplicaJoiner(&replicaJoiner{st: st, id: repl.id})
+		api = api.WithReplicaJoiner(&replicaJoiner{st: st, id: repl.id, stopPull: repl.stopPull})
 	}
 	mux := http.NewServeMux()
 	api.Routes(mux)
