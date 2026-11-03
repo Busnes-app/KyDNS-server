@@ -192,6 +192,13 @@ func (c *SSOClient) providerVerifier(ctx context.Context) (context.Context, *oid
 	client := c.oidcHTTPClient()
 	ctx = oidc.ClientContext(ctx, client)
 	provider, err := oidc.NewProvider(ctx, c.IssuerURL)
+	// A trailing slash is the one difference an operator cannot see: earlier
+	// versions trimmed it, so a stored issuer may carry one the provider does
+	// not publish, or lack one it does. Retry with the provider's exact form.
+	var mismatch *oidc.IssuerMismatchError
+	if errors.As(err, &mismatch) && strings.TrimRight(mismatch.Discovered, "/") == strings.TrimRight(c.IssuerURL, "/") {
+		provider, err = oidc.NewProvider(ctx, mismatch.Discovered)
+	}
 	if err != nil {
 		return nil, nil, nil, fmt.Errorf("discover OIDC provider: %w", err)
 	}

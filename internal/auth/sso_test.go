@@ -206,3 +206,31 @@ func TestIssuerWithTrailingSlashIsKept(t *testing.T) {
 		t.Fatalf("DiscoverEndpoints() = %+v, %v", ep, err)
 	}
 }
+
+// Earlier versions trimmed the slash, so a stored issuer may differ from the
+// published one by exactly that. Either way round it still signs in; any other
+// difference is still an issuer mismatch.
+func TestIssuerDifferingOnlyByATrailingSlashIsAccepted(t *testing.T) {
+	for _, tc := range []struct{ published, configured string }{
+		{"/app", "/app/"}, {"/app/", "/app"},
+	} {
+		var srv *httptest.Server
+		srv = httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			_ = json.NewEncoder(w).Encode(map[string]any{
+				"issuer": srv.URL + tc.published, "authorization_endpoint": srv.URL + "/authorize",
+				"token_endpoint": srv.URL + "/token", "jwks_uri": srv.URL + "/jwks",
+			})
+		}))
+		c := NewSSOClient(srv.URL+tc.configured, "kydns", "")
+		c.HTTPClient = srv.Client()
+		if _, _, _, err := c.providerVerifier(context.Background()); err != nil {
+			t.Errorf("published %q, configured %q: %v", tc.published, tc.configured, err)
+		}
+		c = NewSSOClient(srv.URL+"/other", "kydns", "")
+		c.HTTPClient = srv.Client()
+		if _, _, _, err := c.providerVerifier(context.Background()); err == nil {
+			t.Errorf("published %q: a different issuer was accepted", tc.published)
+		}
+		srv.Close()
+	}
+}
