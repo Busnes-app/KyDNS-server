@@ -170,6 +170,19 @@ func (s *Sessions) EndSSOSubject(issuer, subject string, cutoff, fenceUntil time
 	}
 }
 
+// EndLinkedSSO ends every session signed in through the linked SSO identity
+// (not installer-managed ones, which are checked per request), for when that
+// link is removed or its provider replaced.
+func (s *Sessions) EndLinkedSSO() {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	for id, sess := range s.byID {
+		if sess.SSO.Subject != "" && sess.IdentitySubject == "" {
+			delete(s.byID, id)
+		}
+	}
+}
+
 // Get returns a live session and slides its idle window. Both the idle and
 // absolute deadlines are enforced here so there is one expiry path, and an
 // expired session is dropped rather than merely hidden.

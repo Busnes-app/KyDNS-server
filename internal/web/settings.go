@@ -299,11 +299,10 @@ func (s *Server) postSSOSettings(w http.ResponseWriter, r *http.Request) {
 	issuerURL := strings.TrimSpace(r.PostFormValue("issuer_url"))
 	clientID := strings.TrimSpace(r.PostFormValue("client_id"))
 	clientSecret := strings.TrimSpace(r.PostFormValue("client_secret"))
+	prev, _ := s.o.Store.SSOSettings()
 	// The page never renders the secret back, so blank means "keep it".
 	if clientSecret == "" && r.PostFormValue("clear_secret") != "1" {
-		if cur, err := s.o.Store.SSOSettings(); err == nil {
-			clientSecret = cur.ClientSecret
-		}
+		clientSecret = prev.ClientSecret
 	}
 
 	if enabled && issuerURL == "" {
@@ -324,6 +323,10 @@ func (s *Server) postSSOSettings(w http.ResponseWriter, r *http.Request) {
 		s.settingsError(w, r, err)
 		return
 	}
+	// A new provider unlinked the identity in the same write; its sessions go too.
+	if prev.IssuerURL != issuerURL || prev.ClientID != clientID {
+		s.o.Sessions.EndLinkedSSO()
+	}
 	backToSettings(w, r)
 }
 
@@ -332,5 +335,7 @@ func (s *Server) postSSOUnlink(w http.ResponseWriter, r *http.Request) {
 		s.settingsError(w, r, err)
 		return
 	}
+	// Unlinking is how a compromised identity is cut off; its sessions end with it.
+	s.o.Sessions.EndLinkedSSO()
 	backToSettings(w, r)
 }

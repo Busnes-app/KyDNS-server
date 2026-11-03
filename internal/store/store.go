@@ -952,7 +952,17 @@ func (s *Store) SetSSOSettings(sso SSOSettings) error {
 	if sso.Enabled {
 		enabledInt = 1
 	}
-	_, err := s.db.Exec(`
+	tx, err := s.db.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+	var oldIssuer, oldClient string
+	err = tx.QueryRow(`SELECT issuer_url, client_id FROM sso_settings WHERE id = 1`).Scan(&oldIssuer, &oldClient)
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+		return err
+	}
+	if _, err := tx.Exec(`
 		INSERT INTO sso_settings(id, enabled, issuer_url, client_id, client_secret)
 		VALUES(1, ?, ?, ?, ?)
 		ON CONFLICT(id) DO UPDATE SET
@@ -960,8 +970,19 @@ func (s *Store) SetSSOSettings(sso SSOSettings) error {
 			issuer_url = excluded.issuer_url,
 			client_id = excluded.client_id,
 			client_secret = excluded.client_secret
-	`, enabledInt, sso.IssuerURL, sso.ClientID, sso.ClientSecret)
-	return err
+	`, enabledInt, sso.IssuerURL, sso.ClientID, sso.ClientSecret); err != nil {
+		return err
+	}
+	// A subject is only unique within one issuer (and client): the linked one
+	// must not carry over to whoever holds the same subject at the new provider.
+	if oldIssuer != sso.IssuerURL || oldClient != sso.ClientID {
+		if _, err := tx.Exec(`
+			UPDATE admin SET sso_sub = '', sso_username = '', sso_email = '', sso_linked_at = 0, updated_at = unixepoch()
+			WHERE id = 1 AND sso_sub <> ''`); err != nil {
+			return err
+		}
+	}
+	return tx.Commit()
 }
 
 func (s *Store) HasAdmin() (bool, error) {

@@ -806,3 +806,55 @@ func TestStrongOIDCStartFailureClearsCookies(t *testing.T) {
 		}
 	}
 }
+
+// Unlinking the SSO identity, or replacing its provider, is how an owner cuts
+// off a compromised identity: its sessions must end with the link, and the
+// password session that did it must survive.
+func TestSSOUnlinkAndProviderChangeEndLinkedSessions(t *testing.T) {
+	h, srv := newWeb(t)
+	setupAndLogin(t, h)
+	c := loginCookie(t, h)
+	sess, _ := srv.o.Sessions.Get(c.Value)
+	save := func(issuer string) {
+		t.Helper()
+		rec := postForm(t, h, "/settings/sso", url.Values{"csrf_token": {sess.CSRF}, "enabled": {"1"},
+			"issuer_url": {issuer}, "client_id": {"kydns"}}, c)
+		if rec.Code != http.StatusSeeOther {
+			t.Fatalf("save: status = %d", rec.Code)
+		}
+	}
+	ssoSession := func() string {
+		s, _ := srv.o.Sessions.CreateSSOLogin(auth.SSOLogin{Issuer: "https://a.example", Subject: "1"}, "", "", 0, srv.o.Sessions.RecoveryGeneration())
+		return s.ID
+	}
+	save("https://a.example")
+
+	_ = srv.o.Store.LinkAdminSSO("1", "owner", "")
+	attacker := ssoSession()
+	if rec := postForm(t, h, "/settings/sso/unlink", url.Values{"csrf_token": {sess.CSRF}}, c); rec.Code != http.StatusSeeOther {
+		t.Fatalf("unlink: status = %d", rec.Code)
+	}
+	if _, ok := srv.o.Sessions.Get(attacker); ok {
+		t.Error("the SSO session survived unlinking")
+	}
+
+	_ = srv.o.Store.LinkAdminSSO("1", "owner", "")
+	attacker = ssoSession()
+	save("https://a.example") // unchanged provider: the link and its sessions stay
+	if ident, _ := srv.o.Store.AdminIdentity(); ident.SSOSub != "1" {
+		t.Fatal("an unchanged save unlinked the identity")
+	}
+	if _, ok := srv.o.Sessions.Get(attacker); !ok {
+		t.Fatal("an unchanged save ended the SSO session")
+	}
+	save("https://b.example")
+	if ident, _ := srv.o.Store.AdminIdentity(); ident.SSOSub != "" {
+		t.Errorf("subject %q still linked after the issuer changed", ident.SSOSub)
+	}
+	if _, ok := srv.o.Sessions.Get(attacker); ok {
+		t.Error("the SSO session survived a provider change")
+	}
+	if _, ok := srv.o.Sessions.Get(c.Value); !ok {
+		t.Error("the password session was ended")
+	}
+}
