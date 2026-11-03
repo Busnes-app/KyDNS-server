@@ -174,6 +174,10 @@ func validateRecord(rec store.Record, known map[string]bool, zone string) (store
 		if err := ValidateAddress(rec.Value); err != nil {
 			return rec, err
 		}
+		// An A record holding an IPv6 address is served as 0.0.0.0.
+		if a, _ := netip.ParseAddr(rec.Value); (rec.Type == "A") != a.Unmap().Is4() {
+			return rec, invalid("value", "address_family", "%s is not an address for an %s record", rec.Value, rec.Type)
+		}
 	case "CNAME":
 		if err := ValidateName(rec.Name, zone); err != nil {
 			return rec, err
@@ -203,11 +207,37 @@ func (r *Registry) PutRecord(rec store.Record) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
+	existing, err := r.s.Records()
+	if err != nil {
+		return 0, err
+	}
+	if err := cnameConflict(rec, existing); err != nil {
+		return 0, err
+	}
 	id, err := r.s.PutRecord(rec)
 	if err != nil {
 		return 0, err
 	}
 	return id, r.onChange()
+}
+
+// cnameConflict refuses a CNAME beside any other record at its name and view,
+// and any record beside a CNAME. zone.Build refuses that zone, so storing it
+// would stop every rebuild and the next start.
+func cnameConflict(rec store.Record, others []store.Record) error {
+	if rec.Type == "PTR" {
+		return nil
+	}
+	for _, o := range others {
+		if o.Type == "PTR" || o.View != rec.View || !strings.EqualFold(Normalize(o.Name), rec.Name) {
+			continue
+		}
+		if rec.Type == "CNAME" || o.Type == "CNAME" {
+			return invalid("name", "cname_conflict",
+				"%s already has a %s record; a CNAME cannot share its name with another record", rec.Name, o.Type)
+		}
+	}
+	return nil
 }
 
 func (r *Registry) Records() ([]store.Record, error) { return r.s.Records() }
@@ -307,6 +337,9 @@ func ValidateDocument(zone string, views []store.View, services []store.Service,
 	for _, rec := range records {
 		rec, err := validateRecord(rec, known, zone)
 		if err != nil {
+			return nil, nil, nil, err
+		}
+		if err := cnameConflict(rec, rs); err != nil {
 			return nil, nil, nil, err
 		}
 		rs = append(rs, rec)

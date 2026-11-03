@@ -451,3 +451,69 @@ func TestReplaceAllAcceptsAMACAlreadyInTheStore(t *testing.T) {
 		t.Fatalf("ReplaceAll re-importing the same reservation: %v", err)
 	}
 }
+
+// A CNAME stands alone at its name and view. Storing a conflict would make
+// every later zone rebuild fail and stop the next start.
+func TestPutRecordRefusesCNAMEConflicts(t *testing.T) {
+	r, rebuilds := newRegistry(t)
+	put := func(rec store.Record) error { _, err := r.PutRecord(rec); return err }
+	if err := put(store.Record{Name: "mail.home.arpa.", Type: "A", Value: "192.168.1.20"}); err != nil {
+		t.Fatal(err)
+	}
+	if err := put(store.Record{Name: "web.home.arpa.", Type: "CNAME", Value: "nas.home.arpa."}); err != nil {
+		t.Fatal(err)
+	}
+	before := *rebuilds
+	for name, rec := range map[string]store.Record{
+		"cname beside an A":     {Name: "MAIL.home.arpa", Type: "CNAME", Value: "nas.home.arpa."},
+		"a second cname":        {Name: "web.home.arpa.", Type: "CNAME", Value: "other.home.arpa."},
+		"an address by a cname": {Name: "web.home.arpa.", Type: "AAAA", Value: "fd00::5"},
+	} {
+		t.Run(name, func(t *testing.T) {
+			var ve *ValidationError
+			if err := put(rec); !errors.As(err, &ve) || ve.Code != "cname_conflict" {
+				t.Fatalf("PutRecord() = %v, want cname_conflict", err)
+			}
+		})
+	}
+	if *rebuilds != before {
+		t.Error("a refused record still rebuilt")
+	}
+	recs, _ := r.Records()
+	if len(recs) != 2 {
+		t.Errorf("stored %d records, want the 2 accepted", len(recs))
+	}
+	// Another view is another answer set, so a CNAME there is fine.
+	if err := r.PutView(store.View{Name: "tailnet", Subnets: []string{"100.64.0.0/10"}}); err != nil {
+		t.Fatal(err)
+	}
+	if err := put(store.Record{Name: "mail.home.arpa.", Type: "CNAME", Value: "nas.home.arpa.", View: "tailnet"}); err != nil {
+		t.Errorf("CNAME in another view = %v, want accepted", err)
+	}
+}
+
+func TestValidateDocumentRefusesCNAMEConflicts(t *testing.T) {
+	_, _, _, err := ValidateDocument("home.arpa.", nil, nil, []store.Record{
+		{Name: "mail.home.arpa.", Type: "A", Value: "192.168.1.20"},
+		{Name: "mail.home.arpa.", Type: "CNAME", Value: "nas.home.arpa."},
+	})
+	if err == nil {
+		t.Fatal("ValidateDocument() = nil, want the conflict refused")
+	}
+}
+
+// An A record holding an IPv6 address is served as 0.0.0.0.
+func TestPutRecordMatchesAddressFamily(t *testing.T) {
+	r, _ := newRegistry(t)
+	for _, rec := range []store.Record{
+		{Name: "a.home.arpa.", Type: "A", Value: "fd00::5"},
+		{Name: "b.home.arpa.", Type: "AAAA", Value: "192.168.1.5"},
+	} {
+		if _, err := r.PutRecord(rec); err == nil {
+			t.Errorf("%s %s accepted", rec.Type, rec.Value)
+		}
+	}
+	if _, err := r.PutRecord(store.Record{Name: "c.home.arpa.", Type: "AAAA", Value: "fd00::5"}); err != nil {
+		t.Error(err)
+	}
+}
