@@ -143,6 +143,9 @@ func (s *Server) settingsData(r *http.Request, errMsg, newToken string) map[stri
 		tokRows = append(tokRows, row)
 	}
 	ident, _ := s.o.Store.AdminIdentity()
+	if ident == nil { // a read error: render the page without it, not a nil dereference
+		ident = &store.AdminIdentity{}
+	}
 	sso, _ := s.o.Store.SSOSettings()
 
 	data := map[string]any{

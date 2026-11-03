@@ -214,3 +214,24 @@ func TestRenamePeer(t *testing.T) {
 		t.Errorf("RenamePeer(missing) = %v, want ErrNotFound", err)
 	}
 }
+
+// A pull loop still finishing after a re-pairing must not write the primary it
+// was pinned to back over the new one.
+func TestAdvanceReplicaStateOnlyForTheCurrentPin(t *testing.T) {
+	s := open(t)
+	if err := s.FollowPrimary("old-primary", 3); err != nil {
+		t.Fatal(err)
+	}
+	if err := s.AdvanceReplicaState("old-primary", 4); err != nil {
+		t.Fatal(err)
+	}
+	if err := s.FollowPrimary("new-primary", 0); err != nil {
+		t.Fatal(err)
+	}
+	if err := s.AdvanceReplicaState("old-primary", 5); err == nil {
+		t.Fatal("the old pin advanced after the re-pairing")
+	}
+	if p, v, _ := s.ReplicaState(); p != "new-primary" || v != 0 {
+		t.Fatalf("replica_state = %q at %d, want new-primary at 0", p, v)
+	}
+}

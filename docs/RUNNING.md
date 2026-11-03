@@ -50,7 +50,7 @@ If you know the password, change it under **Settings → Account** (on a replica
 admin account is node-local). That signs out every session (the browser you changed it from
 stays signed in) and revokes every API and agent token except those bound to an
 installer-managed SSO administrator, the bootstrap token included. Create replacement
-tokens for integrations afterwards, and restart KyDNS for a new bootstrap token.
+tokens for integrations, and for the host CLI, under **Settings → API tokens** afterwards.
 
 ### Forgot the admin password
 
