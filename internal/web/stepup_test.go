@@ -201,3 +201,20 @@ func TestUnlinkDuringAnSSOCallbackLeavesNoSession(t *testing.T) {
 		t.Errorf("%d sessions after the callback, want the %d before it", n, before)
 	}
 }
+
+// The link callback's purpose cookie is the browser's to set: a stolen session
+// that forges it without passing the password check at link start links nothing.
+func TestForgedLinkCookieDoesNotLink(t *testing.T) {
+	idp := oidcTestServer(t, "attacker", "mallory", "m@example.com", "user")
+	h, srv := newWeb(t)
+	setupAndLogin(t, h)
+	c := loginCookie(t, h)
+	_ = srv.o.Store.SetSSOSettings(store.SSOSettings{IssuerURL: idp.URL, ClientID: "kydns"})
+	rec := ssoCallback(t, h, true, c)
+	if loc := rec.Header().Get("Location"); !strings.Contains(loc, "error=") {
+		t.Fatalf("status = %d, location %q; want the link refused", rec.Code, loc)
+	}
+	if ident, _ := srv.o.Store.AdminIdentity(); ident.SSOSub != "" {
+		t.Fatalf("linked %q through a forged cookie", ident.SSOSub)
+	}
+}

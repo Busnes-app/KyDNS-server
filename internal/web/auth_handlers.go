@@ -288,6 +288,11 @@ func (s *Server) getSSOLogin(w http.ResponseWriter, r *http.Request) {
 func (s *Server) postSSOLink(w http.ResponseWriter, r *http.Request) {
 	// A linked identity signs in without the password, so it outlives this
 	// session: linking one needs the step-up a token does (KyPost-Server Q2 A).
+	sess, ok := s.session(r)
+	if !ok {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
 	if _, err := s.checkPassword(r, r.PostFormValue("current_password")); err != nil {
 		s.settingsError(w, r, err)
 		return
@@ -297,6 +302,9 @@ func (s *Server) postSSOLink(w http.ResponseWriter, r *http.Request) {
 		s.settingsError(w, r, err)
 		return
 	}
+	// The callback links only for a session that passed this check: its
+	// purpose cookie alone is the browser's to forge.
+	s.o.Sessions.AllowLink(sess.ID, time.Now().Add(stepUpWindow))
 	s.startSSO(w, r, sso, "1")
 }
 
@@ -478,8 +486,14 @@ func (s *Server) getSSOCallback(w http.ResponseWriter, r *http.Request) {
 
 	// Linking needs the admin's own session: the link cookie alone is client-held.
 	if isLink {
-		if _, ok := s.session(r); !ok {
+		sess, ok := s.session(r)
+		if !ok {
 			http.Redirect(w, r, "/login?error=Session+expired+during+linking", http.StatusSeeOther)
+			return
+		}
+		if !s.o.Sessions.TakeLink(sess.ID) {
+			s.o.Logger.Warn("sso link refused: not started with the password", "source", s.sourceKey(r))
+			http.Redirect(w, r, "/settings/account?error=Confirm+your+password+to+link+an+identity", http.StatusSeeOther)
 			return
 		}
 		if err := s.o.Store.LinkAdminSSO(claims.Sub, claims.Username, claims.Email); err != nil {
