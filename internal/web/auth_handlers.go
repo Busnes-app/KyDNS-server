@@ -4,7 +4,9 @@ import (
 	"crypto/subtle"
 	"errors"
 	"fmt"
+	"io/fs"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/Busnes-app/kydns-server/internal/auth"
@@ -88,6 +90,12 @@ func (s *Server) postSetup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.o.Logger.Info("admin account created")
+	// Spent: it must not sit in the data directory, or in its backups.
+	if s.o.SetupTokenFile != "" {
+		if err := os.Remove(s.o.SetupTokenFile); err != nil && !errors.Is(err, fs.ErrNotExist) {
+			s.o.Logger.Warn("could not delete the spent setup token", "path", s.o.SetupTokenFile, "error", err)
+		}
+	}
 	s.setSessionCookie(w, r, s.o.Sessions.Create())
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

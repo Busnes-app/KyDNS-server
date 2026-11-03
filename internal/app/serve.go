@@ -342,19 +342,20 @@ func Serve(ctx context.Context, cfgPath string, logger *slog.Logger) error {
 	}
 	webSrv := web.New(web.Options{
 		Store: st, Registry: reg, API: api, Config: cfg,
-		Sessions:    auth.NewSessions(time.Hour, 12*time.Hour),
-		Backoff:     auth.NewBackoff(),
-		ACL:         acl,
-		Cache:       cache,
-		Metrics:     dnsSrv.Metrics(),
-		Policy:      policySvc,
-		Settings:    settingsSvc,
-		Upstreams:   fwd.Status,
-		SetupToken:  setupToken,
-		Logger:      logger,
-		Health:      healthFn,
-		Replication: func() web.ReplicaStatus { return replStatus().toWeb() },
-		Backup:      backupSvc,
+		Sessions:       auth.NewSessions(time.Hour, 12*time.Hour),
+		Backoff:        auth.NewBackoff(),
+		ACL:            acl,
+		Cache:          cache,
+		Metrics:        dnsSrv.Metrics(),
+		Policy:         policySvc,
+		Settings:       settingsSvc,
+		Upstreams:      fwd.Status,
+		SetupToken:     setupToken,
+		SetupTokenFile: filepath.Join(cfg.DataDir, setupTokenName),
+		Logger:         logger,
+		Health:         healthFn,
+		Replication:    func() web.ReplicaStatus { return replStatus().toWeb() },
+		Backup:         backupSvc,
 		// Left nil: no setting the database owns needs a restart any more.
 		// private_domain moved to a live swap, and dhcp_lease_file went with
 		// the built-in DHCP server — the poller always exists now and Apply
@@ -621,6 +622,8 @@ func warnUnreachableViews(st *store.Store, allowTailscale bool, logger *slog.Log
 	}
 }
 
+const setupTokenName = "setup-token"
+
 // ensureSetupToken mints the one-time token that gates /setup, unless an admin
 // already exists. It is written to the data dir at 0600, because the operator
 // needs it from a terminal before any UI is reachable.
@@ -629,15 +632,18 @@ func ensureSetupToken(st *store.Store, dataDir string, logger *slog.Logger) (str
 	if err != nil {
 		return "", err
 	}
+	path := filepath.Join(dataDir, setupTokenName)
 	if has {
-		return "", nil // no admin creation possible, so no token needed
+		// No admin creation possible, so no token needed; one left by an
+		// older version that never deleted it goes now.
+		_ = os.Remove(path)
+		return "", nil
 	}
 	buf := make([]byte, 16)
 	if _, err := rand.Read(buf); err != nil {
 		return "", err
 	}
 	token := hex.EncodeToString(buf)
-	path := filepath.Join(dataDir, "setup-token")
 	if err := os.WriteFile(path, []byte(token+"\n"), 0o600); err != nil {
 		return "", err
 	}

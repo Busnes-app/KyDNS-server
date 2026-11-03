@@ -34,7 +34,9 @@ type Options struct {
 	Cache      *dnsserver.Cache
 	Metrics    *dnsserver.Metrics
 	SetupToken string
-	Logger     *slog.Logger
+	// SetupTokenFile is where SetupToken was written; setup deletes it.
+	SetupTokenFile string
+	Logger         *slog.Logger
 
 	// Settings is the single write path for the settings the database owns. It
 	// is nil when the service is not wired, which the screen renders as the
