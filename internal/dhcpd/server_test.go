@@ -1553,7 +1553,7 @@ func FuzzHandle(f *testing.F) {
 // are authoritative and still NAK it.
 func TestInitRebootFromAStrangerOnASharedSegmentIsIgnored(t *testing.T) {
 	s, _ := newTestServer(t)
-	s.opts.Cfg.Shared = true
+	s.SetShared(true)
 	c := &captureConn{}
 	s.handle(c, &net.UDPAddr{IP: net.IPv4zero},
 		request("aa:aa:aa:aa:aa:aa", "laptop", netip.MustParseAddr("192.168.1.50")))

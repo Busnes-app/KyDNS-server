@@ -122,12 +122,12 @@ func (d *dhcpRunner) reconcile(v store.Settings, role Role, svcs []store.Service
 			// Same reasoning as the periodic probe: never pull DHCP out from
 			// under a working network. Say so, though — an operator revoking
 			// this has just found a server they do not trust.
-			d.logger.Info("dhcp foreign-server override revoked; the running listener is unaffected until the next restart or reconfigure")
+			d.logger.Info("dhcp foreign-server override revoked; the running listener keeps serving as the only DHCP server, and the next restart checks the segment for others again")
 		}
-		// Tracked even though the build ignores it, so the transition logs
-		// once: granting it while running and then revoking it must still say
-		// so, and without this the grant never reaches d.current.
+		// Tracked so the transition logs once, and handed to the listener live:
+		// on a shared segment it must stay silent for clients it does not know.
 		d.current.DHCPAllowForeign = v.DHCPAllowForeign
+		d.running.SetShared(v.DHCPAllowForeign)
 		// The listener already runs exactly this, so any earlier refusal is
 		// spent: leaving it would report "running yes" beside a stale reason.
 		d.lastError = nil
