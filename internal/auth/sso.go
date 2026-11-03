@@ -53,7 +53,8 @@ type SSOClient struct {
 
 func NewSSOClient(issuerURL, clientID, clientSecret string) *SSOClient {
 	return &SSOClient{
-		IssuerURL:    strings.TrimRight(issuerURL, "/"),
+		// Verbatim: go-oidc compares the issuer exactly, and Authentik's ends in "/".
+		IssuerURL:    issuerURL,
 		ClientID:     clientID,
 		ClientSecret: clientSecret,
 		HTTPClient: &http.Client{
@@ -65,10 +66,11 @@ func NewSSOClient(issuerURL, clientID, clientSecret string) *SSOClient {
 // DiscoverEndpoints queries OIDC metadata. Legacy mode retains endpoint
 // fallback; the strong profile returns discovery/policy errors to the caller.
 func (c *SSOClient) DiscoverEndpoints(ctx context.Context) (OIDCEndpoints, error) {
+	base := strings.TrimRight(c.IssuerURL, "/")
 	defaults := OIDCEndpoints{
-		AuthorizationEndpoint: c.IssuerURL + "/oauth/authorize",
-		TokenEndpoint:         c.IssuerURL + "/oauth/token",
-		UserinfoEndpoint:      c.IssuerURL + "/oauth/userinfo",
+		AuthorizationEndpoint: base + "/oauth/authorize",
+		TokenEndpoint:         base + "/oauth/token",
+		UserinfoEndpoint:      base + "/oauth/userinfo",
 	}
 
 	fail := func(err error) (OIDCEndpoints, error) {
@@ -82,7 +84,7 @@ func (c *SSOClient) DiscoverEndpoints(ctx context.Context) (OIDCEndpoints, error
 			return fail(err)
 		}
 	}
-	wellKnown := c.IssuerURL + "/.well-known/openid-configuration"
+	wellKnown := base + "/.well-known/openid-configuration"
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, wellKnown, nil)
 	if err != nil {
 		return fail(err)
