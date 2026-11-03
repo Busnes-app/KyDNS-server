@@ -348,6 +348,13 @@ func (s *Server) ack(conn net.PacketConn, m *dhcpv4.DHCPv4, mac string) {
 		s.nak(conn, m)
 		return
 	}
+	// RFC 2131 4.3.2: an INIT-REBOOT client we have no record of may hold
+	// another server's lease, and on a shared segment that server answers it.
+	// Alone on the segment we are authoritative, and the NAK below stands.
+	if s.opts.Cfg.Shared && m.ServerIdentifier() == nil && (m.ClientIPAddr == nil || m.ClientIPAddr.IsUnspecified()) &&
+		!s.opts.Alloc.Knows(mac) {
+		return
+	}
 	l, ok := s.allocate(mac, m, true)
 	if !ok {
 		s.nak(conn, m)

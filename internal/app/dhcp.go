@@ -308,6 +308,7 @@ func (d *dhcpRunner) build(v store.Settings, probe bool) (built, error) {
 		Host:      info.Addr,
 		Gateway:   gateway,
 		LeaseTime: time.Duration(v.DHCPLeaseSeconds) * time.Second,
+		Shared:    v.DHCPAllowForeign,
 	}
 	dns := []netip.Addr{info.Addr}
 	if strings.TrimSpace(v.DHCPSecondaryDNS) != "" {
