@@ -393,3 +393,21 @@ func TestServicesPageOmitsHealth(t *testing.T) {
 		}
 	}
 }
+
+// A refused edit of an existing service reports beside the page, not by
+// opening "Add a service" with the edit's values, which invites a second one.
+func TestRefusedServiceEditDoesNotOpenTheAddDialog(t *testing.T) {
+	h, srv, c, csrf := loggedIn(t)
+	postForm(t, h, "/services/new", url.Values{"name": {"kypost"}, "address": {"192.168.1.30"}, "csrf_token": {csrf}}, c)
+	svcs, _ := srv.o.Registry.Services()
+	for path, form := range map[string]url.Values{
+		"/services/routing": {"id": {itoa(svcs[0].ID)}, "proxy_address": {"not-an-ip"}, "route_via_proxy": {"on"}, "csrf_token": {csrf}},
+		"/services/address": {"id": {itoa(svcs[0].ID)}, "address": {"not-an-ip"}, "csrf_token": {csrf}},
+	} {
+		rec := postForm(t, h, path, form, c)
+		body := rec.Body.String()
+		if rec.Code != http.StatusBadRequest || strings.Contains(body, "data-open") || !strings.Contains(body, "kypost: ") {
+			t.Errorf("%s: status %d, dialog open %v, named error %v", path, rec.Code, strings.Contains(body, "data-open"), strings.Contains(body, "kypost: "))
+		}
+	}
+}

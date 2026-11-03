@@ -136,11 +136,8 @@ func (s *Server) postServiceAddress(w http.ResponseWriter, r *http.Request) {
 		View:    r.PostFormValue("view"),
 	})
 	if _, err := s.o.Registry.PutService(svc); err != nil {
-		// Reopen the add dialog with what was typed and the reason beside it.
-		data := s.servicesData("")
-		data["Form"], data["AddError"] = r.PostForm, err.Error()
-		w.WriteHeader(http.StatusBadRequest)
-		s.render(w, r, "services.html", data)
+		// An edit of an existing service: the add dialog is a different form.
+		s.renderServicesError(w, r, svc.Name+": "+err.Error())
 		return
 	}
 	http.Redirect(w, r, "/services", http.StatusSeeOther)
@@ -164,11 +161,8 @@ func (s *Server) postServiceRouting(w http.ResponseWriter, r *http.Request) {
 	svc.ProxyAddress = strings.TrimSpace(r.PostFormValue("proxy_address"))
 	svc.RouteViaProxy = r.PostFormValue("route_via_proxy") != ""
 	if _, err := s.o.Registry.PutService(svc); err != nil {
-		// Reopen the add dialog with what was typed and the reason beside it.
-		data := s.servicesData("")
-		data["Form"], data["AddError"] = r.PostForm, err.Error()
-		w.WriteHeader(http.StatusBadRequest)
-		s.render(w, r, "services.html", data)
+		// An edit of an existing service: the add dialog is a different form.
+		s.renderServicesError(w, r, svc.Name+": "+err.Error())
 		return
 	}
 	http.Redirect(w, r, "/services", http.StatusSeeOther)
