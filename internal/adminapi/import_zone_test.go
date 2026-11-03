@@ -72,3 +72,24 @@ func TestImportReplaceChecksTheRegistryBeforeTheDomainMoves(t *testing.T) {
 		t.Errorf("private domain = %q after a refused import", cur.PrivateDomain)
 	}
 }
+
+// Sol's case: a constraint only the store enforces (two services with one
+// name) must not leave the domain moved behind a refused replace.
+func TestImportReplaceRefusedByTheStoreLeavesTheDomain(t *testing.T) {
+	srv, svc := testAPIWithSettings(t)
+	dto := toSettingsDTO(validStoredSettings())
+	dto.PrivateDomain = "lan"
+	doc, _ := json.Marshal(map[string]any{
+		"services": []map[string]any{
+			{"name": "nas", "addresses": []map[string]string{{"address": "192.168.1.5"}}},
+			{"name": "nas", "addresses": []map[string]string{{"address": "192.168.1.6"}}},
+		},
+		"settings": dto,
+	})
+	if rec := srv.do(t, "POST", "/api/v1/import?mode=replace", string(doc)); rec.Code < 400 {
+		t.Fatalf("import: %d, want refused", rec.Code)
+	}
+	if cur, _ := svc.Get(); cur.PrivateDomain != "home.arpa" {
+		t.Errorf("private domain = %q after a refused import", cur.PrivateDomain)
+	}
+}

@@ -916,10 +916,11 @@ func (a *API) importDoc(w http.ResponseWriter, r *http.Request) {
 
 	// Records carry full names under the private domain the document's own
 	// settings name, so moving a box to a fresh install changes the domain.
-	// Those settings (checked above) then go first, and the registry is
-	// checked against that zone, not the one this node had.
-	settingsFirst := doc.Settings != nil && a.settings != nil &&
-		registry.Normalize(doc.Settings.PrivateDomain) != a.reg.Zone()
+	// The registry is checked against that zone, not the one this node had.
+	zone := a.reg.Zone()
+	if doc.Settings != nil && a.settings != nil {
+		zone = registry.Normalize(doc.Settings.PrivateDomain)
+	}
 
 	if r.URL.Query().Get("mode") == "replace" {
 		// Registry, policy and settings are three separately atomic writes, so
@@ -943,17 +944,7 @@ func (a *API) importDoc(w http.ResponseWriter, r *http.Request) {
 		for _, rec := range doc.Records {
 			recs = append(recs, store.Record{Name: rec.Name, Type: rec.Type, Value: rec.Value, View: rec.View})
 		}
-		if settingsFirst {
-			if _, _, _, err := registry.ValidateDocument(doc.Settings.PrivateDomain, views, svcs, recs); err != nil {
-				writeRegistryErr(w, err)
-				return
-			}
-			if err := a.applySettingsDoc(doc.Settings); err != nil {
-				a.writeSettingsErr(w, err)
-				return
-			}
-		}
-		if err := a.reg.ReplaceAll(views, svcs, recs); err != nil {
+		if err := a.reg.ReplaceAllIn(zone, views, svcs, recs); err != nil {
 			writeRegistryErr(w, err)
 			return
 		}
@@ -961,16 +952,18 @@ func (a *API) importDoc(w http.ResponseWriter, r *http.Request) {
 			writeRegistryErr(w, err)
 			return
 		}
-		if !settingsFirst {
-			if err := a.applySettingsDoc(doc.Settings); err != nil {
-				a.writeSettingsErr(w, err)
-				return
-			}
+		if err := a.applySettingsDoc(doc.Settings); err != nil {
+			a.writeSettingsErr(w, err)
+			return
 		}
 		writeJSON(w, http.StatusOK, map[string]any{"mode": "replace"})
 		return
 	}
 
+	// Merge writes record by record against the live zone and was never
+	// atomic, so a domain move lands first. ponytail: one transaction across
+	// settings and registry is the upgrade.
+	settingsFirst := zone != a.reg.Zone()
 	if settingsFirst {
 		if err := a.applySettingsDoc(doc.Settings); err != nil {
 			a.writeSettingsErr(w, err)
