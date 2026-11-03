@@ -33,6 +33,8 @@ type Session struct {
 type SSOLogin struct {
 	Issuer, Subject, SID string
 	IssuedAt             time.Time
+	// AuthTime is the ID token's auth_time; a recent one is a step-up.
+	AuthTime time.Time
 }
 
 // subjectFence refuses a subject's logins issued before cutoff until until.

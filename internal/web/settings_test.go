@@ -110,7 +110,7 @@ func TestDeleteUnusedView(t *testing.T) {
 func TestTokenShownOnceThenNever(t *testing.T) {
 	h, _, c, csrf := loggedIn(t)
 	rec := postForm(t, h, "/settings/tokens/new", url.Values{
-		"label": {"laptop"}, "csrf_token": {csrf},
+		"label": {"laptop"}, "csrf_token": {csrf}, "current_password": {testPassword},
 	}, c)
 	if rec.Code != http.StatusOK {
 		t.Fatalf("create token = %d: %s", rec.Code, rec.Body)
@@ -132,7 +132,7 @@ func TestTokenShownOnceThenNever(t *testing.T) {
 
 func TestTokenRevoke(t *testing.T) {
 	h, srv, c, csrf := loggedIn(t)
-	postForm(t, h, "/settings/tokens/new", url.Values{"label": {"gone"}, "csrf_token": {csrf}}, c)
+	postForm(t, h, "/settings/tokens/new", url.Values{"label": {"gone"}, "csrf_token": {csrf}, "current_password": {testPassword}}, c)
 	toks, err := srv.o.Registry.Tokens()
 	if err != nil || len(toks) != 1 {
 		t.Fatalf("Tokens() = %v, %v", toks, err)
@@ -204,7 +204,7 @@ func TestConfigViewAbsentWithoutConfig(t *testing.T) {
 func TestConfigViewCarriesNoSecrets(t *testing.T) {
 	h, srv, c, csrf := loggedIn(t)
 	srv.o.Config = &config.Config{DataDir: "/tmp", DNS: config.DNSConfig{Listen: ":53"}}
-	postForm(t, h, "/settings/tokens/new", url.Values{"label": {"x"}, "csrf_token": {csrf}}, c)
+	postForm(t, h, "/settings/tokens/new", url.Values{"label": {"x"}, "csrf_token": {csrf}, "current_password": {testPassword}}, c)
 	body := page(t, h, "/settings/server", c)
 	for _, forbidden := range []string{"password_hash", "argon2", "kydns_"} {
 		if strings.Contains(body, forbidden) {
@@ -263,7 +263,7 @@ func TestDiscoveredPlaceholder(t *testing.T) {
 func TestAgentTokenCreatedAndChanged(t *testing.T) {
 	h, srv, c, csrf := loggedIn(t)
 	rec := postForm(t, h, "/settings/tokens/new", url.Values{
-		"label": {"hermes"}, "access": {"mcp:read"}, "query_log": {"on"}, "csrf_token": {csrf},
+		"label": {"hermes"}, "access": {"mcp:read"}, "query_log": {"on"}, "csrf_token": {csrf}, "current_password": {testPassword},
 	}, c)
 	body := rec.Body.String()
 	if rec.Code != http.StatusOK || !strings.Contains(body, "/mcp") || !strings.Contains(body, "/agent/skills/kydns/SKILL.md") {

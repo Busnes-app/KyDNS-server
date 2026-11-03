@@ -33,6 +33,7 @@ type SSOTokenClaims struct {
 	Issuer            string         `json:"iss"`
 	SID               string         `json:"sid"`
 	IssuedAt          time.Time      `json:"-"` // the ID token's iat: when the provider vouched for this login
+	AuthTime          time.Time      `json:"-"` // the ID token's auth_time: when the user last authenticated; zero if absent
 	RawClaims         map[string]any `json:"-"`
 }
 
@@ -49,6 +50,9 @@ type SSOClient struct {
 	ClientID     string
 	ClientSecret string
 	HTTPClient   *http.Client
+	// FreshLogin asks the provider to authenticate the user again (max_age=0),
+	// for a step-up dated from the ID token's auth_time.
+	FreshLogin bool
 }
 
 func NewSSOClient(issuerURL, clientID, clientSecret string) *SSOClient {
@@ -165,6 +169,9 @@ func (c *SSOClient) AuthURL(redirectURI, state, nonce, codeChallenge string) (st
 	q.Set("nonce", nonce)
 	q.Set("code_challenge", codeChallenge)
 	q.Set("code_challenge_method", "S256")
+	if c.FreshLogin {
+		q.Set("max_age", "0")
+	}
 
 	sep := "?"
 	if strings.Contains(endpoints.AuthorizationEndpoint, "?") {
@@ -245,6 +252,7 @@ func (c *SSOClient) ExchangeCode(ctx context.Context, redirectURI, code, codeVer
 	}
 	// sid comes from the ID token only: back-channel logout names logins by it.
 	sid, _ := rawClaims["sid"].(string)
+	authTime, _ := rawClaims["auth_time"].(float64)
 	if userInfo, err := provider.UserInfo(ctx, oauth2.StaticTokenSource(token)); err == nil {
 		if userInfo.Subject != idToken.Subject {
 			return nil, fmt.Errorf("verify userinfo: subject mismatch")
@@ -262,6 +270,9 @@ func (c *SSOClient) ExchangeCode(ctx context.Context, redirectURI, code, codeVer
 	claims := parseClaimsMap(rawClaims)
 	claims.SID = sid
 	claims.IssuedAt = idToken.IssuedAt
+	if authTime > 0 {
+		claims.AuthTime = time.Unix(int64(authTime), 0)
+	}
 	return claims, nil
 }
 

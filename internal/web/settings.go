@@ -174,7 +174,11 @@ func (s *Server) getSettings(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	s.render(w, r, "settings.html", s.settingsData(r, "", ""))
+	msg := ""
+	if r.URL.Query().Get("stepup") == "stale" {
+		msg = "Your identity provider did not ask you to sign in again, so it cannot confirm a token. Enter your current password instead."
+	}
+	s.render(w, r, "settings.html", s.settingsData(r, msg, ""))
 }
 
 func (s *Server) settingsError(w http.ResponseWriter, r *http.Request, err error) {
@@ -218,6 +222,10 @@ func (s *Server) postTokenNew(w http.ResponseWriter, r *http.Request) {
 	sess, ok := s.session(r)
 	if !ok {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+	if err := s.stepUp(r, sess); err != nil {
+		s.settingsError(w, r, err)
 		return
 	}
 	label, scope, queryLog := r.PostFormValue("label"), r.PostFormValue("access"), r.PostFormValue("query_log") == "on"

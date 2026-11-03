@@ -398,6 +398,9 @@ func TestEveryPostRouteRequiresSessionAndCSRF(t *testing.T) {
 	}
 }
 
+// oidcAuthTime is the auth_time oidcTestServer signs; 0 leaves it out.
+var oidcAuthTime = func() int64 { return time.Now().Unix() }
+
 func oidcTestServer(t *testing.T, sub, username, email, role string, tls ...bool) *httptest.Server {
 	t.Helper()
 	key, err := rsa.GenerateKey(rand.Reader, 2048)
@@ -422,11 +425,15 @@ func oidcTestServer(t *testing.T, sub, username, email, role string, tls ...bool
 		case "/token":
 			signer, _ := jose.NewSigner(jose.SigningKey{Algorithm: jose.RS256, Key: key},
 				(&jose.SignerOptions{}).WithType("JWT").WithHeader("kid", "test"))
-			raw, _ := jwt.Signed(signer).Claims(map[string]any{
+			idClaims := map[string]any{
 				"iss": srv.URL, "aud": "kydns", "exp": time.Now().Add(time.Hour).Unix(),
 				"iat": time.Now().Unix(), "nonce": "test_nonce", "sub": sub,
 				"username": username, "email": email, "role": role,
-			}).Serialize()
+			}
+			if at := oidcAuthTime(); at != 0 {
+				idClaims["auth_time"] = at
+			}
+			raw, _ := jwt.Signed(signer).Claims(idClaims).Serialize()
 			_ = json.NewEncoder(w).Encode(map[string]any{"access_token": "tok", "id_token": raw, "token_type": "Bearer"})
 		case "/userinfo":
 			_ = json.NewEncoder(w).Encode(claims)
