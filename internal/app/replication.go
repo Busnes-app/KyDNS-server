@@ -301,6 +301,17 @@ func (p pairingState) SetReplicaState(primaryNodeID string, version int64) error
 	return p.st.FollowPrimary(primaryNodeID, version)
 }
 
+// pullState is the store as the pull loop writes it: it advances the version
+// for its own pin only, so a loop still finishing an apply after a re-pairing
+// fails instead of pinning the old primary again.
+type pullState struct{ st *store.Store }
+
+func (p pullState) ReplicaState() (string, int64, error) { return p.st.ReplicaState() }
+
+func (p pullState) SetReplicaState(primaryNodeID string, version int64) error {
+	return p.st.AdvanceReplicaState(primaryNodeID, version)
+}
+
 // runPuller starts the pull loop and returns the function that stops it. Stop
 // waits for the loop to exit rather than only signalling it: promotion must
 // not race a poll that is already applying a snapshot over the writes this
@@ -380,7 +391,7 @@ func startReplication(ctx context.Context, cfg *config.Config, role Role, st *st
 			},
 			Pinned:   fp,
 			Apply:    ap,
-			State:    st,
+			State:    pullState{st},
 			Interval: pullInterval,
 			Ceiling:  pullCeiling,
 			Now:      time.Now,
