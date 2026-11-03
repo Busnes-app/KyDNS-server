@@ -60,6 +60,10 @@ func NewBackoff() *Backoff { return &Backoff{failures: map[string]int{}} }
 func (b *Backoff) Delay(key string) time.Duration {
 	b.mu.Lock()
 	defer b.mu.Unlock()
+	return b.delayLocked(key)
+}
+
+func (b *Backoff) delayLocked(key string) time.Duration {
 	n := b.failures[bucket(key)]
 	if n == 0 {
 		return 0
@@ -74,9 +78,25 @@ func (b *Backoff) Delay(key string) time.Duration {
 	return d
 }
 
+// Attempt counts an attempt from key as a failure until Reset or Refund says
+// otherwise, and returns the delay the failures before it earned. Both happen under one
+// lock, so parallel attempts each wait longer than the last instead of all
+// sharing one delay.
+func (b *Backoff) Attempt(key string) time.Duration {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	d := b.delayLocked(key)
+	b.failLocked(key)
+	return d
+}
+
 func (b *Backoff) Fail(key string) {
 	b.mu.Lock()
 	defer b.mu.Unlock()
+	b.failLocked(key)
+}
+
+func (b *Backoff) failLocked(key string) {
 	key = bucket(key)
 	if _, ok := b.failures[key]; !ok && len(b.failures) >= backoffMaxKeys {
 		for k := range b.failures { // evict one arbitrary entry
@@ -85,6 +105,17 @@ func (b *Backoff) Fail(key string) {
 		}
 	}
 	b.failures[key]++
+}
+
+// Refund takes back the strike Attempt counted, for an attempt that was never
+// judged (the checker was busy).
+func (b *Backoff) Refund(key string) {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	key = bucket(key)
+	if b.failures[key]--; b.failures[key] <= 0 {
+		delete(b.failures, key)
+	}
 }
 
 func (b *Backoff) Reset(key string) {

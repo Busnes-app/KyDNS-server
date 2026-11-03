@@ -120,8 +120,14 @@ func (s *Server) postLogin(w http.ResponseWriter, r *http.Request) {
 	}
 	key := s.sourceKey(r)
 	// Sleep before answering, so guessing gets slower without ever locking out.
-	if d := s.o.Backoff.Delay(key); d > 0 {
-		time.Sleep(d)
+	// The attempt counts before the sleep, so parallel guesses cannot share one
+	// delay; a correct password resets it and a busy checker refunds it.
+	if d := s.o.Backoff.Attempt(key); d > 0 {
+		select {
+		case <-time.After(d):
+		case <-r.Context().Done():
+			return
+		}
 	}
 	generation := s.o.Sessions.RecoveryGeneration()
 	hash, err := s.o.Store.AdminHash()
@@ -130,12 +136,12 @@ func (s *Server) postLogin(w http.ResponseWriter, r *http.Request) {
 		ok, err = verifyPassword(hash, r.PostFormValue("password"))
 	}
 	if errors.Is(err, auth.ErrBusy) {
+		s.o.Backoff.Refund(key)
 		w.WriteHeader(http.StatusServiceUnavailable)
 		s.renderLogin(w, "KyDNS is busy checking other sign-ins. Try again in a moment.")
 		return
 	}
 	if !ok {
-		s.o.Backoff.Fail(key)
 		s.o.Logger.Warn("failed login", "source", key)
 		w.WriteHeader(http.StatusUnauthorized)
 		s.renderLogin(w, "That password is not correct.")
