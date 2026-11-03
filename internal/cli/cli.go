@@ -170,12 +170,34 @@ func backupDrillCmd(c *Client, args []string, stdout, stderr io.Writer) int {
 		fmt.Fprintln(stderr, "usage: kydns backup-drill")
 		return 2
 	}
-	var out any
-	if err := c.Do(http.MethodPost, "/api/v1/backup/drill", nil, &out); err != nil {
+	// A drill that ran and failed answers 200 with passed false.
+	var out struct {
+		Passed       bool   `json:"passed"`
+		ErrorMessage string `json:"error_message"`
+	}
+	if err := withTimeout(c, backupTimeout).Do(http.MethodPost, "/api/v1/backup/drill", nil, &out); err != nil {
 		return fail(stderr, err)
+	}
+	if !out.Passed {
+		return fail(stderr, fmt.Errorf("backup drill failed: %s", out.ErrorMessage))
 	}
 	fmt.Fprintln(stdout, "backup drill passed")
 	return 0
+}
+
+// backupTimeout outlasts the server's own budget for a deposit (16 minutes), so
+// a slow upload is not reported as a failure while the server finishes it.
+const backupTimeout = 20 * time.Minute
+
+// withTimeout is c with a different overall request timeout.
+func withTimeout(c *Client, d time.Duration) *Client {
+	out := *c
+	if c.HTTP != nil {
+		hc := *c.HTTP
+		hc.Timeout = d
+		out.HTTP = &hc
+	}
+	return &out
 }
 
 // backupPinKeyCmd reads the base64 public key from a file, never from argv: argv is
@@ -258,7 +280,7 @@ func depositCmd(c *Client, args []string, stdout, stderr io.Writer) int {
 	var out struct {
 		CapsuleID string `json:"capsule_id"`
 	}
-	if err := c.Do(http.MethodPost, "/api/v1/backup/deposit", nil, &out); err != nil {
+	if err := withTimeout(c, backupTimeout).Do(http.MethodPost, "/api/v1/backup/deposit", nil, &out); err != nil {
 		return fail(stderr, err)
 	}
 	fmt.Fprintf(stdout, "deposited %s\n", out.CapsuleID)
@@ -272,7 +294,7 @@ func exportCapsuleCmd(c *Client, args []string, stdout, stderr io.Writer) int {
 	if err := fs.Parse(args); err != nil {
 		return 2
 	}
-	raw, err := c.Download("/api/v1/backup/export-capsule")
+	raw, err := withTimeout(c, backupTimeout).Download("/api/v1/backup/export-capsule")
 	if err != nil {
 		return fail(stderr, err)
 	}
@@ -614,7 +636,9 @@ func exportCmd(c *Client, args []string, stdout, stderr io.Writer) int {
 	if resp.StatusCode >= 300 {
 		return fail(stderr, fmt.Errorf("export: %s", resp.Status))
 	}
-	io.Copy(stdout, resp.Body)
+	if _, err := io.Copy(stdout, resp.Body); err != nil {
+		return fail(stderr, fmt.Errorf("export incomplete: %w", err))
+	}
 	return 0
 }
 

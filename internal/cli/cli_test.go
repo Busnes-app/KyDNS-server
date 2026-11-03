@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 )
 
 // KYDNS_TOKEN is a bearer credential: plain http may carry it only over
@@ -353,5 +354,49 @@ func TestTokenAddAgentFlags(t *testing.T) {
 	}
 	if code := tokenCmd(c, []string{"add", "x", "--root"}, &out, &errOut); code != 2 {
 		t.Errorf("unknown flag exit = %d, want 2", code)
+	}
+}
+
+// A drill that ran and failed answers 200 with passed false; cron around the
+// command must see exit 1 (ky-server-base Q5 A).
+func TestBackupDrillFailureExitsOne(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		json.NewEncoder(w).Encode(map[string]any{"passed": false, "error_message": "capsule did not open"})
+	}))
+	defer srv.Close()
+	c := &Client{BaseURL: srv.URL, Token: "t", HTTP: srv.Client()}
+	var out, errOut bytes.Buffer
+	if code := backupDrillCmd(c, nil, &out, &errOut); code != 1 {
+		t.Fatalf("exit = %d, want 1; stdout %q", code, out.String())
+	}
+	if strings.Contains(out.String(), "passed") || !strings.Contains(errOut.String(), "capsule did not open") {
+		t.Errorf("stdout %q stderr %q", out.String(), errOut.String())
+	}
+}
+
+// The backup commands outlast the 10s default: the server keeps working on a
+// deposit for up to 16 minutes.
+func TestBackupCommandsOutlastTheDefaultTimeout(t *testing.T) {
+	c := &Client{HTTP: &http.Client{Timeout: 10 * time.Second}}
+	if got := withTimeout(c, backupTimeout).HTTP.Timeout; got <= 16*time.Minute {
+		t.Errorf("backup timeout = %s, want more than the server's 16 minutes", got)
+	}
+	if c.HTTP.Timeout != 10*time.Second {
+		t.Error("withTimeout changed the caller's client")
+	}
+}
+
+// A body cut short after the headers must not leave a partial export behind a
+// successful exit.
+func TestExportCutShortFails(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Length", "1000")
+		w.Write([]byte("views: []\n"))
+	}))
+	defer srv.Close()
+	c := &Client{BaseURL: srv.URL, Token: "t", HTTP: srv.Client()}
+	var out, errOut bytes.Buffer
+	if code := exportCmd(c, nil, &out, &errOut); code != 1 {
+		t.Fatalf("exit = %d, want 1", code)
 	}
 }

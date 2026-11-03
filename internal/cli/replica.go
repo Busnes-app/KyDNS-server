@@ -346,15 +346,7 @@ func normalizeFingerprint(fp string) string {
 // pairingClient is c with room for the server to dial a third machine. The
 // server's own dial is bounded; this has to outlast it, or a slow primary
 // looks like a broken command.
-func pairingClient(c *Client) *Client {
-	out := *c
-	if c.HTTP != nil {
-		hc := *c.HTTP
-		hc.Timeout = time.Minute
-		out.HTTP = &hc
-	}
-	return &out
-}
+func pairingClient(c *Client) *Client { return withTimeout(c, time.Minute) }
 
 // nodeStatus is /api/v1/replica/status as both commands below read it.
 type nodeStatus struct {
