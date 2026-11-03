@@ -223,7 +223,11 @@ func (s *Server) TransportGate(next http.Handler) http.Handler {
 		}
 		if r.Method == http.MethodOptions && r.Header.Get("Origin") != "" ||
 			unsafeMethod(r.Method) && s.crossOrigin(r) {
-			http.Error(w, "cross-origin request refused", http.StatusForbidden)
+			// The common honest cause is a reverse proxy that rewrote Host, so
+			// the browser's own origin no longer matches it. Say so.
+			http.Error(w, "cross-origin request refused: this page's address does not match the Host this request "+
+				"reached KyDNS with. Behind a reverse proxy, pass the original Host header through "+
+				"(nginx: proxy_set_header Host $host;).", http.StatusForbidden)
 			return
 		}
 		next.ServeHTTP(w, r)

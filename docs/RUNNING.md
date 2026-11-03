@@ -120,6 +120,22 @@ as KyDNS sees it (comma-separated IPs or CIDRs; `/0` is refused), and open
 `/setup` through the proxy's `https://` address. This setting trusts forwarded
 headers; it does not block direct access to `http://$KYDNS_IP:8053/`.
 
+The proxy must pass the browser's `Host` header through unchanged. KyDNS
+compares it with the page's origin, so a proxy that rewrites it (nginx's
+default `proxy_pass`) gets every form, `/setup` and sign-in included, refused
+as "cross-origin request refused". For nginx:
+
+```nginx
+location / {
+    proxy_pass http://192.168.1.53:8053;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+}
+```
+
+Caddy (`reverse_proxy`) and Traefik keep `Host` by default.
+
 Set `KYDNS_ADMIN_HOSTNAMES` to the host names the admin UI is reached by
 (comma-separated, no scheme or port, for example `kydns.home.arpa`). The UI,
 the API and `/mcp` refuse any other `Host`, which stops a web page from
