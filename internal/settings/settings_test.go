@@ -119,6 +119,8 @@ func (f *fakeWriter) PutDHCPSettings(v store.Settings) error {
 	f.cur.DHCPRangeStart, f.cur.DHCPRangeEnd = v.DHCPRangeStart, v.DHCPRangeEnd
 	f.cur.DHCPGateway, f.cur.DHCPLeaseSeconds = v.DHCPGateway, v.DHCPLeaseSeconds
 	f.cur.DHCPSecondaryDNS, f.cur.DHCPAllowForeign = v.DHCPSecondaryDNS, v.DHCPAllowForeign
+	f.cur.DHCPLeaseFile, f.cur.DiscoveryInterval = v.DHCPLeaseFile, v.DiscoveryInterval
+	f.cur.LogQueries, f.cur.LogClientIP = v.LogQueries, v.LogClientIP
 	f.narrowWrites++
 	return nil
 }

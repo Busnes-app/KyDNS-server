@@ -115,8 +115,9 @@ type Writer interface {
 	// from the old private zone into the new one, in one transaction.
 	PutSettingsRenamingZone(v store.Settings, from, to string) (int, error)
 
-	// PutDHCPSettings writes the eight node-local dhcp_* columns and nothing
-	// else. It is the replica write path; see setDHCPOnly.
+	// PutDHCPSettings writes the node-local columns (dhcp_*, dhcp_lease_file,
+	// discovery_interval, log_queries, log_client_ip) and nothing else. It is
+	// the replica write path; see setDHCPOnly.
 	PutDHCPSettings(store.Settings) error
 }
 
@@ -125,8 +126,8 @@ type Writer interface {
 // preserves them; every other setting belongs to the primary and the next pull
 // would discard it.
 var ErrReadOnlyReplica = errors.New(
-	"this node is a read-only replica: only the DHCP settings can be changed here, " +
-		"and every other setting must be changed on its primary")
+	"this node is a read-only replica: only its DHCP, lease file, discovery interval and " +
+		"query logging settings can be changed here, and every other setting must be changed on its primary")
 
 // Service is the single write path for settings: validate, persist, rebuild,
 // apply. onApply is injected so this package never imports the runtime.
@@ -278,6 +279,8 @@ func dhcpOnlyChange(prev, v store.Settings) bool {
 }
 
 func withoutDHCP(v store.Settings) store.Settings {
+	// Node-local beside the DHCP fields: ApplySnapshot keeps the replica's own.
+	v.DHCPLeaseFile, v.DiscoveryInterval, v.LogQueries, v.LogClientIP = "", 0, false, false
 	v.DHCPEnabled, v.DHCPInterface = false, ""
 	v.DHCPRangeStart, v.DHCPRangeEnd = "", ""
 	v.DHCPGateway, v.DHCPLeaseSeconds = "", 0
