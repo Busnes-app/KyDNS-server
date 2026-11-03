@@ -175,13 +175,7 @@ func (s *Server) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 		fail(dns.RcodeServerFailure, "forward")
 		return
 	}
-	// An allow rule overrides every list (docs/FEATURES.md), so for a name it
-	// covers only a deny rule on a CNAME target still blocks.
-	check := s.cloaked
-	if policy == policyAllow {
-		check = s.deniedTarget
-	}
-	if blocked, decision, ttl := check(resp.Answer); blocked {
+	if blocked, decision, ttl := s.cloaked(resp.Answer); blocked {
 		block(ttl, decision)
 		return
 	}
@@ -195,10 +189,6 @@ func (s *Server) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 	}
 	reply(out, "forward", view, policy)
 }
-
-// policyAllow is policy.PolicyAllow, the decision an allow rule returns; the
-// policy package is not imported here.
-const policyAllow = "allow"
 
 // forwardTimeout bounds one upstream resolution.
 const forwardTimeout = 10 * time.Second
@@ -224,21 +214,6 @@ func (s *Server) cloaked(rrs []dns.RR) (bool, string, uint32) {
 	return false, "", 0
 }
 
-// deniedTarget is cloaked for a name an allow rule covers: it blocks only on a
-// deny rule, and asks the policy without counting a list match it ignores.
-func (s *Server) deniedTarget(rrs []dns.RR) (bool, string, uint32) {
-	d, ok := s.o.Policy.(interface{ Denied(string) bool })
-	if !ok {
-		return false, "", 0
-	}
-	for _, rr := range rrs {
-		if c, ok := rr.(*dns.CNAME); ok && d.Denied(c.Target) {
-			return s.decide(c.Target)
-		}
-	}
-	return false, "", 0
-}
-
 // finishChain completes an authoritative CNAME chain that leaves our zones,
 // since a LAN stub resolver cannot. Only records on the chain are appended, so
 // an upstream cannot plant data for other names. It reports a policy block on
@@ -252,9 +227,8 @@ func (s *Server) finishChain(m *dns.Msg, q dns.Question, do bool) (bool, string,
 	if !ok || s.o.Auth.Owns(last.Target) {
 		return false, "", 0
 	}
-	blocked, targetPolicy, ttl := s.decide(last.Target)
-	if blocked {
-		return true, targetPolicy, ttl
+	if blocked, decision, ttl := s.decide(last.Target); blocked {
+		return true, decision, ttl
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), forwardTimeout)
 	defer cancel()
@@ -263,12 +237,7 @@ func (s *Server) finishChain(m *dns.Msg, q dns.Question, do bool) (bool, string,
 		return false, "", 0
 	}
 	chain := onChain(last.Target, resp.Answer)
-	// As for a forwarded name: past an allowed target only a deny rule blocks.
-	check := s.cloaked
-	if targetPolicy == policyAllow {
-		check = s.deniedTarget
-	}
-	if blocked, decision, ttl := check(chain); blocked {
+	if blocked, decision, ttl := s.cloaked(chain); blocked {
 		return true, decision, ttl
 	}
 	m.Answer = append(m.Answer, chain...)
