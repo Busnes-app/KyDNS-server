@@ -175,3 +175,18 @@ func TestQueryLogLowercasesNames(t *testing.T) {
 		t.Errorf("entries = %+v, want www.example.com", got)
 	}
 }
+
+// The authoritative chase follows the same rule: past an allowed target only
+// a deny rule blocks, so cdn.home.arpa -> edge.example.net (allowed) answers
+// even when the chain beyond it reaches a listed name.
+func TestChaseThroughAnAllowedTargetIgnoresLists(t *testing.T) {
+	s := chaseServer(t, chainUpstream(), map[string]string{"final.example.net.": "steven-black"}, nil)
+	s.o.Policy.(*stubPolicy).allowed = map[string]bool{"edge.example.net.": true}
+	if m := serve(s, "cdn.home.arpa."); m.Rcode != dns.RcodeSuccess || len(m.Answer) < 2 {
+		t.Errorf("rcode %s answer %v, want the chain answered", dns.RcodeToString[m.Rcode], m.Answer)
+	}
+	s.o.Policy.(*stubPolicy).blocked["final.example.net."] = "deny"
+	if m := serve(s, "cdn.home.arpa."); m.Rcode != dns.RcodeNameError {
+		t.Errorf("rcode %s, want a deny rule beyond the allowed target to block", dns.RcodeToString[m.Rcode])
+	}
+}

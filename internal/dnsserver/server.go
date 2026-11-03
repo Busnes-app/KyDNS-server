@@ -252,8 +252,9 @@ func (s *Server) finishChain(m *dns.Msg, q dns.Question, do bool) (bool, string,
 	if !ok || s.o.Auth.Owns(last.Target) {
 		return false, "", 0
 	}
-	if blocked, decision, ttl := s.decide(last.Target); blocked {
-		return true, decision, ttl
+	blocked, targetPolicy, ttl := s.decide(last.Target)
+	if blocked {
+		return true, targetPolicy, ttl
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), forwardTimeout)
 	defer cancel()
@@ -262,7 +263,12 @@ func (s *Server) finishChain(m *dns.Msg, q dns.Question, do bool) (bool, string,
 		return false, "", 0
 	}
 	chain := onChain(last.Target, resp.Answer)
-	if blocked, decision, ttl := s.cloaked(chain); blocked {
+	// As for a forwarded name: past an allowed target only a deny rule blocks.
+	check := s.cloaked
+	if targetPolicy == policyAllow {
+		check = s.deniedTarget
+	}
+	if blocked, decision, ttl := check(chain); blocked {
 		return true, decision, ttl
 	}
 	m.Answer = append(m.Answer, chain...)
