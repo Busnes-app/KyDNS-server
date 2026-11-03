@@ -1,10 +1,14 @@
 package web
 
 import (
+	"errors"
+	"io/fs"
 	"net/http"
 	"net/http/httptest"
 	"net/netip"
 	"net/url"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
@@ -131,7 +135,7 @@ func TestSSOClientSecretIsNeverRendered(t *testing.T) {
 	sess, _ := srv.o.Sessions.Get(c.Value)
 	save := func(extra url.Values) {
 		t.Helper()
-		form := url.Values{"csrf_token": {sess.CSRF}, "issuer_url": {"https://idp.example"}, "client_id": {"kydns"}}
+		form := url.Values{"csrf_token": {sess.CSRF}, "issuer_url": {"https://idp.example"}, "client_id": {"kydns"}, "current_password": {testPassword}}
 		for k, v := range extra {
 			form[k] = v
 		}
@@ -186,4 +190,17 @@ func TestResetRejectsOverlappingPasswordLogin(t *testing.T) {
 		}
 	}
 	t.Fatal("new password could not access settings after recovery")
+}
+
+// Setup spends the token, so its file goes with it (KyNotes Q1 A).
+func TestSetupDeletesTheSpentToken(t *testing.T) {
+	file := filepath.Join(t.TempDir(), "setup-token")
+	if err := os.WriteFile(file, []byte("setup-me\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	h, _ := newWeb(t, func(o *Options) { o.SetupTokenFile = file })
+	setupAndLogin(t, h)
+	if _, err := os.Stat(file); !errors.Is(err, fs.ErrNotExist) {
+		t.Fatalf("setup token file after setup: %v", err)
+	}
 }

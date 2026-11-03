@@ -265,6 +265,9 @@ func (p *replicaPromoter) Promote() (bool, error) {
 type replicaJoiner struct {
 	st *store.Store
 	id *replica.Identity
+	// stopPull stops the boot-time pull loop, which is pinned to the primary
+	// this node followed before; nil when none runs.
+	stopPull func()
 }
 
 func (j *replicaJoiner) Peek(ctx context.Context, address string) (string, error) {
@@ -272,9 +275,16 @@ func (j *replicaJoiner) Peek(ctx context.Context, address string) (string, error
 }
 
 func (j *replicaJoiner) Join(ctx context.Context, address, code, fingerprint string) (string, error) {
-	return replica.PairAsReplica(ctx, address, j.id, code,
+	id, err := replica.PairAsReplica(ctx, address, j.id, code,
 		func(_ context.Context, presented string) (bool, error) { return presented == fingerprint, nil },
 		pairingState{st: j.st})
+	// The running loop still trusts the old primary; one more pull from it
+	// would write its fingerprint back over this pairing. Following the new one
+	// starts at the restart the operator is told to make.
+	if err == nil && j.stopPull != nil {
+		j.stopPull()
+	}
+	return id, err
 }
 
 // pairingState is the store as the pairing exchange writes it. Joining is the
@@ -289,6 +299,17 @@ func (p pairingState) ReplicaState() (string, int64, error) { return p.st.Replic
 
 func (p pairingState) SetReplicaState(primaryNodeID string, version int64) error {
 	return p.st.FollowPrimary(primaryNodeID, version)
+}
+
+// pullState is the store as the pull loop writes it: it advances the version
+// for its own pin only, so a loop still finishing an apply after a re-pairing
+// fails instead of pinning the old primary again.
+type pullState struct{ st *store.Store }
+
+func (p pullState) ReplicaState() (string, int64, error) { return p.st.ReplicaState() }
+
+func (p pullState) SetReplicaState(primaryNodeID string, version int64) error {
+	return p.st.AdvanceReplicaState(primaryNodeID, version)
 }
 
 // runPuller starts the pull loop and returns the function that stops it. Stop
@@ -370,7 +391,7 @@ func startReplication(ctx context.Context, cfg *config.Config, role Role, st *st
 			},
 			Pinned:   fp,
 			Apply:    ap,
-			State:    st,
+			State:    pullState{st},
 			Interval: pullInterval,
 			Ceiling:  pullCeiling,
 			Now:      time.Now,

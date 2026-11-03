@@ -49,6 +49,8 @@ refused with the address of the primary to make them on: in the API, in the
 CLI, and in the UI, whose editing controls are disabled with the same reason.
 Its own DHCP settings are the exception, because they are node-local and no
 pull can discard them; see [the DHCP server guide](FEATURES.md#the-built-in-dhcp-server).
+So are `log_queries`, `log_client_ip`, `discovery_interval` and `dhcp_lease_file`,
+which a replica changes through the API or CLI (`PATCH /api/v1/settings`).
 
 The Replication screen in the web UI does all of this too: minting an invite,
 pairing a replica with the primary its config names, listing replicas with

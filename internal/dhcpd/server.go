@@ -9,6 +9,7 @@ import (
 	"slices"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	idhcp "github.com/Busnes-app/kydns-server/internal/discovery/dhcp"
@@ -69,7 +70,16 @@ type Server struct {
 	// ignored holds the transaction IDs of probes this server sent itself.
 	// See ProbeForeign.
 	ignored map[dhcpv4.TransactionID]bool
+	// shared is Cfg.Shared, changeable while running: dhcp_allow_foreign is
+	// granted and revoked without rebuilding the listener.
+	shared atomic.Bool
 }
+
+// SetShared says whether another DHCP server may serve this segment.
+func (s *Server) SetShared(on bool) { s.shared.Store(on) }
+
+// Shared reports what SetShared last said.
+func (s *Server) Shared() bool { return s.shared.Load() }
 
 // ProbeForeign runs the rogue check while this listener is bound, which is
 // what the periodic probe needs. Our own server answers that probe exactly as
@@ -128,7 +138,9 @@ func New(o Options) *Server {
 	if now == nil {
 		now = time.Now
 	}
-	return &Server{opts: o, now: now, slots: make(chan struct{}, maxInFlight)}
+	s := &Server{opts: o, now: now, slots: make(chan struct{}, maxInFlight)}
+	s.shared.Store(o.Cfg.Shared)
+	return s
 }
 
 func (s *Server) Name() string { return "built-in" }
@@ -346,6 +358,13 @@ func (s *Server) ack(conn net.PacketConn, m *dhcpv4.DHCPv4, mac string) {
 	asked := askedFor(m)
 	if !asked.IsValid() || !s.opts.Cfg.Subnet.Contains(asked) {
 		s.nak(conn, m)
+		return
+	}
+	// RFC 2131 4.3.2: an INIT-REBOOT client we have no record of may hold
+	// another server's lease, and on a shared segment that server answers it.
+	// Alone on the segment we are authoritative, and the NAK below stands.
+	if s.shared.Load() && m.ServerIdentifier() == nil && (m.ClientIPAddr == nil || m.ClientIPAddr.IsUnspecified()) &&
+		!s.opts.Alloc.Knows(mac) {
 		return
 	}
 	l, ok := s.allocate(mac, m, true)

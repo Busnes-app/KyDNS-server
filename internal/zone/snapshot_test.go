@@ -555,3 +555,20 @@ func TestTaggedRecordFallbackIsPerName(t *testing.T) {
 		t.Errorf("tailnet b = %v, want the untagged record", got)
 	}
 }
+
+// A one-label private domain must not swallow names that merely end in its
+// letters: "wlan" under "lan." is wlan.lan., not the top-level wlan.
+func TestQualifyNeedsALabelBoundary(t *testing.T) {
+	s, err := Build(Input{Zone: "lan.", Leases: []Lease{{Hostname: "wlan", Address: "192.168.1.77"}}}, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := values(s.Lookup("", "wlan.lan.")); len(got) != 1 || got[0] != "192.168.1.77" {
+		t.Errorf("wlan.lan. = %v, want the lease", got)
+	}
+	for name, want := range map[string]string{"nas": "nas.lan.", "nas.lan": "nas.lan.", "nas.lan.": "nas.lan.", "lan": "lan.", "wlan": "wlan.lan."} {
+		if got := qualify(name, "lan."); got != want {
+			t.Errorf("qualify(%q) = %q, want %q", name, got, want)
+		}
+	}
+}

@@ -149,7 +149,7 @@ func TestForgedCrossSiteTokenRequestsAreRefused(t *testing.T) {
 	toks, _ := s.srv.o.Registry.Tokens()
 	id := itoa(toks[0].ID)
 	forms := map[string]url.Values{
-		"/settings/tokens/new":    {"label": {"evil"}, "access": {"mcp:write"}, "query_log": {"on"}},
+		"/settings/tokens/new":    {"label": {"evil"}, "access": {"mcp:write"}, "query_log": {"on"}, "current_password": {testPassword}},
 		"/settings/tokens/access": {"id": {id}, "access": {"mcp:read"}, "query_log": {"on"}},
 		"/settings/tokens/delete": {"id": {id}},
 	}
@@ -186,7 +186,7 @@ func TestForgedCrossSiteTokenRequestsAreRefused(t *testing.T) {
 		}
 	}
 	// The real form, from the real page, works.
-	legit := url.Values{"label": {"hermes 2"}, "access": {"mcp:read"}, "csrf_token": {s.csrf}}
+	legit := url.Values{"label": {"hermes 2"}, "access": {"mcp:read"}, "csrf_token": {s.csrf}, "current_password": {testPassword}}
 	if rec := s.send(t, "POST", "/settings/tokens/new", legit.Encode(), map[string]string{"Cookie": "", "Origin": ownOrigin, "Sec-Fetch-Site": "same-origin"}); rec.Code != http.StatusOK || s.tokenCount(t) != 2 {
 		t.Fatalf("same-origin create = %d, %d tokens", rec.Code, s.tokenCount(t))
 	}
@@ -251,6 +251,7 @@ func TestTokenScreenNamesAgentAndAccess(t *testing.T) {
 		{url.Values{"label": {"laptop"}}, []string{"Token for “laptop”", "admin: full control"}},
 	} {
 		c.form.Set("csrf_token", s.csrf)
+		c.form.Set("current_password", testPassword)
 		rec := s.send(t, "POST", "/settings/tokens/new", c.form.Encode(), map[string]string{"Cookie": ""})
 		body := rec.Body.String()
 		for _, w := range c.want {
@@ -259,7 +260,7 @@ func TestTokenScreenNamesAgentAndAccess(t *testing.T) {
 			}
 		}
 	}
-	unnamed := url.Values{"label": {"  "}, "access": {"mcp:read"}, "csrf_token": {s.csrf}}
+	unnamed := url.Values{"label": {"  "}, "access": {"mcp:read"}, "csrf_token": {s.csrf}, "current_password": {testPassword}}
 	before := s.tokenCount(t)
 	if rec := s.send(t, "POST", "/settings/tokens/new", unnamed.Encode(), map[string]string{"Cookie": ""}); rec.Code != http.StatusBadRequest || s.tokenCount(t) != before {
 		t.Errorf("unnamed agent token = %d, want refused", rec.Code)

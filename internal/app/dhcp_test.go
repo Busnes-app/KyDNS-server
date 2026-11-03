@@ -628,6 +628,16 @@ func TestRevokingTheOverrideWhileRunningSaysSo(t *testing.T) {
 	if !strings.Contains(log.String(), "restart") {
 		t.Errorf("the log does not say when the change takes effect: %q", log.String())
 	}
+	// The running listener is told at once: it now NAKs unknown rebooting
+	// clients again, and granting the override makes it stay silent for them.
+	if d.running.Shared() {
+		t.Error("the running listener still treats the segment as shared")
+	}
+	d.Reconcile(on)
+	if !d.running.Shared() {
+		t.Error("granting the override did not reach the running listener")
+	}
+	d.Reconcile(off)
 
 	// Once per transition: every later save of the same settings is silent.
 	log.Reset()

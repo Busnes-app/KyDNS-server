@@ -1546,3 +1546,28 @@ func FuzzHandle(f *testing.F) {
 		}
 	})
 }
+
+// RFC 2131 4.3.2: on a segment another DHCP server shares (dhcp_allow_foreign),
+// an INIT-REBOOT client we have no record of holds that server's lease, and a
+// NAK from us would make it drop a working address. Alone on the segment we
+// are authoritative and still NAK it.
+func TestInitRebootFromAStrangerOnASharedSegmentIsIgnored(t *testing.T) {
+	s, _ := newTestServer(t)
+	s.SetShared(true)
+	c := &captureConn{}
+	s.handle(c, &net.UDPAddr{IP: net.IPv4zero},
+		request("aa:aa:aa:aa:aa:aa", "laptop", netip.MustParseAddr("192.168.1.50")))
+	if r := c.replies(t); len(r) != 0 {
+		t.Fatalf("replies = %+v, want silence", r)
+	}
+	// A client we do know is still answered when it reboots.
+	c = &captureConn{}
+	bind(t, s, c, "bb:bb:bb:bb:bb:bb", "nas")
+	held := c.replies(t)[0].YourIPAddr
+	held4, _ := netip.AddrFromSlice(held.To4())
+	c = &captureConn{}
+	s.handle(c, &net.UDPAddr{IP: net.IPv4zero}, request("bb:bb:bb:bb:bb:bb", "nas", held4))
+	if r := c.replies(t); len(r) != 1 || r[0].MessageType() != dhcpv4.MessageTypeAck {
+		t.Fatalf("a known client's INIT-REBOOT got %+v, want an ACK", r)
+	}
+}

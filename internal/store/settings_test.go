@@ -272,7 +272,7 @@ func TestPutDHCPSettingsTouchesOnlyTheDHCPColumns(t *testing.T) {
 	v.ReverseZones = []string{"10.0.0.0/8"}
 	v.TTL, v.CacheEntries, v.HealthWorkers = 1, 1, 1
 	v.LogQueries, v.AllowTailscale = !before.LogQueries, !before.AllowTailscale
-	v.DHCPLeaseFile = "/should/not/land"
+	v.DHCPLeaseFile = "/var/lib/misc/dnsmasq.leases" // node-local: lands
 	v.DHCPEnabled, v.DHCPInterface = true, "eth0"
 	v.DHCPRangeStart, v.DHCPRangeEnd = "192.168.1.100", "192.168.1.200"
 	v.DHCPGateway, v.DHCPLeaseSeconds = "192.168.1.1", 3600
@@ -297,6 +297,11 @@ func TestPutDHCPSettingsTouchesOnlyTheDHCPColumns(t *testing.T) {
 	want.DHCPRangeStart, want.DHCPRangeEnd = got.DHCPRangeStart, got.DHCPRangeEnd
 	want.DHCPGateway, want.DHCPLeaseSeconds = got.DHCPGateway, got.DHCPLeaseSeconds
 	want.DHCPSecondaryDNS, want.DHCPAllowForeign = got.DHCPSecondaryDNS, got.DHCPAllowForeign
+	// The other node-local columns move with them.
+	if got.LogQueries != v.LogQueries || got.DHCPLeaseFile != v.DHCPLeaseFile {
+		t.Fatalf("the node-local settings did not land: %+v", got)
+	}
+	want.LogQueries, want.DHCPLeaseFile = got.LogQueries, got.DHCPLeaseFile
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("a column outside the eight moved:\ngot  %+v\nwant %+v", got, want)
 	}

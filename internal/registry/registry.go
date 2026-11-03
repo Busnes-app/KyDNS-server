@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/netip"
 	"strings"
+	"sync"
 	"sync/atomic"
 	"time"
 
@@ -20,6 +21,8 @@ type Registry struct {
 	s        *store.Store
 	zone     atomic.Pointer[string]
 	onChange func() error
+	// recordMu makes a record's conflict check and its write one step.
+	recordMu sync.Mutex
 }
 
 func New(s *store.Store, zoneFQDN string, onChange func() error) *Registry {
@@ -203,11 +206,48 @@ func (r *Registry) PutRecord(rec store.Record) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
+	// An A record holding an IPv6 address is served as 0.0.0.0. Checked on
+	// this write only, not in ValidateDocument: a replica must still follow a
+	// primary, and an export still import, that stored one before this check.
+	if rec.Type == "A" || rec.Type == "AAAA" {
+		if a, _ := netip.ParseAddr(rec.Value); (rec.Type == "A") != a.Unmap().Is4() {
+			return 0, invalid("value", "address_family", "%s is not an address for an %s record", rec.Value, rec.Type)
+		}
+	}
+	// Check and insert as one step, or two racing adds both pass the check.
+	r.recordMu.Lock()
+	defer r.recordMu.Unlock()
+	existing, err := r.s.Records()
+	if err != nil {
+		return 0, err
+	}
+	if err := cnameConflict(rec, existing); err != nil {
+		return 0, err
+	}
 	id, err := r.s.PutRecord(rec)
 	if err != nil {
 		return 0, err
 	}
 	return id, r.onChange()
+}
+
+// cnameConflict refuses a CNAME beside any other record at its name and view,
+// and any record beside a CNAME. zone.Build refuses that zone, so storing it
+// would stop every rebuild and the next start.
+func cnameConflict(rec store.Record, others []store.Record) error {
+	if rec.Type == "PTR" {
+		return nil
+	}
+	for _, o := range others {
+		if o.Type == "PTR" || o.View != rec.View || !strings.EqualFold(Normalize(o.Name), rec.Name) {
+			continue
+		}
+		if rec.Type == "CNAME" || o.Type == "CNAME" {
+			return invalid("name", "cname_conflict",
+				"%s already has a %s record; a CNAME cannot share its name with another record", rec.Name, o.Type)
+		}
+	}
+	return nil
 }
 
 func (r *Registry) Records() ([]store.Record, error) { return r.s.Records() }
@@ -267,7 +307,15 @@ func (r *Registry) DeleteView(name string) error {
 func (r *Registry) ReplaceAll(views []store.View, services []store.Service, records []store.Record) error {
 	// One zone for the whole document: a rename landing mid-import must not
 	// validate half of it against each domain.
-	vs, ss, rs, err := ValidateDocument(r.Zone(), views, services, records)
+	return r.ReplaceAllIn(r.Zone(), views, services, records)
+}
+
+// ReplaceAllIn is ReplaceAll checked against zone instead of the live one: an
+// import whose settings move the private domain brings records already in it.
+func (r *Registry) ReplaceAllIn(zone string, views []store.View, services []store.Service, records []store.Record) error {
+	r.recordMu.Lock()
+	defer r.recordMu.Unlock()
+	vs, ss, rs, err := ValidateDocument(zone, views, services, records)
 	if err != nil {
 		return err
 	}
@@ -307,6 +355,9 @@ func ValidateDocument(zone string, views []store.View, services []store.Service,
 	for _, rec := range records {
 		rec, err := validateRecord(rec, known, zone)
 		if err != nil {
+			return nil, nil, nil, err
+		}
+		if err := cnameConflict(rec, rs); err != nil {
 			return nil, nil, nil, err
 		}
 		rs = append(rs, rec)

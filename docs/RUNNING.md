@@ -44,6 +44,14 @@ works on the host itself, or from any machine through the trusted HTTPS proxy
 | `kydns restore --capsule p --out dir` | Open a capsule with custodian shares read from stdin. See [docs/RESTORE.md](RESTORE.md). |
 | `kydns admin reset-password` | Local recovery. Opens the database directly. |
 
+### Changing the admin password
+
+If you know the password, change it under **Settings → Account** (on a replica too: the
+admin account is node-local). That signs out every session (the browser you changed it from
+stays signed in) and revokes every API and agent token except those bound to an
+installer-managed SSO administrator, the bootstrap token included. Create replacement
+tokens for integrations afterwards, and restart KyDNS for a new bootstrap token.
+
 ### Forgot the admin password
 
 ```sh
@@ -112,6 +120,23 @@ proxy can connect. Set `KYDNS_TRUSTED_PROXIES` in `.env` to the proxy's address
 as KyDNS sees it (comma-separated IPs or CIDRs; `/0` is refused), and open
 `/setup` through the proxy's `https://` address. This setting trusts forwarded
 headers; it does not block direct access to `http://$KYDNS_IP:8053/`.
+
+The proxy must pass the browser's `Host` header through unchanged. KyDNS
+compares it with the page's origin, so a proxy that rewrites it (nginx's
+default `proxy_pass`) gets every form, `/setup` and sign-in included, refused
+as "cross-origin request refused". For nginx (`$http_host`, not `$host`, which
+drops a non-default port such as `:8443`):
+
+```nginx
+location / {
+    proxy_pass http://192.168.1.53:8053;
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+}
+```
+
+Caddy (`reverse_proxy`) and Traefik keep `Host` by default.
 
 Set `KYDNS_ADMIN_HOSTNAMES` to the host names the admin UI is reached by
 (comma-separated, no scheme or port, for example `kydns.home.arpa`). The UI,

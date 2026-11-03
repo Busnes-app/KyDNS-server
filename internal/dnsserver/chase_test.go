@@ -146,3 +146,16 @@ func TestClientUDPSizeCapped(t *testing.T) {
 		t.Errorf("clientUDPSize = %d, want the smaller advertised 800", got)
 	}
 }
+
+// The query log stores names in one case, so a 0x20-randomised query matches
+// a search for the name as anyone would type it.
+func TestQueryLogLowercasesNames(t *testing.T) {
+	s := chaseServer(t, chainUpstream(), nil, nil)
+	s.SetLogging(true, false)
+	serve(s, "WWW.Example.COM.")
+	var got []QueryEntry
+	s.QueryLog().Each(QueryFilter{Domain: "example.com"}, func(e QueryEntry) bool { got = append(got, e); return true })
+	if len(got) != 1 || got[0].Name != "www.example.com" {
+		t.Errorf("entries = %+v, want www.example.com", got)
+	}
+}

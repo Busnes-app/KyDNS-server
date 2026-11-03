@@ -13,9 +13,25 @@
   <table class="grid account-facts">
     <tr><th>Username</th><td>admin</td></tr>
     <tr><th>Role</th><td>Administrator</td></tr>
-    <tr><th>Password</th><td>Reset it on the server with <code>kydns admin reset-password</code>.</td></tr>
+    <tr><th>Password</th><td>{{if .AdminIdentity.PasswordHash}}Change it below.{{else}}None: this administrator signs in with single sign-on.{{end}} If it is lost, reset it on the server with <code>kydns admin reset-password</code>.</td></tr>
   </table>
 </div>
+{{if .AdminIdentity.PasswordHash}}
+<div class="card">
+  <h3>Change password</h3>
+  <p class="muted">Changing it signs out every other session (you stay signed in here) and revokes every API and agent token except those of installer-managed administrators. Restart KyDNS for a new bootstrap token.</p>
+  <form class="stack" method="post" action="/settings/account/password">
+    <input type="hidden" name="csrf_token" value="{{.CSRF}}">
+    <label for="pcurrent">Current password</label>
+    <input id="pcurrent" name="current_password" type="password" autocomplete="current-password" required>
+    <label for="pnew">New password (at least 12 characters)</label>
+    <input id="pnew" name="new_password" type="password" autocomplete="new-password" minlength="12" required>
+    <label for="pconfirm">New password again</label>
+    <input id="pconfirm" name="confirm" type="password" autocomplete="new-password" minlength="12" required>
+    <button type="submit">Change password</button>
+  </form>
+</div>
+{{end}}
 {{if .AdminIdentity}}
 <div class="card">
   <h3>Single sign-on identity</h3>
@@ -36,8 +52,10 @@
     </form>
   </div>
   {{else}}
-  <form method="post" action="/settings/sso/link">
+  <form class="stack" method="post" action="/settings/sso/link">
     <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
+    <label for="lcurrent">Current password</label>
+    <input id="lcurrent" name="current_password" type="password" autocomplete="current-password" required>
     <button type="submit" class="ghost"{{template "ro" $}}>Link SSO identity</button>
   </form>
   {{end}}
@@ -353,8 +371,19 @@ curl -fsSo ~/.agents/skills/kydns/SKILL.md {{.}}/agent/skills/kydns/SKILL.md</pr
     <label><input type="checkbox" name="query_log"> AI agent can read the query log (browsing history)</label>
     <p class="muted">Read and write lets anyone who can message the agent try to make it
        change your rules or pause blocking.</p>
+    {{if .AdminIdentity.PasswordHash}}
+    <label for="tcurrent">Current password</label>
+    <input id="tcurrent" name="current_password" type="password" autocomplete="current-password">
+    {{end}}
+    <p class="muted">A token outlives this sign-in, so confirm it is you{{if .AdminIdentity.PasswordHash}} with your password{{end}}{{if and .AdminIdentity.PasswordHash .SSOSettings.Enabled}}, or{{end}}{{if .SSOSettings.Enabled}} by signing in again with single sign-on (then create the token within five minutes){{end}}.</p>
     <button type="submit"{{template "ro" $}}>Create token</button>
   </form>
+  {{if .SSOSettings.Enabled}}
+  <form method="post" action="/settings/tokens/stepup">
+    <input type="hidden" name="csrf_token" value="{{.CSRF}}">
+    <button class="ghost" type="submit"{{template "ro" $}}>Confirm with single sign-on</button>
+  </form>
+  {{end}}
 </div>
 
 </section>
@@ -385,6 +414,9 @@ curl -fsSo ~/.agents/skills/kydns/SKILL.md {{.}}/agent/skills/kydns/SKILL.md</pr
           <input id="client_secret" name="client_secret" type="password" autocomplete="off"
                  placeholder="{{if .SSOSettings.ClientSecret}}Saved. Leave blank to keep it{{end}}">
           {{if .SSOSettings.ClientSecret}}<label><input type="checkbox" name="clear_secret" value="1"> Remove the saved secret</label>{{end}}
+
+          <label for="sso_current">Current password <span class="muted">(the provider decides who signs in without it)</span></label>
+          <input id="sso_current" name="current_password" type="password" autocomplete="current-password" required>
         </div>
       </fieldset>
     </div>

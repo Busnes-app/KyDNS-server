@@ -33,6 +33,8 @@ func TestJoinerPeeksThenPairs(t *testing.T) {
 	joinerDir, joinerID := nodeDir(t, "joiner")
 	admin, primaryID, addr := startPrimaryListener(t, primaryDir)
 	j := newJoiner(t, joinerDir)
+	stopped := 0
+	j.stopPull = func() { stopped++ }
 
 	fp, err := j.Peek(joinCtx(t), addr)
 	if err != nil {
@@ -68,6 +70,11 @@ func TestJoinerPeeksThenPairs(t *testing.T) {
 	if primary != primaryID.NodeID || version != 0 {
 		t.Fatalf("replica_state = %q at version %d, want %q at 0", primary, version, primaryID.NodeID)
 	}
+	// The loop pinned to the previous primary must not pull again and write
+	// that primary back over this pairing.
+	if stopped != 1 {
+		t.Fatalf("pull loop stopped %d times, want once", stopped)
+	}
 }
 
 // If the join reached a different peer than the peek did, the confirmed
@@ -80,6 +87,7 @@ func TestJoinerRefusesAPeerTheOperatorNeverConfirmed(t *testing.T) {
 	admin, _, addr := startPrimaryListener(t, primaryDir)
 	other, _, otherAddr := startPrimaryListener(t, otherDir)
 	j := newJoiner(t, joinerDir)
+	j.stopPull = func() { t.Error("a refused join stopped the working pull loop") }
 
 	code, _, err := admin.Invite()
 	if err != nil {

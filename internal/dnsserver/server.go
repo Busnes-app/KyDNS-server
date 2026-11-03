@@ -355,7 +355,7 @@ func (s *Server) logQuery(r, m *dns.Msg, w dns.ResponseWriter, source, view, pol
 		"policy", policy,
 		"duration_ms", d.Milliseconds(),
 	}
-	e := QueryEntry{Time: time.Now(), Name: strings.TrimSuffix(q.Name, "."), Type: dns.TypeToString[q.Qtype],
+	e := QueryEntry{Time: time.Now(), Name: strings.ToLower(strings.TrimSuffix(q.Name, ".")), Type: dns.TypeToString[q.Qtype],
 		Rcode: dns.RcodeToString[m.Rcode], Source: source, Policy: policy}
 	if s.logClientIP.Load() {
 		args = append(args, "client", w.RemoteAddr().String())

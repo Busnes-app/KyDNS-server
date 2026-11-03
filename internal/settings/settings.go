@@ -115,8 +115,9 @@ type Writer interface {
 	// from the old private zone into the new one, in one transaction.
 	PutSettingsRenamingZone(v store.Settings, from, to string) (int, error)
 
-	// PutDHCPSettings writes the eight node-local dhcp_* columns and nothing
-	// else. It is the replica write path; see setDHCPOnly.
+	// PutDHCPSettings writes the node-local columns (dhcp_*, dhcp_lease_file,
+	// discovery_interval, log_queries, log_client_ip) and nothing else. It is
+	// the replica write path; see setDHCPOnly.
 	PutDHCPSettings(store.Settings) error
 }
 
@@ -125,8 +126,8 @@ type Writer interface {
 // preserves them; every other setting belongs to the primary and the next pull
 // would discard it.
 var ErrReadOnlyReplica = errors.New(
-	"this node is a read-only replica: only the DHCP settings can be changed here, " +
-		"and every other setting must be changed on its primary")
+	"this node is a read-only replica: only its DHCP, lease file, discovery interval and " +
+		"query logging settings can be changed here, and every other setting must be changed on its primary")
 
 // Service is the single write path for settings: validate, persist, rebuild,
 // apply. onApply is injected so this package never imports the runtime.
@@ -195,6 +196,17 @@ func (s *Service) CheckWrite(v store.Settings, confirmPublic string) error {
 // write succeeds nothing after it can fail: the snapshot is already built, and
 // publishing it does no I/O.
 func (s *Service) Set(v store.Settings, confirmPublic string) error {
+	return s.set(v, confirmPublic, true)
+}
+
+// SetKeepingRecords is Set for a replace import, whose records were just
+// written already under the new private domain: moving them as a rename would
+// rewrite them a second time.
+func (s *Service) SetKeepingRecords(v store.Settings, confirmPublic string) error {
+	return s.set(v, confirmPublic, false)
+}
+
+func (s *Service) set(v store.Settings, confirmPublic string, renameRecords bool) error {
 	s.writeMu.Lock()
 	defer s.writeMu.Unlock()
 
@@ -223,7 +235,7 @@ func (s *Service) Set(v store.Settings, confirmPublic string) error {
 	// Renaming the private zone moves the manual records with it. Records are
 	// stored as full names, so leaving them behind would strand every one of
 	// them outside the zone the server now serves.
-	if from, to := store.ZoneSuffix(prev.PrivateDomain), store.ZoneSuffix(v.PrivateDomain); from != "" && from != to {
+	if from, to := store.ZoneSuffix(prev.PrivateDomain), store.ZoneSuffix(v.PrivateDomain); renameRecords && from != "" && from != to {
 		if _, err := s.w.PutSettingsRenamingZone(v, from, to); err != nil {
 			return err
 		}
@@ -278,6 +290,8 @@ func dhcpOnlyChange(prev, v store.Settings) bool {
 }
 
 func withoutDHCP(v store.Settings) store.Settings {
+	// Node-local beside the DHCP fields: ApplySnapshot keeps the replica's own.
+	v.DHCPLeaseFile, v.DiscoveryInterval, v.LogQueries, v.LogClientIP = "", 0, false, false
 	v.DHCPEnabled, v.DHCPInterface = false, ""
 	v.DHCPRangeStart, v.DHCPRangeEnd = "", ""
 	v.DHCPGateway, v.DHCPLeaseSeconds = "", 0

@@ -57,8 +57,9 @@ func (s *Store) PutSettings(v Settings) error {
 	return putSettings(s.db, v)
 }
 
-// PutDHCPSettings writes the eight node-local dhcp_* columns and leaves every
-// other one exactly as it is. It exists for the replica write path: a whole-row
+// PutDHCPSettings writes the node-local columns (the eight dhcp_*, plus
+// dhcp_lease_file, discovery_interval, log_queries and log_client_ip, which no
+// cv_ trigger names) and leaves every other one exactly as it is. It exists for the replica write path: a whole-row
 // write there would put back whatever the background pull applied between the
 // caller's read and this write. One statement, so it is correct against
 // ApplySnapshot either way round — this commits first and ApplySnapshot re-reads
@@ -68,10 +69,12 @@ func (s *Store) PutDHCPSettings(v Settings) error {
 	res, err := s.db.Exec(`
 UPDATE settings SET dhcp_enabled = ?, dhcp_interface = ?, dhcp_range_start = ?,
   dhcp_range_end = ?, dhcp_gateway = ?, dhcp_lease_seconds = ?,
-  dhcp_secondary_dns = ?, dhcp_allow_foreign = ?
+  dhcp_secondary_dns = ?, dhcp_allow_foreign = ?,
+  dhcp_lease_file = ?, discovery_interval = ?, log_queries = ?, log_client_ip = ?
 WHERE id = 1`,
 		v.DHCPEnabled, v.DHCPInterface, v.DHCPRangeStart, v.DHCPRangeEnd,
-		v.DHCPGateway, v.DHCPLeaseSeconds, v.DHCPSecondaryDNS, v.DHCPAllowForeign)
+		v.DHCPGateway, v.DHCPLeaseSeconds, v.DHCPSecondaryDNS, v.DHCPAllowForeign,
+		v.DHCPLeaseFile, v.DiscoveryInterval, v.LogQueries, v.LogClientIP)
 	if err != nil {
 		return err
 	}

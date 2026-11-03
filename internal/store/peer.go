@@ -111,6 +111,21 @@ func (s *Store) SetReplicaState(primaryNodeID string, version int64) error {
 	return err
 }
 
+// AdvanceReplicaState records version as held from primaryNodeID only while
+// this node still follows that primary. A pull loop that outlived a re-pairing
+// must not write its old pin back over the new one.
+func (s *Store) AdvanceReplicaState(primaryNodeID string, version int64) error {
+	res, err := s.db.Exec(`UPDATE replica_state SET last_version = ? WHERE id = 1 AND primary_node_id = ?`,
+		version, primaryNodeID)
+	if err != nil {
+		return err
+	}
+	if n, _ := res.RowsAffected(); n == 0 {
+		return fmt.Errorf("this node no longer follows %s", primaryNodeID)
+	}
+	return nil
+}
+
 // Promotion is when this node was promoted to primary, or 0 if it never was.
 // It is the answer that beats replication.primary in the config file, because
 // promotion records itself here rather than editing that file.

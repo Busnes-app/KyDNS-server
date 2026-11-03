@@ -31,6 +31,9 @@ type Config struct {
 	Host      netip.Addr
 	Gateway   netip.Addr
 	LeaseTime time.Duration
+	// Shared: another DHCP server may serve this segment (dhcp_allow_foreign),
+	// so a client we have no record of is not ours to refuse.
+	Shared bool
 }
 
 // Allocator owns address assignment. It holds no sockets and does no I/O, so
@@ -126,6 +129,16 @@ func (a *Allocator) Confirm(mac, hostname string, asked netip.Addr, ttl time.Dur
 	}
 	l, _, ok := a.allocateLocked(mac, hostname, asked, ttl, false)
 	return l, ok
+}
+
+// Knows reports whether this server has any record of mac: a lease, an offer
+// hold or a reservation.
+func (a *Allocator) Knows(mac string) bool {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	_, leased := a.byMAC[mac]
+	_, reserved := a.reserved[mac]
+	return leased || reserved
 }
 
 // ReleaseHold drops mac's offer hold but never a lease: one forged packet

@@ -167,3 +167,46 @@ func TestOpenAddsTokenScope(t *testing.T) {
 		t.Error("an admin token was turned into an agent's")
 	}
 }
+
+// A routine password change ends every session and the tokens a password
+// session could mint, and keeps what belongs to an SSO identity.
+func TestChangeAdminPasswordKeepsIdentityBoundTokens(t *testing.T) {
+	s := open(t)
+	if _, err := s.ChangeAdminPassword("", "$argon2id$new", time.UnixMilli(0), time.Now()); err == nil {
+		t.Fatal("changed a password before there was one")
+	}
+	if err := s.SetAdminPassword("$argon2id$old"); err != nil {
+		t.Fatal(err)
+	}
+	if err := s.LinkAdminSSO("sub-1", "bob", ""); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := s.PutToken(Token{Label: "cli", Hash: "unbound"}); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := s.db.Exec(`INSERT INTO tokens(label, hash, issuer, subject) VALUES('owner', 'bound', 'https://idp.example', 'owner')`); err != nil {
+		t.Fatal(err)
+	}
+	before, _ := s.SessionsNotBefore()
+	// A stale hash or generation means a reset (or another change) came first.
+	if _, err := s.ChangeAdminPassword("$argon2id$stale", "$argon2id$new", before, time.UnixMilli(0)); err == nil {
+		t.Fatal("changed the password against a hash that is no longer stored")
+	}
+	if _, err := s.ChangeAdminPassword("$argon2id$old", "$argon2id$new", before.Add(-time.Second), time.UnixMilli(0)); err == nil {
+		t.Fatal("changed the password from a session of an earlier generation")
+	}
+	gen, err := s.ChangeAdminPassword("$argon2id$old", "$argon2id$new", before, time.UnixMilli(0))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if now, _ := s.SessionsNotBefore(); !gen.Equal(now) || !gen.After(before) {
+		t.Errorf("generation %v -> %v (returned %v), want it advanced and returned", before, now, gen)
+	}
+	toks, _ := s.Tokens()
+	if len(toks) != 1 || toks[0].Label != "owner" {
+		t.Errorf("tokens after change = %+v, want only the identity-bound one", toks)
+	}
+	if ident, _ := s.AdminIdentity(); ident.PasswordHash != "$argon2id$new" || ident.SSOSub != "sub-1" {
+		t.Errorf("after change: %+v", ident)
+	}
+}

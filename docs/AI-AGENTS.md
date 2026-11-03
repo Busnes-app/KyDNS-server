@@ -27,6 +27,9 @@ the row, never in the token. Create one under **Settings → API tokens**, with
 `POST /api/v1/tokens {"label", "scope": "mcp:read"|"mcp:write", "query_log": bool}`.
 `PATCH /api/v1/tokens/{id}` changes an agent token between the two agent levels and its
 query-log flag. An admin token can never become an agent token, or the reverse.
+A token outlives the browser session, so the Settings form asks for your current password,
+or for a single sign-on login made in the last five minutes (**Confirm with single
+sign-on** makes the provider ask you to sign in again). The CLI and API already hold a token.
 
 | Access | Tools |
 |---|---|
@@ -44,6 +47,7 @@ or `this token cannot read the query log`, so the agent can tell the user what t
 - A token unused for 90 days is refused and deleted the next time it is presented, and a daily
   sweep removes the ones nobody presents. Both are audited as `agent_token.expired`.
 - `kydns admin reset-password` and installer directory revocation delete agent tokens with admin tokens.
+  Changing the password under Settings → Account deletes every token not bound to an installer-managed administrator.
 - Tokens are node-local, like admin tokens: point an agent at one node.
 
 ## The query log

@@ -34,7 +34,9 @@ type Options struct {
 	Cache      *dnsserver.Cache
 	Metrics    *dnsserver.Metrics
 	SetupToken string
-	Logger     *slog.Logger
+	// SetupTokenFile is where SetupToken was written; setup deletes it.
+	SetupTokenFile string
+	Logger         *slog.Logger
 
 	// Settings is the single write path for the settings the database owns. It
 	// is nil when the service is not wired, which the screen renders as the
@@ -110,6 +112,7 @@ const (
 	PathDHCPSettings       = "/dhcp/settings"
 	PathDHCPSuggest        = "/dhcp/suggest"
 	PathInstallerDirectory = "/api/v1/installer/directory"
+	PathAccountPassword    = "/settings/account/password"
 )
 
 // webWriteExempt is the whole exemption list. Signing in is how an operator
@@ -140,6 +143,8 @@ var webWriteExempt = map[string]bool{
 	PathDHCPSettings: true, PathDHCPSuggest: true,
 	// Signed identity authority is node-local and must reach replicas too.
 	PathInstallerDirectory: true,
+	// So is the admin account: a replica's admin changes its own password.
+	PathAccountPassword: true,
 }
 
 // managedBy names the box to make the change on.
@@ -221,7 +226,11 @@ func (s *Server) TransportGate(next http.Handler) http.Handler {
 		}
 		if r.Method == http.MethodOptions && r.Header.Get("Origin") != "" ||
 			unsafeMethod(r.Method) && s.crossOrigin(r) {
-			http.Error(w, "cross-origin request refused", http.StatusForbidden)
+			// The common honest cause is a reverse proxy that rewrote Host, so
+			// the browser's own origin no longer matches it. Say so.
+			http.Error(w, "cross-origin request refused: this page's address does not match the Host this request "+
+				"reached KyDNS with. Behind a reverse proxy, pass the original Host header through "+
+				"(nginx: proxy_set_header Host $http_host;).", http.StatusForbidden)
 			return
 		}
 		next.ServeHTTP(w, r)

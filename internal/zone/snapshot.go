@@ -281,7 +281,7 @@ func addrType(s string) string {
 
 func qualify(name, zone string) string {
 	n := strings.ToLower(strings.TrimSuffix(name, "."))
-	if strings.HasSuffix(n+".", zone) {
+	if n+"." == zone || strings.HasSuffix(n+".", "."+zone) {
 		return n + "."
 	}
 	return n + "." + zone

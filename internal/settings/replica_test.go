@@ -88,27 +88,47 @@ func TestReplicaRefusesAMixedWriteWhole(t *testing.T) {
 	}
 }
 
-// Every non-DHCP field, one at a time, so a field nobody thought about is not
+// The other node-local columns: ApplySnapshot keeps the replica's own, so a
+// replica that could not change them would keep what it had at pairing for
+// good, per-client query logging included.
+func TestReplicaChangesItsOwnNodeLocalFields(t *testing.T) {
+	for name, mutate := range map[string]func(*store.Settings){
+		"log_queries":        func(v *store.Settings) { v.LogQueries = true },
+		"log_client_ip":      func(v *store.Settings) { v.LogQueries, v.LogClientIP = true, true },
+		"dhcp_lease_file":    func(v *store.Settings) { v.DHCPLeaseFile = "/var/lib/misc/dnsmasq.leases" },
+		"discovery_interval": func(v *store.Settings) { v.DiscoveryInterval = 60 },
+	} {
+		t.Run(name, func(t *testing.T) {
+			w, svc, _ := newReplicaService(t)
+			v := valid()
+			mutate(&v)
+			if err := svc.Set(v, ""); err != nil {
+				t.Fatalf("changing %s on a replica: %v", name, err)
+			}
+			if w.narrowWrites != 1 || w.writes != 0 || !reflect.DeepEqual(w.cur, v) {
+				t.Errorf("narrow %d, whole %d, stored %+v", w.narrowWrites, w.writes, w.cur)
+			}
+		})
+	}
+}
+
+// Every replicated field, one at a time, so a field nobody thought about is not
 // quietly writable on a replica.
 func TestReplicaRefusesEveryNonDHCPField(t *testing.T) {
 	cases := map[string]func(*store.Settings){
-		"private_domain":     func(v *store.Settings) { v.PrivateDomain = "lan.example" },
-		"reverse_zones":      func(v *store.Settings) { v.ReverseZones = []string{"10.0.0.0/8"} },
-		"upstreams":          func(v *store.Settings) { v.Upstreams = []string{"tls://9.9.9.9:853"} },
-		"allow_query":        func(v *store.Settings) { v.AllowQuery = []string{"10.0.0.0/8"} },
-		"allow_tailscale":    func(v *store.Settings) { v.AllowTailscale = true },
-		"ttl":                func(v *store.Settings) { v.TTL = 120 },
-		"cache_min_ttl":      func(v *store.Settings) { v.CacheMinTTL = 10 },
-		"cache_max_ttl":      func(v *store.Settings) { v.CacheMaxTTL = 7200 },
-		"negative_max_ttl":   func(v *store.Settings) { v.NegativeMaxTTL = 60 },
-		"cache_entries":      func(v *store.Settings) { v.CacheEntries = 20000 },
-		"log_queries":        func(v *store.Settings) { v.LogQueries = true },
-		"log_client_ip":      func(v *store.Settings) { v.LogClientIP = true },
-		"dhcp_lease_file":    func(v *store.Settings) { v.DHCPLeaseFile = "/var/lib/misc/dnsmasq.leases" },
-		"discovery_interval": func(v *store.Settings) { v.DiscoveryInterval = 60 },
-		"health_interval":    func(v *store.Settings) { v.HealthInterval = 60 },
-		"health_timeout":     func(v *store.Settings) { v.HealthTimeout = 10 },
-		"health_workers":     func(v *store.Settings) { v.HealthWorkers = 16 },
+		"private_domain":   func(v *store.Settings) { v.PrivateDomain = "lan.example" },
+		"reverse_zones":    func(v *store.Settings) { v.ReverseZones = []string{"10.0.0.0/8"} },
+		"upstreams":        func(v *store.Settings) { v.Upstreams = []string{"tls://9.9.9.9:853"} },
+		"allow_query":      func(v *store.Settings) { v.AllowQuery = []string{"10.0.0.0/8"} },
+		"allow_tailscale":  func(v *store.Settings) { v.AllowTailscale = true },
+		"ttl":              func(v *store.Settings) { v.TTL = 120 },
+		"cache_min_ttl":    func(v *store.Settings) { v.CacheMinTTL = 10 },
+		"cache_max_ttl":    func(v *store.Settings) { v.CacheMaxTTL = 7200 },
+		"negative_max_ttl": func(v *store.Settings) { v.NegativeMaxTTL = 60 },
+		"cache_entries":    func(v *store.Settings) { v.CacheEntries = 20000 },
+		"health_interval":  func(v *store.Settings) { v.HealthInterval = 60 },
+		"health_timeout":   func(v *store.Settings) { v.HealthTimeout = 10 },
+		"health_workers":   func(v *store.Settings) { v.HealthWorkers = 16 },
 	}
 	for name, mutate := range cases {
 		t.Run(name, func(t *testing.T) {

@@ -180,3 +180,57 @@ func TestAuthentikOIDCDiscoveryAndGroups(t *testing.T) {
 		t.Errorf("Keycloak realm_access.roles not parsed: %v", kcParsed.Roles)
 	}
 }
+
+// Authentik publishes its issuer with a trailing slash. go-oidc compares the
+// issuer exactly, so the slash the operator typed must survive.
+func TestIssuerWithTrailingSlashIsKept(t *testing.T) {
+	var srv *httptest.Server
+	srv = httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/application/o/kydns/.well-known/openid-configuration" {
+			http.NotFound(w, r)
+			return
+		}
+		issuer := srv.URL + "/application/o/kydns/"
+		_ = json.NewEncoder(w).Encode(map[string]any{
+			"issuer": issuer, "authorization_endpoint": issuer + "authorize/",
+			"token_endpoint": issuer + "token/", "jwks_uri": issuer + "jwks/",
+		})
+	}))
+	t.Cleanup(srv.Close)
+	c := NewSSOClient(srv.URL+"/application/o/kydns/", "kydns", "")
+	c.HTTPClient = srv.Client()
+	if _, _, _, err := c.providerVerifier(context.Background()); err != nil {
+		t.Fatalf("providerVerifier() = %v, want the slashed issuer accepted", err)
+	}
+	if ep, err := c.DiscoverEndpoints(context.Background()); err != nil || ep.TokenEndpoint != srv.URL+"/application/o/kydns/token/" {
+		t.Fatalf("DiscoverEndpoints() = %+v, %v", ep, err)
+	}
+}
+
+// Earlier versions trimmed the slash, so a stored issuer may differ from the
+// published one by exactly that. Either way round it still signs in; any other
+// difference is still an issuer mismatch.
+func TestIssuerDifferingOnlyByATrailingSlashIsAccepted(t *testing.T) {
+	for _, tc := range []struct{ published, configured string }{
+		{"/app", "/app/"}, {"/app/", "/app"},
+	} {
+		var srv *httptest.Server
+		srv = httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			_ = json.NewEncoder(w).Encode(map[string]any{
+				"issuer": srv.URL + tc.published, "authorization_endpoint": srv.URL + "/authorize",
+				"token_endpoint": srv.URL + "/token", "jwks_uri": srv.URL + "/jwks",
+			})
+		}))
+		c := NewSSOClient(srv.URL+tc.configured, "kydns", "")
+		c.HTTPClient = srv.Client()
+		if _, _, _, err := c.providerVerifier(context.Background()); err != nil {
+			t.Errorf("published %q, configured %q: %v", tc.published, tc.configured, err)
+		}
+		c = NewSSOClient(srv.URL+"/other", "kydns", "")
+		c.HTTPClient = srv.Client()
+		if _, _, _, err := c.providerVerifier(context.Background()); err == nil {
+			t.Errorf("published %q: a different issuer was accepted", tc.published)
+		}
+		srv.Close()
+	}
+}

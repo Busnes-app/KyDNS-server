@@ -24,6 +24,9 @@ type Session struct {
 	LastSeen           time.Time
 	// SSO is the provider login behind the session; zero for a password login.
 	SSO SSOLogin
+	// linkUntil is when the password-checked permission to link an SSO
+	// identity from this session runs out; see AllowLink.
+	linkUntil time.Time
 }
 
 // SSOLogin is what a back-channel logout matches. The issuer scopes the sid and
@@ -33,6 +36,8 @@ type Session struct {
 type SSOLogin struct {
 	Issuer, Subject, SID string
 	IssuedAt             time.Time
+	// AuthTime is the ID token's auth_time; a recent one is a step-up.
+	AuthTime time.Time
 }
 
 // subjectFence refuses a subject's logins issued before cutoff until until.
@@ -168,6 +173,42 @@ func (s *Sessions) EndSSOSubject(issuer, subject string, cutoff, fenceUntil time
 			delete(s.byID, id)
 		}
 	}
+}
+
+// EndLinkedSSO ends every session signed in through the linked SSO identity
+// (not installer-managed ones, which are checked per request), for when that
+// link is removed or its provider replaced.
+func (s *Sessions) EndLinkedSSO() {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	for id, sess := range s.byID {
+		if sess.SSO.Subject != "" && sess.IdentitySubject == "" {
+			delete(s.byID, id)
+		}
+	}
+}
+
+// AllowLink lets the session link one SSO identity until until. The link
+// callback's purpose cookie is the browser's to set, so the permission the
+// password check earned lives here.
+func (s *Sessions) AllowLink(id string, until time.Time) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if sess, ok := s.byID[id]; ok {
+		sess.linkUntil = until
+	}
+}
+
+// TakeLink spends the session's permission to link, reporting whether it had one.
+func (s *Sessions) TakeLink(id string) bool {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	sess, ok := s.byID[id]
+	if !ok || !s.now().Before(sess.linkUntil) {
+		return false
+	}
+	sess.linkUntil = time.Time{}
+	return true
 }
 
 // Get returns a live session and slides its idle window. Both the idle and

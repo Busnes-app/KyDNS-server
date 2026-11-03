@@ -122,3 +122,25 @@ func verified(encoded, plaintext string) bool {
 	ok, err := VerifyPassword(encoded, plaintext)
 	return err == nil && ok
 }
+
+// Parallel guesses must not share one delay: each attempt is counted before
+// the caller sleeps, so the next one in line waits longer.
+func TestBackoffAttemptCountsBeforeTheWait(t *testing.T) {
+	b := NewBackoff()
+	if d := b.Attempt("192.0.2.1"); d != 0 {
+		t.Fatalf("first attempt delay = %v, want 0", d)
+	}
+	first, second := b.Attempt("192.0.2.1"), b.Attempt("192.0.2.1")
+	if first == 0 || second <= first {
+		t.Fatalf("delays %v then %v, want each later attempt to wait longer", first, second)
+	}
+	// Three counted; a refund leaves two, the delay the third attempt waited.
+	b.Refund("192.0.2.1")
+	if got := b.Delay("192.0.2.1"); got != second {
+		t.Fatalf("after a refund delay = %v, want %v", got, second)
+	}
+	b.Reset("192.0.2.1")
+	if d := b.Delay("192.0.2.1"); d != 0 {
+		t.Fatalf("after reset delay = %v", d)
+	}
+}

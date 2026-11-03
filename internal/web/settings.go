@@ -82,8 +82,8 @@ func tabFor(r *http.Request) string {
 		return "views"
 	case strings.HasPrefix(p, "tokens/"):
 		return "tokens"
-	case strings.HasPrefix(p, "sso/"):
-		return "account" // linking and unlinking the admin's own identity
+	case strings.HasPrefix(p, "sso/"), strings.HasPrefix(p, "account/"):
+		return "account" // the admin's own identity and password
 	case p == "sso":
 		return "sso"
 	case strings.HasPrefix(p, "backup/"), p == "cache/flush":
@@ -143,6 +143,9 @@ func (s *Server) settingsData(r *http.Request, errMsg, newToken string) map[stri
 		tokRows = append(tokRows, row)
 	}
 	ident, _ := s.o.Store.AdminIdentity()
+	if ident == nil { // a read error: render the page without it, not a nil dereference
+		ident = &store.AdminIdentity{}
+	}
 	sso, _ := s.o.Store.SSOSettings()
 
 	data := map[string]any{
@@ -174,7 +177,11 @@ func (s *Server) getSettings(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	s.render(w, r, "settings.html", s.settingsData(r, "", ""))
+	msg := ""
+	if r.URL.Query().Get("stepup") == "stale" {
+		msg = "Your identity provider did not ask you to sign in again, so it cannot confirm a token. Enter your current password instead."
+	}
+	s.render(w, r, "settings.html", s.settingsData(r, msg, ""))
 }
 
 func (s *Server) settingsError(w http.ResponseWriter, r *http.Request, err error) {
@@ -218,6 +225,10 @@ func (s *Server) postTokenNew(w http.ResponseWriter, r *http.Request) {
 	sess, ok := s.session(r)
 	if !ok {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+	if err := s.stepUp(r, sess); err != nil {
+		s.settingsError(w, r, err)
 		return
 	}
 	label, scope, queryLog := r.PostFormValue("label"), r.PostFormValue("access"), r.PostFormValue("query_log") == "on"
@@ -299,15 +310,21 @@ func (s *Server) postSSOSettings(w http.ResponseWriter, r *http.Request) {
 	issuerURL := strings.TrimSpace(r.PostFormValue("issuer_url"))
 	clientID := strings.TrimSpace(r.PostFormValue("client_id"))
 	clientSecret := strings.TrimSpace(r.PostFormValue("client_secret"))
+	prev, _ := s.o.Store.SSOSettings()
 	// The page never renders the secret back, so blank means "keep it".
 	if clientSecret == "" && r.PostFormValue("clear_secret") != "1" {
-		if cur, err := s.o.Store.SSOSettings(); err == nil {
-			clientSecret = cur.ClientSecret
-		}
+		clientSecret = prev.ClientSecret
 	}
 
 	if enabled && issuerURL == "" {
 		s.settingsError(w, r, errors.New("enter an issuer URL to enable single sign-on"))
+		return
+	}
+	// Choosing the provider decides who can sign in without the password, so
+	// it needs the password: a stolen session must not point SSO at its own
+	// provider and then step up through it.
+	if _, err := s.checkPassword(r, r.PostFormValue("current_password")); err != nil {
+		s.settingsError(w, r, err)
 		return
 	}
 	if clientID == "" {
@@ -324,6 +341,10 @@ func (s *Server) postSSOSettings(w http.ResponseWriter, r *http.Request) {
 		s.settingsError(w, r, err)
 		return
 	}
+	// A new provider unlinked the identity in the same write; its sessions go too.
+	if prev.IssuerURL != issuerURL || prev.ClientID != clientID {
+		s.o.Sessions.EndLinkedSSO()
+	}
 	backToSettings(w, r)
 }
 
@@ -332,5 +353,7 @@ func (s *Server) postSSOUnlink(w http.ResponseWriter, r *http.Request) {
 		s.settingsError(w, r, err)
 		return
 	}
+	// Unlinking is how a compromised identity is cut off; its sessions end with it.
+	s.o.Sessions.EndLinkedSSO()
 	backToSettings(w, r)
 }

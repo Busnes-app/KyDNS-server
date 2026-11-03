@@ -33,6 +33,7 @@ type SSOTokenClaims struct {
 	Issuer            string         `json:"iss"`
 	SID               string         `json:"sid"`
 	IssuedAt          time.Time      `json:"-"` // the ID token's iat: when the provider vouched for this login
+	AuthTime          time.Time      `json:"-"` // the ID token's auth_time: when the user last authenticated; zero if absent
 	RawClaims         map[string]any `json:"-"`
 }
 
@@ -49,11 +50,15 @@ type SSOClient struct {
 	ClientID     string
 	ClientSecret string
 	HTTPClient   *http.Client
+	// FreshLogin asks the provider to authenticate the user again (max_age=0),
+	// for a step-up dated from the ID token's auth_time.
+	FreshLogin bool
 }
 
 func NewSSOClient(issuerURL, clientID, clientSecret string) *SSOClient {
 	return &SSOClient{
-		IssuerURL:    strings.TrimRight(issuerURL, "/"),
+		// Verbatim: go-oidc compares the issuer exactly, and Authentik's ends in "/".
+		IssuerURL:    issuerURL,
 		ClientID:     clientID,
 		ClientSecret: clientSecret,
 		HTTPClient: &http.Client{
@@ -65,10 +70,11 @@ func NewSSOClient(issuerURL, clientID, clientSecret string) *SSOClient {
 // DiscoverEndpoints queries OIDC metadata. Legacy mode retains endpoint
 // fallback; the strong profile returns discovery/policy errors to the caller.
 func (c *SSOClient) DiscoverEndpoints(ctx context.Context) (OIDCEndpoints, error) {
+	base := strings.TrimRight(c.IssuerURL, "/")
 	defaults := OIDCEndpoints{
-		AuthorizationEndpoint: c.IssuerURL + "/oauth/authorize",
-		TokenEndpoint:         c.IssuerURL + "/oauth/token",
-		UserinfoEndpoint:      c.IssuerURL + "/oauth/userinfo",
+		AuthorizationEndpoint: base + "/oauth/authorize",
+		TokenEndpoint:         base + "/oauth/token",
+		UserinfoEndpoint:      base + "/oauth/userinfo",
 	}
 
 	fail := func(err error) (OIDCEndpoints, error) {
@@ -82,7 +88,7 @@ func (c *SSOClient) DiscoverEndpoints(ctx context.Context) (OIDCEndpoints, error
 			return fail(err)
 		}
 	}
-	wellKnown := c.IssuerURL + "/.well-known/openid-configuration"
+	wellKnown := base + "/.well-known/openid-configuration"
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, wellKnown, nil)
 	if err != nil {
 		return fail(err)
@@ -163,6 +169,9 @@ func (c *SSOClient) AuthURL(redirectURI, state, nonce, codeChallenge string) (st
 	q.Set("nonce", nonce)
 	q.Set("code_challenge", codeChallenge)
 	q.Set("code_challenge_method", "S256")
+	if c.FreshLogin {
+		q.Set("max_age", "0")
+	}
 
 	sep := "?"
 	if strings.Contains(endpoints.AuthorizationEndpoint, "?") {
@@ -183,6 +192,13 @@ func (c *SSOClient) providerVerifier(ctx context.Context) (context.Context, *oid
 	client := c.oidcHTTPClient()
 	ctx = oidc.ClientContext(ctx, client)
 	provider, err := oidc.NewProvider(ctx, c.IssuerURL)
+	// A trailing slash is the one difference an operator cannot see: earlier
+	// versions trimmed it, so a stored issuer may carry one the provider does
+	// not publish, or lack one it does. Retry with the provider's exact form.
+	var mismatch *oidc.IssuerMismatchError
+	if errors.As(err, &mismatch) && strings.TrimRight(mismatch.Discovered, "/") == strings.TrimRight(c.IssuerURL, "/") {
+		provider, err = oidc.NewProvider(ctx, mismatch.Discovered)
+	}
 	if err != nil {
 		return nil, nil, nil, fmt.Errorf("discover OIDC provider: %w", err)
 	}
@@ -243,6 +259,7 @@ func (c *SSOClient) ExchangeCode(ctx context.Context, redirectURI, code, codeVer
 	}
 	// sid comes from the ID token only: back-channel logout names logins by it.
 	sid, _ := rawClaims["sid"].(string)
+	authTime, _ := rawClaims["auth_time"].(float64)
 	if userInfo, err := provider.UserInfo(ctx, oauth2.StaticTokenSource(token)); err == nil {
 		if userInfo.Subject != idToken.Subject {
 			return nil, fmt.Errorf("verify userinfo: subject mismatch")
@@ -260,6 +277,9 @@ func (c *SSOClient) ExchangeCode(ctx context.Context, redirectURI, code, codeVer
 	claims := parseClaimsMap(rawClaims)
 	claims.SID = sid
 	claims.IssuedAt = idToken.IssuedAt
+	if authTime > 0 {
+		claims.AuthTime = time.Unix(int64(authTime), 0)
+	}
 	return claims, nil
 }
 

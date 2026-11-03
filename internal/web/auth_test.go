@@ -398,6 +398,9 @@ func TestEveryPostRouteRequiresSessionAndCSRF(t *testing.T) {
 	}
 }
 
+// oidcAuthTime is the auth_time oidcTestServer signs; 0 leaves it out.
+var oidcAuthTime = func() int64 { return time.Now().Unix() }
+
 func oidcTestServer(t *testing.T, sub, username, email, role string, tls ...bool) *httptest.Server {
 	t.Helper()
 	key, err := rsa.GenerateKey(rand.Reader, 2048)
@@ -422,11 +425,15 @@ func oidcTestServer(t *testing.T, sub, username, email, role string, tls ...bool
 		case "/token":
 			signer, _ := jose.NewSigner(jose.SigningKey{Algorithm: jose.RS256, Key: key},
 				(&jose.SignerOptions{}).WithType("JWT").WithHeader("kid", "test"))
-			raw, _ := jwt.Signed(signer).Claims(map[string]any{
+			idClaims := map[string]any{
 				"iss": srv.URL, "aud": "kydns", "exp": time.Now().Add(time.Hour).Unix(),
 				"iat": time.Now().Unix(), "nonce": "test_nonce", "sub": sub,
 				"username": username, "email": email, "role": role,
-			}).Serialize()
+			}
+			if at := oidcAuthTime(); at != 0 {
+				idClaims["auth_time"] = at
+			}
+			raw, _ := jwt.Signed(signer).Claims(idClaims).Serialize()
 			_ = json.NewEncoder(w).Encode(map[string]any{"access_token": "tok", "id_token": raw, "token_type": "Bearer"})
 		case "/userinfo":
 			_ = json.NewEncoder(w).Encode(claims)
@@ -627,7 +634,7 @@ func TestSSOLinkFromSettingsLinksAndEnables(t *testing.T) {
 	sess, _ := srv.o.Sessions.Get(c.Value)
 	_ = srv.o.Store.SetSSOSettings(store.SSOSettings{IssuerURL: idp.URL, ClientID: "kydns"})
 
-	rec := postForm(t, h, "/settings/sso/link", url.Values{"csrf_token": {sess.CSRF}}, c)
+	rec := postForm(t, h, "/settings/sso/link", url.Values{"csrf_token": {sess.CSRF}, "current_password": {testPassword}}, c)
 	if rec.Code != http.StatusSeeOther || !strings.HasPrefix(rec.Header().Get("Location"), idp.URL) {
 		t.Fatalf("link start = %d to %q; want a redirect to the provider", rec.Code, rec.Header().Get("Location"))
 	}
@@ -693,14 +700,14 @@ func TestSSOSettingsEnableNeedsIssuer(t *testing.T) {
 	c := loginCookie(t, h)
 	sess, _ := srv.o.Sessions.Get(c.Value)
 
-	rec := postForm(t, h, "/settings/sso", url.Values{"csrf_token": {sess.CSRF}, "enabled": {"1"}, "issuer_url": {" "}}, c)
+	rec := postForm(t, h, "/settings/sso", url.Values{"csrf_token": {sess.CSRF}, "enabled": {"1"}, "issuer_url": {" "}, "current_password": {testPassword}}, c)
 	if rec.Code != http.StatusBadRequest {
 		t.Fatalf("enable with no issuer: status = %d, want 400", rec.Code)
 	}
 	if sso, _ := srv.o.Store.SSOSettings(); sso.Enabled {
 		t.Fatalf("SSO enabled with no issuer: %+v", sso)
 	}
-	rec = postForm(t, h, "/settings/sso", url.Values{"csrf_token": {sess.CSRF}, "issuer_url": {""}}, c)
+	rec = postForm(t, h, "/settings/sso", url.Values{"csrf_token": {sess.CSRF}, "issuer_url": {""}, "current_password": {testPassword}}, c)
 	if rec.Code != http.StatusSeeOther {
 		t.Fatalf("disabled save: status = %d, want redirect", rec.Code)
 	}
@@ -717,11 +724,12 @@ func TestSSOSettingsSaveAndUnlink(t *testing.T) {
 
 	// Save settings
 	rec := postForm(t, h, "/settings/sso", url.Values{
-		"csrf_token":    {sess.CSRF},
-		"enabled":       {"1"},
-		"issuer_url":    {"https://auth.example.com"},
-		"client_id":     {"kydns-prod"},
-		"client_secret": {"sec123"},
+		"csrf_token":       {sess.CSRF},
+		"current_password": {testPassword},
+		"enabled":          {"1"},
+		"issuer_url":       {"https://auth.example.com"},
+		"client_id":        {"kydns-prod"},
+		"client_secret":    {"sec123"},
 	}, c)
 	if rec.Code != http.StatusSeeOther {
 		t.Fatalf("status = %d, want redirect", rec.Code)
@@ -804,5 +812,57 @@ func TestStrongOIDCStartFailureClearsCookies(t *testing.T) {
 		if last[name] == nil || last[name].MaxAge >= 0 {
 			t.Fatalf("failed login retained %s", name)
 		}
+	}
+}
+
+// Unlinking the SSO identity, or replacing its provider, is how an owner cuts
+// off a compromised identity: its sessions must end with the link, and the
+// password session that did it must survive.
+func TestSSOUnlinkAndProviderChangeEndLinkedSessions(t *testing.T) {
+	h, srv := newWeb(t)
+	setupAndLogin(t, h)
+	c := loginCookie(t, h)
+	sess, _ := srv.o.Sessions.Get(c.Value)
+	save := func(issuer string) {
+		t.Helper()
+		rec := postForm(t, h, "/settings/sso", url.Values{"csrf_token": {sess.CSRF}, "enabled": {"1"}, "current_password": {testPassword},
+			"issuer_url": {issuer}, "client_id": {"kydns"}}, c)
+		if rec.Code != http.StatusSeeOther {
+			t.Fatalf("save: status = %d", rec.Code)
+		}
+	}
+	ssoSession := func() string {
+		s, _ := srv.o.Sessions.CreateSSOLogin(auth.SSOLogin{Issuer: "https://a.example", Subject: "1"}, "", "", 0, srv.o.Sessions.RecoveryGeneration())
+		return s.ID
+	}
+	save("https://a.example")
+
+	_ = srv.o.Store.LinkAdminSSO("1", "owner", "")
+	attacker := ssoSession()
+	if rec := postForm(t, h, "/settings/sso/unlink", url.Values{"csrf_token": {sess.CSRF}}, c); rec.Code != http.StatusSeeOther {
+		t.Fatalf("unlink: status = %d", rec.Code)
+	}
+	if _, ok := srv.o.Sessions.Get(attacker); ok {
+		t.Error("the SSO session survived unlinking")
+	}
+
+	_ = srv.o.Store.LinkAdminSSO("1", "owner", "")
+	attacker = ssoSession()
+	save("https://a.example") // unchanged provider: the link and its sessions stay
+	if ident, _ := srv.o.Store.AdminIdentity(); ident.SSOSub != "1" {
+		t.Fatal("an unchanged save unlinked the identity")
+	}
+	if _, ok := srv.o.Sessions.Get(attacker); !ok {
+		t.Fatal("an unchanged save ended the SSO session")
+	}
+	save("https://b.example")
+	if ident, _ := srv.o.Store.AdminIdentity(); ident.SSOSub != "" {
+		t.Errorf("subject %q still linked after the issuer changed", ident.SSOSub)
+	}
+	if _, ok := srv.o.Sessions.Get(attacker); ok {
+		t.Error("the SSO session survived a provider change")
+	}
+	if _, ok := srv.o.Sessions.Get(c.Value); !ok {
+		t.Error("the password session was ended")
 	}
 }

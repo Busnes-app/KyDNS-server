@@ -135,8 +135,13 @@ func (r *Refresher) refresh(ctx context.Context, l store.BlacklistList) (ok, cha
 		r.fail(l, errors.New("no usable domains in the downloaded body"), at)
 		return false, false
 	}
-	if err := r.st.SetBlacklistSnapshot(l.ID, parsed.Domains, parsed.Skipped,
-		res.ETag, res.LastModified, at); err != nil {
+	if err := r.st.InstallBlacklistFetch(l, parsed.Domains, parsed.Skipped,
+		res.ETag, res.LastModified, at); errors.Is(err, store.ErrNotFound) {
+		// Edited or replaced while downloading: the row's own source is not
+		// this one, so neither this body nor this failure belongs to it.
+		r.logger.Info("blacklist list changed during refresh; discarding the download", "list", l.Name)
+		return false, false
+	} else if err != nil {
 		r.fail(l, err, at)
 		return false, false
 	}
