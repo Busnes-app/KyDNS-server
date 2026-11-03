@@ -84,6 +84,7 @@ func (s *Server) pageRoutes(mux registrar) {
 	mux.HandleFunc("POST /settings/sso", s.requireCSRF(s.postSSOSettings))
 	mux.HandleFunc("POST /settings/sso/link", s.requireCSRF(s.postSSOLink))
 	mux.HandleFunc("POST /settings/sso/unlink", s.requireCSRF(s.postSSOUnlink))
+	mux.HandleFunc("POST /settings/account/password", s.requireCSRF(s.postAccountPassword))
 }
 
 // redirectTo answers a GET for a page that moved with a permanent redirect.

@@ -194,34 +194,70 @@ const stepUpWindow = 5 * time.Minute
 // backoff, so a stolen session cannot guess through this form faster.
 func (s *Server) stepUp(r *http.Request, sess *auth.Session) error {
 	if pw := r.PostFormValue("current_password"); pw != "" {
-		key := s.sourceKey(r)
-		if d := s.o.Backoff.Attempt(key); d > 0 {
-			select {
-			case <-time.After(d):
-			case <-r.Context().Done():
-				return r.Context().Err()
-			}
-		}
-		hash, err := s.o.Store.AdminHash()
-		ok := false
-		if err == nil {
-			ok, err = verifyPassword(hash, pw)
-		}
-		if errors.Is(err, auth.ErrBusy) {
-			s.o.Backoff.Refund(key)
-			return errors.New("KyDNS is busy checking other sign-ins. Try again in a moment.")
-		}
-		if !ok {
-			s.o.Logger.Warn("failed step-up", "source", key)
-			return errors.New("That password is not correct.")
-		}
-		s.o.Backoff.Reset(key)
-		return nil
+		return s.checkPassword(r, pw)
 	}
 	if age := time.Since(sess.SSO.AuthTime); !sess.SSO.AuthTime.IsZero() && age < stepUpWindow && age > -time.Minute {
 		return nil
 	}
 	return errors.New("Enter your current password, or confirm with single sign-on, to create a token.")
+}
+
+// checkPassword verifies the admin's current password for a signed-in action.
+func (s *Server) checkPassword(r *http.Request, pw string) error {
+	key := s.sourceKey(r)
+	if d := s.o.Backoff.Attempt(key); d > 0 {
+		select {
+		case <-time.After(d):
+		case <-r.Context().Done():
+			return r.Context().Err()
+		}
+	}
+	hash, err := s.o.Store.AdminHash()
+	ok := false
+	if err == nil {
+		ok, err = verifyPassword(hash, pw)
+	}
+	if errors.Is(err, auth.ErrBusy) {
+		s.o.Backoff.Refund(key)
+		return errors.New("KyDNS is busy checking other sign-ins. Try again in a moment.")
+	}
+	if !ok {
+		s.o.Logger.Warn("failed password check", "source", key)
+		return errors.New("That password is not correct.")
+	}
+	s.o.Backoff.Reset(key)
+	return nil
+}
+
+// postAccountPassword changes the admin's password after checking the current
+// one, then signs this browser in again: the change ended every session.
+func (s *Server) postAccountPassword(w http.ResponseWriter, r *http.Request) {
+	next := r.PostFormValue("new_password")
+	if len(next) < minPasswordLen {
+		s.settingsError(w, r, errors.New("Choose a password of at least 12 characters."))
+		return
+	}
+	if next != r.PostFormValue("confirm") {
+		s.settingsError(w, r, errors.New("The two passwords do not match."))
+		return
+	}
+	if err := s.checkPassword(r, r.PostFormValue("current_password")); err != nil {
+		s.settingsError(w, r, err)
+		return
+	}
+	hash, err := auth.HashPassword(next)
+	if err != nil {
+		s.settingsError(w, r, err)
+		return
+	}
+	generation, err := s.o.Store.ChangeAdminPassword(hash, time.Now())
+	if err != nil {
+		s.settingsError(w, r, err)
+		return
+	}
+	s.o.Logger.Info("admin password changed; every session and unbound token was revoked", "source", s.sourceKey(r))
+	s.setSessionCookie(w, r, s.o.Sessions.CreateAuthenticated("", "", 0, generation))
+	backToSettings(w, r)
 }
 
 func (s *Server) getSSOLogin(w http.ResponseWriter, r *http.Request) {

@@ -837,6 +837,36 @@ func (s *Store) ResetAdmin(hash string, now time.Time) error {
 	return tx.Commit()
 }
 
+// ChangeAdminPassword is the routine change, for an admin who proved the old
+// password (KyCalendar Q4 A). In one transaction it sets the hash, ends every
+// session by advancing the recovery generation it returns, and deletes the
+// tokens no SSO identity is bound to: those are what a password session could
+// mint. SSO links, SSO settings and identity-bound tokens stay.
+func (s *Store) ChangeAdminPassword(hash string, now time.Time) (time.Time, error) {
+	tx, err := s.db.Begin()
+	if err != nil {
+		return time.Time{}, err
+	}
+	defer tx.Rollback()
+	res, err := tx.Exec(`
+		UPDATE admin SET password_hash = ?, sessions_not_before = MAX(sessions_not_before + 1, ?), updated_at = unixepoch()
+		WHERE id = 1 AND password_hash <> ''`, hash, now.UnixMilli())
+	if err != nil {
+		return time.Time{}, err
+	}
+	if n, _ := res.RowsAffected(); n == 0 {
+		return time.Time{}, errors.New("this administrator has no local password to change")
+	}
+	if _, err := tx.Exec(`DELETE FROM tokens WHERE issuer = ''`); err != nil {
+		return time.Time{}, err
+	}
+	var ms int64
+	if err := tx.QueryRow(`SELECT sessions_not_before FROM admin WHERE id = 1`).Scan(&ms); err != nil {
+		return time.Time{}, err
+	}
+	return time.UnixMilli(ms), tx.Commit()
+}
+
 // SessionsNotBefore returns the recovery generation, encoded as a timestamp.
 // ResetAdmin advances it even when the clock repeats or moves backwards.
 func (s *Store) SessionsNotBefore() (time.Time, error) {

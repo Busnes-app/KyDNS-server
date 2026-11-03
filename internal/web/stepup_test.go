@@ -108,3 +108,50 @@ func TestTokenStepUpCallbackRefusesAnOldAuthTime(t *testing.T) {
 		})
 	}
 }
+
+// The admin can change a known password from the browser (KyCalendar Q4 A):
+// every other session ends, tokens a password could mint are revoked, and
+// this browser stays signed in with the new generation.
+func TestChangePasswordRevokesSessionsAndUnboundTokens(t *testing.T) {
+	h, srv := newWeb(t)
+	setupAndLogin(t, h)
+	c := loginCookie(t, h)
+	other := loginCookie(t, h)
+	sess, _ := srv.o.Sessions.Get(c.Value)
+	if _, err := srv.o.Registry.CreateToken("cli"); err != nil {
+		t.Fatal(err)
+	}
+	change := func(current, next string) *httptest.ResponseRecorder {
+		return postForm(t, h, "/settings/account/password", url.Values{"csrf_token": {sess.CSRF},
+			"current_password": {current}, "new_password": {next}, "confirm": {next}}, c)
+	}
+	if rec := change("wrong-password-here", "a-brand-new-password"); rec.Code != http.StatusBadRequest {
+		t.Fatalf("wrong current password: status = %d", rec.Code)
+	}
+	if rec := change(testPassword, "short"); rec.Code != http.StatusBadRequest {
+		t.Fatalf("short password: status = %d", rec.Code)
+	}
+	rec := change(testPassword, "a-brand-new-password")
+	if rec.Code != http.StatusSeeOther || rec.Header().Get("Location") != "/settings/account" {
+		t.Fatalf("status = %d, location %q", rec.Code, rec.Header().Get("Location"))
+	}
+	fresh := sessionCookie(rec)
+	if fresh == nil {
+		t.Fatal("this browser was not signed in again")
+	}
+	if get(t, h, "/settings/account", fresh).Code != http.StatusOK {
+		t.Error("the new session does not work")
+	}
+	for name, ck := range map[string]*http.Cookie{"old": c, "other": other} {
+		if _, ok := srv.o.Sessions.Get(ck.Value); ok {
+			t.Errorf("%s session survived the change", name)
+		}
+	}
+	if toks, _ := srv.o.Registry.Tokens(); len(toks) != 0 {
+		t.Errorf("%d unbound tokens survived the change", len(toks))
+	}
+	hash, _ := srv.o.Store.AdminHash()
+	if !verified(hash, "a-brand-new-password") {
+		t.Error("the new password does not verify")
+	}
+}

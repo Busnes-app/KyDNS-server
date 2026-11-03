@@ -44,6 +44,13 @@ works on the host itself, or from any machine through the trusted HTTPS proxy
 | `kydns restore --capsule p --out dir` | Open a capsule with custodian shares read from stdin. See [docs/RESTORE.md](RESTORE.md). |
 | `kydns admin reset-password` | Local recovery. Opens the database directly. |
 
+### Changing the admin password
+
+If you know the password, change it under **Settings → Account**. That signs out every
+session (the browser you changed it from stays signed in) and revokes the API and agent
+tokens made with a password; tokens bound to an installer-managed SSO administrator stay.
+Create replacement tokens for integrations afterwards.
+
 ### Forgot the admin password
 
 ```sh

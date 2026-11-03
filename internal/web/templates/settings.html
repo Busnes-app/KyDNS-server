@@ -13,9 +13,25 @@
   <table class="grid account-facts">
     <tr><th>Username</th><td>admin</td></tr>
     <tr><th>Role</th><td>Administrator</td></tr>
-    <tr><th>Password</th><td>Reset it on the server with <code>kydns admin reset-password</code>.</td></tr>
+    <tr><th>Password</th><td>{{if .AdminIdentity.PasswordHash}}Change it below.{{else}}None: this administrator signs in with single sign-on.{{end}} If it is lost, reset it on the server with <code>kydns admin reset-password</code>.</td></tr>
   </table>
 </div>
+{{if .AdminIdentity.PasswordHash}}
+<div class="card">
+  <h3>Change password</h3>
+  <p class="muted">Changing it signs out every session, this one included (you stay signed in here), and revokes the API and agent tokens made with a password.</p>
+  <form class="stack" method="post" action="/settings/account/password">
+    <input type="hidden" name="csrf_token" value="{{.CSRF}}">
+    <label for="pcurrent">Current password</label>
+    <input id="pcurrent" name="current_password" type="password" autocomplete="current-password" required>
+    <label for="pnew">New password (at least 12 characters)</label>
+    <input id="pnew" name="new_password" type="password" autocomplete="new-password" minlength="12" required>
+    <label for="pconfirm">New password again</label>
+    <input id="pconfirm" name="confirm" type="password" autocomplete="new-password" minlength="12" required>
+    <button type="submit"{{template "ro" $}}>Change password</button>
+  </form>
+</div>
+{{end}}
 {{if .AdminIdentity}}
 <div class="card">
   <h3>Single sign-on identity</h3>

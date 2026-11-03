@@ -82,8 +82,8 @@ func tabFor(r *http.Request) string {
 		return "views"
 	case strings.HasPrefix(p, "tokens/"):
 		return "tokens"
-	case strings.HasPrefix(p, "sso/"):
-		return "account" // linking and unlinking the admin's own identity
+	case strings.HasPrefix(p, "sso/"), strings.HasPrefix(p, "account/"):
+		return "account" // the admin's own identity and password
 	case p == "sso":
 		return "sso"
 	case strings.HasPrefix(p, "backup/"), p == "cache/flush":
