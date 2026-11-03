@@ -47,7 +47,7 @@ or `this token cannot read the query log`, so the agent can tell the user what t
 - A token unused for 90 days is refused and deleted the next time it is presented, and a daily
   sweep removes the ones nobody presents. Both are audited as `agent_token.expired`.
 - `kydns admin reset-password` and installer directory revocation delete agent tokens with admin tokens.
-  Changing the password under Settings → Account deletes every token no SSO identity is bound to.
+  Changing the password under Settings → Account deletes every token not bound to an installer-managed administrator.
 - Tokens are node-local, like admin tokens: point an agent at one node.
 
 ## The query log

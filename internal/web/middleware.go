@@ -112,6 +112,7 @@ const (
 	PathDHCPSettings       = "/dhcp/settings"
 	PathDHCPSuggest        = "/dhcp/suggest"
 	PathInstallerDirectory = "/api/v1/installer/directory"
+	PathAccountPassword    = "/settings/account/password"
 )
 
 // webWriteExempt is the whole exemption list. Signing in is how an operator
@@ -142,6 +143,8 @@ var webWriteExempt = map[string]bool{
 	PathDHCPSettings: true, PathDHCPSuggest: true,
 	// Signed identity authority is node-local and must reach replicas too.
 	PathInstallerDirectory: true,
+	// So is the admin account: a replica's admin changes its own password.
+	PathAccountPassword: true,
 }
 
 // managedBy names the box to make the change on.
@@ -227,7 +230,7 @@ func (s *Server) TransportGate(next http.Handler) http.Handler {
 			// the browser's own origin no longer matches it. Say so.
 			http.Error(w, "cross-origin request refused: this page's address does not match the Host this request "+
 				"reached KyDNS with. Behind a reverse proxy, pass the original Host header through "+
-				"(nginx: proxy_set_header Host $host;).", http.StatusForbidden)
+				"(nginx: proxy_set_header Host $http_host;).", http.StatusForbidden)
 			return
 		}
 		next.ServeHTTP(w, r)

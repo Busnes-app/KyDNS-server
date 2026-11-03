@@ -839,10 +839,14 @@ func (s *Store) ResetAdmin(hash string, now time.Time) error {
 
 // ChangeAdminPassword is the routine change, for an admin who proved the old
 // password (KyCalendar Q4 A). In one transaction it sets the hash, ends every
-// session by advancing the recovery generation it returns, and deletes the
-// tokens no SSO identity is bound to: those are what a password session could
-// mint. SSO links, SSO settings and identity-bound tokens stay.
-func (s *Store) ChangeAdminPassword(hash string, now time.Time) (time.Time, error) {
+// session by advancing the recovery generation it returns, and deletes every
+// token no installer identity is bound to: what password and linked-SSO
+// sessions minted, and the bootstrap token (the next start mints one if none
+// is left). SSO links, SSO settings and installer-bound tokens stay. It lands
+// only while the hash is still oldHash, the one the caller verified, and the
+// recovery generation is still the caller's session's: a reset or another
+// change in between wins.
+func (s *Store) ChangeAdminPassword(oldHash, hash string, generation, now time.Time) (time.Time, error) {
 	tx, err := s.db.Begin()
 	if err != nil {
 		return time.Time{}, err
@@ -850,12 +854,13 @@ func (s *Store) ChangeAdminPassword(hash string, now time.Time) (time.Time, erro
 	defer tx.Rollback()
 	res, err := tx.Exec(`
 		UPDATE admin SET password_hash = ?, sessions_not_before = MAX(sessions_not_before + 1, ?), updated_at = unixepoch()
-		WHERE id = 1 AND password_hash <> ''`, hash, now.UnixMilli())
+		WHERE id = 1 AND password_hash <> '' AND password_hash = ? AND sessions_not_before = ?`,
+		hash, now.UnixMilli(), oldHash, generation.UnixMilli())
 	if err != nil {
 		return time.Time{}, err
 	}
 	if n, _ := res.RowsAffected(); n == 0 {
-		return time.Time{}, errors.New("this administrator has no local password to change")
+		return time.Time{}, errors.New("the password was not changed: it, or the sign-in sessions, changed while this was being saved. Sign in again and retry")
 	}
 	if _, err := tx.Exec(`DELETE FROM tokens WHERE issuer = ''`); err != nil {
 		return time.Time{}, err

@@ -46,10 +46,11 @@ works on the host itself, or from any machine through the trusted HTTPS proxy
 
 ### Changing the admin password
 
-If you know the password, change it under **Settings → Account**. That signs out every
-session (the browser you changed it from stays signed in) and revokes the API and agent
-tokens made with a password; tokens bound to an installer-managed SSO administrator stay.
-Create replacement tokens for integrations afterwards.
+If you know the password, change it under **Settings → Account** (on a replica too: the
+admin account is node-local). That signs out every session (the browser you changed it from
+stays signed in) and revokes every API and agent token except those bound to an
+installer-managed SSO administrator, the bootstrap token included. Create replacement
+tokens for integrations afterwards, and restart KyDNS for a new bootstrap token.
 
 ### Forgot the admin password
 
@@ -123,12 +124,13 @@ headers; it does not block direct access to `http://$KYDNS_IP:8053/`.
 The proxy must pass the browser's `Host` header through unchanged. KyDNS
 compares it with the page's origin, so a proxy that rewrites it (nginx's
 default `proxy_pass`) gets every form, `/setup` and sign-in included, refused
-as "cross-origin request refused". For nginx:
+as "cross-origin request refused". For nginx (`$http_host`, not `$host`, which
+drops a non-default port such as `:8443`):
 
 ```nginx
 location / {
     proxy_pass http://192.168.1.53:8053;
-    proxy_set_header Host $host;
+    proxy_set_header Host $http_host;
     proxy_set_header X-Forwarded-Proto $scheme;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 }

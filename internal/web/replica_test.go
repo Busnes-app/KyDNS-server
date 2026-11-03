@@ -103,12 +103,15 @@ func TestReplicaRefusesEveryPostRoute(t *testing.T) {
 // only that the post is answered; settings.Service refuses any write reaching
 // past the eight DHCP fields, which is why /dhcp/reserve - a service write, and
 // replicated - is not on this list.
+//
+// PathAccountPassword: the admin account is node-local (ApplySnapshot never
+// touches it), so a replica's admin changes its own password (KyCalendar Q4 A).
 func TestExemptSetIsExactlyTheNamedPaths(t *testing.T) {
 	want := map[string]bool{
 		PathSetup: true, PathLogin: true, PathLogout: true,
 		PathPromote: true, PathJoin: true,
 		PathDHCPSettings: true, PathDHCPSuggest: true,
-		PathInstallerDirectory: true,
+		PathInstallerDirectory: true, PathAccountPassword: true,
 	}
 	if !maps.Equal(webWriteExempt, want) {
 		t.Fatalf("webWriteExempt = %v, want %v", webWriteExempt, want)
@@ -486,5 +489,19 @@ func TestPromotionRestoresTheServerSettingsForm(t *testing.T) {
 	}
 	if _, err := srv.o.Settings.Get(); err != nil {
 		t.Fatal(err)
+	}
+}
+
+// The admin account is node-local, so a replica's admin changes its own
+// password there; the primary's change never reaches it.
+func TestReplicaChangesItsOwnAdminPassword(t *testing.T) {
+	h, _, srv, _, c, csrf := replicaWeb(t)
+	rec := postForm(t, h, PathAccountPassword, url.Values{"csrf_token": {csrf}, "current_password": {testPassword},
+		"new_password": {"a-brand-new-password"}, "confirm": {"a-brand-new-password"}}, c)
+	if rec.Code != http.StatusSeeOther {
+		t.Fatalf("status = %d: %s", rec.Code, rec.Body)
+	}
+	if hash, _ := srv.o.Store.AdminHash(); !verified(hash, "a-brand-new-password") {
+		t.Error("the replica's password did not change")
 	}
 }

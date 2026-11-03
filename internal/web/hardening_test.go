@@ -135,7 +135,7 @@ func TestSSOClientSecretIsNeverRendered(t *testing.T) {
 	sess, _ := srv.o.Sessions.Get(c.Value)
 	save := func(extra url.Values) {
 		t.Helper()
-		form := url.Values{"csrf_token": {sess.CSRF}, "issuer_url": {"https://idp.example"}, "client_id": {"kydns"}}
+		form := url.Values{"csrf_token": {sess.CSRF}, "issuer_url": {"https://idp.example"}, "client_id": {"kydns"}, "current_password": {testPassword}}
 		for k, v := range extra {
 			form[k] = v
 		}

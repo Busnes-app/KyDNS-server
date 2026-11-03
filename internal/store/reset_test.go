@@ -172,7 +172,7 @@ func TestOpenAddsTokenScope(t *testing.T) {
 // session could mint, and keeps what belongs to an SSO identity.
 func TestChangeAdminPasswordKeepsIdentityBoundTokens(t *testing.T) {
 	s := open(t)
-	if _, err := s.ChangeAdminPassword("$argon2id$new", time.Now()); err == nil {
+	if _, err := s.ChangeAdminPassword("", "$argon2id$new", time.UnixMilli(0), time.Now()); err == nil {
 		t.Fatal("changed a password before there was one")
 	}
 	if err := s.SetAdminPassword("$argon2id$old"); err != nil {
@@ -188,7 +188,14 @@ func TestChangeAdminPasswordKeepsIdentityBoundTokens(t *testing.T) {
 		t.Fatal(err)
 	}
 	before, _ := s.SessionsNotBefore()
-	gen, err := s.ChangeAdminPassword("$argon2id$new", time.UnixMilli(0))
+	// A stale hash or generation means a reset (or another change) came first.
+	if _, err := s.ChangeAdminPassword("$argon2id$stale", "$argon2id$new", before, time.UnixMilli(0)); err == nil {
+		t.Fatal("changed the password against a hash that is no longer stored")
+	}
+	if _, err := s.ChangeAdminPassword("$argon2id$old", "$argon2id$new", before.Add(-time.Second), time.UnixMilli(0)); err == nil {
+		t.Fatal("changed the password from a session of an earlier generation")
+	}
+	gen, err := s.ChangeAdminPassword("$argon2id$old", "$argon2id$new", before, time.UnixMilli(0))
 	if err != nil {
 		t.Fatal(err)
 	}

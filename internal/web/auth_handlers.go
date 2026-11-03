@@ -184,6 +184,10 @@ const (
 	cookieSSOLink = "kydns_sso_link"
 )
 
+// beforeSSOSession lets a test land an unlink between a callback's link check
+// and its session; nil in production.
+var beforeSSOSession func()
+
 // stepUpWindow is how long a fresh single sign-on login counts as a step-up.
 const stepUpWindow = 5 * time.Minute
 
@@ -194,7 +198,8 @@ const stepUpWindow = 5 * time.Minute
 // backoff, so a stolen session cannot guess through this form faster.
 func (s *Server) stepUp(r *http.Request, sess *auth.Session) error {
 	if pw := r.PostFormValue("current_password"); pw != "" {
-		return s.checkPassword(r, pw)
+		_, err := s.checkPassword(r, pw)
+		return err
 	}
 	if age := time.Since(sess.SSO.AuthTime); !sess.SSO.AuthTime.IsZero() && age < stepUpWindow && age > -time.Minute {
 		return nil
@@ -202,14 +207,15 @@ func (s *Server) stepUp(r *http.Request, sess *auth.Session) error {
 	return errors.New("Enter your current password, or confirm with single sign-on, to create a token.")
 }
 
-// checkPassword verifies the admin's current password for a signed-in action.
-func (s *Server) checkPassword(r *http.Request, pw string) error {
+// checkPassword verifies the admin's current password for a signed-in action,
+// and returns the hash it verified against.
+func (s *Server) checkPassword(r *http.Request, pw string) (string, error) {
 	key := s.sourceKey(r)
 	if d := s.o.Backoff.Attempt(key); d > 0 {
 		select {
 		case <-time.After(d):
 		case <-r.Context().Done():
-			return r.Context().Err()
+			return "", r.Context().Err()
 		}
 	}
 	hash, err := s.o.Store.AdminHash()
@@ -219,19 +225,24 @@ func (s *Server) checkPassword(r *http.Request, pw string) error {
 	}
 	if errors.Is(err, auth.ErrBusy) {
 		s.o.Backoff.Refund(key)
-		return errors.New("KyDNS is busy checking other sign-ins. Try again in a moment.")
+		return "", errors.New("KyDNS is busy checking other sign-ins. Try again in a moment.")
 	}
 	if !ok {
 		s.o.Logger.Warn("failed password check", "source", key)
-		return errors.New("That password is not correct.")
+		return "", errors.New("That password is not correct.")
 	}
 	s.o.Backoff.Reset(key)
-	return nil
+	return hash, nil
 }
 
 // postAccountPassword changes the admin's password after checking the current
 // one, then signs this browser in again: the change ended every session.
 func (s *Server) postAccountPassword(w http.ResponseWriter, r *http.Request) {
+	sess, ok := s.session(r)
+	if !ok {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
 	next := r.PostFormValue("new_password")
 	if len(next) < minPasswordLen {
 		s.settingsError(w, r, errors.New("Choose a password of at least 12 characters."))
@@ -241,7 +252,8 @@ func (s *Server) postAccountPassword(w http.ResponseWriter, r *http.Request) {
 		s.settingsError(w, r, errors.New("The two passwords do not match."))
 		return
 	}
-	if err := s.checkPassword(r, r.PostFormValue("current_password")); err != nil {
+	verified, err := s.checkPassword(r, r.PostFormValue("current_password"))
+	if err != nil {
 		s.settingsError(w, r, err)
 		return
 	}
@@ -250,7 +262,9 @@ func (s *Server) postAccountPassword(w http.ResponseWriter, r *http.Request) {
 		s.settingsError(w, r, err)
 		return
 	}
-	generation, err := s.o.Store.ChangeAdminPassword(hash, time.Now())
+	// Conditional on the hash just verified and this session's generation, so
+	// a recovery reset landing in between is never undone by this request.
+	generation, err := s.o.Store.ChangeAdminPassword(verified, hash, sess.RecoveryGeneration, time.Now())
 	if err != nil {
 		s.settingsError(w, r, err)
 		return
@@ -272,6 +286,12 @@ func (s *Server) getSSOLogin(w http.ResponseWriter, r *http.Request) {
 // postSSOLink starts linking an identity to the signed-in admin. It is a
 // CSRF-checked POST so no other site can link an account on the admin's behalf.
 func (s *Server) postSSOLink(w http.ResponseWriter, r *http.Request) {
+	// A linked identity signs in without the password, so it outlives this
+	// session: linking one needs the step-up a token does (KyPost-Server Q2 A).
+	if _, err := s.checkPassword(r, r.PostFormValue("current_password")); err != nil {
+		s.settingsError(w, r, err)
+		return
+	}
 	sso, err := s.o.Store.SSOClient()
 	if err != nil {
 		s.settingsError(w, r, err)
@@ -409,11 +429,25 @@ func (s *Server) getSSOCallback(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, "/settings/tokens?stepup=stale", http.StatusSeeOther)
 			return
 		}
+		if beforeSSOSession != nil {
+			beforeSSOSession()
+		}
 		sess, ok := s.o.Sessions.CreateSSOLogin(login, issuer, subject, revision, generation)
 		if !ok {
 			w.WriteHeader(http.StatusUnauthorized)
 			s.renderLogin(w, "This sign-in was ended at the identity provider. Sign in again.")
 			return
+		}
+		// The link was checked before this session existed. Unlinking writes
+		// first and ends sessions after, so re-reading now catches an unlink
+		// that landed in between, whichever way round the two ran.
+		if issuer == "" {
+			if cur, err := s.o.Store.AdminIdentity(); err != nil || cur.SSOSub != claims.Sub {
+				s.o.Sessions.Destroy(sess.ID)
+				w.WriteHeader(http.StatusForbidden)
+				s.renderLogin(w, "This account is not linked to the KyDNS admin. Sign in with your password and link it under Settings.")
+				return
+			}
 		}
 		s.setSessionCookie(w, r, sess)
 		dest := "/"

@@ -155,3 +155,49 @@ func TestChangePasswordRevokesSessionsAndUnboundTokens(t *testing.T) {
 		t.Error("the new password does not verify")
 	}
 }
+
+// A stolen session must not choose the SSO provider or link an identity and
+// then step up through it: both need the current password.
+func TestSSOProviderAndLinkNeedTheCurrentPassword(t *testing.T) {
+	idp := oidcTestServer(t, "attacker", "mallory", "m@example.com", "admin")
+	h, srv := newWeb(t)
+	setupAndLogin(t, h)
+	c := loginCookie(t, h)
+	sess, _ := srv.o.Sessions.Get(c.Value)
+	rec := postForm(t, h, "/settings/sso", url.Values{"csrf_token": {sess.CSRF}, "enabled": {"1"},
+		"issuer_url": {idp.URL}, "client_id": {"kydns"}}, c)
+	if rec.Code != http.StatusBadRequest {
+		t.Fatalf("provider change without the password: status = %d", rec.Code)
+	}
+	if sso, _ := srv.o.Store.SSOSettings(); sso.IssuerURL == idp.URL {
+		t.Fatal("the provider changed without the password")
+	}
+	_ = srv.o.Store.SetSSOSettings(store.SSOSettings{IssuerURL: idp.URL, ClientID: "kydns"})
+	rec = postForm(t, h, "/settings/sso/link", url.Values{"csrf_token": {sess.CSRF}}, c)
+	if rec.Code != http.StatusBadRequest || strings.HasPrefix(rec.Header().Get("Location"), idp.URL) {
+		t.Fatalf("link without the password: status = %d, location %q", rec.Code, rec.Header().Get("Location"))
+	}
+}
+
+// An unlink landing while a callback is between its link check and its new
+// session must still leave that sign-in without a session.
+func TestUnlinkDuringAnSSOCallbackLeavesNoSession(t *testing.T) {
+	idp := oidcTestServer(t, "sub-linked", "yoshi", "y@example.com", "user")
+	h, srv := newWeb(t)
+	setupAndLogin(t, h)
+	_ = srv.o.Store.SetSSOSettings(store.SSOSettings{Enabled: true, IssuerURL: idp.URL, ClientID: "kydns"})
+	_ = srv.o.Store.LinkAdminSSO("sub-linked", "yoshi", "y@example.com")
+	beforeSSOSession = func() {
+		_ = srv.o.Store.UnlinkAdminSSO()
+		srv.o.Sessions.EndLinkedSSO()
+	}
+	t.Cleanup(func() { beforeSSOSession = nil })
+	before := srv.o.Sessions.Len() // setup's own password session
+	rec := ssoCallback(t, h, false, nil)
+	if rec.Code != http.StatusForbidden || sessionCookie(rec) != nil {
+		t.Fatalf("status = %d, session = %v; want 403 and none", rec.Code, sessionCookie(rec))
+	}
+	if n := srv.o.Sessions.Len(); n != before {
+		t.Errorf("%d sessions after the callback, want the %d before it", n, before)
+	}
+}

@@ -634,7 +634,7 @@ func TestSSOLinkFromSettingsLinksAndEnables(t *testing.T) {
 	sess, _ := srv.o.Sessions.Get(c.Value)
 	_ = srv.o.Store.SetSSOSettings(store.SSOSettings{IssuerURL: idp.URL, ClientID: "kydns"})
 
-	rec := postForm(t, h, "/settings/sso/link", url.Values{"csrf_token": {sess.CSRF}}, c)
+	rec := postForm(t, h, "/settings/sso/link", url.Values{"csrf_token": {sess.CSRF}, "current_password": {testPassword}}, c)
 	if rec.Code != http.StatusSeeOther || !strings.HasPrefix(rec.Header().Get("Location"), idp.URL) {
 		t.Fatalf("link start = %d to %q; want a redirect to the provider", rec.Code, rec.Header().Get("Location"))
 	}
@@ -700,14 +700,14 @@ func TestSSOSettingsEnableNeedsIssuer(t *testing.T) {
 	c := loginCookie(t, h)
 	sess, _ := srv.o.Sessions.Get(c.Value)
 
-	rec := postForm(t, h, "/settings/sso", url.Values{"csrf_token": {sess.CSRF}, "enabled": {"1"}, "issuer_url": {" "}}, c)
+	rec := postForm(t, h, "/settings/sso", url.Values{"csrf_token": {sess.CSRF}, "enabled": {"1"}, "issuer_url": {" "}, "current_password": {testPassword}}, c)
 	if rec.Code != http.StatusBadRequest {
 		t.Fatalf("enable with no issuer: status = %d, want 400", rec.Code)
 	}
 	if sso, _ := srv.o.Store.SSOSettings(); sso.Enabled {
 		t.Fatalf("SSO enabled with no issuer: %+v", sso)
 	}
-	rec = postForm(t, h, "/settings/sso", url.Values{"csrf_token": {sess.CSRF}, "issuer_url": {""}}, c)
+	rec = postForm(t, h, "/settings/sso", url.Values{"csrf_token": {sess.CSRF}, "issuer_url": {""}, "current_password": {testPassword}}, c)
 	if rec.Code != http.StatusSeeOther {
 		t.Fatalf("disabled save: status = %d, want redirect", rec.Code)
 	}
@@ -724,11 +724,12 @@ func TestSSOSettingsSaveAndUnlink(t *testing.T) {
 
 	// Save settings
 	rec := postForm(t, h, "/settings/sso", url.Values{
-		"csrf_token":    {sess.CSRF},
-		"enabled":       {"1"},
-		"issuer_url":    {"https://auth.example.com"},
-		"client_id":     {"kydns-prod"},
-		"client_secret": {"sec123"},
+		"csrf_token":       {sess.CSRF},
+		"current_password": {testPassword},
+		"enabled":          {"1"},
+		"issuer_url":       {"https://auth.example.com"},
+		"client_id":        {"kydns-prod"},
+		"client_secret":    {"sec123"},
 	}, c)
 	if rec.Code != http.StatusSeeOther {
 		t.Fatalf("status = %d, want redirect", rec.Code)
@@ -824,7 +825,7 @@ func TestSSOUnlinkAndProviderChangeEndLinkedSessions(t *testing.T) {
 	sess, _ := srv.o.Sessions.Get(c.Value)
 	save := func(issuer string) {
 		t.Helper()
-		rec := postForm(t, h, "/settings/sso", url.Values{"csrf_token": {sess.CSRF}, "enabled": {"1"},
+		rec := postForm(t, h, "/settings/sso", url.Values{"csrf_token": {sess.CSRF}, "enabled": {"1"}, "current_password": {testPassword},
 			"issuer_url": {issuer}, "client_id": {"kydns"}}, c)
 		if rec.Code != http.StatusSeeOther {
 			t.Fatalf("save: status = %d", rec.Code)

@@ -317,6 +317,13 @@ func (s *Server) postSSOSettings(w http.ResponseWriter, r *http.Request) {
 		s.settingsError(w, r, errors.New("enter an issuer URL to enable single sign-on"))
 		return
 	}
+	// Choosing the provider decides who can sign in without the password, so
+	// it needs the password: a stolen session must not point SSO at its own
+	// provider and then step up through it.
+	if _, err := s.checkPassword(r, r.PostFormValue("current_password")); err != nil {
+		s.settingsError(w, r, err)
+		return
+	}
 	if clientID == "" {
 		clientID = "kydns"
 	}
