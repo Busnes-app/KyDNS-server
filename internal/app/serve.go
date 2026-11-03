@@ -247,7 +247,7 @@ func Serve(ctx context.Context, cfgPath string, logger *slog.Logger) error {
 		acl: acl, forwarder: fwd, cache: cache, dnsSrv: dnsSrv,
 		authoritative: authoritative, checker: checker, poller: poller,
 		zoneHolder: holder, registry: reg, logger: logger, prevUpstreams: boot.Upstreams,
-		dhcp: dhcpRun,
+		dhcp: dhcpRun, current: settingsHolder.Current,
 	}
 	// The role is read per write, not captured: a replica may configure its own
 	// node-local DHCP settings and nothing else, and promotion must widen that

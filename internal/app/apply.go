@@ -38,6 +38,12 @@ type liveComponents struct {
 	// mu serializes the fan-out. A settings save and a replication pull both
 	// reach Apply, from different goroutines, and prevUpstreams has one writer.
 	mu sync.Mutex
+
+	// current is the settings holder's latest snapshot, read under mu. Every
+	// caller publishes before it applies, so applying the latest rather than the
+	// argument means two racing callers cannot leave the older one live. Nil in
+	// tests that pass the snapshot they mean.
+	current func() *settings.Snapshot
 }
 
 // Apply fans a validated, already-built settings snapshot out to every live
@@ -46,6 +52,9 @@ type liveComponents struct {
 func (l *liveComponents) Apply(s *settings.Snapshot) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
+	if l.current != nil {
+		s = l.current()
+	}
 	// The private zone first: the snapshot rebuild at the end of this function
 	// builds names under it, and the records were already moved into it by the
 	// same write that produced this snapshot.

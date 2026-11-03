@@ -116,19 +116,19 @@ func TestReplicaChangesItsOwnNodeLocalFields(t *testing.T) {
 // quietly writable on a replica.
 func TestReplicaRefusesEveryNonDHCPField(t *testing.T) {
 	cases := map[string]func(*store.Settings){
-		"private_domain":     func(v *store.Settings) { v.PrivateDomain = "lan.example" },
-		"reverse_zones":      func(v *store.Settings) { v.ReverseZones = []string{"10.0.0.0/8"} },
-		"upstreams":          func(v *store.Settings) { v.Upstreams = []string{"tls://9.9.9.9:853"} },
-		"allow_query":        func(v *store.Settings) { v.AllowQuery = []string{"10.0.0.0/8"} },
-		"allow_tailscale":    func(v *store.Settings) { v.AllowTailscale = true },
-		"ttl":                func(v *store.Settings) { v.TTL = 120 },
-		"cache_min_ttl":      func(v *store.Settings) { v.CacheMinTTL = 10 },
-		"cache_max_ttl":      func(v *store.Settings) { v.CacheMaxTTL = 7200 },
-		"negative_max_ttl":   func(v *store.Settings) { v.NegativeMaxTTL = 60 },
-		"cache_entries":      func(v *store.Settings) { v.CacheEntries = 20000 },
-		"health_interval":    func(v *store.Settings) { v.HealthInterval = 60 },
-		"health_timeout":     func(v *store.Settings) { v.HealthTimeout = 10 },
-		"health_workers":     func(v *store.Settings) { v.HealthWorkers = 16 },
+		"private_domain":   func(v *store.Settings) { v.PrivateDomain = "lan.example" },
+		"reverse_zones":    func(v *store.Settings) { v.ReverseZones = []string{"10.0.0.0/8"} },
+		"upstreams":        func(v *store.Settings) { v.Upstreams = []string{"tls://9.9.9.9:853"} },
+		"allow_query":      func(v *store.Settings) { v.AllowQuery = []string{"10.0.0.0/8"} },
+		"allow_tailscale":  func(v *store.Settings) { v.AllowTailscale = true },
+		"ttl":              func(v *store.Settings) { v.TTL = 120 },
+		"cache_min_ttl":    func(v *store.Settings) { v.CacheMinTTL = 10 },
+		"cache_max_ttl":    func(v *store.Settings) { v.CacheMaxTTL = 7200 },
+		"negative_max_ttl": func(v *store.Settings) { v.NegativeMaxTTL = 60 },
+		"cache_entries":    func(v *store.Settings) { v.CacheEntries = 20000 },
+		"health_interval":  func(v *store.Settings) { v.HealthInterval = 60 },
+		"health_timeout":   func(v *store.Settings) { v.HealthTimeout = 10 },
+		"health_workers":   func(v *store.Settings) { v.HealthWorkers = 16 },
 	}
 	for name, mutate := range cases {
 		t.Run(name, func(t *testing.T) {

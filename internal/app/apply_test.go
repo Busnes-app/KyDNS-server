@@ -380,3 +380,22 @@ func TestApplyLeavesTheZoneAloneWhenTheDomainIsUnchanged(t *testing.T) {
 		t.Error("cache was flushed by a save that did not touch the zone")
 	}
 }
+
+// A local save and a replication pull each publish, then apply. The one that
+// reaches Apply last may carry the older snapshot; what goes live must still be
+// the holder's latest, or DNS keeps an ACL the database no longer has.
+func TestApplyUsesTheLatestPublishedSnapshot(t *testing.T) {
+	live, _ := newLiveComponents(t)
+	stale := validSnapshot(t)
+	v := stale.Raw
+	v.AllowQuery = []string{"10.0.0.0/8"}
+	latest, err := settings.Build(v)
+	if err != nil {
+		t.Fatal(err)
+	}
+	live.current = func() *settings.Snapshot { return latest }
+	live.Apply(stale)
+	if live.acl.Allow(netip.MustParseAddr("192.168.1.5")) || !live.acl.Allow(netip.MustParseAddr("10.1.2.3")) {
+		t.Error("Apply put the stale snapshot's ACL live")
+	}
+}
