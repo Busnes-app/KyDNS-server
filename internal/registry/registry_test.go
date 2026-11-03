@@ -4,6 +4,7 @@ import (
 	"errors"
 	"path/filepath"
 	"strings"
+	"sync"
 	"testing"
 
 	"github.com/Busnes-app/kydns-server/internal/store"
@@ -515,5 +516,33 @@ func TestPutRecordMatchesAddressFamily(t *testing.T) {
 	}
 	if _, err := r.PutRecord(store.Record{Name: "c.home.arpa.", Type: "AAAA", Value: "fd00::5"}); err != nil {
 		t.Error(err)
+	}
+}
+
+// Two racing adds at one name, an A and a CNAME, must not both land.
+func TestConcurrentRecordAddsCannotBothPassTheCNAMECheck(t *testing.T) {
+	for range 20 {
+		r, _ := newRegistry(t)
+		var wg sync.WaitGroup
+		for _, rec := range []store.Record{
+			{Name: "mail.home.arpa.", Type: "A", Value: "192.168.1.20"},
+			{Name: "mail.home.arpa.", Type: "CNAME", Value: "nas.home.arpa."},
+		} {
+			wg.Go(func() { _, _ = r.PutRecord(rec) })
+		}
+		wg.Wait()
+		if recs, _ := r.Records(); len(recs) != 1 {
+			t.Fatalf("stored %d records, want exactly one of the two", len(recs))
+		}
+	}
+}
+
+// A primary that stored a mismatched A record before the check existed must
+// not stop its replicas following it.
+func TestValidateDocumentStillAcceptsAStoredMismatchedAddress(t *testing.T) {
+	if _, _, _, err := ValidateDocument("home.arpa.", nil, nil, []store.Record{
+		{Name: "a.home.arpa.", Type: "A", Value: "fd00::5"},
+	}); err != nil {
+		t.Fatalf("ValidateDocument() = %v, want the old row accepted", err)
 	}
 }

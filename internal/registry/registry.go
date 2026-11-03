@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/netip"
 	"strings"
+	"sync"
 	"sync/atomic"
 	"time"
 
@@ -20,6 +21,8 @@ type Registry struct {
 	s        *store.Store
 	zone     atomic.Pointer[string]
 	onChange func() error
+	// recordMu makes a record's conflict check and its write one step.
+	recordMu sync.Mutex
 }
 
 func New(s *store.Store, zoneFQDN string, onChange func() error) *Registry {
@@ -174,10 +177,6 @@ func validateRecord(rec store.Record, known map[string]bool, zone string) (store
 		if err := ValidateAddress(rec.Value); err != nil {
 			return rec, err
 		}
-		// An A record holding an IPv6 address is served as 0.0.0.0.
-		if a, _ := netip.ParseAddr(rec.Value); (rec.Type == "A") != a.Unmap().Is4() {
-			return rec, invalid("value", "address_family", "%s is not an address for an %s record", rec.Value, rec.Type)
-		}
 	case "CNAME":
 		if err := ValidateName(rec.Name, zone); err != nil {
 			return rec, err
@@ -207,6 +206,17 @@ func (r *Registry) PutRecord(rec store.Record) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
+	// An A record holding an IPv6 address is served as 0.0.0.0. Checked on
+	// this write only, not in ValidateDocument: a replica must still follow a
+	// primary, and an export still import, that stored one before this check.
+	if rec.Type == "A" || rec.Type == "AAAA" {
+		if a, _ := netip.ParseAddr(rec.Value); (rec.Type == "A") != a.Unmap().Is4() {
+			return 0, invalid("value", "address_family", "%s is not an address for an %s record", rec.Value, rec.Type)
+		}
+	}
+	// Check and insert as one step, or two racing adds both pass the check.
+	r.recordMu.Lock()
+	defer r.recordMu.Unlock()
 	existing, err := r.s.Records()
 	if err != nil {
 		return 0, err
@@ -297,7 +307,15 @@ func (r *Registry) DeleteView(name string) error {
 func (r *Registry) ReplaceAll(views []store.View, services []store.Service, records []store.Record) error {
 	// One zone for the whole document: a rename landing mid-import must not
 	// validate half of it against each domain.
-	vs, ss, rs, err := ValidateDocument(r.Zone(), views, services, records)
+	return r.ReplaceAllIn(r.Zone(), views, services, records)
+}
+
+// ReplaceAllIn is ReplaceAll checked against zone instead of the live one: an
+// import whose settings move the private domain brings records already in it.
+func (r *Registry) ReplaceAllIn(zone string, views []store.View, services []store.Service, records []store.Record) error {
+	r.recordMu.Lock()
+	defer r.recordMu.Unlock()
+	vs, ss, rs, err := ValidateDocument(zone, views, services, records)
 	if err != nil {
 		return err
 	}
