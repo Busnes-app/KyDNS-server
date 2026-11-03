@@ -103,6 +103,16 @@ func (h *Holder) Decide(name string) (bool, string, uint32) {
 	return d.Blocked, d.Policy, d.TTL
 }
 
+// Denied reports, without counting, whether a deny rule covers name. A name an
+// allow rule covers overrides every list, so only a deny rule on one of its
+// CNAME targets may still block it.
+func (h *Holder) Denied(name string) bool {
+	if h.pausedUntil.Load() != 0 && !h.PausedUntil().IsZero() {
+		return false
+	}
+	return h.cur.Load().Decide(name).Policy == PolicyDeny
+}
+
 // NameCount is one entry of the blocked-name breakdown.
 type NameCount struct {
 	Name  string `json:"name"`

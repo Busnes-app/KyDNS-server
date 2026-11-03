@@ -266,6 +266,9 @@ func (s *Service) PausedUntil() time.Time { return s.h.PausedUntil() }
 // same façade the screens do rather than reaching past it to the holder.
 func (s *Service) Decide(name string) (bool, string, uint32) { return s.h.Decide(name) }
 
+// Denied reports a deny rule on name without counting it; see Holder.Denied.
+func (s *Service) Denied(name string) bool { return s.h.Denied(name) }
+
 // Counters reports blocked totals and counts by list. Never by client.
 func (s *Service) Counters() (uint64, map[string]uint64) { return s.h.Counters() }
 

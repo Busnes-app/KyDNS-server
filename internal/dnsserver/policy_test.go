@@ -16,6 +16,8 @@ type stubPolicy struct {
 	calls   int
 }
 
+func (s *stubPolicy) Denied(name string) bool { return s.blocked[dns.Fqdn(name)] == "deny" }
+
 func (s *stubPolicy) Decide(name string) (bool, string, uint32) {
 	s.calls++
 	if s.allowed[dns.Fqdn(name)] {

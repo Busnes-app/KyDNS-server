@@ -175,13 +175,15 @@ func (s *Server) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 		fail(dns.RcodeServerFailure, "forward")
 		return
 	}
-	// An allow rule overrides every list (docs/FEATURES.md), so the operator who
-	// allowed this name gets its answer whatever its CNAME targets match.
-	if policy != policyAllow {
-		if blocked, decision, ttl := s.cloaked(resp.Answer); blocked {
-			block(ttl, decision)
-			return
-		}
+	// An allow rule overrides every list (docs/FEATURES.md), so for a name it
+	// covers only a deny rule on a CNAME target still blocks.
+	check := s.cloaked
+	if policy == policyAllow {
+		check = s.deniedTarget
+	}
+	if blocked, decision, ttl := check(resp.Answer); blocked {
+		block(ttl, decision)
+		return
 	}
 	out := resp.Copy()
 	rcode := resp.Rcode
@@ -217,6 +219,21 @@ func (s *Server) cloaked(rrs []dns.RR) (bool, string, uint32) {
 			if blocked, decision, ttl := s.decide(c.Target); blocked {
 				return true, decision, ttl
 			}
+		}
+	}
+	return false, "", 0
+}
+
+// deniedTarget is cloaked for a name an allow rule covers: it blocks only on a
+// deny rule, and asks the policy without counting a list match it ignores.
+func (s *Server) deniedTarget(rrs []dns.RR) (bool, string, uint32) {
+	d, ok := s.o.Policy.(interface{ Denied(string) bool })
+	if !ok {
+		return false, "", 0
+	}
+	for _, rr := range rrs {
+		if c, ok := rr.(*dns.CNAME); ok && d.Denied(c.Target) {
+			return s.decide(c.Target)
 		}
 	}
 	return false, "", 0

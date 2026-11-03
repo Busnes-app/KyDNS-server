@@ -156,6 +156,11 @@ func TestAllowedNameIsNotBlockedByItsCNAMETarget(t *testing.T) {
 	if m.Rcode != dns.RcodeSuccess || len(m.Answer) == 0 {
 		t.Errorf("rcode %s answer %v, want the allowed name answered", dns.RcodeToString[m.Rcode], m.Answer)
 	}
+	// Deny beats allow: a deny rule on the target still blocks.
+	s.o.Policy.(*stubPolicy).blocked["final.example.net."] = "deny"
+	if m := serve(s, "shop.example.com."); m.Rcode != dns.RcodeNameError || len(m.Answer) != 0 {
+		t.Errorf("rcode %s answer %v, want a deny rule on the target to block", dns.RcodeToString[m.Rcode], m.Answer)
+	}
 }
 
 // The query log stores names in one case, so a 0x20-randomised query matches
