@@ -3,9 +3,6 @@ package dhcpd
 import (
 	"net"
 	"net/netip"
-	"os"
-	"strconv"
-	"strings"
 	"time"
 )
 
@@ -49,7 +46,7 @@ func NewProber(iface string, budget time.Duration) Prober {
 }
 
 // InUse is a best-effort check on a fixed budget, not proof. A send failure
-// or an unreadable ARP table returns false rather than an error: a false
+// or an unreadable neighbour table returns false rather than an error: a false
 // negative here costs one address that the client declines (there is a
 // DHCPDECLINE path for exactly that); blocking an OFFER because this probe
 // misfired would be worse.
@@ -59,11 +56,11 @@ func (p *prober) InUse(ip netip.Addr, mac string) bool {
 	if wait := time.Until(deadline); wait > 0 {
 		time.Sleep(wait)
 	}
-	b, err := os.ReadFile("/proc/net/arp")
+	live, err := reachableNeighbours(p.iface)
 	if err != nil {
 		return false
 	}
-	hw, ok := parseARPTable(string(b), p.iface)[ip]
+	hw, ok := live[ip]
 	return ok && hw != mac
 }
 
@@ -79,29 +76,4 @@ func nudgeARP(ip netip.Addr) {
 	}
 	defer c.Close()
 	c.Write([]byte{0})
-}
-
-// parseARPTable maps the addresses on iface with a complete (ATF_COM, 0x2)
-// entry to the MAC that answered. A complete entry means something answered
-// ARP for it recently.
-func parseARPTable(table, iface string) map[netip.Addr]string {
-	live := map[netip.Addr]string{}
-	lines := strings.Split(table, "\n")
-	if len(lines) > 0 {
-		lines = lines[1:] // drop the header row
-	}
-	for _, line := range lines {
-		f := strings.Fields(line)
-		if len(f) < 6 || f[5] != iface {
-			continue
-		}
-		flags, err := strconv.ParseUint(strings.TrimPrefix(f[2], "0x"), 16, 32)
-		if err != nil || flags&0x2 == 0 {
-			continue
-		}
-		if addr, err := netip.ParseAddr(f[0]); err == nil {
-			live[addr] = normalizeMAC(f[3])
-		}
-	}
-	return live
 }
