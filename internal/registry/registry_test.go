@@ -566,3 +566,15 @@ func TestServiceNameAndAliasCannotCollide(t *testing.T) {
 		t.Errorf("re-saving a service unchanged: %v", err)
 	}
 }
+
+// A replace import is checked the same way.
+func TestReplaceImportRefusesANameAliasCollision(t *testing.T) {
+	r, _ := newRegistry(t)
+	err := r.ReplaceAll(nil, []store.Service{
+		{Name: "nas", Addresses: []store.Address{{Address: "192.168.1.10"}}},
+		{Name: "web", Aliases: []string{"nas"}, Addresses: []store.Address{{Address: "192.168.1.20"}}},
+	}, nil)
+	if err == nil {
+		t.Fatal("a replace import with an alias naming another service was accepted")
+	}
+}

@@ -22,7 +22,8 @@ type Registry struct {
 	s        *store.Store
 	zone     atomic.Pointer[string]
 	onChange func() error
-	// recordMu makes a record's conflict check and its write one step.
+	// recordMu makes a record's conflict check, or a service's name and MAC
+	// checks, and its write one step.
 	recordMu sync.Mutex
 }
 
@@ -126,9 +127,9 @@ func macUnique(svc store.Service, others []store.Service) error {
 // alias that is another service's name: the zone keeps one answer per name, so
 // one of the two would silently shadow the other. Aliases are already unique
 // among themselves (the store's UNIQUE index).
-// ponytail: checked on single writes only. A document (import, replica pull)
-// is not, so a registry that already holds a collision still replicates;
-// add it to ValidateDocument once no deployed registry can hold one.
+// ponytail: checked on single writes and replace imports, not on a replica
+// pull, so a registry that already holds a collision still replicates; move
+// it into ValidateDocument once no deployed registry can hold one.
 func nameUnique(svc store.Service, others []store.Service) error {
 	for _, o := range others {
 		if svc.ID != 0 && o.ID == svc.ID {
@@ -155,6 +156,9 @@ func (r *Registry) PutService(svc store.Service) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
+	// The uniqueness checks and the write are one step, as for records.
+	r.recordMu.Lock()
+	defer r.recordMu.Unlock()
 	stored, err := r.s.Services()
 	if err != nil {
 		return 0, err
@@ -340,6 +344,13 @@ func (r *Registry) ReplaceAllIn(zone string, views []store.View, services []stor
 	vs, ss, rs, err := ValidateDocument(zone, views, services, records)
 	if err != nil {
 		return err
+	}
+	// Here, not in ValidateDocument: a replica must still apply a primary
+	// that already holds a collision (see nameUnique).
+	for i, svc := range ss {
+		if err := nameUnique(svc, ss[:i]); err != nil {
+			return err
+		}
 	}
 	if err := r.s.ReplaceAll(vs, ss, rs); err != nil {
 		return err
