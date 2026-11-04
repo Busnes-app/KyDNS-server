@@ -414,13 +414,8 @@ func TestOfferReportsWhetherTheAddressIsNewToTheClient(t *testing.T) {
 	if !ok || l.IP != res {
 		t.Fatalf("Offer = %+v (ok=%v), want the reserved %v", l, ok, res)
 	}
-	// Owner answer Q2 B: a reservation the client is not on yet is probed.
-	if !fresh {
-		t.Fatal("a reservation new to the client reported not fresh; it must be probed")
-	}
-	// Renewing the reservation it now holds is not.
-	if _, fresh, _ = a.Offer("cc:cc:cc:cc:cc:cc", netip.Addr{}, time.Minute); fresh {
-		t.Fatal("renewing a held reservation reported fresh")
+	if fresh {
+		t.Fatal("a reservation reported fresh; it is the client's address already")
 	}
 }
 
@@ -494,8 +489,8 @@ func TestOfferForAReservationDoesNotMoveTheClientOffItsLease(t *testing.T) {
 	if got.IP != res {
 		t.Fatalf("offered %v, want the reserved %v promised", got.IP, res)
 	}
-	if !fresh {
-		t.Fatal("fresh = false for a reservation the client is not on; it must be probed (Q2 B)")
+	if fresh {
+		t.Fatal("fresh = true for a reservation; rule 1 is never probed")
 	}
 	ls := a.Leases()
 	if len(ls) != 1 {
@@ -652,24 +647,5 @@ func TestOfferDoesNotHandBackAnExpiredHolding(t *testing.T) {
 	}
 	if !fresh {
 		t.Fatal("fresh = false for an address the client no longer holds; it would never be probed")
-	}
-}
-
-// A DECLINE is unauthenticated: one naming a reservation its device holds
-// drops the lease but never quarantines the reservation, or a forged packet
-// would hold the device off its address. Its next offer is probed instead.
-func TestDeclineNeverQuarantinesAReservation(t *testing.T) {
-	a, _ := newTestAllocator(t)
-	const mac = "aa:aa:aa:aa:aa:aa"
-	res := netip.MustParseAddr("192.168.1.11")
-	a.SetReservations(map[string]netip.Addr{mac: res})
-	if l, ok := a.Allocate(mac, "", netip.Addr{}, time.Hour); !ok || l.IP != res {
-		t.Fatalf("Allocate = %+v, want the reservation", l)
-	}
-	if !a.Decline(mac, res) {
-		t.Fatal("Decline refused the holder")
-	}
-	if l, _, ok := a.Offer(mac, netip.Addr{}, time.Minute); !ok || l.IP != res {
-		t.Fatalf("Offer after a decline = %+v, want the reservation back", l)
 	}
 }

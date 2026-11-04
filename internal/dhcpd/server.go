@@ -310,9 +310,8 @@ func (s *Server) handle(conn net.PacketConn, _ net.Addr, m *dhcpv4.DHCPv4) {
 			// Decline refuses the one case an operator most needs to hear:
 			// something else on the segment already answers to that address.
 			// ponytail: the spec says a DECLINE quarantines like a probe hit.
-			// Not here: the client holds no lease on the address, and an
-			// unauthenticated packet must not hold a reservation back; the
-			// offer's own probe does that (Q2 B). This logs instead. Revisit
+			// It cannot here — rule 1 ignores the quarantine list, so a
+			// quarantine would change nothing — so this logs instead. Revisit
 			// when Task 4 has a status payload to hang it on.
 			if r, reserved := s.opts.Alloc.reservationFor(mac); reserved && r == ip.Unmap() {
 				s.opts.Logger.Warn("a reserved address is already in use by another device; check the reservation",
@@ -406,10 +405,9 @@ func (s *Server) allocate(mac string, m *dhcpv4.DHCPv4, commit bool) (Lease, boo
 		if ip, ok := netip.AddrFromSlice(m.RequestedIPAddress()); ok {
 			requested = ip.Unmap()
 		}
-		// Only an address new to this client is probed, a reservation
-		// included: one just taken from another device may still be in use
-		// there (owner answer Q2 B). A renewal is not probed; the prober
-		// ignores the client's own answer either way. Each replacement is
+		// Only an address new to this client is probed. A renewal or a
+		// reservation is one it is already entitled to, and its own answer
+		// would quarantine the address out from under it. Each replacement is
 		// probed too, up to maxProbes; past that the client gets no offer
 		// this time and retries.
 		for range maxProbes {

@@ -18,7 +18,7 @@ type Prober interface {
 	InUse(ip netip.Addr, mac string) bool
 }
 
-// nopProber never reports a conflict: for hosts without the probe, and for
+// nopProber is for renewals and reservations, which are not probed, and for
 // tests.
 type nopProber struct{}
 

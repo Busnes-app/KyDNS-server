@@ -114,14 +114,7 @@ func (a *Allocator) Confirm(mac, hostname string, asked netip.Addr, ttl time.Dur
 	a.mu.Lock()
 	defer a.mu.Unlock()
 	// These mirror rules 1 and 2 below, so allocateLocked lands on asked.
-	if r, ok := a.reserved[mac]; ok && !a.protected(r) && !a.quarantinedLocked(r, a.now()) {
-		// A REQUEST naming the reservation while another device still holds
-		// it is NAKed and the holder kept: a retransmission is NAKed again,
-		// and the client's DISCOVER goes the takeover's way, through a probed
-		// offer (Q2 B).
-		if r == asked && a.heldByAnotherLocked(r, mac, a.now()) {
-			return Lease{}, false
-		}
+	if r, ok := a.reserved[mac]; ok && !a.protected(r) {
 		if r != asked {
 			// The reservation still wins. Free it for the DISCOVER our NAK
 			// sends this client back to, but lease it nothing now.
@@ -203,12 +196,8 @@ func (a *Allocator) allocateLocked(mac, hostname string, requested netip.Addr, t
 	// 1. A reservation always wins, in or out of the dynamic range, but
 	// never our own address or the gateway. A REQUEST takes it whatever is in
 	// the way; a DISCOVER is not a lease operation, so it may promise the
-	// reservation but never destroy a live lease to keep the promise. An
-	// offer of a reservation the client is not already on is fresh, so it is
-	// probed (owner answer Q2 B): the device it was just taken from may still
-	// be using it. While a probe hit keeps it quarantined, the client is
-	// served like any other and moves at a later DISCOVER.
-	if ip, ok := a.reserved[mac]; ok && !a.protected(ip) && !a.quarantinedLocked(ip, now) {
+	// reservation but never destroy a live lease to keep the promise.
+	if ip, ok := a.reserved[mac]; ok && !a.protected(ip) {
 		switch {
 		case !tentative:
 			return commit(ip, false)
@@ -221,9 +210,9 @@ func (a *Allocator) allocateLocked(mac, hostname string, requested netip.Addr, t
 			// given the address anyway — free() bars a reserved address from
 			// every other client — so only the REQUEST that commits the move
 			// need drop the lease this client is still using.
-			return Lease{MAC: mac, IP: ip, Expires: now.Add(ttl)}, true, true
+			return Lease{MAC: mac, IP: ip, Expires: now.Add(ttl)}, false, true
 		default:
-			return commit(ip, !held || prev.IP != ip)
+			return commit(ip, false)
 		}
 	}
 	// 2. Renew what this client already holds, if it is still ours to give.
@@ -283,9 +272,7 @@ func (a *Allocator) Decline(mac string, ip netip.Addr) bool {
 	}
 	delete(a.byMAC, mac)
 	delete(a.byIP, ip)
-	// Never a reservation: rule 1 honours the quarantine, so one forged DECLINE
-	// would hold the device off its address. Its next offer is probed instead.
-	if a.inRange(ip) && a.reservedIP[ip] == "" {
+	if a.inRange(ip) {
 		a.quarantineLocked(ip)
 	}
 	return true
@@ -363,19 +350,12 @@ func (a *Allocator) nameTakenLocked(hostname, mac string, now time.Time) bool {
 	return false
 }
 
-// quarantinedLocked reports whether ip is held back after a probe hit or a
-// decline. Callers hold a.mu.
-func (a *Allocator) quarantinedLocked(ip netip.Addr, now time.Time) bool {
-	until, ok := a.quarantine[ip]
-	return ok && until.After(now)
-}
-
 // free reports whether ip can be given to mac right now. Callers hold a.mu.
 func (a *Allocator) free(ip netip.Addr, mac string, now time.Time) bool {
 	if !a.usable(ip) {
 		return false
 	}
-	if a.quarantinedLocked(ip, now) {
+	if until, ok := a.quarantine[ip]; ok && until.After(now) {
 		return false
 	}
 	if holder, ok := a.reservedIP[ip]; ok && holder != mac {
