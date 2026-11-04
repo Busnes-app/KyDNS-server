@@ -139,6 +139,9 @@ func run(args []string, stdout io.Writer) int {
 			err = recoveryclient.Restore(*capsulePath, *out, backup.ServiceName, shares, stdout)
 		}
 		if err == nil {
+			err = backup.JoinDatabase(*out)
+		}
+		if err == nil {
 			err = store.PauseRestoredSchedule(filepath.Join(*out, "data", "kydns.db"))
 		}
 		if err != nil {

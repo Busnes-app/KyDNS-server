@@ -312,3 +312,61 @@ func TestCollectorIncludesManagedCredentialsAndRefusesMissingFile(t *testing.T) 
 		t.Fatal("backup silently omitted required credential")
 	}
 }
+
+// A database past the per-member limit travels as ordered parts (KyNotes Q8 A):
+// the capsule seals, JoinDatabase rebuilds the exact file, and the drill passes.
+func TestALargeDatabaseTravelsInParts(t *testing.T) {
+	old := partBytes
+	partBytes = 4096
+	t.Cleanup(func() { partBytes = old })
+	s := testService(t, nil)
+	priv := pinFresh(t, s)
+	raw, _, err := s.Export()
+	if err != nil {
+		t.Fatal(err)
+	}
+	out := t.TempDir()
+	if _, _, err := capsule.Open(raw, priv, out); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Stat(filepath.Join(out, "data/kydns.db.part001")); err != nil {
+		t.Fatalf("no second part: %v", err)
+	}
+	if err := JoinDatabase(out); err != nil {
+		t.Fatal(err)
+	}
+	if err := store.VerifySnapshot(filepath.Join(out, "data/kydns.db")); err != nil {
+		t.Fatalf("rebuilt database: %v", err)
+	}
+	if left, _ := filepath.Glob(filepath.Join(out, "data/kydns.db.part*")); len(left) != 0 {
+		t.Fatalf("parts left behind: %v", left)
+	}
+	res, err := s.Drill(context.Background())
+	if err != nil || !res.Passed {
+		t.Fatalf("drill of a split database = %+v, %v", res, err)
+	}
+}
+
+// Parts with a gap, or beside a whole database, are refused rather than joined.
+func TestJoinDatabaseRefusesABrokenSet(t *testing.T) {
+	for name, files := range map[string][]string{
+		"gap":        {"kydns.db.part000", "kydns.db.part002"},
+		"with whole": {"kydns.db", "kydns.db.part000", "kydns.db.part001"},
+	} {
+		root := t.TempDir()
+		os.Mkdir(filepath.Join(root, "data"), 0700)
+		for _, f := range files {
+			os.WriteFile(filepath.Join(root, "data", f), []byte("x"), 0600)
+		}
+		if err := JoinDatabase(root); err == nil {
+			t.Errorf("%s: joined", name)
+		}
+	}
+	// A single-member capsule is left alone.
+	root := t.TempDir()
+	os.Mkdir(filepath.Join(root, "data"), 0700)
+	os.WriteFile(filepath.Join(root, "data", "kydns.db"), []byte("x"), 0600)
+	if err := JoinDatabase(root); err != nil {
+		t.Errorf("single member: %v", err)
+	}
+}

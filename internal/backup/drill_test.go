@@ -64,6 +64,11 @@ func TestDrillRejectsMalformedRecipes(t *testing.T) {
 		"duplicate": func(_ *capsule.Manifest, r map[string]any) {
 			r["required_files"] = append(r["required_files"].([]any), "data/kydns.db")
 		},
+		// The capsule carries the whole database, so no parts may be claimed.
+		"parts beside whole": func(_ *capsule.Manifest, r map[string]any) {
+			r["db_parts"] = []any{"data/kydns.db.part000", "data/kydns.db.part001"}
+		},
+		"wrong parts": func(_ *capsule.Manifest, r map[string]any) { r["db_parts"] = "data/kydns.db.part000" },
 	} {
 		t.Run(name, func(t *testing.T) {
 			m := opened

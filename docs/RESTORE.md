@@ -16,7 +16,7 @@ loses the backup, so treat the cards as seriously as the server.
 
 | Member | What it is |
 | --- | --- |
-| `data/kydns.db` | the whole server: views, services, records, aliases, blacklist lists and rules, settings and local settings, the admin password hash, API tokens, SSO settings, DHCP leases, replication peers, and the audit log |
+| `data/kydns.db` | the whole server: views, services, records, aliases, blacklist lists and rules, settings and local settings, the admin password hash, API tokens, SSO settings, DHCP leases, replication peers, and the audit log. Past 64 MiB it travels as `data/kydns.db.part000`, `part001`, ..., which `kydns restore` joins back into `data/kydns.db` |
 | `data/backup_key` | A 32-byte secret stored as hex. The KyRecovery token stored sealed in the database opens **only** with this file; without it a restored node cannot talk to KyRecovery |
 | `data/node_key` | this node's replication identity. Present only when the node has joined or hosted replication; a standalone node has none |
 | `data/recovery.pub` | the pinned suite recovery public key. Present only when the node had a pinned key; it is what the restored node seals its next capsule to |

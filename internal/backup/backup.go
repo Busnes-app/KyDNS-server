@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"sync"
@@ -106,12 +107,21 @@ func (s *Service) Collect() (recoveryclient.Payload, error) {
 	if err != nil {
 		return recoveryclient.Payload{}, fmt.Errorf("required backup member %s: %w", keyFile, err)
 	}
-	files := []recoveryclient.File{
-		{Path: "data/kydns.db", Data: db, Mode: 0600},
-		{Path: "data/" + keyFile, Data: backupKey, Mode: 0600},
-		{Path: "config/kydns.yaml", Data: manifest, Mode: 0600},
+	// required_files names the whole database even when it travels in parts:
+	// the drill checks it after JoinDatabase rebuilds it, and db_parts lists
+	// the parts.
+	files := dbMembers(db)
+	var parts []string
+	for _, f := range files {
+		if f.Path != dbMember {
+			parts = append(parts, f.Path)
+		}
 	}
-	required := []string{"data/kydns.db", "data/" + keyFile, "config/kydns.yaml"}
+	required := []string{dbMember}
+	files = append(files,
+		recoveryclient.File{Path: "data/" + keyFile, Data: backupKey, Mode: 0600},
+		recoveryclient.File{Path: "config/kydns.yaml", Data: manifest, Mode: 0600})
+	required = append(required, "data/"+keyFile, "config/kydns.yaml")
 	if bundle, managed, err := s.Store.InstallerConfiguration(); err != nil {
 		return recoveryclient.Payload{}, err
 	} else if managed {
@@ -148,10 +158,95 @@ func (s *Service) Collect() (recoveryclient.Payload, error) {
 		files = append(files, recoveryclient.File{Path: m.path, Data: b, Mode: 0600})
 		required = append(required, m.path)
 	}
+	total := int64(0)
+	for _, f := range files {
+		total += int64(len(f.Data))
+	}
+	if total > capsule.MaxExpandedBytes*8/10 {
+		slog.Warn("backup is over 80% of the capsule limit; remove large blacklists before it stops fitting",
+			"bytes", total, "limit", capsule.MaxExpandedBytes)
+	}
+	recipe := map[string]any{"check_sqlite_integrity": true, "sqlite_paths": []string{dbMember}, "required_files": required}
+	if parts != nil {
+		recipe["db_parts"] = parts
+	}
 	return recoveryclient.Payload{ServiceName: ServiceName, AppVersion: s.Version, Files: files,
 		Dependencies:       map[string]any{"ports": []string{s.Cfg.DNS.Listen, s.Cfg.Admin.Listen}},
-		VerificationRecipe: map[string]any{"check_sqlite_integrity": true, "sqlite_paths": []string{"data/kydns.db"}, "required_files": required},
+		VerificationRecipe: recipe,
 	}, nil
+}
+
+// dbMember is the database's path in a capsule and in a restored tree.
+const dbMember = "data/kydns.db"
+
+// partBytes is the largest database member: the capsule's per-file limit.
+// A variable so tests can split a small database.
+var partBytes = int(capsule.MaxFileBytes)
+
+// dbMembers is the database as one member, or, past partBytes, as ordered
+// members data/kydns.db.part000, part001, ... (KyNotes Q8 A). JoinDatabase puts
+// them back together on restore and in the drill.
+func dbMembers(db []byte) []recoveryclient.File {
+	if len(db) <= partBytes {
+		return []recoveryclient.File{{Path: dbMember, Data: db, Mode: 0600}}
+	}
+	var out []recoveryclient.File
+	for i := 0; len(db) > 0; i++ {
+		n := min(len(db), partBytes)
+		out = append(out, recoveryclient.File{Path: fmt.Sprintf("%s.part%03d", dbMember, i), Data: db[:n], Mode: 0600})
+		db = db[n:]
+	}
+	return out
+}
+
+// JoinDatabase reassembles a split database under root (a restored or drill
+// tree) into data/kydns.db and removes the parts. A single-member capsule has
+// no parts and is left as it is. Parts must run part000, part001, ... with no
+// gap, and never sit beside a whole database.
+func JoinDatabase(root string) error {
+	whole := filepath.Join(root, dbMember)
+	var parts []string
+	for i := 0; ; i++ {
+		p := fmt.Sprintf("%s.part%03d", whole, i)
+		if _, err := os.Lstat(p); errors.Is(err, fs.ErrNotExist) {
+			break
+		} else if err != nil {
+			return err
+		}
+		parts = append(parts, p)
+	}
+	if extra, _ := filepath.Glob(whole + ".part*"); len(extra) != len(parts) {
+		return errors.New("the database parts are not numbered from part000 without a gap")
+	}
+	if len(parts) == 0 {
+		return nil
+	}
+	if _, err := os.Lstat(whole); !errors.Is(err, fs.ErrNotExist) {
+		return errors.New("a capsule carries both a whole database and parts of one")
+	}
+	out, err := os.OpenFile(whole, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
+	if err != nil {
+		return err
+	}
+	for _, p := range parts {
+		b, err := os.ReadFile(p)
+		if err == nil {
+			_, err = out.Write(b)
+		}
+		if err != nil {
+			out.Close()
+			return err
+		}
+	}
+	if err := out.Close(); err != nil {
+		return err
+	}
+	for _, p := range parts {
+		if err := os.Remove(p); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (s *Service) Run(ctx context.Context) (recoveryclient.Result, error) {
