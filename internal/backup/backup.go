@@ -11,6 +11,7 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 	"time"
 
@@ -215,7 +216,17 @@ func JoinDatabase(root string) error {
 		}
 		parts = append(parts, p)
 	}
-	if extra, _ := filepath.Glob(whole + ".part*"); len(extra) != len(parts) {
+	entries, err := os.ReadDir(filepath.Dir(whole))
+	if err != nil && !errors.Is(err, fs.ErrNotExist) {
+		return err
+	}
+	n := 0
+	for _, e := range entries {
+		if strings.HasPrefix(e.Name(), filepath.Base(whole)+".part") {
+			n++
+		}
+	}
+	if n != len(parts) {
 		return errors.New("the database parts are not numbered from part000 without a gap")
 	}
 	if len(parts) == 0 {

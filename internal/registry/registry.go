@@ -258,8 +258,9 @@ func (r *Registry) PutRecord(rec store.Record) (int64, error) {
 }
 
 // cnameConflict refuses a CNAME beside any other record at its name and view,
-// and any record beside a CNAME. zone.Build refuses that zone, so storing it
-// would stop every rebuild and the next start.
+// and any record beside a CNAME. zone.Build serves only the CNAME of such a
+// set (for databases written before this check), so storing one would
+// silently drop the other records.
 func cnameConflict(rec store.Record, others []store.Record) error {
 	if rec.Type == "PTR" {
 		return nil

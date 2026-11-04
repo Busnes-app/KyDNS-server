@@ -362,6 +362,15 @@ func TestJoinDatabaseRefusesABrokenSet(t *testing.T) {
 			t.Errorf("%s: joined", name)
 		}
 	}
+	// Glob metacharacters in the restore path are just characters.
+	odd := filepath.Join(t.TempDir(), "restore[1]")
+	os.MkdirAll(filepath.Join(odd, "data"), 0700)
+	for _, f := range []string{"kydns.db.part000", "kydns.db.part001"} {
+		os.WriteFile(filepath.Join(odd, "data", f), []byte("x"), 0600)
+	}
+	if err := JoinDatabase(odd); err != nil {
+		t.Errorf("restore[1]: %v", err)
+	}
 	// A single-member capsule is left alone.
 	root := t.TempDir()
 	os.Mkdir(filepath.Join(root, "data"), 0700)
