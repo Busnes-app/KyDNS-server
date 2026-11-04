@@ -507,14 +507,10 @@ func (s *Server) getSSOCallback(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, "/settings/account?error=Confirm+your+password+to+link+an+identity", http.StatusSeeOther)
 			return
 		}
-		if err := s.o.Store.LinkAdminSSO(claims.Sub, claims.Username, claims.Email); err != nil {
+		if err := s.o.Store.LinkAdminSSOAtGeneration(claims.Sub, claims.Username, claims.Email, sso.IssuerURL, sso.ClientID, sess.RecoveryGeneration); err != nil {
 			s.o.Logger.Error("failed to link sso identity", "error", err)
 			http.Redirect(w, r, "/settings/account?error=Failed+to+link+identity", http.StatusSeeOther)
 			return
-		}
-		sso.Enabled = true
-		if err := s.o.Store.SetSSOSettings(sso); err != nil {
-			s.o.Logger.Error("failed to enable sso after linking", "error", err)
 		}
 		s.o.Logger.Info("sso identity linked to admin", "sub", claims.Sub, "username", claims.Username)
 		http.Redirect(w, r, "/settings/account", http.StatusSeeOther)

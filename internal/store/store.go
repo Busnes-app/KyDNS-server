@@ -924,6 +924,41 @@ func (s *Store) LinkAdminSSO(sub, username, email string) error {
 	return nil
 }
 
+// LinkAdminSSOAtGeneration links the identity and turns SSO on in one
+// transaction, only while the recovery generation is still the linking
+// session's and the provider is still the one the identity came from: a
+// `kydns admin reset-password` landing during the callback, or a provider
+// change, wins and nothing is linked.
+func (s *Store) LinkAdminSSOAtGeneration(sub, username, email, issuer, clientID string, generation time.Time) error {
+	if _, managed, err := s.InstallerConfiguration(); err != nil {
+		return err
+	} else if managed {
+		return errors.New("installer-owned identities cannot be linked to the recovery account")
+	}
+	tx, err := s.db.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+	res, err := tx.Exec(`
+		UPDATE admin
+		SET sso_sub = ?, sso_username = ?, sso_email = ?, sso_linked_at = unixepoch(), updated_at = unixepoch()
+		WHERE id = 1 AND sessions_not_before = ?`, sub, username, email, generation.UnixMilli())
+	if err != nil {
+		return err
+	}
+	if n, _ := res.RowsAffected(); n == 0 {
+		return errors.New("administrator recovery invalidated this link")
+	}
+	if res, err = tx.Exec(`UPDATE sso_settings SET enabled = 1 WHERE id = 1 AND issuer_url = ? AND client_id = ?`, issuer, clientID); err != nil {
+		return err
+	}
+	if n, _ := res.RowsAffected(); n == 0 {
+		return errors.New("the single sign-on provider changed during linking")
+	}
+	return tx.Commit()
+}
+
 func (s *Store) UnlinkAdminSSO() error {
 	if _, managed, err := s.InstallerConfiguration(); err != nil {
 		return err

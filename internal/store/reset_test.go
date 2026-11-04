@@ -210,3 +210,35 @@ func TestChangeAdminPasswordKeepsIdentityBoundTokens(t *testing.T) {
 		t.Errorf("after change: %+v", ident)
 	}
 }
+
+// A link whose callback was in flight across a recovery reset must not land:
+// it would restore an identity, and SSO, the reset just removed.
+func TestLinkStartedBeforeAResetDoesNotLand(t *testing.T) {
+	s := open(t)
+	if err := s.SetAdminPassword("$argon2id$old"); err != nil {
+		t.Fatal(err)
+	}
+	if err := s.SetSSOSettings(SSOSettings{Enabled: false, IssuerURL: "https://idp.example", ClientID: "kydns"}); err != nil {
+		t.Fatal(err)
+	}
+	before, _ := s.SessionsNotBefore()
+	if err := s.ResetAdmin("$argon2id$new", time.UnixMilli(1_700_000_000_123)); err != nil {
+		t.Fatal(err)
+	}
+	if err := s.LinkAdminSSOAtGeneration("sub-1", "eve", "", "https://idp.example", "kydns", before); err == nil {
+		t.Fatal("a link from before the reset landed")
+	}
+	ident, _ := s.AdminIdentity()
+	if sso, _ := s.SSOSettings(); ident.SSOSub != "" || sso.Enabled {
+		t.Fatalf("after the refused link: sub %q, SSO enabled %v", ident.SSOSub, sso.Enabled)
+	}
+	// From the current generation it links and turns SSO on together.
+	now, _ := s.SessionsNotBefore()
+	if err := s.LinkAdminSSOAtGeneration("sub-1", "bob", "", "https://idp.example", "kydns", now); err != nil {
+		t.Fatal(err)
+	}
+	ident, _ = s.AdminIdentity()
+	if sso, _ := s.SSOSettings(); ident.SSOSub != "sub-1" || !sso.Enabled {
+		t.Fatalf("after the link: sub %q, SSO enabled %v", ident.SSOSub, sso.Enabled)
+	}
+}
