@@ -554,11 +554,12 @@ func (r *Registry) CreateAgentTokenAtGeneration(label, scope string, queryLog bo
 
 // SetAgentAccess changes an MCP token between the MCP scopes and its
 // query-log flag. An admin token is not found here: it never becomes an agent's.
-func (r *Registry) SetAgentAccess(id int64, scope string, queryLog bool) error {
+// A non-nil from makes it conditional on the token still having that access.
+func (r *Registry) SetAgentAccess(id int64, scope string, queryLog bool, from *store.Token) error {
 	if !store.IsMCPScope(scope) {
 		return Invalid("scope", "scope_invalid", "an agent token's scope is %s or %s", store.ScopeMCPRead, store.ScopeMCPWrite)
 	}
-	return r.s.SetTokenAccess(id, scope, queryLog)
+	return r.s.SetTokenAccess(id, scope, queryLog, from)
 }
 
 // AccessText says in words what a token can do, for every screen that issues

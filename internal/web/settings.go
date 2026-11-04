@@ -264,17 +264,24 @@ func (s *Server) postTokenAccess(w http.ResponseWriter, r *http.Request) {
 	}
 	id, err := strconv.ParseInt(r.PostFormValue("id"), 10, 64)
 	scope, queryLog := r.PostFormValue("access"), r.PostFormValue("query_log") == "on"
+	// Without a step-up the update is conditional on the access checked here,
+	// so a concurrent change cannot turn it into an unconfirmed increase.
+	var from *store.Token
 	if err == nil {
 		var toks []store.Token
 		toks, err = s.o.Registry.Tokens()
 		for _, t := range toks {
-			if t.ID == id && err == nil && (scope == store.ScopeMCPWrite && t.Scope != store.ScopeMCPWrite || queryLog && !t.QueryLog) {
-				err = s.stepUp(r, sess)
+			if t.ID != id || err != nil {
+				continue
+			}
+			from = &t
+			if scope == store.ScopeMCPWrite && t.Scope != store.ScopeMCPWrite || queryLog && !t.QueryLog {
+				err, from = s.stepUp(r, sess), nil
 			}
 		}
 	}
 	if err == nil {
-		err = s.o.Registry.SetAgentAccess(id, scope, queryLog)
+		err = s.o.Registry.SetAgentAccess(id, scope, queryLog, from)
 	}
 	if err != nil {
 		s.settingsError(w, r, err)
