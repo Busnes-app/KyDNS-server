@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"regexp"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -67,7 +68,7 @@ func TestEveryMutatingRouteIsRefusedOnAReplica(t *testing.T) {
 	tested := 0
 	for _, r := range registeredRoutes(t) {
 		method, path := r[0], r[1]
-		if method == http.MethodGet || method == http.MethodHead || writeExempt[path] {
+		if method == http.MethodGet || method == http.MethodHead || exempt(path) {
 			continue
 		}
 		tested++
@@ -93,12 +94,16 @@ func TestEveryMutatingRouteIsRefusedOnAReplica(t *testing.T) {
 // unable to prepare a standby, which they discovered during a failover. The
 // gate now decides only that the request may be answered; settings.Service
 // decides what it may change, and refuses anything past those eight fields.
-func TestWriteExemptIsExactlyFourPaths(t *testing.T) {
+//
+// PathTokens was added by owner answer Q1 A: tokens are node-local, so a
+// replica manages its own. exempt adds only the /api/v1/tokens/ subtree.
+func TestWriteExemptIsExactlyFivePaths(t *testing.T) {
 	want := map[string]bool{
 		PathReplicaPairPeek: true,
 		PathReplicaJoin:     true,
 		PathReplicaPromote:  true,
 		PathSettings:        true,
+		PathTokens:          true,
 	}
 	if !maps.Equal(writeExempt, want) {
 		t.Fatalf("writeExempt = %v, want %v", writeExempt, want)
@@ -132,6 +137,44 @@ func TestExemptPathsPassTheGateOnAReplica(t *testing.T) {
 		if rec.Code == http.StatusNotFound {
 			t.Errorf("POST %s = 404: the exempt path has no route", p)
 		}
+	}
+}
+
+// A replica creates, changes and revokes its own tokens (owner answer Q1 A):
+// they are node-local, so nothing a pull applies can discard the change.
+func TestReplicaManagesItsOwnTokens(t *testing.T) {
+	h, tok := replicaOf(t, "10.0.0.2:8443")
+	if rec := do(t, h, "POST", PathTokens, tok, `{"label":"agent","scope":"mcp:read"}`); rec.Code != http.StatusCreated {
+		t.Fatalf("POST %s on a replica = %d: %s", PathTokens, rec.Code, rec.Body)
+	}
+	rec := do(t, h, "GET", PathTokens, tok, "")
+	var list struct {
+		Tokens []struct {
+			ID    int64  `json:"id"`
+			Label string `json:"label"`
+		} `json:"tokens"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &list); err != nil {
+		t.Fatalf("list %s: %v", rec.Body, err)
+	}
+	var id string
+	for _, tk := range list.Tokens {
+		if tk.Label == "agent" {
+			id = strconv.FormatInt(tk.ID, 10)
+		}
+	}
+	if id == "" {
+		t.Fatalf("created token not listed: %s", rec.Body)
+	}
+	if rec := do(t, h, "PATCH", PathTokens+"/"+id, tok, `{"scope":"mcp:write"}`); rec.Code != http.StatusOK {
+		t.Errorf("PATCH token on a replica = %d: %s", rec.Code, rec.Body)
+	}
+	if rec := do(t, h, "DELETE", PathTokens+"/"+id, tok, ""); rec.Code != http.StatusNoContent {
+		t.Errorf("DELETE token on a replica = %d: %s", rec.Code, rec.Body)
+	}
+	// The prefix is the tokens subtree only, not every path that starts alike.
+	if exempt("/api/v1/tokensx") || exempt("/api/v1/token") {
+		t.Error("exempt matches a path outside the tokens subtree")
 	}
 }
 

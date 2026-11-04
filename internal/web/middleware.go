@@ -113,6 +113,13 @@ const (
 	PathDHCPSuggest        = "/dhcp/suggest"
 	PathInstallerDirectory = "/api/v1/installer/directory"
 	PathAccountPassword    = "/settings/account/password"
+	PathTokenNew           = "/settings/tokens/new"
+	PathTokenDelete        = "/settings/tokens/delete"
+	PathTokenAccess        = "/settings/tokens/access"
+	PathTokenStepUp        = "/settings/tokens/stepup"
+	PathSSOSettings        = "/settings/sso"
+	PathSSOLink            = "/settings/sso/link"
+	PathSSOUnlink          = "/settings/sso/unlink"
 )
 
 // webWriteExempt is the whole exemption list. Signing in is how an operator
@@ -145,6 +152,10 @@ var webWriteExempt = map[string]bool{
 	PathInstallerDirectory: true,
 	// So is the admin account: a replica's admin changes its own password.
 	PathAccountPassword: true,
+	// Tokens, the SSO provider and the linked identity are node-local too:
+	// a pull never touches them (owner answer Q1 A).
+	PathTokenNew: true, PathTokenDelete: true, PathTokenAccess: true, PathTokenStepUp: true,
+	PathSSOSettings: true, PathSSOLink: true, PathSSOUnlink: true,
 }
 
 // managedBy names the box to make the change on.

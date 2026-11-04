@@ -179,7 +179,7 @@ func (s *Server) getSettings(w http.ResponseWriter, r *http.Request) {
 	}
 	msg := ""
 	if r.URL.Query().Get("stepup") == "stale" {
-		msg = "Your identity provider did not ask you to sign in again, so it cannot confirm a token. Enter your current password instead."
+		msg = "Your identity provider did not ask you to sign in again, so it cannot confirm it is you. Enter your current password instead."
 	}
 	s.render(w, r, "settings.html", s.settingsData(r, msg, ""))
 }
@@ -306,6 +306,11 @@ func (s *Server) getExport(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) postSSOSettings(w http.ResponseWriter, r *http.Request) {
+	sess, ok := s.session(r)
+	if !ok {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
 	enabled := r.PostFormValue("enabled") == "1"
 	issuerURL := strings.TrimSpace(r.PostFormValue("issuer_url"))
 	clientID := strings.TrimSpace(r.PostFormValue("client_id"))
@@ -321,9 +326,10 @@ func (s *Server) postSSOSettings(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Choosing the provider decides who can sign in without the password, so
-	// it needs the password: a stolen session must not point SSO at its own
-	// provider and then step up through it.
-	if _, err := s.checkPassword(r, r.PostFormValue("current_password")); err != nil {
+	// it needs a step-up through the current password or the current provider:
+	// a stolen session must not point SSO at its own provider. stepUp, not the
+	// password alone, so an administrator without one is not locked out.
+	if err := s.stepUp(r, sess); err != nil {
 		s.settingsError(w, r, err)
 		return
 	}

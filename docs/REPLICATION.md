@@ -51,6 +51,9 @@ Its own DHCP settings are the exception, because they are node-local and no
 pull can discard them; see [the DHCP server guide](FEATURES.md#the-built-in-dhcp-server).
 So are `log_queries`, `log_client_ip`, `discovery_interval` and `dhcp_lease_file`,
 which a replica changes through the API or CLI (`PATCH /api/v1/settings`).
+So are its own admin password, API and agent tokens, single sign-on provider and
+linked identity: none of them replicate, so a replica manages its own in Settings
+or through `/api/v1/tokens`, and they apply to that node only.
 
 The Replication screen in the web UI does all of this too: minting an invite,
 pairing a replica with the primary its config names, listing replicas with

@@ -7,6 +7,7 @@ import (
 	"reflect"
 	"regexp"
 	"slices"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -106,12 +107,17 @@ func TestReplicaRefusesEveryPostRoute(t *testing.T) {
 //
 // PathAccountPassword: the admin account is node-local (ApplySnapshot never
 // touches it), so a replica's admin changes its own password (KyCalendar Q4 A).
+//
+// The token and SSO paths: tokens, the SSO provider and the linked identity
+// are node-local as well, so a replica manages its own (owner answer Q1 A).
 func TestExemptSetIsExactlyTheNamedPaths(t *testing.T) {
 	want := map[string]bool{
 		PathSetup: true, PathLogin: true, PathLogout: true,
 		PathPromote: true, PathJoin: true,
 		PathDHCPSettings: true, PathDHCPSuggest: true,
 		PathInstallerDirectory: true, PathAccountPassword: true,
+		PathTokenNew: true, PathTokenDelete: true, PathTokenAccess: true, PathTokenStepUp: true,
+		PathSSOSettings: true, PathSSOLink: true, PathSSOUnlink: true,
 	}
 	if !maps.Equal(webWriteExempt, want) {
 		t.Fatalf("webWriteExempt = %v, want %v", webWriteExempt, want)
@@ -503,5 +509,24 @@ func TestReplicaChangesItsOwnAdminPassword(t *testing.T) {
 	}
 	if hash, _ := srv.o.Store.AdminHash(); !verified(hash, "a-brand-new-password") {
 		t.Error("the replica's password did not change")
+	}
+}
+
+// A replica's tokens are its own (owner answer Q1 A): the form is live there,
+// says it applies to this node only, and creating and revoking work.
+func TestReplicaManagesItsOwnTokens(t *testing.T) {
+	h, _, srv, _, c, csrf := replicaWeb(t)
+	body := get(t, h, "/settings/tokens", c).Body.String()
+	if !strings.Contains(body, "Tokens apply to this node only") || strings.Contains(body, `type="submit" disabled`) {
+		t.Fatalf("replica tokens tab:\n%s", body)
+	}
+	rec := postForm(t, h, PathTokenNew, url.Values{"csrf_token": {csrf}, "label": {"agent"}, "access": {"mcp:read"}, "current_password": {testPassword}}, c)
+	toks, _ := srv.o.Registry.Tokens()
+	if rec.Code != http.StatusOK || len(toks) != 1 {
+		t.Fatalf("create on a replica = %d, %d tokens", rec.Code, len(toks))
+	}
+	rec = postForm(t, h, PathTokenDelete, url.Values{"csrf_token": {csrf}, "id": {strconv.FormatInt(toks[0].ID, 10)}}, c)
+	if toks, _ := srv.o.Registry.Tokens(); rec.Code != http.StatusSeeOther || len(toks) != 0 {
+		t.Fatalf("revoke on a replica = %d, %d tokens left", rec.Code, len(toks))
 	}
 }

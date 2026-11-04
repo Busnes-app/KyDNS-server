@@ -180,7 +180,9 @@ const (
 	cookieSSOState    = "kydns_sso_state"
 	cookieSSOVerifier = "kydns_sso_verifier"
 	cookieSSONonce    = "kydns_sso_nonce"
-	// cookieSSOLink carries what the login is for: "1" links, "stepup" confirms.
+	// cookieSSOLink carries what the login is for: "1" links, "stepup" confirms
+	// for the token form, "stepup-sso" for the SSO form. It picks only which of
+	// two fixed pages the browser lands on; the proof is the ID token's auth_time.
 	cookieSSOLink = "kydns_sso_link"
 )
 
@@ -204,7 +206,7 @@ func (s *Server) stepUp(r *http.Request, sess *auth.Session) error {
 	if age := time.Since(sess.SSO.AuthTime); !sess.SSO.AuthTime.IsZero() && age < stepUpWindow && age > -time.Minute {
 		return nil
 	}
-	return errors.New("Enter your current password, or confirm with single sign-on, to create a token.")
+	return errors.New("Enter your current password, or confirm with single sign-on, to continue.")
 }
 
 // checkPassword verifies the admin's current password for a signed-in action,
@@ -309,14 +311,19 @@ func (s *Server) postSSOLink(w http.ResponseWriter, r *http.Request) {
 }
 
 // postTokenStepUp signs in again through single sign-on with max_age=0, so
-// the token form accepts the fresh login as a step-up.
+// the token form, or the SSO form when back=sso, accepts the fresh login as a
+// step-up.
 func (s *Server) postTokenStepUp(w http.ResponseWriter, r *http.Request) {
 	sso, err := s.o.Store.SSOClient()
 	if err != nil || !sso.Enabled {
 		s.settingsError(w, r, errors.New("single sign-on is not enabled"))
 		return
 	}
-	s.startSSO(w, r, sso, "stepup")
+	purpose := "stepup"
+	if r.PostFormValue("back") == "sso" {
+		purpose = "stepup-sso"
+	}
+	s.startSSO(w, r, sso, purpose)
 }
 
 // startSSO begins a login; purpose is "" to sign in, "1" to link, "stepup" to confirm.
@@ -348,7 +355,7 @@ func (s *Server) startSSO(w http.ResponseWriter, r *http.Request, sso store.SSOS
 	}
 
 	client := auth.NewSSOClient(sso.IssuerURL, sso.ClientID, sso.ClientSecret)
-	client.FreshLogin = purpose == "stepup"
+	client.FreshLogin = purpose == "stepup" || purpose == "stepup-sso"
 	redirectURI := s.ssoRedirectURI(r)
 	authURL, err := client.AuthURL(redirectURI, state, nonce, challenge)
 	if err != nil {
@@ -405,8 +412,12 @@ func (s *Server) getSSOCallback(w http.ResponseWriter, r *http.Request) {
 	nonce := nonceCookie.Value
 
 	var isLink, isStepUp bool
+	stepUpPage := "/settings/tokens"
 	if linkCookie, err := r.Cookie(cookieSSOLink); err == nil {
-		isLink, isStepUp = linkCookie.Value == "1", linkCookie.Value == "stepup"
+		isLink, isStepUp = linkCookie.Value == "1", linkCookie.Value == "stepup" || linkCookie.Value == "stepup-sso"
+		if linkCookie.Value == "stepup-sso" {
+			stepUpPage = "/settings/sso"
+		}
 	}
 	s.clearSSOCookies(w, r)
 
@@ -434,7 +445,7 @@ func (s *Server) getSSOCallback(w http.ResponseWriter, r *http.Request) {
 		// provider ignored max_age=0, and the old session stays as it was.
 		if isStepUp && (claims.AuthTime.IsZero() || time.Since(claims.AuthTime) > stepUpWindow) {
 			s.o.Logger.Warn("sso step-up refused: no fresh auth_time", "sub", claims.Sub)
-			http.Redirect(w, r, "/settings/tokens?stepup=stale", http.StatusSeeOther)
+			http.Redirect(w, r, stepUpPage+"?stepup=stale", http.StatusSeeOther)
 			return
 		}
 		if beforeSSOSession != nil {
@@ -460,7 +471,7 @@ func (s *Server) getSSOCallback(w http.ResponseWriter, r *http.Request) {
 		s.setSessionCookie(w, r, sess)
 		dest := "/"
 		if isStepUp {
-			dest = "/settings/tokens"
+			dest = stepUpPage
 		}
 		http.Redirect(w, r, dest, http.StatusSeeOther)
 	}

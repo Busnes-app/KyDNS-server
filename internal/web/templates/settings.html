@@ -35,6 +35,7 @@
 {{if .AdminIdentity}}
 <div class="card">
   <h3>Single sign-on identity</h3>
+  {{if .ReadOnly}}<p class="muted">The linked identity applies to this node only.</p>{{end}}
   <p class="muted">The provider identity that may sign in as this administrator. The provider is set up under <a href="/settings/sso">Single sign-on</a>.</p>
   {{with .AdminIdentity}}
   {{if .SSOSub}}
@@ -48,7 +49,7 @@
     </div>
     <form method="post" action="/settings/sso/unlink">
       <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
-      <button type="submit" class="danger"{{template "ro" $}}>Unlink SSO account</button>
+      <button type="submit" class="danger">Unlink SSO account</button>
     </form>
   </div>
   {{else}}
@@ -56,7 +57,7 @@
     <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
     <label for="lcurrent">Current password</label>
     <input id="lcurrent" name="current_password" type="password" autocomplete="current-password" required>
-    <button type="submit" class="ghost"{{template "ro" $}}>Link SSO identity</button>
+    <button type="submit" class="ghost">Link SSO identity</button>
   </form>
   {{end}}
 {{end}}
@@ -317,6 +318,7 @@ curl -fsSo ~/.agents/skills/kydns/SKILL.md {{.}}/agent/skills/kydns/SKILL.md</pr
 
 <div class="card">
   <h3>API tokens</h3>
+  {{if .ReadOnly}}<p class="muted">Tokens apply to this node only. The primary has its own.</p>{{end}}
   <p class="muted">An admin token has full control through the API and the CLI. An AI agent
      token works only at <code>/mcp</code>, with the access you give it, and is revoked
      after 90 days unused. The query log is browsing history: give an agent access to it
@@ -335,7 +337,7 @@ curl -fsSo ~/.agents/skills/kydns/SKILL.md {{.}}/agent/skills/kydns/SKILL.md</pr
             <option value="mcp:write"{{if eq .Scope "mcp:write"}} selected{{end}}>AI agent: read and write</option>
           </select>
           <label><input type="checkbox" name="query_log"{{if .QueryLog}} checked{{end}}> query log</label>
-          <button class="ghost" type="submit"{{template "ro" $}}>Save</button>
+          <button class="ghost" type="submit">Save</button>
         </form>
         <span class="muted">Revoked if unused by {{.RevokeAfter}}</span>
       {{else}}Admin{{end}}</td>
@@ -348,7 +350,7 @@ curl -fsSo ~/.agents/skills/kydns/SKILL.md {{.}}/agent/skills/kydns/SKILL.md</pr
             <form method="post" action="/settings/tokens/delete">
               <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
               <input type="hidden" name="id" value="{{.ID}}">
-              <button class="row-menu-item danger" type="submit"{{template "ro" $}}>Revoke</button>
+              <button class="row-menu-item danger" type="submit">Revoke</button>
             </form>
           </div>
         </details>
@@ -376,12 +378,12 @@ curl -fsSo ~/.agents/skills/kydns/SKILL.md {{.}}/agent/skills/kydns/SKILL.md</pr
     <input id="tcurrent" name="current_password" type="password" autocomplete="current-password">
     {{end}}
     <p class="muted">A token outlives this sign-in, so confirm it is you{{if .AdminIdentity.PasswordHash}} with your password{{end}}{{if and .AdminIdentity.PasswordHash .SSOSettings.Enabled}}, or{{end}}{{if .SSOSettings.Enabled}} by signing in again with single sign-on (then create the token within five minutes){{end}}.</p>
-    <button type="submit"{{template "ro" $}}>Create token</button>
+    <button type="submit">Create token</button>
   </form>
   {{if .SSOSettings.Enabled}}
   <form method="post" action="/settings/tokens/stepup">
     <input type="hidden" name="csrf_token" value="{{.CSRF}}">
-    <button class="ghost" type="submit"{{template "ro" $}}>Confirm with single sign-on</button>
+    <button class="ghost" type="submit">Confirm with single sign-on</button>
   </form>
   {{end}}
 </div>
@@ -391,12 +393,13 @@ curl -fsSo ~/.agents/skills/kydns/SKILL.md {{.}}/agent/skills/kydns/SKILL.md</pr
 <section class="settings-section" aria-label="Single sign-on">
 <div class="card">
   <h3>Single sign-on</h3>
+  {{if .ReadOnly}}<p class="muted">These settings apply to this node only. The primary has its own.</p>{{end}}
   <p class="muted">Link your own identity under <a href="/settings/account">Account</a>. Connect KyIdentity, Authentik, Keycloak, or any standard OpenID Connect provider with PKCE.</p>
 
   <form method="post" action="/settings/sso">
     <input type="hidden" name="csrf_token" value="{{.CSRF}}">
     <div class="field-grid">
-      <fieldset class="field-set"{{template "ro" .}}>
+      <fieldset class="field-set">
         <legend>OpenID Connect provider</legend>
         <div class="fields">
           <label><input type="checkbox" name="enabled" value="1" {{if .SSOSettings.Enabled}}checked{{end}}>
@@ -415,13 +418,24 @@ curl -fsSo ~/.agents/skills/kydns/SKILL.md {{.}}/agent/skills/kydns/SKILL.md</pr
                  placeholder="{{if .SSOSettings.ClientSecret}}Saved. Leave blank to keep it{{end}}">
           {{if .SSOSettings.ClientSecret}}<label><input type="checkbox" name="clear_secret" value="1"> Remove the saved secret</label>{{end}}
 
+          {{if .AdminIdentity.PasswordHash}}
           <label for="sso_current">Current password <span class="muted">(the provider decides who signs in without it)</span></label>
           <input id="sso_current" name="current_password" type="password" autocomplete="current-password" required>
+          {{else}}
+          <p class="muted">The provider decides who signs in without a password, so confirm it is you with single sign-on first, then save within five minutes.</p>
+          {{end}}
         </div>
       </fieldset>
     </div>
-    <button type="submit"{{template "ro" .}}>Save SSO settings</button>
+    <button type="submit">Save SSO settings</button>
   </form>
+  {{if and (not .AdminIdentity.PasswordHash) .SSOSettings.Enabled}}
+  <form method="post" action="/settings/tokens/stepup">
+    <input type="hidden" name="csrf_token" value="{{.CSRF}}">
+    <input type="hidden" name="back" value="sso">
+    <button class="ghost" type="submit">Confirm with single sign-on</button>
+  </form>
+  {{end}}
 </div>
 
 </section>
