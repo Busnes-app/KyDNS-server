@@ -579,6 +579,29 @@ func TestServiceNameAndAliasCannotCollide(t *testing.T) {
 	}
 }
 
+// One name on two services that never answer in the same view shadows
+// nothing (the zone picks per view), so it is allowed; once both answer in
+// one view, including through untagged addresses, it is refused.
+func TestNameAliasCollisionIsPerView(t *testing.T) {
+	r, _ := newRegistry(t)
+	for _, v := range []string{"lan", "iot"} {
+		if err := r.PutView(store.View{Name: v, Subnets: []string{map[string]string{"lan": "192.168.1.0/24", "iot": "192.168.50.0/24"}[v]}}); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if _, err := r.PutService(store.Service{Name: "nas", Addresses: []store.Address{{Address: "192.168.1.10", View: "lan"}}}); err != nil {
+		t.Fatal(err)
+	}
+	id, err := r.PutService(store.Service{Name: "nas-iot", Aliases: []string{"nas"}, Addresses: []store.Address{{Address: "192.168.50.10", View: "iot"}}})
+	if err != nil {
+		t.Fatalf("an alias in a view the other service does not answer in: %v", err)
+	}
+	if _, err := r.PutService(store.Service{ID: id, Name: "nas-iot", Aliases: []string{"nas"},
+		Addresses: []store.Address{{Address: "192.168.50.10", View: "iot"}, {Address: "192.168.1.11"}}}); err == nil {
+		t.Error("an untagged address answering in the other service's view was accepted")
+	}
+}
+
 // A replace import is checked the same way.
 func TestReplaceImportRefusesANameAliasCollision(t *testing.T) {
 	r, _ := newRegistry(t)

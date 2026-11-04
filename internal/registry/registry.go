@@ -124,8 +124,8 @@ func macUnique(svc store.Service, others []store.Service) error {
 }
 
 // nameUnique rejects a service whose name or alias is, as a DNS name, the name
-// or an alias of another service: the zone keeps one answer per name, so one
-// would silently shadow the other. Names are compared qualified in zone, as
+// or an alias of another service answering in the same view: the zone keeps
+// one answer per name, so one would silently shadow the other. Names are compared qualified in zone, as
 // the zone builds them, so "nas" and "nas.home.arpa" are the same name.
 // ponytail: checked on single writes and replace imports, not on a replica
 // pull, so a registry that already holds a collision still replicates; move
@@ -136,7 +136,7 @@ func nameUnique(svc store.Service, others []store.Service, zone string) error {
 		mine[fqdn(al, zone)] = true
 	}
 	for _, o := range others {
-		if svc.ID != 0 && o.ID == svc.ID {
+		if svc.ID != 0 && o.ID == svc.ID || !shareAView(svc, o) {
 			continue
 		}
 		for i, n := range append([]string{o.Name}, o.Aliases...) {
@@ -151,6 +151,33 @@ func nameUnique(svc store.Service, others []store.Service, zone string) error {
 		}
 	}
 	return nil
+}
+
+// shareAView reports whether a and b both answer in some view, so one name
+// on both would shadow. The zone picks a service's addresses per view as
+// zone.pick does: those tagged with the view, else the untagged ones. A view
+// neither service tags picks as the default view "" does.
+func shareAView(a, b store.Service) bool {
+	answers := func(svc store.Service, view string) bool {
+		untagged := false
+		for _, ad := range svc.Addresses {
+			if view != "" && ad.View == view {
+				return true
+			}
+			untagged = untagged || ad.View == ""
+		}
+		return untagged
+	}
+	views := []string{""}
+	for _, ad := range append(slices.Clone(a.Addresses), b.Addresses...) {
+		views = append(views, ad.View)
+	}
+	for _, v := range views {
+		if answers(a, v) && answers(b, v) {
+			return true
+		}
+	}
+	return false
 }
 
 // fqdn is name as the zone publishes it (zone.qualify).
