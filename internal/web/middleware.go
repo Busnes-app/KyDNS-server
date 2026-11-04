@@ -253,7 +253,7 @@ func (s *Server) transportAllowed(r *http.Request) bool {
 	// A trusted peer that forwarded nothing is not proxying: with a proxy on
 	// this host (KYDNS_TRUSTED_PROXIES=127.0.0.1) that is the CLI or an SSH
 	// tunnel, judged like any direct request below.
-	if trusted && (scheme == "https" || r.Header.Get("X-Forwarded-Proto") != "" || r.Header.Get("X-Forwarded-For") != "") {
+	if trusted && (scheme == "https" || auth.Forwarded(r)) {
 		return scheme == "https"
 	}
 	host, _, err := net.SplitHostPort(r.RemoteAddr)

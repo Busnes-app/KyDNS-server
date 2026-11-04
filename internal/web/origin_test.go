@@ -245,6 +245,11 @@ func TestHostHeaderIsChecked(t *testing.T) {
 	if got := local.send(t, "GET", "/login", "", direct).Code; got != http.StatusOK {
 		t.Errorf("direct loopback with a same-host proxy trusted = %d, want 200", got)
 	}
+	// ...and gets the direct Host rules: a rebound name is still refused.
+	rebound := map[string]string{"Host": "evil.example", "RemoteAddr": "127.0.0.1:4000"}
+	if got := local.send(t, "GET", "/login", "", rebound).Code; got != http.StatusForbidden {
+		t.Errorf("direct loopback with a rebound Host = %d, want 403", got)
+	}
 	direct["X-Forwarded-Proto"] = "http"
 	if got := local.send(t, "GET", "/login", "", direct).Code; got != http.StatusForbidden {
 		t.Errorf("plain HTTP through the same-host proxy = %d, want 403", got)

@@ -131,5 +131,12 @@ func HostAllowed(r *http.Request, names []string, trusted []netip.Prefix) bool {
 		return slices.Contains(names, host)
 	}
 	_, proxied, _ := RequestNetwork(r, trusted)
-	return proxied
+	return proxied && Forwarded(r)
+}
+
+// Forwarded reports whether a request carries a proxy's forwarding headers. A
+// trusted peer that forwarded nothing is not proxying (with a proxy on this
+// host, it is the CLI or an SSH tunnel), so it gets the direct-request rules.
+func Forwarded(r *http.Request) bool {
+	return r.Header.Get("X-Forwarded-Proto") != "" || r.Header.Get("X-Forwarded-For") != ""
 }
