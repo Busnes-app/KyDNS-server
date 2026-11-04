@@ -560,6 +560,10 @@ func TestServiceNameAndAliasCannotCollide(t *testing.T) {
 	if _, err := r.PutService(store.Service{Name: "files", Addresses: []store.Address{{Address: "192.168.1.30"}}}); err == nil {
 		t.Error("a service named after another service's alias was accepted")
 	}
+	// The same DNS name written qualified is the same name.
+	if _, err := r.PutService(store.Service{Name: "web2", Aliases: []string{"nas.home.arpa"}, Addresses: []store.Address{{Address: "192.168.1.40"}}}); err == nil {
+		t.Error("an alias naming another service, written qualified, was accepted")
+	}
 	// Updating a service with its own name and aliases is no collision.
 	svcs, _ := r.Services()
 	if _, err := r.PutService(svcs[0]); err != nil {

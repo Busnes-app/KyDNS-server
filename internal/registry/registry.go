@@ -123,26 +123,43 @@ func macUnique(svc store.Service, others []store.Service) error {
 	return nil
 }
 
-// nameUnique rejects a service whose name is another service's alias, or an
-// alias that is another service's name: the zone keeps one answer per name, so
-// one of the two would silently shadow the other. Aliases are already unique
-// among themselves (the store's UNIQUE index).
+// nameUnique rejects a service whose name or alias is, as a DNS name, the name
+// or an alias of another service: the zone keeps one answer per name, so one
+// would silently shadow the other. Names are compared qualified in zone, as
+// the zone builds them, so "nas" and "nas.home.arpa" are the same name.
 // ponytail: checked on single writes and replace imports, not on a replica
 // pull, so a registry that already holds a collision still replicates; move
 // it into ValidateDocument once no deployed registry can hold one.
-func nameUnique(svc store.Service, others []store.Service) error {
+func nameUnique(svc store.Service, others []store.Service, zone string) error {
+	mine := map[string]bool{fqdn(svc.Name, zone): true}
+	for _, al := range svc.Aliases {
+		mine[fqdn(al, zone)] = true
+	}
 	for _, o := range others {
 		if svc.ID != 0 && o.ID == svc.ID {
 			continue
 		}
-		if slices.Contains(o.Aliases, svc.Name) {
-			return invalid("name", "duplicate", "%s is already an alias of the service %q", svc.Name, o.Name)
-		}
-		if slices.Contains(svc.Aliases, o.Name) {
-			return invalid("aliases", "duplicate", "%s is already the name of another service", o.Name)
+		for i, n := range append([]string{o.Name}, o.Aliases...) {
+			// The same name written the same way is the store's to refuse,
+			// with the 409 it has always answered.
+			if i == 0 && n == svc.Name || i > 0 && slices.Contains(svc.Aliases, n) {
+				continue
+			}
+			if mine[fqdn(n, zone)] {
+				return invalid("aliases", "duplicate", "%s is already a name of the service %q", n, o.Name)
+			}
 		}
 	}
 	return nil
+}
+
+// fqdn is name as the zone publishes it (zone.qualify).
+func fqdn(name, zone string) string {
+	n := strings.TrimSuffix(name, ".")
+	if n+"." == zone || strings.HasSuffix(n+".", "."+zone) {
+		return n + "."
+	}
+	return n + "." + zone
 }
 
 // PutService validates, writes, then rebuilds. A failed validation never
@@ -166,7 +183,7 @@ func (r *Registry) PutService(svc store.Service) (int64, error) {
 	if err := macUnique(svc, stored); err != nil {
 		return 0, err
 	}
-	if err := nameUnique(svc, stored); err != nil {
+	if err := nameUnique(svc, stored, Normalize(r.Zone())); err != nil {
 		return 0, err
 	}
 	id, err := r.s.PutService(svc)
@@ -349,7 +366,7 @@ func (r *Registry) ReplaceAllIn(zone string, views []store.View, services []stor
 	// Here, not in ValidateDocument: a replica must still apply a primary
 	// that already holds a collision (see nameUnique).
 	for i, svc := range ss {
-		if err := nameUnique(svc, ss[:i]); err != nil {
+		if err := nameUnique(svc, ss[:i], Normalize(zone)); err != nil {
 			return err
 		}
 	}
