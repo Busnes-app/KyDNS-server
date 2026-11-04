@@ -322,7 +322,9 @@ curl -fsSo ~/.agents/skills/kydns/SKILL.md {{.}}/agent/skills/kydns/SKILL.md</pr
   <p class="muted">An admin token has full control through the API and the CLI. An AI agent
      token works only at <code>/mcp</code>, with the access you give it, and is revoked
      after 90 days unused. The query log is browsing history: give an agent access to it
-     only if you would show it your browsing history.</p>
+     only if you would show it your browsing history. Raising an agent token's access
+     (read and write, or the query log) needs the same confirmation as creating a token;
+     lowering it does not.</p>
   <table class="grid">
     <tr><th>Label</th><th>Access</th><th>Created</th><th>Last used</th><th><span class="visually-hidden">Actions</span></th></tr>
     {{range .Tokens}}
@@ -337,6 +339,7 @@ curl -fsSo ~/.agents/skills/kydns/SKILL.md {{.}}/agent/skills/kydns/SKILL.md</pr
             <option value="mcp:write"{{if eq .Scope "mcp:write"}} selected{{end}}>AI agent: read and write</option>
           </select>
           <label><input type="checkbox" name="query_log"{{if .QueryLog}} checked{{end}}> query log</label>
+          {{if $.AdminIdentity.PasswordHash}}<input name="current_password" type="password" autocomplete="current-password" placeholder="Current password" aria-label="Current password, to raise access for {{.Label}}">{{end}}
           <button class="ghost" type="submit">Save</button>
         </form>
         <span class="muted">Revoked if unused by {{.RevokeAfter}}</span>

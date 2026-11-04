@@ -278,7 +278,7 @@ func TestAgentTokenCreatedAndChanged(t *testing.T) {
 		t.Error("the agent token's revocation date is not shown")
 	}
 	id := strconv.FormatInt(agent.ID, 10)
-	if rec := postForm(t, h, "/settings/tokens/access", url.Values{"id": {id}, "access": {"mcp:write"}, "csrf_token": {csrf}}, c); rec.Code != http.StatusSeeOther {
+	if rec := postForm(t, h, "/settings/tokens/access", url.Values{"id": {id}, "access": {"mcp:write"}, "csrf_token": {csrf}, "current_password": {testPassword}}, c); rec.Code != http.StatusSeeOther {
 		t.Fatalf("change access = %d: %s", rec.Code, rec.Body)
 	}
 	toks, _ = srv.o.Registry.Tokens()

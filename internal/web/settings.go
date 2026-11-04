@@ -254,9 +254,25 @@ func (s *Server) postTokenNew(w http.ResponseWriter, r *http.Request) {
 }
 
 // postTokenAccess changes an agent token's access; an admin token is refused.
+// Raising it (read to write, or the query log on) needs the same step-up as
+// creating one (owner answer Q3 A); lowering it does not.
 func (s *Server) postTokenAccess(w http.ResponseWriter, r *http.Request) {
+	sess, ok := s.session(r)
+	if !ok {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
 	id, err := strconv.ParseInt(r.PostFormValue("id"), 10, 64)
 	scope, queryLog := r.PostFormValue("access"), r.PostFormValue("query_log") == "on"
+	if err == nil {
+		var toks []store.Token
+		toks, err = s.o.Registry.Tokens()
+		for _, t := range toks {
+			if t.ID == id && err == nil && (scope == store.ScopeMCPWrite && t.Scope != store.ScopeMCPWrite || queryLog && !t.QueryLog) {
+				err = s.stepUp(r, sess)
+			}
+		}
+	}
 	if err == nil {
 		err = s.o.Registry.SetAgentAccess(id, scope, queryLog)
 	}
