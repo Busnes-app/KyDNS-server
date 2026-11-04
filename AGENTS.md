@@ -131,7 +131,9 @@ Code, one concern per package:
   `ApplySnapshot` runs its check on the merged row before writing anything.
 - `internal/registry`, `internal/zone` — services, records, views, validation,
   and the immutable zone snapshot the DNS server reads. `ValidateDocument` is
-  the store-free whole-registry check import and replica apply share.
+  the store-free whole-registry check import and replica apply share; the
+  name/alias collision and CNAME-conflict checks run only on import
+  (`ReplaceAllIn`), so a replica still follows a primary holding legacy rows.
 - `internal/backup` — the KyDNS adapter over `ky-primitives/recoveryclient`: what a
   capsule carries, the drill checks, and the `Service` the routes, scheduler and CLI
   share. Pairing, pinning, delivery and schedule live in the library.

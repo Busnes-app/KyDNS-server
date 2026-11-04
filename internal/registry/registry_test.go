@@ -493,13 +493,21 @@ func TestPutRecordRefusesCNAMEConflicts(t *testing.T) {
 	}
 }
 
-func TestValidateDocumentRefusesCNAMEConflicts(t *testing.T) {
-	_, _, _, err := ValidateDocument("home.arpa.", nil, nil, []store.Record{
+// An import refuses a CNAME conflict, but a replica follows a primary that
+// still holds one from before the check existed (the zone build serves the
+// first CNAME), so ValidateDocument, which a replica runs, lets it through.
+func TestReplaceAllRefusesCNAMEConflictsAReplicaFollows(t *testing.T) {
+	recs := []store.Record{
 		{Name: "mail.home.arpa.", Type: "A", Value: "192.168.1.20"},
 		{Name: "mail.home.arpa.", Type: "CNAME", Value: "nas.home.arpa."},
-	})
-	if err == nil {
-		t.Fatal("ValidateDocument() = nil, want the conflict refused")
+	}
+	if _, _, _, err := ValidateDocument("home.arpa.", nil, nil, recs); err != nil {
+		t.Fatalf("ValidateDocument() = %v, want a primary's legacy conflict followed", err)
+	}
+	r, _ := newRegistry(t)
+	var ve *ValidationError
+	if err := r.ReplaceAll(nil, nil, recs); !errors.As(err, &ve) || ve.Code != "cname_conflict" {
+		t.Fatalf("ReplaceAll() = %v, want cname_conflict", err)
 	}
 }
 

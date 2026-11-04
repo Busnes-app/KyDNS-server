@@ -364,9 +364,15 @@ func (r *Registry) ReplaceAllIn(zone string, views []store.View, services []stor
 		return err
 	}
 	// Here, not in ValidateDocument: a replica must still apply a primary
-	// that already holds a collision (see nameUnique).
+	// that already holds a collision (see nameUnique) or a CNAME conflict
+	// from before pass 1, which the zone build tolerates.
 	for i, svc := range ss {
 		if err := nameUnique(svc, ss[:i], Normalize(zone)); err != nil {
+			return err
+		}
+	}
+	for i, rec := range rs {
+		if err := cnameConflict(rec, rs[:i]); err != nil {
 			return err
 		}
 	}
@@ -406,9 +412,6 @@ func ValidateDocument(zone string, views []store.View, services []store.Service,
 	for _, rec := range records {
 		rec, err := validateRecord(rec, known, zone)
 		if err != nil {
-			return nil, nil, nil, err
-		}
-		if err := cnameConflict(rec, rs); err != nil {
 			return nil, nil, nil, err
 		}
 		rs = append(rs, rec)
