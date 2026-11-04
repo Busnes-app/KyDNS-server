@@ -74,6 +74,27 @@ func TestBlacklistListRoundTripsAndKeepsItsSnapshot(t *testing.T) {
 	if after.Enabled || after.Description != "renamed" {
 		t.Errorf("after a definition edit = %+v, want the edit applied", after)
 	}
+	if after.ETag == "" || after.LastModified == "" {
+		t.Errorf("a definition edit dropped the validators: %q / %q", after.ETag, after.LastModified)
+	}
+
+	// A new format, or a new source, drops the validators so the next fetch
+	// is unconditional; the body stays until it replaces it.
+	for _, edit := range []func(*BlacklistList){
+		func(l *BlacklistList) { l.Format = "domains" },
+		func(l *BlacklistList) { l.URL = "https://other.example/list" },
+	} {
+		_ = s.SetBlacklistSnapshot(id, []string{"ads.example", "tracker.test"}, 7, "W/\"abc\"", "Mon, 01 Jan 2026 00:00:00 GMT", 1000)
+		l, _ := s.BlacklistListByID(id)
+		edit(&l)
+		if _, err := s.PutBlacklistList(l); err != nil {
+			t.Fatal(err)
+		}
+		moved, _ := s.BlacklistListByID(id)
+		if moved.ETag != "" || moved.LastModified != "" || len(moved.Snapshot) != 2 {
+			t.Errorf("after a source edit = validators %q / %q, %d domains; want none, and the body kept", moved.ETag, moved.LastModified, len(moved.Snapshot))
+		}
+	}
 }
 
 // A failed refresh records the error and the attempt, and keeps the last good
