@@ -7,6 +7,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"net/netip"
+	"slices"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -121,6 +122,28 @@ func macUnique(svc store.Service, others []store.Service) error {
 	return nil
 }
 
+// nameUnique rejects a service whose name is another service's alias, or an
+// alias that is another service's name: the zone keeps one answer per name, so
+// one of the two would silently shadow the other. Aliases are already unique
+// among themselves (the store's UNIQUE index).
+// ponytail: checked on single writes only. A document (import, replica pull)
+// is not, so a registry that already holds a collision still replicates;
+// add it to ValidateDocument once no deployed registry can hold one.
+func nameUnique(svc store.Service, others []store.Service) error {
+	for _, o := range others {
+		if svc.ID != 0 && o.ID == svc.ID {
+			continue
+		}
+		if slices.Contains(o.Aliases, svc.Name) {
+			return invalid("name", "duplicate", "%s is already an alias of the service %q", svc.Name, o.Name)
+		}
+		if slices.Contains(svc.Aliases, o.Name) {
+			return invalid("aliases", "duplicate", "%s is already the name of another service", o.Name)
+		}
+	}
+	return nil
+}
+
 // PutService validates, writes, then rebuilds. A failed validation never
 // reaches the store and never triggers a rebuild.
 func (r *Registry) PutService(svc store.Service) (int64, error) {
@@ -132,16 +155,15 @@ func (r *Registry) PutService(svc store.Service) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	// Read the other services only when there is a reservation to check, so
-	// the common service without one still costs a single write.
-	if svc.MAC != "" {
-		stored, err := r.s.Services()
-		if err != nil {
-			return 0, err
-		}
-		if err := macUnique(svc, stored); err != nil {
-			return 0, err
-		}
+	stored, err := r.s.Services()
+	if err != nil {
+		return 0, err
+	}
+	if err := macUnique(svc, stored); err != nil {
+		return 0, err
+	}
+	if err := nameUnique(svc, stored); err != nil {
+		return 0, err
 	}
 	id, err := r.s.PutService(svc)
 	if err != nil {

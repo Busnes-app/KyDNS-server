@@ -546,3 +546,23 @@ func TestValidateDocumentStillAcceptsAStoredMismatchedAddress(t *testing.T) {
 		t.Fatalf("ValidateDocument() = %v, want the old row accepted", err)
 	}
 }
+
+// An alias that is another service's name, or a name that is another
+// service's alias, would leave one of the two silently shadowed in the zone.
+func TestServiceNameAndAliasCannotCollide(t *testing.T) {
+	r, _ := newRegistry(t)
+	if _, err := r.PutService(store.Service{Name: "nas", Aliases: []string{"files"}, Addresses: []store.Address{{Address: "192.168.1.10"}}}); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := r.PutService(store.Service{Name: "web", Aliases: []string{"nas"}, Addresses: []store.Address{{Address: "192.168.1.20"}}}); err == nil {
+		t.Error("an alias naming another service was accepted")
+	}
+	if _, err := r.PutService(store.Service{Name: "files", Addresses: []store.Address{{Address: "192.168.1.30"}}}); err == nil {
+		t.Error("a service named after another service's alias was accepted")
+	}
+	// Updating a service with its own name and aliases is no collision.
+	svcs, _ := r.Services()
+	if _, err := r.PutService(svcs[0]); err != nil {
+		t.Errorf("re-saving a service unchanged: %v", err)
+	}
+}
