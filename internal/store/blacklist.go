@@ -118,15 +118,17 @@ func (s *Store) PutBlacklistList(l BlacklistList) (int64, error) {
 	}
 	// A new source or format drops the cache validators, so the next fetch is
 	// unconditional: a 304 sent against the old source's ETag or date would
-	// keep the old body (or its old parse) forever. The body stays until then.
+	// keep the old body (or its old parse) forever. It also makes the list due
+	// now rather than a whole interval later. The body stays until replaced.
 	res, err := s.db.Exec(`
 		UPDATE blacklist_lists
 		SET name = ?, url = ?, format = ?, description = ?, enabled = ?, interval_seconds = ?,
 		    etag = CASE WHEN url = ? AND format = ? THEN etag ELSE '' END,
-		    last_modified = CASE WHEN url = ? AND format = ? THEN last_modified ELSE '' END
+		    last_modified = CASE WHEN url = ? AND format = ? THEN last_modified ELSE '' END,
+		    last_attempt_at = CASE WHEN url = ? AND format = ? THEN last_attempt_at ELSE 0 END
 		WHERE id = ?`,
 		l.Name, l.URL, l.Format, l.Description, l.Enabled, l.IntervalSeconds,
-		l.URL, l.Format, l.URL, l.Format, l.ID)
+		l.URL, l.Format, l.URL, l.Format, l.URL, l.Format, l.ID)
 	if err != nil {
 		if isUnique(err, "blacklist_lists.name") {
 			return 0, fmt.Errorf("%w: list %s", ErrDuplicateName, l.Name)

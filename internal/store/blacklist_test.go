@@ -74,7 +74,7 @@ func TestBlacklistListRoundTripsAndKeepsItsSnapshot(t *testing.T) {
 	if after.Enabled || after.Description != "renamed" {
 		t.Errorf("after a definition edit = %+v, want the edit applied", after)
 	}
-	if after.ETag == "" || after.LastModified == "" {
+	if after.ETag == "" || after.LastModified == "" || after.LastAttemptAt != 1000 {
 		t.Errorf("a definition edit dropped the validators: %q / %q", after.ETag, after.LastModified)
 	}
 
@@ -91,8 +91,9 @@ func TestBlacklistListRoundTripsAndKeepsItsSnapshot(t *testing.T) {
 			t.Fatal(err)
 		}
 		moved, _ := s.BlacklistListByID(id)
-		if moved.ETag != "" || moved.LastModified != "" || len(moved.Snapshot) != 2 {
-			t.Errorf("after a source edit = validators %q / %q, %d domains; want none, and the body kept", moved.ETag, moved.LastModified, len(moved.Snapshot))
+		if moved.ETag != "" || moved.LastModified != "" || moved.LastAttemptAt != 0 || len(moved.Snapshot) != 2 {
+			t.Errorf("after a source edit = validators %q / %q, last attempt %d, %d domains; want none, due now, and the body kept",
+				moved.ETag, moved.LastModified, moved.LastAttemptAt, len(moved.Snapshot))
 		}
 	}
 }
