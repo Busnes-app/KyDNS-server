@@ -63,6 +63,8 @@ func main() {
  key := recoveryclient.RecoveryKey{Public: priv.Public(), Threshold: 2, TotalShares: 3}
  if err := recoveryclient.StoreRecoveryKey(dir, service.Settings(), key); err != nil { panic(err) }
  if err := recoveryclient.StorePairing(service.Settings(), service.Sealer(), "https://recovery.example", "synthetic-restore-token"); err != nil { panic(err) }
+ // An active schedule, so the restore has one to turn off.
+ if err := recoveryclient.SetInterval(service.Settings(), 3600); err != nil { panic(err) }
  payload, err := service.Collect()
  if err != nil { panic(err) }
  raw, _, err := recoveryclient.Seal(payload, key)
