@@ -389,6 +389,10 @@ func (s *Server) ack(conn net.PacketConn, m *dhcpv4.DHCPv4, mac string) {
 	s.opts.OnChange()
 }
 
+// maxProbes bounds the conflict probes one DISCOVER may cost; each waits the
+// prober's budget.
+const maxProbes = 3
+
 // allocate runs the pool rules and the hostname arbitration. commit is false
 // for an OFFER, which takes a tentative hold through Alloc.Offer: it lasts
 // offerHold only and never claims a name, because only a client that reaches
@@ -402,15 +406,20 @@ func (s *Server) allocate(mac string, m *dhcpv4.DHCPv4, commit bool) (Lease, boo
 		if ip, ok := netip.AddrFromSlice(m.RequestedIPAddress()); ok {
 			requested = ip.Unmap()
 		}
-		l, fresh, ok := s.opts.Alloc.Offer(mac, requested, offerHold)
-		if !ok {
-			return Lease{}, false
-		}
 		// Only an address new to this client is probed, a reservation
 		// included: one just taken from another device may still be in use
 		// there (owner answer Q2 B). A renewal is not probed; the prober
-		// ignores the client's own answer either way.
-		if fresh && s.opts.Prober.InUse(l.IP, mac) {
+		// ignores the client's own answer either way. Each replacement is
+		// probed too, up to maxProbes; past that the client gets no offer
+		// this time and retries.
+		for range maxProbes {
+			l, fresh, ok := s.opts.Alloc.Offer(mac, requested, offerHold)
+			if !ok {
+				return Lease{}, false
+			}
+			if !fresh || !s.opts.Prober.InUse(l.IP, mac) {
+				return l, true
+			}
 			s.opts.Alloc.Release(mac, l.IP)
 			if !s.opts.Alloc.Quarantine(l.IP) {
 				s.opts.Logger.Warn("an address in the pool answered a probe, and half the pool is already quarantined; not offering it",
@@ -418,10 +427,9 @@ func (s *Server) allocate(mac string, m *dhcpv4.DHCPv4, commit bool) (Lease, boo
 				return Lease{}, false
 			}
 			s.opts.Logger.Warn("an address in the pool answered a probe; quarantining it", "ip", l.IP)
-			l, _, ok = s.opts.Alloc.Offer(mac, netip.Addr{}, offerHold)
-			return l, ok
+			requested = netip.Addr{}
 		}
-		return l, true
+		return Lease{}, false
 	}
 	hostname := sanitizeHostname(m.HostName())
 	l, ok := s.opts.Alloc.Confirm(mac, hostname, askedFor(m), s.opts.Cfg.LeaseTime)
