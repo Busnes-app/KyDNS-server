@@ -1190,6 +1190,49 @@ func TestAReservedClientReachesAHeldAddressThroughRequest(t *testing.T) {
 	}
 }
 
+// Owner answer Q2 B: the takeover stays, but the reservation is probed before
+// it is offered. While the device it was taken from still answers for it, the
+// reserved client is offered and ACKed a dynamic address instead (no NAK loop),
+// and it is never offered the busy address.
+func TestAReservationTakenFromAnotherDeviceIsProbedFirst(t *testing.T) {
+	s, _ := newTestServer(t)
+	const holder, reserved = "aa:aa:aa:aa:aa:aa", "bb:bb:bb:bb:bb:bb"
+	c := &captureConn{}
+	bind(t, s, c, holder, "nas")
+	held := netip.MustParseAddr(c.replies(t)[0].YourIPAddr.String())
+	s.opts.Alloc.SetReservations(map[string]netip.Addr{reserved: held})
+	s.opts.Prober = stubProber{inUse: held, by: holder} // the old holder still answers ARP
+
+	// Round one, as before: a dynamic offer, and the REQUEST for it displaces the holder.
+	c2 := &captureConn{}
+	s.handle(c2, &net.UDPAddr{IP: net.IPv4zero}, discover(reserved, ""))
+	offered := netip.MustParseAddr(c2.replies(t)[0].YourIPAddr.String())
+	c3 := &captureConn{}
+	s.handle(c3, &net.UDPAddr{IP: net.IPv4zero}, request(reserved, "", offered))
+
+	// Round two: the probe finds the old holder still on the address.
+	c4 := &captureConn{}
+	s.handle(c4, &net.UDPAddr{IP: net.IPv4zero}, discover(reserved, ""))
+	second := netip.MustParseAddr(c4.replies(t)[0].YourIPAddr.String())
+	if second == held {
+		t.Fatalf("offered the reserved %v while another device still answers for it", held)
+	}
+	c5 := &captureConn{}
+	s.handle(c5, &net.UDPAddr{IP: net.IPv4zero}, request(reserved, "", second))
+	if r := c5.replies(t)[0]; r.MessageType() != dhcpv4.MessageTypeAck || r.YourIPAddr.String() != second.String() {
+		t.Fatalf("REQUEST for the fallback %v got %v for %v, want an ACK", second, r.MessageType(), r.YourIPAddr)
+	}
+
+	// Once nothing else answers and the quarantine has lapsed, the reservation applies.
+	s.opts.Prober = nopProber{}
+	s.opts.Alloc.now = func() time.Time { return epoch.Add(quarantineFor + time.Minute) }
+	c6 := &captureConn{}
+	s.handle(c6, &net.UDPAddr{IP: net.IPv4zero}, discover(reserved, ""))
+	if got := c6.replies(t)[0].YourIPAddr.String(); got != held.String() {
+		t.Fatalf("after the quarantine, offer = %v, want the reserved %v", got, held)
+	}
+}
+
 // The same hole at the packet layer, from a reservation map alone: one bare
 // DISCOVER from a client whose reservation is occupied and whose own address
 // is reserved elsewhere used to drop its name out of DNS.

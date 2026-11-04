@@ -414,8 +414,13 @@ func TestOfferReportsWhetherTheAddressIsNewToTheClient(t *testing.T) {
 	if !ok || l.IP != res {
 		t.Fatalf("Offer = %+v (ok=%v), want the reserved %v", l, ok, res)
 	}
-	if fresh {
-		t.Fatal("a reservation reported fresh; it is the client's address already")
+	// Owner answer Q2 B: a reservation the client is not on yet is probed.
+	if !fresh {
+		t.Fatal("a reservation new to the client reported not fresh; it must be probed")
+	}
+	// Renewing the reservation it now holds is not.
+	if _, fresh, _ = a.Offer("cc:cc:cc:cc:cc:cc", netip.Addr{}, time.Minute); fresh {
+		t.Fatal("renewing a held reservation reported fresh")
 	}
 }
 
@@ -489,8 +494,8 @@ func TestOfferForAReservationDoesNotMoveTheClientOffItsLease(t *testing.T) {
 	if got.IP != res {
 		t.Fatalf("offered %v, want the reserved %v promised", got.IP, res)
 	}
-	if fresh {
-		t.Fatal("fresh = true for a reservation; rule 1 is never probed")
+	if !fresh {
+		t.Fatal("fresh = false for a reservation the client is not on; it must be probed (Q2 B)")
 	}
 	ls := a.Leases()
 	if len(ls) != 1 {
