@@ -1145,16 +1145,25 @@ func (s *Store) TouchToken(id int64) error {
 
 // SetTokenAccess changes an MCP token's scope and query-log flag. An admin
 // token never becomes an agent's, nor the reverse: ErrNotFound for both.
-func (s *Store) SetTokenAccess(id int64, scope string, queryLog bool) error {
+func (s *Store) SetTokenAccess(id int64, scope string, queryLog bool, from *Token) error {
 	if !IsMCPScope(scope) {
 		return fmt.Errorf("token scope %q is not an MCP scope", scope)
 	}
-	res, err := s.db.Exec(`UPDATE tokens SET scope = ?, query_log = ? WHERE id = ? AND scope IN (?, ?)`,
-		scope, queryLog, id, ScopeMCPRead, ScopeMCPWrite)
+	// from, when given, is the access the caller decided against: the update
+	// lands only if the row still has it, so a change in between is not undone.
+	q, args := `UPDATE tokens SET scope = ?, query_log = ? WHERE id = ? AND scope IN (?, ?)`,
+		[]any{scope, queryLog, id, ScopeMCPRead, ScopeMCPWrite}
+	if from != nil {
+		q, args = q+` AND scope = ? AND query_log = ?`, append(args, from.Scope, from.QueryLog)
+	}
+	res, err := s.db.Exec(q, args...)
 	if err != nil {
 		return err
 	}
 	if n, _ := res.RowsAffected(); n == 0 {
+		if from != nil {
+			return fmt.Errorf("%w: agent token %d changed or was removed meanwhile; reload and try again", ErrNotFound, id)
+		}
 		return fmt.Errorf("%w: agent token %d", ErrNotFound, id)
 	}
 	return nil

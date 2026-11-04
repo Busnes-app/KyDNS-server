@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -308,5 +309,47 @@ func TestSSOTabStepUpReturnsToTheSSOTab(t *testing.T) {
 	// Spent: a second callback, or one without the session, lands on tokens.
 	if got := callback(true); got != "/settings/tokens?stepup=stale" {
 		t.Fatalf("second callback location = %q, want the token tab", got)
+	}
+}
+
+// Raising an agent token's access is the same persistence as creating one, so
+// it needs the step-up too; lowering it stays one click (owner answer Q3 A).
+func TestTokenAccessRaiseNeedsAStepUp(t *testing.T) {
+	h, srv, c, csrf := loggedIn(t)
+	if _, err := srv.o.Registry.CreateAgentTokenAtGeneration("hermes", store.ScopeMCPRead, false, "", "", srv.o.Sessions.RecoveryGeneration()); err != nil {
+		t.Fatal(err)
+	}
+	toks, _ := srv.o.Registry.Tokens()
+	id := strconv.FormatInt(toks[len(toks)-1].ID, 10)
+	access := func(scope, queryLog, pw string) int {
+		form := url.Values{"id": {id}, "access": {scope}, "query_log": {queryLog}, "csrf_token": {csrf}}
+		if pw != "" {
+			form.Set("current_password", pw)
+		}
+		return postForm(t, h, "/settings/tokens/access", form, c).Code
+	}
+	for _, tc := range []struct{ scope, queryLog string }{{"mcp:write", ""}, {"mcp:read", "on"}} {
+		for _, pw := range []string{"", "not-the-password"} {
+			if code := access(tc.scope, tc.queryLog, pw); code != http.StatusBadRequest {
+				t.Errorf("raise to %s/%q with password %q: status = %d, want 400", tc.scope, tc.queryLog, pw, code)
+			}
+		}
+	}
+	if got, _ := srv.o.Registry.Tokens(); got[len(got)-1].Scope != store.ScopeMCPRead || got[len(got)-1].QueryLog {
+		t.Fatalf("raised without a step-up: %+v", got[len(got)-1])
+	}
+	if code := access("mcp:write", "on", testPassword); code != http.StatusSeeOther {
+		t.Fatalf("raise with the password: status = %d", code)
+	}
+	if code := access("mcp:read", "", ""); code != http.StatusSeeOther {
+		t.Fatalf("lowering without a password: status = %d, want 303", code)
+	}
+	if got, _ := srv.o.Registry.Tokens(); got[len(got)-1].Scope != store.ScopeMCPRead || got[len(got)-1].QueryLog {
+		t.Fatalf("after lowering: %+v", got[len(got)-1])
+	}
+	// An id not in the list is refused, not updated unconditionally: a token
+	// created meanwhile could reuse it.
+	if code := postForm(t, h, "/settings/tokens/access", url.Values{"id": {"99999"}, "access": {"mcp:write"}, "csrf_token": {csrf}, "current_password": {testPassword}}, c).Code; code != http.StatusBadRequest {
+		t.Fatalf("unknown token id: status = %d, want 400", code)
 	}
 }

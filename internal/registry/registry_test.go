@@ -493,13 +493,21 @@ func TestPutRecordRefusesCNAMEConflicts(t *testing.T) {
 	}
 }
 
-func TestValidateDocumentRefusesCNAMEConflicts(t *testing.T) {
-	_, _, _, err := ValidateDocument("home.arpa.", nil, nil, []store.Record{
+// An import refuses a CNAME conflict, but a replica follows a primary that
+// still holds one from before the check existed (the zone build serves the
+// first CNAME), so ValidateDocument, which a replica runs, lets it through.
+func TestReplaceAllRefusesCNAMEConflictsAReplicaFollows(t *testing.T) {
+	recs := []store.Record{
 		{Name: "mail.home.arpa.", Type: "A", Value: "192.168.1.20"},
 		{Name: "mail.home.arpa.", Type: "CNAME", Value: "nas.home.arpa."},
-	})
-	if err == nil {
-		t.Fatal("ValidateDocument() = nil, want the conflict refused")
+	}
+	if _, _, _, err := ValidateDocument("home.arpa.", nil, nil, recs); err != nil {
+		t.Fatalf("ValidateDocument() = %v, want a primary's legacy conflict followed", err)
+	}
+	r, _ := newRegistry(t)
+	var ve *ValidationError
+	if err := r.ReplaceAll(nil, nil, recs); !errors.As(err, &ve) || ve.Code != "cname_conflict" {
+		t.Fatalf("ReplaceAll() = %v, want cname_conflict", err)
 	}
 }
 
@@ -568,6 +576,29 @@ func TestServiceNameAndAliasCannotCollide(t *testing.T) {
 	svcs, _ := r.Services()
 	if _, err := r.PutService(svcs[0]); err != nil {
 		t.Errorf("re-saving a service unchanged: %v", err)
+	}
+}
+
+// One name on two services that never answer in the same view shadows
+// nothing (the zone picks per view), so it is allowed; once both answer in
+// one view, including through untagged addresses, it is refused.
+func TestNameAliasCollisionIsPerView(t *testing.T) {
+	r, _ := newRegistry(t)
+	for _, v := range []string{"lan", "iot"} {
+		if err := r.PutView(store.View{Name: v, Subnets: []string{map[string]string{"lan": "192.168.1.0/24", "iot": "192.168.50.0/24"}[v]}}); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if _, err := r.PutService(store.Service{Name: "nas", Addresses: []store.Address{{Address: "192.168.1.10", View: "lan"}}}); err != nil {
+		t.Fatal(err)
+	}
+	id, err := r.PutService(store.Service{Name: "nas-iot", Aliases: []string{"nas"}, Addresses: []store.Address{{Address: "192.168.50.10", View: "iot"}}})
+	if err != nil {
+		t.Fatalf("an alias in a view the other service does not answer in: %v", err)
+	}
+	if _, err := r.PutService(store.Service{ID: id, Name: "nas-iot", Aliases: []string{"nas"},
+		Addresses: []store.Address{{Address: "192.168.50.10", View: "iot"}, {Address: "192.168.1.11"}}}); err == nil {
+		t.Error("an untagged address answering in the other service's view was accepted")
 	}
 }
 

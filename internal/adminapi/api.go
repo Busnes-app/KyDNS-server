@@ -795,7 +795,7 @@ func (a *API) patchToken(w http.ResponseWriter, r *http.Request) {
 	if !decode(w, r, &d) {
 		return
 	}
-	if err := a.reg.SetAgentAccess(id, d.Scope, d.QueryLog); err != nil {
+	if err := a.reg.SetAgentAccess(id, d.Scope, d.QueryLog, nil); err != nil {
 		writeRegistryErr(w, err)
 		return
 	}

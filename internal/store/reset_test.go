@@ -163,7 +163,7 @@ func TestOpenAddsTokenScope(t *testing.T) {
 	if err != nil || len(toks) != 1 || toks[0].Scope != ScopeAdmin || toks[0].QueryLog {
 		t.Fatalf("tokens after migration: %+v %v", toks, err)
 	}
-	if err := s.SetTokenAccess(toks[0].ID, ScopeMCPRead, false); err == nil {
+	if err := s.SetTokenAccess(toks[0].ID, ScopeMCPRead, false, nil); err == nil {
 		t.Error("an admin token was turned into an agent's")
 	}
 }

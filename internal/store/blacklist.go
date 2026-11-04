@@ -167,19 +167,24 @@ func (s *Store) InstallBlacklistFetch(l BlacklistList, domains []string, skipped
 	return nil
 }
 
-// SetBlacklistError records a failed refresh. The snapshot is untouched, so
-// the last known-good data keeps serving.
-func (s *Store) SetBlacklistError(id int64, msg string, at int64) error {
+// SetBlacklistError records a failed refresh of l's source. The snapshot is
+// untouched, so the last known-good data keeps serving. Like
+// InstallBlacklistFetch, it writes nothing once the row has another source:
+// the edit made that one due now, and an old failure must not postpone it.
+func (s *Store) SetBlacklistError(l BlacklistList, msg string, at int64) error {
 	_, err := s.db.Exec(
-		`UPDATE blacklist_lists SET last_error = ?, last_attempt_at = ? WHERE id = ?`, msg, at, id)
+		`UPDATE blacklist_lists SET last_error = ?, last_attempt_at = ?
+		WHERE id = ? AND (? = '' OR (url = ? AND format = ?))`, msg, at, l.ID, l.URL, l.URL, l.Format)
 	return err
 }
 
-// TouchBlacklistAttempt records a refresh that succeeded with no new content,
-// so a 304 does not look like a list that has stopped updating.
-func (s *Store) TouchBlacklistAttempt(id, at int64) error {
+// TouchBlacklistAttempt records a refresh of l's source that succeeded with no
+// new content, so a 304 does not look like a list that has stopped updating.
+// Nothing is written once the row has another source.
+func (s *Store) TouchBlacklistAttempt(l BlacklistList, at int64) error {
 	_, err := s.db.Exec(
-		`UPDATE blacklist_lists SET last_attempt_at = ?, last_ok_at = ?, last_error = '' WHERE id = ?`, at, at, id)
+		`UPDATE blacklist_lists SET last_attempt_at = ?, last_ok_at = ?, last_error = ''
+		WHERE id = ? AND (? = '' OR (url = ? AND format = ?))`, at, at, l.ID, l.URL, l.URL, l.Format)
 	return err
 }
 

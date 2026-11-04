@@ -379,3 +379,15 @@ func TestJoinDatabaseRefusesABrokenSet(t *testing.T) {
 		t.Errorf("single member: %v", err)
 	}
 }
+
+// data_dir: ./data is a valid configuration; collection must not depend on
+// the path being absolute.
+func TestCollectWorksWithARelativeDataDir(t *testing.T) {
+	s := testService(t, func(c *config.Config) {
+		t.Chdir(filepath.Dir(c.DataDir))
+		c.DataDir = filepath.Base(c.DataDir)
+	})
+	if _, err := s.Collect(); err != nil {
+		t.Fatalf("Collect with data_dir %q: %v", s.Cfg.DataDir, err)
+	}
+}

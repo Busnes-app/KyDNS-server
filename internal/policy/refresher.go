@@ -118,7 +118,7 @@ func (r *Refresher) refresh(ctx context.Context, l store.BlacklistList) (ok, cha
 		return false, false
 	}
 	if res.NotModified {
-		if err := r.st.TouchBlacklistAttempt(l.ID, at); err != nil {
+		if err := r.st.TouchBlacklistAttempt(l, at); err != nil {
 			r.logger.Warn("blacklist: record refresh", "list", l.Name, "error", err)
 		}
 		r.logger.Info("blacklist list unchanged", "list", l.Name, "entries", l.EntryCount)
@@ -152,7 +152,7 @@ func (r *Refresher) refresh(ctx context.Context, l store.BlacklistList) (ok, cha
 }
 
 func (r *Refresher) fail(l store.BlacklistList, cause error, at int64) {
-	if err := r.st.SetBlacklistError(l.ID, cause.Error(), at); err != nil {
+	if err := r.st.SetBlacklistError(l, cause.Error(), at); err != nil {
 		r.logger.Warn("blacklist: record failure", "list", l.Name, "error", err)
 	}
 	r.logger.Warn("blacklist list refresh failed, still serving the previous snapshot",

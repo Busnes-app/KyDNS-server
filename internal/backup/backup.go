@@ -91,7 +91,11 @@ func (s *Service) Collect() (recoveryclient.Payload, error) {
 		return recoveryclient.Payload{}, err
 	}
 	defer os.RemoveAll(tmp)
-	dbPath := filepath.Join(tmp, "kydns.db")
+	// data_dir may be relative; SnapshotTo takes only an absolute path.
+	dbPath, err := filepath.Abs(filepath.Join(tmp, "kydns.db"))
+	if err != nil {
+		return recoveryclient.Payload{}, err
+	}
 	if err := s.Store.SnapshotTo(dbPath); err != nil {
 		return recoveryclient.Payload{}, err
 	}

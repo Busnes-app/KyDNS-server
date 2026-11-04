@@ -86,7 +86,10 @@ kydns service update 7 --mac ""                     # give the reservation up
 The address reserved is the service's one address inside the DHCP subnet, so a
 service that also answers on a VPN keeps its per-view addresses. No address in
 that subnet, or two, and the reservation is inactive and says so on the DHCP
-tab rather than being guessed at. A MAC belongs to one service.
+tab rather than being guessed at. A MAC belongs to one service. A reservation
+for an address another device still holds takes it over, but the address is
+probed first: while that device still answers for it, the reserved device gets
+a dynamic address and moves at a later renewal.
 
 The lease table's **Reserve** button does the same thing in one click, but it
 *creates* a service — it never updates one. A lease whose hostname already

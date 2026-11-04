@@ -124,8 +124,8 @@ func macUnique(svc store.Service, others []store.Service) error {
 }
 
 // nameUnique rejects a service whose name or alias is, as a DNS name, the name
-// or an alias of another service: the zone keeps one answer per name, so one
-// would silently shadow the other. Names are compared qualified in zone, as
+// or an alias of another service answering in the same view: the zone keeps
+// one answer per name, so one would silently shadow the other. Names are compared qualified in zone, as
 // the zone builds them, so "nas" and "nas.home.arpa" are the same name.
 // ponytail: checked on single writes and replace imports, not on a replica
 // pull, so a registry that already holds a collision still replicates; move
@@ -136,7 +136,7 @@ func nameUnique(svc store.Service, others []store.Service, zone string) error {
 		mine[fqdn(al, zone)] = true
 	}
 	for _, o := range others {
-		if svc.ID != 0 && o.ID == svc.ID {
+		if svc.ID != 0 && o.ID == svc.ID || !shareAView(svc, o) {
 			continue
 		}
 		for i, n := range append([]string{o.Name}, o.Aliases...) {
@@ -151,6 +151,33 @@ func nameUnique(svc store.Service, others []store.Service, zone string) error {
 		}
 	}
 	return nil
+}
+
+// shareAView reports whether a and b both answer in some view, so one name
+// on both would shadow. The zone picks a service's addresses per view as
+// zone.pick does: those tagged with the view, else the untagged ones. A view
+// neither service tags picks as the default view "" does.
+func shareAView(a, b store.Service) bool {
+	answers := func(svc store.Service, view string) bool {
+		untagged := false
+		for _, ad := range svc.Addresses {
+			if view != "" && ad.View == view {
+				return true
+			}
+			untagged = untagged || ad.View == ""
+		}
+		return untagged
+	}
+	views := []string{""}
+	for _, ad := range append(slices.Clone(a.Addresses), b.Addresses...) {
+		views = append(views, ad.View)
+	}
+	for _, v := range views {
+		if answers(a, v) && answers(b, v) {
+			return true
+		}
+	}
+	return false
 }
 
 // fqdn is name as the zone publishes it (zone.qualify).
@@ -364,9 +391,15 @@ func (r *Registry) ReplaceAllIn(zone string, views []store.View, services []stor
 		return err
 	}
 	// Here, not in ValidateDocument: a replica must still apply a primary
-	// that already holds a collision (see nameUnique).
+	// that already holds a collision (see nameUnique) or a CNAME conflict
+	// from before pass 1, which the zone build tolerates.
 	for i, svc := range ss {
 		if err := nameUnique(svc, ss[:i], Normalize(zone)); err != nil {
+			return err
+		}
+	}
+	for i, rec := range rs {
+		if err := cnameConflict(rec, rs[:i]); err != nil {
 			return err
 		}
 	}
@@ -406,9 +439,6 @@ func ValidateDocument(zone string, views []store.View, services []store.Service,
 	for _, rec := range records {
 		rec, err := validateRecord(rec, known, zone)
 		if err != nil {
-			return nil, nil, nil, err
-		}
-		if err := cnameConflict(rec, rs); err != nil {
 			return nil, nil, nil, err
 		}
 		rs = append(rs, rec)
@@ -524,11 +554,12 @@ func (r *Registry) CreateAgentTokenAtGeneration(label, scope string, queryLog bo
 
 // SetAgentAccess changes an MCP token between the MCP scopes and its
 // query-log flag. An admin token is not found here: it never becomes an agent's.
-func (r *Registry) SetAgentAccess(id int64, scope string, queryLog bool) error {
+// A non-nil from makes it conditional on the token still having that access.
+func (r *Registry) SetAgentAccess(id int64, scope string, queryLog bool, from *store.Token) error {
 	if !store.IsMCPScope(scope) {
 		return Invalid("scope", "scope_invalid", "an agent token's scope is %s or %s", store.ScopeMCPRead, store.ScopeMCPWrite)
 	}
-	return r.s.SetTokenAccess(id, scope, queryLog)
+	return r.s.SetTokenAccess(id, scope, queryLog, from)
 }
 
 // AccessText says in words what a token can do, for every screen that issues

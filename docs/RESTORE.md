@@ -185,11 +185,13 @@ docker volume create "$vol"              # recreate it empty, same exact name
 
 Now copy the restored data in — again as root, because the volume is
 root-owned and the KyDNS container drops every capability except
-`NET_BIND_SERVICE`, so it has no `CAP_DAC_OVERRIDE` to fix ownership later:
+`NET_BIND_SERVICE`, so it has no `CAP_DAC_OVERRIDE` to fix ownership later.
+Step 1 left the files owned by you, so the same command hands them, and the
+volume, to the service user (uid 65532) with the directory at mode 700:
 
 ```bash
 docker run --rm -v "$vol:/data" -v "$PWD/restored/data:/new:ro" busybox \
-  sh -c 'cp -a /new/. /data/ && ls -A /data'
+  sh -c 'cp -a /new/. /data/ && chown -R 65532:65532 /data && chmod 700 /data && ls -A /data'
 docker compose up -d
 docker compose logs kydns | head
 ```
@@ -238,7 +240,11 @@ was not found, which means the copy went somewhere other than `$vol`.
   KyRecovery token in the database is sealed under that file and nothing else
   opens it.
 - Replication: a restored primary that has `data/node_key` keeps its identity
-  and its replicas reconnect. A standalone node has no `node_key` and there is
+  and its replicas reconnect, once its config file has the `replication:` block
+  it had before (`listen` on a primary, `primary` on a replica), or the
+  `KYDNS_REPLICATION_LISTEN` / `KYDNS_REPLICATION_PRIMARY` variables a container
+  uses instead. Those are file-owned and not in the capsule; without them the
+  node starts standalone. A standalone node has no `node_key` and there is
   nothing here to prove. A restored `node_key` must be mode 0600 and owned by
   the service user, or the node refuses to start.
 

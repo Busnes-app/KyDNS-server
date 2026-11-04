@@ -657,3 +657,27 @@ func TestOpenNamesTheOwnershipFix(t *testing.T) {
 		t.Fatalf("Open() error = %q, want the directory and %q", err, want)
 	}
 }
+
+// An access change decided against the token's access lands only while the
+// token still has it, so a concurrent change is never undone without a
+// step-up (owner answer Q3 A).
+func TestSetTokenAccessFromIsConditional(t *testing.T) {
+	s := open(t)
+	id, err := s.PutToken(Token{Label: "hermes", Hash: "h", Scope: ScopeMCPWrite})
+	if err != nil {
+		t.Fatal(err)
+	}
+	checked := Token{Scope: ScopeMCPWrite}
+	if err := s.SetTokenAccess(id, ScopeMCPRead, false, nil); err != nil { // the concurrent downgrade
+		t.Fatal(err)
+	}
+	if err := s.SetTokenAccess(id, ScopeMCPWrite, false, &checked); err == nil {
+		t.Fatal("an update decided against write access landed after a downgrade")
+	}
+	if toks, _ := s.Tokens(); toks[0].Scope != ScopeMCPRead {
+		t.Fatalf("scope = %s, want the downgrade kept", toks[0].Scope)
+	}
+	if err := s.SetTokenAccess(id, ScopeMCPRead, true, &Token{Scope: ScopeMCPRead}); err != nil {
+		t.Fatalf("matching precondition: %v", err)
+	}
+}

@@ -109,7 +109,7 @@ func TestSetBlacklistErrorKeepsTheSnapshot(t *testing.T) {
 	if err := s.SetBlacklistSnapshot(id, []string{"ads.example"}, 0, "", "", 100); err != nil {
 		t.Fatal(err)
 	}
-	if err := s.SetBlacklistError(id, "dial tcp: i/o timeout", 200); err != nil {
+	if err := s.SetBlacklistError(BlacklistList{ID: id, URL: "https://e/x", Format: "domains"}, "dial tcp: i/o timeout", 200); err != nil {
 		t.Fatal(err)
 	}
 	got, err := s.BlacklistListByID(id)
