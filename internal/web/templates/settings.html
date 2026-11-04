@@ -377,11 +377,10 @@ curl -fsSo ~/.agents/skills/kydns/SKILL.md {{.}}/agent/skills/kydns/SKILL.md</pr
     <label for="tcurrent">Current password</label>
     <input id="tcurrent" name="current_password" type="password" autocomplete="current-password">
     {{end}}
-    {{$sso := and .SSOSettings.Enabled (or .AdminIdentity.SSOSub (not .AdminIdentity.PasswordHash))}}
-    <p class="muted">A token outlives this sign-in, so confirm it is you{{if .AdminIdentity.PasswordHash}} with your password{{end}}{{if and .AdminIdentity.PasswordHash $sso}}, or{{end}}{{if $sso}} by signing in again with single sign-on (then create the token within five minutes){{end}}.</p>
+    <p class="muted">A token outlives this sign-in, so confirm it is you{{if .AdminIdentity.PasswordHash}} with your password{{end}}{{if and .AdminIdentity.PasswordHash .SSOSettings.Enabled}}, or{{end}}{{if .SSOSettings.Enabled}} by signing in again with single sign-on (then create the token within five minutes){{end}}.</p>
     <button type="submit">Create token</button>
   </form>
-  {{if $sso}}
+  {{if .SSOSettings.Enabled}}
   <form method="post" action="/settings/tokens/stepup">
     <input type="hidden" name="csrf_token" value="{{.CSRF}}">
     <button class="ghost" type="submit">Confirm with single sign-on</button>
