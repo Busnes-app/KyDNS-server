@@ -1268,10 +1268,13 @@ func TestARequestForAHeldReservationGoesThroughTheProbe(t *testing.T) {
 	held := netip.MustParseAddr(c.replies(t)[0].YourIPAddr.String())
 	s.opts.Alloc.SetReservations(map[string]netip.Addr{reserved: held})
 	s.opts.Prober = stubProber{inUse: held, by: holder}
-	c2 := &captureConn{}
-	s.handle(c2, &net.UDPAddr{IP: net.IPv4zero}, request(reserved, "", held))
-	if got := c2.replies(t)[0].MessageType(); got != dhcpv4.MessageTypeNak {
-		t.Fatalf("REQUEST for a reservation another device holds got %v, want NAK", got)
+	// Twice: a retransmitted REQUEST (lost NAK) must not be ACKed unprobed.
+	for i := range 2 {
+		c2 := &captureConn{}
+		s.handle(c2, &net.UDPAddr{IP: net.IPv4zero}, request(reserved, "", held))
+		if got := c2.replies(t)[0].MessageType(); got != dhcpv4.MessageTypeNak {
+			t.Fatalf("REQUEST %d for a reservation another device holds got %v, want NAK", i+1, got)
+		}
 	}
 	c3 := &captureConn{}
 	s.handle(c3, &net.UDPAddr{IP: net.IPv4zero}, discover(reserved, ""))
