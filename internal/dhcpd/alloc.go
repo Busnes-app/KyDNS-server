@@ -278,7 +278,9 @@ func (a *Allocator) Decline(mac string, ip netip.Addr) bool {
 	}
 	delete(a.byMAC, mac)
 	delete(a.byIP, ip)
-	if a.inRange(ip) {
+	// Never a reservation: rule 1 honours the quarantine, so one forged DECLINE
+	// would hold the device off its address. Its next offer is probed instead.
+	if a.inRange(ip) && a.reservedIP[ip] == "" {
 		a.quarantineLocked(ip)
 	}
 	return true

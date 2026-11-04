@@ -654,3 +654,22 @@ func TestOfferDoesNotHandBackAnExpiredHolding(t *testing.T) {
 		t.Fatal("fresh = false for an address the client no longer holds; it would never be probed")
 	}
 }
+
+// A DECLINE is unauthenticated: one naming a reservation its device holds
+// drops the lease but never quarantines the reservation, or a forged packet
+// would hold the device off its address. Its next offer is probed instead.
+func TestDeclineNeverQuarantinesAReservation(t *testing.T) {
+	a, _ := newTestAllocator(t)
+	const mac = "aa:aa:aa:aa:aa:aa"
+	res := netip.MustParseAddr("192.168.1.11")
+	a.SetReservations(map[string]netip.Addr{mac: res})
+	if l, ok := a.Allocate(mac, "", netip.Addr{}, time.Hour); !ok || l.IP != res {
+		t.Fatalf("Allocate = %+v, want the reservation", l)
+	}
+	if !a.Decline(mac, res) {
+		t.Fatal("Decline refused the holder")
+	}
+	if l, _, ok := a.Offer(mac, netip.Addr{}, time.Minute); !ok || l.IP != res {
+		t.Fatalf("Offer after a decline = %+v, want the reservation back", l)
+	}
+}
