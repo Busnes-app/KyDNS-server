@@ -1321,6 +1321,39 @@ func TestAFreedReservationIsNotAckedBeforeItsProbe(t *testing.T) {
 	}
 }
 
+// And when the holder's own renewal frees it (GPT Sol, pass 3): the holder is
+// NAKed, but its NAK may be lost, so the reserved client is not ACKed the
+// address before an offer's probe.
+func TestAReservationFreedByTheHoldersNAKIsProbedFirst(t *testing.T) {
+	s, _ := newTestServer(t)
+	const holder, reserved = "aa:aa:aa:aa:aa:aa", "bb:bb:bb:bb:bb:bb"
+	c := &captureConn{}
+	bind(t, s, c, holder, "nas")
+	held := netip.MustParseAddr(c.replies(t)[0].YourIPAddr.String())
+	s.opts.Alloc.SetReservations(map[string]netip.Addr{reserved: held})
+
+	c2 := &captureConn{}
+	s.handle(c2, &net.UDPAddr{IP: net.IPv4zero}, request(holder, "nas", held))
+	if got := c2.replies(t)[0].MessageType(); got != dhcpv4.MessageTypeNak {
+		t.Fatalf("the holder's renewal of a reserved address got %v, want NAK", got)
+	}
+	c3 := &captureConn{}
+	s.handle(c3, &net.UDPAddr{IP: net.IPv4zero}, request(reserved, "", held))
+	if got := c3.replies(t)[0].MessageType(); got != dhcpv4.MessageTypeNak {
+		t.Fatalf("REQUEST for the freed reservation got %v before any probe, want NAK", got)
+	}
+	c4 := &captureConn{}
+	s.handle(c4, &net.UDPAddr{IP: net.IPv4zero}, discover(reserved, ""))
+	if got := c4.replies(t)[0].YourIPAddr.String(); got != held.String() {
+		t.Fatalf("offer = %v, want the reserved %v", got, held)
+	}
+	c5 := &captureConn{}
+	s.handle(c5, &net.UDPAddr{IP: net.IPv4zero}, request(reserved, "", held))
+	if got := c5.replies(t)[0].MessageType(); got != dhcpv4.MessageTypeAck {
+		t.Fatalf("REQUEST after a clean probe got %v, want ACK", got)
+	}
+}
+
 // The same hole at the packet layer, from a reservation map alone: one bare
 // DISCOVER from a client whose reservation is occupied and whose own address
 // is reserved elsewhere used to drop its name out of DNS.

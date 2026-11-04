@@ -146,6 +146,11 @@ func (a *Allocator) Confirm(mac, hostname string, asked netip.Addr, ttl time.Dur
 		if ok && l.IP == asked && (!a.usable(asked) || a.reservedIP[asked] != mac) {
 			delete(a.byMAC, mac)
 			delete(a.byIP, asked)
+			// Freed from its holder for a reservation: probe it before the
+			// reserved client is ACKed, as below (the NAK may be lost).
+			if a.reservedIP[asked] != "" {
+				a.unprobed[asked] = true
+			}
 		}
 		return Lease{}, false
 	}
