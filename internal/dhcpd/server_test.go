@@ -1258,6 +1258,28 @@ func TestAReservationTakenFromAnotherDeviceIsProbedFirst(t *testing.T) {
 	}
 }
 
+// A REQUEST that names the reservation directly (INIT-REBOOT, no DISCOVER)
+// while another device holds it is NAKed, so the offer's probe runs first.
+func TestARequestForAHeldReservationGoesThroughTheProbe(t *testing.T) {
+	s, _ := newTestServer(t)
+	const holder, reserved = "aa:aa:aa:aa:aa:aa", "bb:bb:bb:bb:bb:bb"
+	c := &captureConn{}
+	bind(t, s, c, holder, "nas")
+	held := netip.MustParseAddr(c.replies(t)[0].YourIPAddr.String())
+	s.opts.Alloc.SetReservations(map[string]netip.Addr{reserved: held})
+	s.opts.Prober = stubProber{inUse: held, by: holder}
+	c2 := &captureConn{}
+	s.handle(c2, &net.UDPAddr{IP: net.IPv4zero}, request(reserved, "", held))
+	if got := c2.replies(t)[0].MessageType(); got != dhcpv4.MessageTypeNak {
+		t.Fatalf("REQUEST for a reservation another device holds got %v, want NAK", got)
+	}
+	c3 := &captureConn{}
+	s.handle(c3, &net.UDPAddr{IP: net.IPv4zero}, discover(reserved, ""))
+	if got := c3.replies(t)[0].YourIPAddr.String(); got == held.String() {
+		t.Fatalf("offered %v while the old holder still answers for it", held)
+	}
+}
+
 // The same hole at the packet layer, from a reservation map alone: one bare
 // DISCOVER from a client whose reservation is occupied and whose own address
 // is reserved elsewhere used to drop its name out of DNS.

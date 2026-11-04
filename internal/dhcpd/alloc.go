@@ -115,7 +115,9 @@ func (a *Allocator) Confirm(mac, hostname string, asked netip.Addr, ttl time.Dur
 	defer a.mu.Unlock()
 	// These mirror rules 1 and 2 below, so allocateLocked lands on asked.
 	if r, ok := a.reserved[mac]; ok && !a.protected(r) && !a.quarantinedLocked(r, a.now()) {
-		if r != asked {
+		// A REQUEST naming the reservation while another device still holds
+		// it is sent through DISCOVER too, whose offer probes it (Q2 B).
+		if r != asked || a.heldByAnotherLocked(r, mac, a.now()) {
 			// The reservation still wins. Free it for the DISCOVER our NAK
 			// sends this client back to, but lease it nothing now.
 			if holder, ok := a.byIP[r]; ok && holder != mac {
