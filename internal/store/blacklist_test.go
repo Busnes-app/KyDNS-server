@@ -225,4 +225,13 @@ func TestReplaceBlacklistPreservesSnapshotsByURL(t *testing.T) {
 	if len(rules) != 1 || rules[0].Domain != "bad.example" {
 		t.Errorf("BlacklistRules() = %+v, want only the imported rule", rules)
 	}
+	// A replace that changes only the format keeps the body but drops the
+	// validators, so the next fetch reparses instead of getting a 304.
+	if err := s.ReplaceBlacklist(BlacklistSettings{Enabled: true, BlockTTL: 60},
+		[]BlacklistList{{Name: "keep-renamed", URL: "https://e/x", Format: "hosts", Enabled: true}}, nil); err != nil {
+		t.Fatal(err)
+	}
+	if l, _ := s.BlacklistLists(); len(l[0].Snapshot) != 1 || l[0].ETag != "" || l[0].LastAttemptAt != 0 {
+		t.Errorf("after a format-only replace = %+v, want the body kept and the validators gone", l[0])
+	}
 }

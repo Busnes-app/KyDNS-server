@@ -282,11 +282,17 @@ func replaceBlacklistDefinitions(tx *sql.Tx, set BlacklistSettings, lists []Blac
 				}
 				continue
 			}
+			// Same URL, new format: the body is kept, but the validators go and
+			// the list is due, so the next fetch reparses rather than getting a 304.
 			if _, err := tx.Exec(`
 				UPDATE blacklist_lists
-				SET url = ?, format = ?, description = ?, enabled = ?, builtin = ?, interval_seconds = ?
+				SET url = ?, format = ?, description = ?, enabled = ?, builtin = ?, interval_seconds = ?,
+				    etag = CASE WHEN format = ? THEN etag ELSE '' END,
+				    last_modified = CASE WHEN format = ? THEN last_modified ELSE '' END,
+				    last_attempt_at = CASE WHEN format = ? THEN last_attempt_at ELSE 0 END
 				WHERE name = ?`,
-				l.URL, l.Format, l.Description, l.Enabled, l.Builtin, l.IntervalSeconds, l.Name); err != nil {
+				l.URL, l.Format, l.Description, l.Enabled, l.Builtin, l.IntervalSeconds,
+				l.Format, l.Format, l.Format, l.Name); err != nil {
 				return err
 			}
 			continue
@@ -325,20 +331,20 @@ func replaceBlacklistDefinitions(tx *sql.Tx, set BlacklistSettings, lists []Blac
 // backup does not force every source to re-download.
 func (s *Store) ReplaceBlacklist(set BlacklistSettings, lists []BlacklistList, rules []BlacklistRule) error {
 	type body struct {
-		snapshot                 string
+		snapshot, format         string
 		etag, lastModified       string
 		entryCount, skippedCount int
 		lastOKAt, lastAttemptAt  int64
 	}
 	kept := map[string]body{}
-	rows, err := s.db.Query(`SELECT url, snapshot, etag, last_modified, entry_count, skipped_count, last_ok_at, last_attempt_at FROM blacklist_lists`)
+	rows, err := s.db.Query(`SELECT url, format, snapshot, etag, last_modified, entry_count, skipped_count, last_ok_at, last_attempt_at FROM blacklist_lists`)
 	if err != nil {
 		return err
 	}
 	for rows.Next() {
 		var url string
 		var b body
-		if err := rows.Scan(&url, &b.snapshot, &b.etag, &b.lastModified,
+		if err := rows.Scan(&url, &b.format, &b.snapshot, &b.etag, &b.lastModified,
 			&b.entryCount, &b.skippedCount, &b.lastOKAt, &b.lastAttemptAt); err != nil {
 			rows.Close()
 			return err
@@ -368,6 +374,10 @@ func (s *Store) ReplaceBlacklist(set BlacklistSettings, lists []BlacklistList, r
 	}
 	for _, l := range lists {
 		b := kept[l.URL]
+		// A new format keeps the body until the next fetch, which must reparse.
+		if b.format != l.Format {
+			b.etag, b.lastModified, b.lastAttemptAt = "", "", 0
+		}
 		if _, err := tx.Exec(`
 			INSERT INTO blacklist_lists(name, url, format, description, enabled, builtin, interval_seconds,
 			  snapshot, etag, last_modified, entry_count, skipped_count, last_ok_at, last_attempt_at)
