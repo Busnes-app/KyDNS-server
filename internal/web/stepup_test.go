@@ -347,4 +347,9 @@ func TestTokenAccessRaiseNeedsAStepUp(t *testing.T) {
 	if got, _ := srv.o.Registry.Tokens(); got[len(got)-1].Scope != store.ScopeMCPRead || got[len(got)-1].QueryLog {
 		t.Fatalf("after lowering: %+v", got[len(got)-1])
 	}
+	// An id not in the list is refused, not updated unconditionally: a token
+	// created meanwhile could reuse it.
+	if code := postForm(t, h, "/settings/tokens/access", url.Values{"id": {"99999"}, "access": {"mcp:write"}, "csrf_token": {csrf}, "current_password": {testPassword}}, c).Code; code != http.StatusBadRequest {
+		t.Fatalf("unknown token id: status = %d, want 400", code)
+	}
 }

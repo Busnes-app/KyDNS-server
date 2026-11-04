@@ -270,14 +270,18 @@ func (s *Server) postTokenAccess(w http.ResponseWriter, r *http.Request) {
 	if err == nil {
 		var toks []store.Token
 		toks, err = s.o.Registry.Tokens()
+		found := false
 		for _, t := range toks {
 			if t.ID != id || err != nil {
 				continue
 			}
-			from = &t
+			found, from = true, &t
 			if scope == store.ScopeMCPWrite && t.Scope != store.ScopeMCPWrite || queryLog && !t.QueryLog {
 				err, from = s.stepUp(r, sess), nil
 			}
+		}
+		if err == nil && !found {
+			err = fmt.Errorf("%w: agent token %d", store.ErrNotFound, id)
 		}
 	}
 	if err == nil {
