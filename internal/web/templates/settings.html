@@ -506,6 +506,7 @@ curl -fsSo ~/.agents/skills/kydns/SKILL.md {{.}}/agent/skills/kydns/SKILL.md</pr
       <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
       <label for="recovery_url">KyRecovery URL</label><input id="recovery_url" name="recovery_url" type="url" required placeholder="https://recovery.example.com">
       <label for="pairing_code">Six-digit pairing code</label><input id="pairing_code" name="pairing_code" inputmode="numeric" pattern="[0-9]{6}" required>
+      {{if $.AdminIdentity.PasswordHash}}<label for="pair_current">Current password <span class="muted">(the key opens every backup)</span></label><input id="pair_current" name="current_password" type="password" autocomplete="current-password" required>{{else}}<p class="muted">Confirm with single sign-on below first, then submit within five minutes.</p>{{end}}
       <button type="submit"{{template "ro" $}}>Pair KyRecovery</button>
     </form>
   {{end}}
@@ -520,7 +521,15 @@ curl -fsSo ~/.agents/skills/kydns/SKILL.md {{.}}/agent/skills/kydns/SKILL.md</pr
       <textarea id="public_key" name="public_key" rows="4" required></textarea>
       <label for="threshold">Threshold (k)</label><input id="threshold" name="threshold" type="number" min="2" step="1" required>
       <label for="total_shares">Total shares (n)</label><input id="total_shares" name="total_shares" type="number" min="2" max="255" step="1" required>
+      {{if $.AdminIdentity.PasswordHash}}<label for="pin_current">Current password <span class="muted">(the key opens every backup)</span></label><input id="pin_current" name="current_password" type="password" autocomplete="current-password" required>{{else}}<p class="muted">Confirm with single sign-on below first, then submit within five minutes.</p>{{end}}
       <button type="submit"{{template "ro" $}}>Pin recovery key</button>
+    </form>
+  {{end}}
+  {{if and (not $.AdminIdentity.PasswordHash) $.SSOSettings.Enabled (or (not .Paired) (not .KeyPinned))}}
+    <form method="post" action="/settings/tokens/stepup">
+      <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
+      <input type="hidden" name="back" value="backups">
+      <button class="ghost" type="submit"{{template "ro" $}}>Confirm with single sign-on</button>
     </form>
   {{end}}
 </div>

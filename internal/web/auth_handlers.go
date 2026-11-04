@@ -181,14 +181,20 @@ const (
 	cookieSSOVerifier = "kydns_sso_verifier"
 	cookieSSONonce    = "kydns_sso_nonce"
 	// cookieSSOLink carries what the login is for: "1" links, "stepup" confirms
-	// for the token form, "stepup-sso" for the SSO form. It picks only which of
-	// two fixed pages the browser lands on; the proof is the ID token's auth_time.
+	// for the token form, "stepup-sso" and "stepup-backups" for those tabs. It
+	// picks only which of stepUpPages the browser lands on; the proof is the ID
+	// token's auth_time.
 	cookieSSOLink = "kydns_sso_link"
 )
 
 // beforeSSOSession lets a test land an unlink between a callback's link check
 // and its session; nil in production.
 var beforeSSOSession func()
+
+// stepUpPages are the tabs a step-up returns to, by purpose cookie value.
+var stepUpPages = map[string]string{
+	"stepup": "/settings/tokens", "stepup-sso": "/settings/sso", "stepup-backups": "/settings/backups",
+}
 
 // stepUpWindow is how long a fresh single sign-on login counts as a step-up.
 const stepUpWindow = 5 * time.Minute
@@ -311,8 +317,8 @@ func (s *Server) postSSOLink(w http.ResponseWriter, r *http.Request) {
 }
 
 // postTokenStepUp signs in again through single sign-on with max_age=0, so
-// the token form, or the SSO form when back=sso, accepts the fresh login as a
-// step-up.
+// the token form (or the SSO or backups tab, by back=) accepts the fresh login
+// as a step-up.
 func (s *Server) postTokenStepUp(w http.ResponseWriter, r *http.Request) {
 	sso, err := s.o.Store.SSOClient()
 	if err != nil || !sso.Enabled {
@@ -320,8 +326,8 @@ func (s *Server) postTokenStepUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	purpose := "stepup"
-	if r.PostFormValue("back") == "sso" {
-		purpose = "stepup-sso"
+	if _, ok := stepUpPages["stepup-"+r.PostFormValue("back")]; ok {
+		purpose = "stepup-" + r.PostFormValue("back")
 	}
 	s.startSSO(w, r, sso, purpose)
 }
@@ -355,7 +361,7 @@ func (s *Server) startSSO(w http.ResponseWriter, r *http.Request, sso store.SSOS
 	}
 
 	client := auth.NewSSOClient(sso.IssuerURL, sso.ClientID, sso.ClientSecret)
-	client.FreshLogin = purpose == "stepup" || purpose == "stepup-sso"
+	_, client.FreshLogin = stepUpPages[purpose]
 	redirectURI := s.ssoRedirectURI(r)
 	authURL, err := client.AuthURL(redirectURI, state, nonce, challenge)
 	if err != nil {
@@ -412,12 +418,10 @@ func (s *Server) getSSOCallback(w http.ResponseWriter, r *http.Request) {
 	nonce := nonceCookie.Value
 
 	var isLink, isStepUp bool
-	stepUpPage := "/settings/tokens"
+	var stepUpPage string
 	if linkCookie, err := r.Cookie(cookieSSOLink); err == nil {
-		isLink, isStepUp = linkCookie.Value == "1", linkCookie.Value == "stepup" || linkCookie.Value == "stepup-sso"
-		if linkCookie.Value == "stepup-sso" {
-			stepUpPage = "/settings/sso"
-		}
+		isLink = linkCookie.Value == "1"
+		stepUpPage, isStepUp = stepUpPages[linkCookie.Value]
 	}
 	s.clearSSOCookies(w, r)
 
