@@ -241,8 +241,10 @@ was not found, which means the copy went somewhere other than `$vol`.
   opens it.
 - Replication: a restored primary that has `data/node_key` keeps its identity
   and its replicas reconnect, once its config file has the `replication:` block
-  it had before (`listen` on a primary, `primary` on a replica). That block is
-  file-owned and is not in the capsule; without it the node starts standalone. A standalone node has no `node_key` and there is
+  it had before (`listen` on a primary, `primary` on a replica), or the
+  `KYDNS_REPLICATION_LISTEN` / `KYDNS_REPLICATION_PRIMARY` variables a container
+  uses instead. Those are file-owned and not in the capsule; without them the
+  node starts standalone. A standalone node has no `node_key` and there is
   nothing here to prove. A restored `node_key` must be mode 0600 and owned by
   the service user, or the node refuses to start.
 

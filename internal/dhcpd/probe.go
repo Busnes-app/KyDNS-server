@@ -34,7 +34,7 @@ type prober struct {
 const probePort = 33434
 
 // NewProber returns a Prober that nudges the kernel into ARP-resolving a
-// candidate address and reads the result back from /proc/net/arp. This is
+// candidate address and reads the neighbour table back over netlink. This is
 // deliberate: an ICMP echo would need CAP_NET_RAW, which this service does
 // not have and will not be granted, so there is one socket mechanism here,
 // not two.
@@ -68,7 +68,7 @@ func (p *prober) InUse(ip netip.Addr, mac string) bool {
 // side effect: it makes the kernel resolve L2 for ip, which leaves an ARP
 // entry behind whether or not anything is listening on the UDP port. Any
 // error is silent — the caller has nothing useful to do with it, and the
-// probe degrades to whatever the ARP table already held.
+// probe degrades to whatever the neighbour table already held.
 func nudgeARP(ip netip.Addr) {
 	c, err := net.Dial("udp4", netip.AddrPortFrom(ip, probePort).String())
 	if err != nil {
