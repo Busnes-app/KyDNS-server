@@ -35,7 +35,9 @@ func main() {
   defer st.Close()
   services, err := st.Services()
   if err != nil || len(services) != 1 || services[0].Name != "restore-sentinel" { panic("restored snapshot lost the sentinel service") }
-  fmt.Println("restored KyDNS snapshot: integrity and sentinel verified")
+  // A restored copy must not deposit until the operator turns the schedule back on.
+  if v, err := st.GetLocalSetting("backup_interval_sec"); err != nil || v != "0" { panic("restored copy kept its backup schedule") }
+  fmt.Println("restored KyDNS snapshot: integrity, sentinel and paused schedule verified")
   return
  }
  dir, err := os.MkdirTemp(filepath.Dir(os.Args[1]), "source-")
@@ -61,6 +63,8 @@ func main() {
  key := recoveryclient.RecoveryKey{Public: priv.Public(), Threshold: 2, TotalShares: 3}
  if err := recoveryclient.StoreRecoveryKey(dir, service.Settings(), key); err != nil { panic(err) }
  if err := recoveryclient.StorePairing(service.Settings(), service.Sealer(), "https://recovery.example", "synthetic-restore-token"); err != nil { panic(err) }
+ // An active schedule, so the restore has one to turn off.
+ if err := recoveryclient.SetInterval(service.Settings(), 3600); err != nil { panic(err) }
  payload, err := service.Collect()
  if err != nil { panic(err) }
  raw, _, err := recoveryclient.Seal(payload, key)

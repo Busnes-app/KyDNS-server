@@ -7,6 +7,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"net/netip"
+	"slices"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -21,7 +22,8 @@ type Registry struct {
 	s        *store.Store
 	zone     atomic.Pointer[string]
 	onChange func() error
-	// recordMu makes a record's conflict check and its write one step.
+	// recordMu makes a record's conflict check, or a service's name and MAC
+	// checks, and its write one step.
 	recordMu sync.Mutex
 }
 
@@ -121,6 +123,45 @@ func macUnique(svc store.Service, others []store.Service) error {
 	return nil
 }
 
+// nameUnique rejects a service whose name or alias is, as a DNS name, the name
+// or an alias of another service: the zone keeps one answer per name, so one
+// would silently shadow the other. Names are compared qualified in zone, as
+// the zone builds them, so "nas" and "nas.home.arpa" are the same name.
+// ponytail: checked on single writes and replace imports, not on a replica
+// pull, so a registry that already holds a collision still replicates; move
+// it into ValidateDocument once no deployed registry can hold one.
+func nameUnique(svc store.Service, others []store.Service, zone string) error {
+	mine := map[string]bool{fqdn(svc.Name, zone): true}
+	for _, al := range svc.Aliases {
+		mine[fqdn(al, zone)] = true
+	}
+	for _, o := range others {
+		if svc.ID != 0 && o.ID == svc.ID {
+			continue
+		}
+		for i, n := range append([]string{o.Name}, o.Aliases...) {
+			// The same name written the same way is the store's to refuse,
+			// with the 409 it has always answered.
+			if i == 0 && n == svc.Name || i > 0 && slices.Contains(svc.Aliases, n) {
+				continue
+			}
+			if mine[fqdn(n, zone)] {
+				return invalid("aliases", "duplicate", "%s is already a name of the service %q", n, o.Name)
+			}
+		}
+	}
+	return nil
+}
+
+// fqdn is name as the zone publishes it (zone.qualify).
+func fqdn(name, zone string) string {
+	n := strings.TrimSuffix(name, ".")
+	if n+"." == zone || strings.HasSuffix(n+".", "."+zone) {
+		return n + "."
+	}
+	return n + "." + zone
+}
+
 // PutService validates, writes, then rebuilds. A failed validation never
 // reaches the store and never triggers a rebuild.
 func (r *Registry) PutService(svc store.Service) (int64, error) {
@@ -132,16 +173,18 @@ func (r *Registry) PutService(svc store.Service) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	// Read the other services only when there is a reservation to check, so
-	// the common service without one still costs a single write.
-	if svc.MAC != "" {
-		stored, err := r.s.Services()
-		if err != nil {
-			return 0, err
-		}
-		if err := macUnique(svc, stored); err != nil {
-			return 0, err
-		}
+	// The uniqueness checks and the write are one step, as for records.
+	r.recordMu.Lock()
+	defer r.recordMu.Unlock()
+	stored, err := r.s.Services()
+	if err != nil {
+		return 0, err
+	}
+	if err := macUnique(svc, stored); err != nil {
+		return 0, err
+	}
+	if err := nameUnique(svc, stored, Normalize(r.Zone())); err != nil {
+		return 0, err
 	}
 	id, err := r.s.PutService(svc)
 	if err != nil {
@@ -232,8 +275,9 @@ func (r *Registry) PutRecord(rec store.Record) (int64, error) {
 }
 
 // cnameConflict refuses a CNAME beside any other record at its name and view,
-// and any record beside a CNAME. zone.Build refuses that zone, so storing it
-// would stop every rebuild and the next start.
+// and any record beside a CNAME. zone.Build serves only the CNAME of such a
+// set (for databases written before this check), so storing one would
+// silently drop the other records.
 func cnameConflict(rec store.Record, others []store.Record) error {
 	if rec.Type == "PTR" {
 		return nil
@@ -318,6 +362,13 @@ func (r *Registry) ReplaceAllIn(zone string, views []store.View, services []stor
 	vs, ss, rs, err := ValidateDocument(zone, views, services, records)
 	if err != nil {
 		return err
+	}
+	// Here, not in ValidateDocument: a replica must still apply a primary
+	// that already holds a collision (see nameUnique).
+	for i, svc := range ss {
+		if err := nameUnique(svc, ss[:i], Normalize(zone)); err != nil {
+			return err
+		}
 	}
 	if err := r.s.ReplaceAll(vs, ss, rs); err != nil {
 		return err

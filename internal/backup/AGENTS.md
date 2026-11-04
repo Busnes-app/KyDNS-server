@@ -28,6 +28,11 @@ behaviour that belongs to every product in the suite is fixed there, not here.
   KyRecovery token, so a restore without it cannot resume deposits. It stores a 32-byte
   secret as hex; checks use `keyfile.Load`, preserving the existing encoding.
 - Managed installer SSO credentials are required capsule members (`installer/client.secret`, `installer/directory.secret`); `installer/credential-paths.yaml` records their retained target destinations. Private reads fail collection if a credential is missing or unsafe. Restore the files explicitly as described in `docs/RESTORE.md`.
+- A database larger than `capsule.MaxFileBytes` travels as ordered members
+  `data/kydns.db.part000`, `part001`, ... listed in the recipe's `db_parts`; `required_files`
+  and `sqlite_paths` still name `data/kydns.db`. `JoinDatabase` rebuilds it in the drill
+  (before any member check) and in `kydns restore`; a single-member capsule is unchanged.
+  `Collect` logs a warning past 80% of `capsule.MaxExpandedBytes` (KyNotes Q8 A).
 - `node_key` and `recovery.pub` are included when they exist and are then listed in
   `required_files`. A restored node needs `recovery.pub` beside its pin row or it cannot
   seal its next backup.

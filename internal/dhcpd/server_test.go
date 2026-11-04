@@ -531,6 +531,31 @@ func TestProbeHitSkipsToTheNextAddressAndQuarantines(t *testing.T) {
 	}
 }
 
+// setProber reports every address in the set as in use by some other device.
+type setProber map[netip.Addr]bool
+
+func (p setProber) InUse(ip netip.Addr, _ string) bool { return p[ip] }
+
+// The replacement for an address that answered a probe is probed too, so two
+// static devices side by side in the pool do not get the second one handed out.
+func TestProbeHitProbesTheReplacementToo(t *testing.T) {
+	s, _ := newTestServer(t)
+	s.opts.Cfg.End = netip.MustParseAddr("192.168.1.30") // room to quarantine two
+	s.opts.Alloc = NewAllocator(s.opts.Cfg, func() time.Time { return epoch })
+	busy := setProber{netip.MustParseAddr("192.168.1.10"): true, netip.MustParseAddr("192.168.1.11"): true}
+	s.opts.Prober = busy
+	c := &captureConn{}
+	s.handle(c, &net.UDPAddr{IP: net.IPv4zero}, discover("aa:aa:aa:aa:aa:aa", "laptop"))
+	replies := c.replies(t)
+	if len(replies) != 1 {
+		t.Fatalf("got %d replies, want 1", len(replies))
+	}
+	got, _ := netip.AddrFromSlice(replies[0].YourIPAddr.To4())
+	if busy[got] {
+		t.Fatalf("offered %v, which answered a probe", got)
+	}
+}
+
 func TestProbeHitWithNoFallbackAddressDrawsNoReply(t *testing.T) {
 	ms := newMemStore()
 	cfg := testConfig()

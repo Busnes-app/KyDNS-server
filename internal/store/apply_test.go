@@ -208,6 +208,24 @@ func TestApplySnapshotKeepsLocalListBodies(t *testing.T) {
 	if len(lists[0].Snapshot) != 1 || lists[0].Snapshot[0] != "ads.example" {
 		t.Fatalf("list body = %v after apply, want the locally downloaded body", lists[0].Snapshot)
 	}
+	if lists[0].ETag != "etag-1" {
+		t.Fatalf("ETag = %q after an unchanged apply, want it kept", lists[0].ETag)
+	}
+
+	// A format-only change on the primary keeps the body but drops the
+	// validators, so this replica's next fetch reparses instead of a 304.
+	err = s.ApplySnapshot(SnapshotInput{
+		Settings: baseSettings(),
+		Lists: []BlacklistList{{Name: "steven",
+			URL: "https://example.test/hosts", Format: "domains", Enabled: true}},
+	}, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	lists, _ = s.BlacklistLists()
+	if len(lists[0].Snapshot) != 1 || lists[0].ETag != "" || lists[0].LastAttemptAt != 0 {
+		t.Fatalf("after a format-only apply = %+v, want the body kept and the validators gone", lists[0])
+	}
 }
 
 // A list matched by name but pointed at a new URL must not keep serving the

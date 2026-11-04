@@ -157,8 +157,10 @@ func TestAliasesDoNotGeneratePTR(t *testing.T) {
 // A CNAME may not coexist with an address record at the same name. Because a
 // manual record displaces the service layer, and a view-tagged record
 // suppresses untagged ones, the only way both land in one view's effective set
-// is two manual records sharing a name and a tag.
-func TestCNAMEConflictRejected(t *testing.T) {
+// is two manual records sharing a name and a tag. The registry refuses that,
+// but a database written before it did must still build, or the server cannot
+// start: the CNAME is served alone.
+func TestCNAMEConflictServesTheCNAMEAlone(t *testing.T) {
 	for name, records := range map[string][]store.Record{
 		"both untagged": {
 			{Name: "mail.home.arpa.", Type: "A", Value: "192.168.1.20"},
@@ -170,9 +172,13 @@ func TestCNAMEConflictRejected(t *testing.T) {
 		},
 	} {
 		t.Run(name, func(t *testing.T) {
-			_, err := Build(Input{Zone: "home.arpa.", Views: tailnetView(), Records: records}, nil)
-			if err == nil {
-				t.Fatal("Build() error = nil, want a CNAME conflict")
+			s, err := Build(Input{Zone: "home.arpa.", Views: tailnetView(), Records: records}, nil)
+			if err != nil {
+				t.Fatalf("Build() = %v, want the conflict served", err)
+			}
+			view := records[0].View
+			if rrs := s.Lookup(view, "mail.home.arpa."); len(rrs) != 1 || rrs[0].Type != "CNAME" {
+				t.Fatalf("Lookup = %+v, want the CNAME alone", rrs)
 			}
 		})
 	}
@@ -570,5 +576,13 @@ func TestQualifyNeedsALabelBoundary(t *testing.T) {
 		if got := qualify(name, "lan."); got != want {
 			t.Errorf("qualify(%q) = %q, want %q", name, got, want)
 		}
+	}
+}
+
+// A dual-stack lease publishes both its A and its AAAA.
+func TestDualStackLeasePublishesBothFamilies(t *testing.T) {
+	s := build(t, Input{Leases: []Lease{{Hostname: "laptop", Address: "192.168.1.77"}, {Hostname: "laptop", Address: "fd00::77"}}})
+	if got := values(s.Lookup("", "laptop.home.arpa.")); len(got) != 2 {
+		t.Errorf("= %v, want the A and the AAAA", got)
 	}
 }

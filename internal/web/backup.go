@@ -83,6 +83,15 @@ func (s *Server) postBackupPair(w http.ResponseWriter, r *http.Request) {
 		s.backupError(w, r, errors.New("backup service is unavailable"))
 		return
 	}
+	// A pinned key opens every capsule this node seals, and the pin is write-once:
+	// the step-up a token needs (KyPost-Server Q2 A).
+	if sess, ok := s.session(r); !ok {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	} else if err := s.stepUp(r, sess); err != nil {
+		s.backupError(w, r, err)
+		return
+	}
 	u, code := r.PostFormValue("recovery_url"), r.PostFormValue("pairing_code")
 	allow := " allow_private=" + strconv.FormatBool(b.Cfg.BackupAllowPrivateRecovery)
 	// Checked before the claim, so a URL this node would never deposit to is refused
@@ -105,6 +114,15 @@ func (s *Server) postBackupPinKey(w http.ResponseWriter, r *http.Request) {
 	b := s.o.Backup
 	if b == nil {
 		s.backupError(w, r, errors.New("backup service is unavailable"))
+		return
+	}
+	// A pinned key opens every capsule this node seals, and the pin is write-once:
+	// the step-up a token needs (KyPost-Server Q2 A).
+	if sess, ok := s.session(r); !ok {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	} else if err := s.stepUp(r, sess); err != nil {
+		s.backupError(w, r, err)
 		return
 	}
 	k, errK := strconv.Atoi(r.PostFormValue("threshold"))
@@ -197,6 +215,9 @@ func (s *Server) postBackupDrill(w http.ResponseWriter, r *http.Request) {
 	}
 	_ = b.Store.RecordAudit(store.AuditEvent{Actor: "admin", Action: "backup.drill",
 		Details: recoveryclient.AuditSafe(details), IP: recoveryclient.AuditSafe(r.RemoteAddr), Outcome: outcome})
+	if err == nil && !result.Passed {
+		err = errors.New("The drill failed: " + result.ErrorMessage)
+	}
 	if err != nil {
 		s.backupError(w, r, err)
 		return

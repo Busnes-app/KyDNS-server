@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"syscall"
 
 	"github.com/Busnes-app/ky-primitives/capsule"
@@ -14,6 +15,7 @@ import (
 	"github.com/Busnes-app/kydns-server/internal/app"
 	"github.com/Busnes-app/kydns-server/internal/backup"
 	"github.com/Busnes-app/kydns-server/internal/cli"
+	"github.com/Busnes-app/kydns-server/internal/store"
 	"github.com/Busnes-app/kydns-server/internal/web"
 )
 
@@ -136,10 +138,17 @@ func run(args []string, stdout io.Writer) int {
 		if err == nil {
 			err = recoveryclient.Restore(*capsulePath, *out, backup.ServiceName, shares, stdout)
 		}
+		if err == nil {
+			err = backup.JoinDatabase(*out)
+		}
+		if err == nil {
+			err = store.PauseRestoredSchedule(filepath.Join(*out, "data", "kydns.db"))
+		}
 		if err != nil {
 			fmt.Fprintln(os.Stderr, "kydns:", err)
 			return 1
 		}
+		fmt.Fprintln(stdout, "Scheduled backups are off in the restored copy. Once it is the server in service, turn them back on under Settings > Backups.")
 		return 0
 	default:
 		// Asking the cli package rather than repeating its command list here:

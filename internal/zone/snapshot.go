@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"net/netip"
 	"os"
+	"slices"
 	"strings"
 	"sync"
 
@@ -157,6 +158,7 @@ func buildIndex(in Input, view, zone string, logger *slog.Logger) (*Index, error
 
 	// Precedence is applied by writing in ascending priority and letting later
 	// layers replace earlier ones: lease, then service/alias, then manual.
+	leased := map[string]bool{} // names this loop wrote: a dual-stack lease adds its other family
 	for _, l := range in.Leases {
 		name := qualify(l.Hostname, zone)
 		if reserved[name] {
@@ -168,7 +170,13 @@ func buildIndex(in Input, view, zone string, logger *slog.Logger) (*Index, error
 		if taken[name] {
 			continue
 		}
-		idx.Forward[name] = []RR{{Name: name, Type: addrType(l.Address), Value: l.Address}}
+		rr := RR{Name: name, Type: addrType(l.Address), Value: l.Address}
+		if leased[name] {
+			idx.Forward[name] = append(idx.Forward[name], rr)
+		} else {
+			idx.Forward[name] = []RR{rr}
+			leased[name] = true
+		}
 		// A lease is a forward record, so it derives a PTR like any other.
 		// Later layers overwrite it, which is precedence working.
 		if addr, err := netip.ParseAddr(l.Address); err == nil && inZones(addr, in.ReverseZones) {
@@ -256,17 +264,17 @@ func buildIndex(in Input, view, zone string, logger *slog.Logger) (*Index, error
 		idx.Forward[name] = append(idx.Forward[name], rr)
 	}
 
+	// The registry refuses a CNAME beside another record, but a database written
+	// before it did may still hold one. Refusing to build left such a server
+	// unable to start, with no way to fix it from the UI, so serve the first
+	// CNAME alone and say what to delete.
 	for name, rrs := range idx.Forward {
-		var hasCNAME, hasAddr bool
-		for _, rr := range rrs {
-			if rr.Type == "CNAME" {
-				hasCNAME = true
-			} else {
-				hasAddr = true
-			}
-		}
-		if hasCNAME && (hasAddr || len(rrs) > 1) {
-			return nil, fmt.Errorf("%s: CNAME may not coexist with address records", name)
+		first := slices.IndexFunc(rrs, func(rr RR) bool { return rr.Type == "CNAME" })
+		if first >= 0 && len(rrs) > 1 {
+			logger.Warn("a CNAME shares its name with other records; serving the CNAME alone",
+				"name", name, "view", view, "cname", rrs[first].Value, "ignored", len(rrs)-1,
+				"fix", "delete the other records for this name, or the CNAME")
+			idx.Forward[name] = []RR{rrs[first]}
 		}
 	}
 	return idx, nil

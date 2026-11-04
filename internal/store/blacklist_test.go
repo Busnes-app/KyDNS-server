@@ -74,6 +74,28 @@ func TestBlacklistListRoundTripsAndKeepsItsSnapshot(t *testing.T) {
 	if after.Enabled || after.Description != "renamed" {
 		t.Errorf("after a definition edit = %+v, want the edit applied", after)
 	}
+	if after.ETag == "" || after.LastModified == "" || after.LastAttemptAt != 1000 {
+		t.Errorf("a definition edit dropped the validators: %q / %q", after.ETag, after.LastModified)
+	}
+
+	// A new format, or a new source, drops the validators so the next fetch
+	// is unconditional; the body stays until it replaces it.
+	for _, edit := range []func(*BlacklistList){
+		func(l *BlacklistList) { l.Format = "domains" },
+		func(l *BlacklistList) { l.URL = "https://other.example/list" },
+	} {
+		_ = s.SetBlacklistSnapshot(id, []string{"ads.example", "tracker.test"}, 7, "W/\"abc\"", "Mon, 01 Jan 2026 00:00:00 GMT", 1000)
+		l, _ := s.BlacklistListByID(id)
+		edit(&l)
+		if _, err := s.PutBlacklistList(l); err != nil {
+			t.Fatal(err)
+		}
+		moved, _ := s.BlacklistListByID(id)
+		if moved.ETag != "" || moved.LastModified != "" || moved.LastAttemptAt != 0 || len(moved.Snapshot) != 2 {
+			t.Errorf("after a source edit = validators %q / %q, last attempt %d, %d domains; want none, due now, and the body kept",
+				moved.ETag, moved.LastModified, moved.LastAttemptAt, len(moved.Snapshot))
+		}
+	}
 }
 
 // A failed refresh records the error and the attempt, and keeps the last good
@@ -202,5 +224,14 @@ func TestReplaceBlacklistPreservesSnapshotsByURL(t *testing.T) {
 	}
 	if len(rules) != 1 || rules[0].Domain != "bad.example" {
 		t.Errorf("BlacklistRules() = %+v, want only the imported rule", rules)
+	}
+	// A replace that changes only the format keeps the body but drops the
+	// validators, so the next fetch reparses instead of getting a 304.
+	if err := s.ReplaceBlacklist(BlacklistSettings{Enabled: true, BlockTTL: 60},
+		[]BlacklistList{{Name: "keep-renamed", URL: "https://e/x", Format: "hosts", Enabled: true}}, nil); err != nil {
+		t.Fatal(err)
+	}
+	if l, _ := s.BlacklistLists(); len(l[0].Snapshot) != 1 || l[0].ETag != "" || l[0].LastAttemptAt != 0 {
+		t.Errorf("after a format-only replace = %+v, want the body kept and the validators gone", l[0])
 	}
 }

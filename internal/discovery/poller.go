@@ -149,11 +149,12 @@ func (p *Poller) Poll(ctx context.Context) error {
 	}
 	d := digest(leases)
 
+	// Always publish: a renewal moves only the expiry and a new adapter only
+	// the MAC, which the zone ignores but the lease table and Reserve read.
+	// The digest decides only whether the zone is rebuilt.
 	p.mu.Lock()
 	changed := d != p.digest
-	if changed {
-		p.leases, p.digest = leases, d
-	}
+	p.leases, p.digest = leases, d
 	p.mu.Unlock()
 
 	if changed {

@@ -208,6 +208,7 @@ const (
 	PathReplicaJoin     = "/api/v1/replica/join"
 	PathReplicaPromote  = "/api/v1/replica/promote"
 	PathSettings        = "/api/v1/settings"
+	PathTokens          = "/api/v1/tokens"
 )
 
 // writeExempt is the whole exemption list, shared with route registration so
@@ -220,11 +221,22 @@ const (
 // settings.Service, which on a replica refuses any write touching a field
 // outside the eight - a partial update naming one DHCP key and one other is
 // refused whole, with ErrReadOnlyReplica.
+//
+// PathTokens, and every /api/v1/tokens/{id} below it (see exempt), is exempt
+// because tokens are node-local: ReplicationSnapshot and ApplySnapshot never
+// touch them, so a replica's tokens can only be managed on the replica
+// (owner answer Q1 A).
 var writeExempt = map[string]bool{
 	PathReplicaPairPeek: true,
 	PathReplicaJoin:     true,
 	PathReplicaPromote:  true,
 	PathSettings:        true,
+	PathTokens:          true,
+}
+
+// exempt reports whether the write gate lets path through on a replica.
+func exempt(path string) bool {
+	return writeExempt[path] || strings.HasPrefix(path, PathTokens+"/")
 }
 
 // authenticated is the one bearer-token check, shared so the write gate and
@@ -295,10 +307,10 @@ func (a *API) routes(mux registrar) {
 	mux.HandleFunc("GET /api/v1/views", auth(a.listViews))
 	mux.HandleFunc("POST /api/v1/views", auth(a.createView))
 	mux.HandleFunc("DELETE /api/v1/views/{name}", auth(a.deleteView))
-	mux.HandleFunc("GET /api/v1/tokens", auth(a.listTokens))
-	mux.HandleFunc("POST /api/v1/tokens", auth(a.createToken))
-	mux.HandleFunc("PATCH /api/v1/tokens/{id}", auth(a.patchToken))
-	mux.HandleFunc("DELETE /api/v1/tokens/{id}", auth(a.deleteToken))
+	mux.HandleFunc("GET "+PathTokens, auth(a.listTokens))
+	mux.HandleFunc("POST "+PathTokens, auth(a.createToken))
+	mux.HandleFunc("PATCH "+PathTokens+"/{id}", auth(a.patchToken))
+	mux.HandleFunc("DELETE "+PathTokens+"/{id}", auth(a.deleteToken))
 	mux.HandleFunc("GET /api/v1/export", auth(a.export))
 	mux.HandleFunc("POST /api/v1/import", auth(a.importDoc))
 	mux.HandleFunc("GET /api/v1/leases", auth(a.listLeases))
@@ -367,7 +379,7 @@ func (a *API) WriteGate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if !strings.HasPrefix(r.URL.Path, PathPrefix) ||
 			r.Method == http.MethodGet || r.Method == http.MethodHead ||
-			writeExempt[r.URL.Path] || a.replicaStatus == nil {
+			exempt(r.URL.Path) || a.replicaStatus == nil {
 			next.ServeHTTP(w, r)
 			return
 		}

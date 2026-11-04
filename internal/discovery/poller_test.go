@@ -75,6 +75,20 @@ func TestPollSkipsRebuildWhenUnchanged(t *testing.T) {
 	}
 }
 
+// A new MAC or expiry on the same name and address is published without a
+// rebuild: Reserve promotes with the MAC Leases reports.
+func TestPollPublishesANewMACWithoutARebuild(t *testing.T) {
+	src := &fakeSource{leases: []dhcp.Lease{{Hostname: "laptop", IP: "192.168.1.50", MAC: "aa:aa:aa:aa:aa:aa"}}}
+	var changes int
+	p := NewPoller(src, time.Minute, func() { changes++ }, nil)
+	p.Poll(context.Background())
+	src.set([]dhcp.Lease{{Hostname: "laptop", IP: "192.168.1.50", MAC: "bb:bb:bb:bb:bb:bb"}}, nil)
+	p.Poll(context.Background())
+	if got := p.Leases(); got[0].MAC != "bb:bb:bb:bb:bb:bb" || changes != 1 {
+		t.Fatalf("Leases() = %+v after %d rebuilds, want the new MAC and one rebuild", got, changes)
+	}
+}
+
 func TestPollDetectsChange(t *testing.T) {
 	src := &fakeSource{leases: []dhcp.Lease{{Hostname: "laptop", IP: "192.168.1.50"}}}
 	var changes int

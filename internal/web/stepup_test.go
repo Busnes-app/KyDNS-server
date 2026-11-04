@@ -1,6 +1,7 @@
 package web
 
 import (
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -216,5 +217,96 @@ func TestForgedLinkCookieDoesNotLink(t *testing.T) {
 	}
 	if ident, _ := srv.o.Store.AdminIdentity(); ident.SSOSub != "" {
 		t.Fatalf("linked %q through a forged cookie", ident.SSOSub)
+	}
+}
+
+// The SSO form takes the same step-up as the token form (orchestrator, pass 2):
+// a fresh single sign-on login instead of the password, so an administrator
+// without a password is not stuck on "That password is not correct".
+func TestSSOSettingsAcceptAFreshSSOLogin(t *testing.T) {
+	h, srv := newWeb(t)
+	setupAndLogin(t, h)
+	for name, tc := range map[string]struct {
+		authTime time.Time
+		want     int
+	}{
+		"fresh": {time.Now().Add(-time.Minute), http.StatusSeeOther},
+		"stale": {time.Now().Add(-time.Hour), http.StatusBadRequest},
+	} {
+		t.Run(name, func(t *testing.T) {
+			sess, _ := srv.o.Sessions.CreateSSOLogin(auth.SSOLogin{Issuer: "https://idp.example", Subject: "owner", AuthTime: tc.authTime},
+				"", "", 0, srv.o.Sessions.RecoveryGeneration())
+			c := &http.Cookie{Name: auth.CookieName, Value: sess.ID}
+			rec := postForm(t, h, "/settings/sso", url.Values{"csrf_token": {sess.CSRF}, "issuer_url": {"https://idp.example"}}, c)
+			if rec.Code != tc.want {
+				t.Fatalf("status = %d, want %d: %s", rec.Code, tc.want, rec.Body)
+			}
+		})
+	}
+}
+
+// An administrator with no password (installer-managed) sees no password box
+// on the SSO tab, gets the single sign-on confirmation instead, and a fresh
+// login gets past the step-up to the real answer.
+func TestSSOSettingsWithoutAPasswordOffersSSOConfirmation(t *testing.T) {
+	h, srv := newWeb(t)
+	issuer := "https://identity.example"
+	if _, err := srv.o.Store.ApplyInstaller(context.Background(), webInstallerBundle(t, issuer), false); err != nil {
+		t.Fatal(err)
+	}
+	sess, ok := srv.o.Sessions.CreateSSOLogin(auth.SSOLogin{Issuer: issuer, Subject: "owner", AuthTime: time.Now().Add(-time.Minute)},
+		issuer, "owner", 0, srv.o.Sessions.RecoveryGeneration())
+	if !ok {
+		t.Fatal("no session")
+	}
+	c := &http.Cookie{Name: auth.CookieName, Value: sess.ID}
+	body := get(t, h, "/settings/sso", c).Body.String()
+	if strings.Contains(body, `id="sso_current"`) || !strings.Contains(body, `name="back" value="sso"`) {
+		t.Fatalf("SSO tab for a password-less admin:\n%s", body)
+	}
+	rec := postForm(t, h, "/settings/sso", url.Values{"csrf_token": {sess.CSRF}, "enabled": {"1"}, "issuer_url": {issuer}}, c)
+	if strings.Contains(rec.Body.String(), "That password is not correct") || !strings.Contains(rec.Body.String(), "installer-owned") {
+		t.Fatalf("status = %d; the step-up refused a fresh SSO login:\n%s", rec.Code, rec.Body)
+	}
+}
+
+// Confirming from the SSO tab returns there, also when the provider ignored
+// max_age=0. The page is kept on the session server-side: the purpose cookie
+// says only "stepup", and editing it cannot choose where the browser lands.
+func TestSSOTabStepUpReturnsToTheSSOTab(t *testing.T) {
+	idp := oidcTestServer(t, "sub-linked", "yoshi", "y@example.com", "user")
+	h, srv := newWeb(t)
+	setupAndLogin(t, h)
+	_ = srv.o.Store.SetSSOSettings(store.SSOSettings{Enabled: true, IssuerURL: idp.URL, ClientID: "kydns"})
+	c := loginCookie(t, h)
+	sess, _ := srv.o.Sessions.Get(c.Value)
+	rec := postForm(t, h, "/settings/tokens/stepup", url.Values{"csrf_token": {sess.CSRF}, "back": {"sso"}}, c)
+	loc, _ := url.Parse(rec.Header().Get("Location"))
+	if loc == nil || loc.Query().Get("max_age") != "0" || !strings.Contains(strings.Join(rec.Header().Values("Set-Cookie"), "; "), cookieSSOLink+"=stepup;") {
+		t.Fatalf("status = %d, location = %q, cookies %v", rec.Code, rec.Header().Get("Location"), rec.Header().Values("Set-Cookie"))
+	}
+
+	old := oidcAuthTime
+	oidcAuthTime = func() int64 { return time.Now().Add(-time.Hour).Unix() }
+	t.Cleanup(func() { oidcAuthTime = old })
+	_ = srv.o.Store.LinkAdminSSO("sub-linked", "yoshi", "y@example.com")
+	callback := func(withSession bool) string {
+		req := httptest.NewRequest("GET", "/auth/sso/callback?code=mock_code&state=test_state", nil)
+		for n, v := range map[string]string{cookieSSOState: "test_state", cookieSSOVerifier: "test_verifier", cookieSSONonce: "test_nonce", cookieSSOLink: "stepup"} {
+			req.AddCookie(&http.Cookie{Name: n, Value: v})
+		}
+		if withSession {
+			req.AddCookie(c)
+		}
+		cb := httptest.NewRecorder()
+		h.ServeHTTP(cb, req)
+		return cb.Header().Get("Location")
+	}
+	if got := callback(true); got != "/settings/sso?stepup=stale" {
+		t.Fatalf("callback location = %q, want the SSO tab", got)
+	}
+	// Spent: a second callback, or one without the session, lands on tokens.
+	if got := callback(true); got != "/settings/tokens?stepup=stale" {
+		t.Fatalf("second callback location = %q, want the token tab", got)
 	}
 }

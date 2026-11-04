@@ -181,12 +181,19 @@ const (
 	cookieSSOVerifier = "kydns_sso_verifier"
 	cookieSSONonce    = "kydns_sso_nonce"
 	// cookieSSOLink carries what the login is for: "1" links, "stepup" confirms.
+	// The page a step-up returns to is kept server-side on the session that
+	// started it (SetStepUpReturn), never read from a cookie.
 	cookieSSOLink = "kydns_sso_link"
 )
 
 // beforeSSOSession lets a test land an unlink between a callback's link check
 // and its session; nil in production.
 var beforeSSOSession func()
+
+// stepUpPages are the tabs a step-up can return to, by the form's back value.
+var stepUpPages = map[string]string{
+	"": "/settings/tokens", "sso": "/settings/sso", "backups": "/settings/backups",
+}
 
 // stepUpWindow is how long a fresh single sign-on login counts as a step-up.
 const stepUpWindow = 5 * time.Minute
@@ -204,7 +211,7 @@ func (s *Server) stepUp(r *http.Request, sess *auth.Session) error {
 	if age := time.Since(sess.SSO.AuthTime); !sess.SSO.AuthTime.IsZero() && age < stepUpWindow && age > -time.Minute {
 		return nil
 	}
-	return errors.New("Enter your current password, or confirm with single sign-on, to create a token.")
+	return errors.New("Enter your current password, or confirm with single sign-on, to continue.")
 }
 
 // checkPassword verifies the admin's current password for a signed-in action,
@@ -309,12 +316,20 @@ func (s *Server) postSSOLink(w http.ResponseWriter, r *http.Request) {
 }
 
 // postTokenStepUp signs in again through single sign-on with max_age=0, so
-// the token form accepts the fresh login as a step-up.
+// the token form (or the SSO or backups tab, by back=) accepts the fresh login
+// as a step-up.
 func (s *Server) postTokenStepUp(w http.ResponseWriter, r *http.Request) {
 	sso, err := s.o.Store.SSOClient()
 	if err != nil || !sso.Enabled {
 		s.settingsError(w, r, errors.New("single sign-on is not enabled"))
 		return
+	}
+	if sess, ok := s.session(r); ok {
+		page, ok := stepUpPages[r.PostFormValue("back")]
+		if !ok {
+			page = stepUpPages[""]
+		}
+		s.o.Sessions.SetStepUpReturn(sess.ID, page)
 	}
 	s.startSSO(w, r, sso, "stepup")
 }
@@ -408,6 +423,12 @@ func (s *Server) getSSOCallback(w http.ResponseWriter, r *http.Request) {
 	if linkCookie, err := r.Cookie(cookieSSOLink); err == nil {
 		isLink, isStepUp = linkCookie.Value == "1", linkCookie.Value == "stepup"
 	}
+	stepUpPage := stepUpPages[""]
+	if old, ok := s.session(r); ok && isStepUp {
+		if page := s.o.Sessions.TakeStepUpReturn(old.ID); page != "" {
+			stepUpPage = page
+		}
+	}
 	s.clearSSOCookies(w, r)
 
 	sso, err := s.o.Store.SSOClient()
@@ -434,7 +455,7 @@ func (s *Server) getSSOCallback(w http.ResponseWriter, r *http.Request) {
 		// provider ignored max_age=0, and the old session stays as it was.
 		if isStepUp && (claims.AuthTime.IsZero() || time.Since(claims.AuthTime) > stepUpWindow) {
 			s.o.Logger.Warn("sso step-up refused: no fresh auth_time", "sub", claims.Sub)
-			http.Redirect(w, r, "/settings/tokens?stepup=stale", http.StatusSeeOther)
+			http.Redirect(w, r, stepUpPage+"?stepup=stale", http.StatusSeeOther)
 			return
 		}
 		if beforeSSOSession != nil {
@@ -460,7 +481,7 @@ func (s *Server) getSSOCallback(w http.ResponseWriter, r *http.Request) {
 		s.setSessionCookie(w, r, sess)
 		dest := "/"
 		if isStepUp {
-			dest = "/settings/tokens"
+			dest = stepUpPage
 		}
 		http.Redirect(w, r, dest, http.StatusSeeOther)
 	}
@@ -496,14 +517,10 @@ func (s *Server) getSSOCallback(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, "/settings/account?error=Confirm+your+password+to+link+an+identity", http.StatusSeeOther)
 			return
 		}
-		if err := s.o.Store.LinkAdminSSO(claims.Sub, claims.Username, claims.Email); err != nil {
+		if err := s.o.Store.LinkAdminSSOAtGeneration(claims.Sub, claims.Username, claims.Email, sso.IssuerURL, sso.ClientID, sess.RecoveryGeneration); err != nil {
 			s.o.Logger.Error("failed to link sso identity", "error", err)
 			http.Redirect(w, r, "/settings/account?error=Failed+to+link+identity", http.StatusSeeOther)
 			return
-		}
-		sso.Enabled = true
-		if err := s.o.Store.SetSSOSettings(sso); err != nil {
-			s.o.Logger.Error("failed to enable sso after linking", "error", err)
 		}
 		s.o.Logger.Info("sso identity linked to admin", "sub", claims.Sub, "username", claims.Username)
 		http.Redirect(w, r, "/settings/account", http.StatusSeeOther)

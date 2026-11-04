@@ -6,7 +6,10 @@ deb=/opt/kydns/kydns.deb
 # apt-get, not dpkg: the package depends on ca-certificates, and only apt
 # resolves that from the image's own sources.
 DEBIAN_FRONTEND=noninteractive apt-get install -y "$deb"
-systemctl enable --now kydns.service
+# --no-block: this unit is ordered Before=kydns.service, so a blocking start
+# waits for this script to finish, which waits for the start: a deadlock.
+systemctl enable kydns.service
+systemctl --no-block start kydns.service
 systemctl disable kydns-image-install.service >/dev/null 2>&1 || true
 rm -f /etc/systemd/system/kydns-image-install.service \
       /usr/local/sbin/kydns-image-install \

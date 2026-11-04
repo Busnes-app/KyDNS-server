@@ -51,6 +51,9 @@ func drillChecks(dir string, opened capsule.Manifest) []recoveryclient.Check {
 	if !check("verification recipe", err) {
 		return checks
 	}
+	if !check("database parts", JoinDatabase(dir)) {
+		return checks
+	}
 	// Validate every path before any reads, including symlinked parent directories.
 	for _, name := range required {
 		if err := regularDrillFile(dir, name); err != nil {
@@ -110,6 +113,20 @@ func drillRecipe(m capsule.Manifest) (required, sqlitePaths []string, err error)
 		}
 		members[f.Path] = true
 	}
+	// A split database is checked as the whole JoinDatabase rebuilds from its
+	// parts; the parts themselves are required members.
+	if raw, ok := r["db_parts"]; ok {
+		parts, ok := raw.([]any)
+		if !ok || len(parts) < 2 || members[dbMember] {
+			return nil, nil, errors.New("recipe db_parts must list two or more parts of a database the capsule does not also carry whole")
+		}
+		for i, v := range parts {
+			if name, ok := v.(string); !ok || name != fmt.Sprintf("%s.part%03d", dbMember, i) || !members[name] {
+				return nil, nil, errors.New("recipe db_parts must name data/kydns.db.part000 onward, in order, as members")
+			}
+		}
+		members[dbMember] = true
+	}
 	list := func(field string) ([]string, error) {
 		values, ok := r[field].([]any)
 		if !ok || len(values) == 0 {
@@ -131,7 +148,7 @@ func drillRecipe(m capsule.Manifest) (required, sqlitePaths []string, err error)
 	if sqlitePaths, err = list("sqlite_paths"); err != nil {
 		return nil, nil, err
 	}
-	mandatory := []string{"data/kydns.db", "data/backup_key", "config/kydns.yaml"}
+	mandatory := []string{dbMember, "data/backup_key", "config/kydns.yaml"}
 	for _, name := range []string{"data/node_key", "data/recovery.pub"} {
 		if members[name] {
 			mandatory = append(mandatory, name)

@@ -82,9 +82,9 @@ func TestFailedRebuildKeepsPreviousSnapshot(t *testing.T) {
 	}
 }
 
-// An invalid registry state (CNAME conflict) must fail the build, not panic
-// or install a half-built snapshot.
-func TestInvalidInputFailsBuild(t *testing.T) {
+// A CNAME conflict a database kept from before the registry refused it must
+// not stop the first build: that is the server failing to start (pass 2 O5).
+func TestLegacyCNAMEConflictStillBuilds(t *testing.T) {
 	h := NewHolder(func() (Input, error) {
 		return Input{
 			Zone: "home.arpa.",
@@ -94,11 +94,11 @@ func TestInvalidInputFailsBuild(t *testing.T) {
 			},
 		}, nil
 	}, nil)
-	if err := h.Rebuild(); err == nil {
-		t.Fatal("Rebuild() error = nil, want CNAME conflict")
+	if err := h.Rebuild(); err != nil {
+		t.Fatalf("Rebuild() = %v, want the CNAME served alone", err)
 	}
-	if h.Current() != nil {
-		t.Error("a failed first build installed a snapshot")
+	if got := h.Current().Lookup("", "mail.home.arpa."); len(got) != 1 || got[0].Type != "CNAME" {
+		t.Errorf("Lookup = %+v, want the CNAME alone", got)
 	}
 }
 

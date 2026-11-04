@@ -9,6 +9,7 @@ import (
 	"regexp"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/Busnes-app/ky-primitives/recoveryclient"
 	"github.com/Busnes-app/ky-primitives/recoverykey"
@@ -62,7 +63,16 @@ func TestBackupSectionWarnsWithoutKeyAndDestination(t *testing.T) {
 func TestBackupPinKeyThenRunWritesLocalCopy(t *testing.T) {
 	dir := t.TempDir()
 	h, srv, c, csrf := loggedInWithBackup(t, dir)
-	rr := postForm(t, h, "/settings/backup/pin-key", url.Values{"public_key": {freshPublicKeyB64(t)}, "threshold": {"2"}, "total_shares": {"3"}, "csrf_token": {csrf}}, c)
+	pin := url.Values{"public_key": {freshPublicKeyB64(t)}, "threshold": {"2"}, "total_shares": {"3"}, "csrf_token": {csrf}}
+	// The pin opens every capsule and is write-once: a session alone cannot set it.
+	if rr := postForm(t, h, "/settings/backup/pin-key", pin, c); rr.Code != 400 {
+		t.Fatalf("pin-key without a step-up = %d", rr.Code)
+	}
+	if st, _ := srv.o.Backup.Status(); st.KeyPinned {
+		t.Fatal("pinned without a step-up")
+	}
+	pin.Set("current_password", testPassword)
+	rr := postForm(t, h, "/settings/backup/pin-key", pin, c)
 	if rr.Code != 303 {
 		t.Fatalf("pin-key = %d %s", rr.Code, rr.Body)
 	}
@@ -118,7 +128,7 @@ func TestBackupScheduleFormRejectsBelowFloor(t *testing.T) {
 func TestBackupPairRefusesAPrivateURLAndNamesTheSwitch(t *testing.T) {
 	h, _, c, csrf := loggedInWithBackup(t, "")
 	rr := postForm(t, h, "/settings/backup/pair", url.Values{
-		"recovery_url": {"https://192.168.1.9"}, "pairing_code": {"123456"}, "csrf_token": {csrf}}, c)
+		"recovery_url": {"https://192.168.1.9"}, "pairing_code": {"123456"}, "csrf_token": {csrf}, "current_password": {testPassword}}, c)
 	if rr.Code != 400 || !strings.Contains(rr.Body.String(), "KYDNS_BACKUP_ALLOW_PRIVATE_RECOVERY") {
 		t.Fatalf("pair private = %d %s", rr.Code, rr.Body)
 	}
@@ -141,7 +151,8 @@ func TestManagedSessionCannotEnrollFirstRecoveryKey(t *testing.T) {
 	if _, err := srv.o.Store.ApplyInstaller(context.Background(), webInstallerBundle(t, issuer), false); err != nil {
 		t.Fatal(err)
 	}
-	sso := srv.o.Sessions.CreateSSO(issuer, "owner", 0)
+	// A fresh SSO login passes the step-up, so the enrollment rule is what refuses.
+	sso, _ := srv.o.Sessions.CreateSSOLogin(auth.SSOLogin{Issuer: issuer, Subject: "owner", AuthTime: time.Now()}, issuer, "owner", 0, srv.o.Sessions.RecoveryGeneration())
 	c := &http.Cookie{Name: auth.CookieName, Value: sso.ID}
 	pin := url.Values{"public_key": {freshPublicKeyB64(t)}, "threshold": {"2"}, "total_shares": {"3"}}
 	for _, tc := range []struct {
@@ -162,6 +173,7 @@ func TestManagedSessionCannotEnrollFirstRecoveryKey(t *testing.T) {
 		}
 	}
 	pin.Set("csrf_token", localCSRF)
+	pin.Set("current_password", testPassword)
 	if rr := postForm(t, h, "/settings/backup/pin-key", pin, local); rr.Code != 303 {
 		t.Fatalf("local recovery pin = %d %s", rr.Code, rr.Body)
 	}
