@@ -673,3 +673,34 @@ func TestDeclineNeverQuarantinesAReservation(t *testing.T) {
 		t.Fatalf("Offer after a decline = %+v, want the reservation back", l)
 	}
 }
+
+// The NAK for a lease no longer ours to give (range narrowed, reservation
+// removed, address reserved for another device) must end it, or the DISCOVER
+// it sends the client back to offers the same address again and the client
+// loops through NAKs until the old lease expires.
+func TestANakedLeaseIsNotOfferedAgain(t *testing.T) {
+	for name, tc := range map[string]struct {
+		ip      string
+		reserve bool
+	}{"outside the range": {"192.168.1.50", false}, "reserved for another device": {"192.168.1.12", true}} {
+		t.Run(name, func(t *testing.T) {
+			a, _ := newTestAllocator(t)
+			const mac = "aa:aa:aa:aa:aa:aa"
+			old := netip.MustParseAddr(tc.ip)
+			a.Load([]Lease{{MAC: mac, IP: old, Hostname: "nas", Expires: epoch.Add(24 * time.Hour)}})
+			if tc.reserve {
+				a.SetReservations(map[string]netip.Addr{"bb:bb:bb:bb:bb:bb": old})
+			}
+			if _, ok := a.Confirm(mac, "nas", old, time.Hour); ok {
+				t.Fatalf("renewal of %v was ACKed", old)
+			}
+			got, _, ok := a.Offer(mac, netip.Addr{}, time.Minute)
+			if !ok || got.IP == old {
+				t.Fatalf("after the NAK, offer = %+v (ok=%v); want a new address, not %v", got, ok, old)
+			}
+			if _, ok := a.Confirm(mac, "nas", got.IP, time.Hour); !ok {
+				t.Fatalf("REQUEST for the new offer %v was NAKed", got.IP)
+			}
+		})
+	}
+}

@@ -139,6 +139,14 @@ func (a *Allocator) Confirm(mac, hostname string, asked netip.Addr, ttl time.Dur
 			return Lease{}, false
 		}
 	} else if l, ok := a.byMAC[mac]; !ok || l.IP != asked || !a.usable(asked) || a.reservedIP[asked] != "" {
+		// The client's own lease, no longer ours to give (range narrowed,
+		// reservation removed, address reserved for another device): end it
+		// with the NAK, or the DISCOVER that follows is offered it again and
+		// the client loops through NAKs until it expires.
+		if ok && l.IP == asked && (!a.usable(asked) || a.reservedIP[asked] != mac) {
+			delete(a.byMAC, mac)
+			delete(a.byIP, asked)
+		}
 		return Lease{}, false
 	}
 	l, _, ok := a.allocateLocked(mac, hostname, asked, ttl, false)
