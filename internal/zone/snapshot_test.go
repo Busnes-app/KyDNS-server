@@ -578,3 +578,11 @@ func TestQualifyNeedsALabelBoundary(t *testing.T) {
 		}
 	}
 }
+
+// A dual-stack lease publishes both its A and its AAAA.
+func TestDualStackLeasePublishesBothFamilies(t *testing.T) {
+	s := build(t, Input{Leases: []Lease{{Hostname: "laptop", Address: "192.168.1.77"}, {Hostname: "laptop", Address: "fd00::77"}}})
+	if got := values(s.Lookup("", "laptop.home.arpa.")); len(got) != 2 {
+		t.Errorf("= %v, want the A and the AAAA", got)
+	}
+}

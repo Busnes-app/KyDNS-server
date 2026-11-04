@@ -183,3 +183,14 @@ func TestOrderIsStable(t *testing.T) {
 		}
 	}
 }
+
+// A dual-stack device holds a v4 and a v6 lease under one hostname: both are
+// kept, and neither is reported as a two-MAC conflict.
+func TestDualStackLeasesKeepBothFamilies(t *testing.T) {
+	in := "1786000000 aa:bb:cc:dd:ee:01 192.168.1.20 laptop 01:aa\n" +
+		"1786000100 12345678 fd00::20 laptop 00:01:00:01\n"
+	leases, skipped := ParseDnsmasq(strings.NewReader(in), testNow)
+	if len(leases) != 2 || len(skipped) != 0 {
+		t.Fatalf("leases %+v, skipped %v; want both families and no conflict", leases, skipped)
+	}
+}

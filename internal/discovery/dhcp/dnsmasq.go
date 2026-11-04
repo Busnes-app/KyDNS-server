@@ -67,7 +67,9 @@ func validLabel(s string) bool {
 // change digest relies on.
 func ParseDnsmasq(r io.Reader, now time.Time) ([]Lease, []string) {
 	var skipped []string
-	newest := map[string]Lease{} // hostname -> winning lease
+	// hostname and address family -> winning lease: a dual-stack device holds a
+	// v4 and a v6 lease under one name, and both are published.
+	newest := map[string]Lease{}
 	var order []string
 
 	sc := bufio.NewScanner(r)
@@ -107,7 +109,11 @@ func ParseDnsmasq(r io.Reader, now time.Time) ([]Lease, []string) {
 		}
 		lease := Lease{MAC: fields[1], IP: addr.String(), Hostname: host, Expires: expires}
 
-		if prev, dup := newest[host]; dup {
+		key := host + "/4"
+		if addr.Is6() && !addr.Is4In6() {
+			key = host + "/6"
+		}
+		if prev, dup := newest[key]; dup {
 			skipped = append(skipped, fmt.Sprintf(
 				"line %d: hostname %q claimed by %s and %s; the newer lease wins",
 				line, host, prev.MAC, lease.MAC))
@@ -115,9 +121,9 @@ func ParseDnsmasq(r io.Reader, now time.Time) ([]Lease, []string) {
 				continue
 			}
 		} else {
-			order = append(order, host)
+			order = append(order, key)
 		}
-		newest[host] = lease
+		newest[key] = lease
 	}
 	if err := sc.Err(); err != nil {
 		skipped = append(skipped, "read error: "+err.Error())

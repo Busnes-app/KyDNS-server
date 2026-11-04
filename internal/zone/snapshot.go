@@ -158,6 +158,7 @@ func buildIndex(in Input, view, zone string, logger *slog.Logger) (*Index, error
 
 	// Precedence is applied by writing in ascending priority and letting later
 	// layers replace earlier ones: lease, then service/alias, then manual.
+	leased := map[string]bool{} // names this loop wrote: a dual-stack lease adds its other family
 	for _, l := range in.Leases {
 		name := qualify(l.Hostname, zone)
 		if reserved[name] {
@@ -169,7 +170,13 @@ func buildIndex(in Input, view, zone string, logger *slog.Logger) (*Index, error
 		if taken[name] {
 			continue
 		}
-		idx.Forward[name] = []RR{{Name: name, Type: addrType(l.Address), Value: l.Address}}
+		rr := RR{Name: name, Type: addrType(l.Address), Value: l.Address}
+		if leased[name] {
+			idx.Forward[name] = append(idx.Forward[name], rr)
+		} else {
+			idx.Forward[name] = []RR{rr}
+			leased[name] = true
+		}
 		// A lease is a forward record, so it derives a PTR like any other.
 		// Later layers overwrite it, which is precedence working.
 		if addr, err := netip.ParseAddr(l.Address); err == nil && inZones(addr, in.ReverseZones) {
