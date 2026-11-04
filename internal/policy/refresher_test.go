@@ -297,3 +297,35 @@ func TestRefreshDiscardsADownloadForASourceThatChanged(t *testing.T) {
 		t.Error("the old source's body is blocking under the new one")
 	}
 }
+
+// The same for a 304 or a failure from the old source: neither may stamp the
+// new source as attempted, or its first download waits a whole interval.
+func TestOldSourceOutcomeDoesNotPostponeTheNewSource(t *testing.T) {
+	for name, status := range map[string]int{"not modified": http.StatusNotModified, "failure": http.StatusInternalServerError} {
+		t.Run(name, func(t *testing.T) {
+			var st *store.Store
+			var id int64
+			srv := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if _, err := st.PutBlacklistList(store.BlacklistList{ID: id, Name: "l1", URL: "https://elsewhere.example/list",
+					Format: FormatDomains, Enabled: true, IntervalSeconds: 3600}); err != nil {
+					t.Error(err)
+				}
+				w.WriteHeader(status)
+			}))
+			defer srv.Close()
+			var ref *Refresher
+			st, ref, _ = newRefresher(t, srv)
+			var err error
+			id, err = st.PutBlacklistList(store.BlacklistList{Name: "l1", URL: srv.URL, Format: FormatDomains, Enabled: true,
+				IntervalSeconds: 3600, ETag: `"v1"`})
+			if err != nil {
+				t.Fatal(err)
+			}
+			_ = ref.RefreshList(context.Background(), id)
+			got, _ := st.BlacklistListByID(id)
+			if got.LastAttemptAt != 0 || got.LastError != "" {
+				t.Errorf("= attempt %d, error %q; want the new source still due and no old failure", got.LastAttemptAt, got.LastError)
+			}
+		})
+	}
+}
