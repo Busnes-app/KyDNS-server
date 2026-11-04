@@ -27,6 +27,10 @@ type Session struct {
 	// linkUntil is when the password-checked permission to link an SSO
 	// identity from this session runs out; see AllowLink.
 	linkUntil time.Time
+	// stepUpReturn is the settings page a single sign-on step-up started from
+	// this session returns to; see SetStepUpReturn. Server-side, so the browser
+	// cannot choose it.
+	stepUpReturn string
 }
 
 // SSOLogin is what a back-channel logout matches. The issuer scopes the sid and
@@ -197,6 +201,28 @@ func (s *Sessions) AllowLink(id string, until time.Time) {
 	if sess, ok := s.byID[id]; ok {
 		sess.linkUntil = until
 	}
+}
+
+// SetStepUpReturn records the page a step-up started from session id returns to.
+func (s *Sessions) SetStepUpReturn(id, page string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if sess, ok := s.byID[id]; ok {
+		sess.stepUpReturn = page
+	}
+}
+
+// TakeStepUpReturn spends the page SetStepUpReturn recorded, "" if none.
+func (s *Sessions) TakeStepUpReturn(id string) string {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	sess, ok := s.byID[id]
+	if !ok {
+		return ""
+	}
+	page := sess.stepUpReturn
+	sess.stepUpReturn = ""
+	return page
 }
 
 // TakeLink spends the session's permission to link, reporting whether it had one.

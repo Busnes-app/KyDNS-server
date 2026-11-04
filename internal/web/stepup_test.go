@@ -270,7 +270,9 @@ func TestSSOSettingsWithoutAPasswordOffersSSOConfirmation(t *testing.T) {
 	}
 }
 
-// Confirming from the SSO tab returns there, also when the provider ignored max_age=0.
+// Confirming from the SSO tab returns there, also when the provider ignored
+// max_age=0. The page is kept on the session server-side: the purpose cookie
+// says only "stepup", and editing it cannot choose where the browser lands.
 func TestSSOTabStepUpReturnsToTheSSOTab(t *testing.T) {
 	idp := oidcTestServer(t, "sub-linked", "yoshi", "y@example.com", "user")
 	h, srv := newWeb(t)
@@ -280,7 +282,7 @@ func TestSSOTabStepUpReturnsToTheSSOTab(t *testing.T) {
 	sess, _ := srv.o.Sessions.Get(c.Value)
 	rec := postForm(t, h, "/settings/tokens/stepup", url.Values{"csrf_token": {sess.CSRF}, "back": {"sso"}}, c)
 	loc, _ := url.Parse(rec.Header().Get("Location"))
-	if loc == nil || loc.Query().Get("max_age") != "0" || !strings.Contains(strings.Join(rec.Header().Values("Set-Cookie"), "; "), cookieSSOLink+"=stepup-sso") {
+	if loc == nil || loc.Query().Get("max_age") != "0" || !strings.Contains(strings.Join(rec.Header().Values("Set-Cookie"), "; "), cookieSSOLink+"=stepup;") {
 		t.Fatalf("status = %d, location = %q, cookies %v", rec.Code, rec.Header().Get("Location"), rec.Header().Values("Set-Cookie"))
 	}
 
@@ -288,13 +290,23 @@ func TestSSOTabStepUpReturnsToTheSSOTab(t *testing.T) {
 	oidcAuthTime = func() int64 { return time.Now().Add(-time.Hour).Unix() }
 	t.Cleanup(func() { oidcAuthTime = old })
 	_ = srv.o.Store.LinkAdminSSO("sub-linked", "yoshi", "y@example.com")
-	req := httptest.NewRequest("GET", "/auth/sso/callback?code=mock_code&state=test_state", nil)
-	for n, v := range map[string]string{cookieSSOState: "test_state", cookieSSOVerifier: "test_verifier", cookieSSONonce: "test_nonce", cookieSSOLink: "stepup-sso"} {
-		req.AddCookie(&http.Cookie{Name: n, Value: v})
+	callback := func(withSession bool) string {
+		req := httptest.NewRequest("GET", "/auth/sso/callback?code=mock_code&state=test_state", nil)
+		for n, v := range map[string]string{cookieSSOState: "test_state", cookieSSOVerifier: "test_verifier", cookieSSONonce: "test_nonce", cookieSSOLink: "stepup"} {
+			req.AddCookie(&http.Cookie{Name: n, Value: v})
+		}
+		if withSession {
+			req.AddCookie(c)
+		}
+		cb := httptest.NewRecorder()
+		h.ServeHTTP(cb, req)
+		return cb.Header().Get("Location")
 	}
-	cb := httptest.NewRecorder()
-	h.ServeHTTP(cb, req)
-	if cb.Header().Get("Location") != "/settings/sso?stepup=stale" {
-		t.Fatalf("callback status = %d, location = %q", cb.Code, cb.Header().Get("Location"))
+	if got := callback(true); got != "/settings/sso?stepup=stale" {
+		t.Fatalf("callback location = %q, want the SSO tab", got)
+	}
+	// Spent: a second callback, or one without the session, lands on tokens.
+	if got := callback(true); got != "/settings/tokens?stepup=stale" {
+		t.Fatalf("second callback location = %q, want the token tab", got)
 	}
 }
