@@ -197,6 +197,9 @@ func (s *Server) postBackupDrill(w http.ResponseWriter, r *http.Request) {
 	}
 	_ = b.Store.RecordAudit(store.AuditEvent{Actor: "admin", Action: "backup.drill",
 		Details: recoveryclient.AuditSafe(details), IP: recoveryclient.AuditSafe(r.RemoteAddr), Outcome: outcome})
+	if err == nil && !result.Passed {
+		err = errors.New("The drill failed: " + result.ErrorMessage)
+	}
 	if err != nil {
 		s.backupError(w, r, err)
 		return
