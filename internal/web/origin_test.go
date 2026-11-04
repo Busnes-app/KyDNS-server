@@ -236,6 +236,19 @@ func TestHostHeaderIsChecked(t *testing.T) {
 	if got := viaProxy(unnamed, "kydns.lan"); got != http.StatusOK {
 		t.Errorf("unconfigured, through the proxy = %d", got)
 	}
+	// A proxy on this host: its proxied plain-HTTP requests are refused, but
+	// the CLI or an SSH tunnel on loopback, which forwards nothing, is direct.
+	local := newStack(t, func(o *Options) {
+		o.Config = &config.Config{Admin: config.AdminConfig{TrustedProxies: []netip.Prefix{netip.MustParsePrefix("127.0.0.1/32")}}}
+	})
+	direct := map[string]string{"Host": "127.0.0.1:8053", "RemoteAddr": "127.0.0.1:4000"}
+	if got := local.send(t, "GET", "/login", "", direct).Code; got != http.StatusOK {
+		t.Errorf("direct loopback with a same-host proxy trusted = %d, want 200", got)
+	}
+	direct["X-Forwarded-Proto"] = "http"
+	if got := local.send(t, "GET", "/login", "", direct).Code; got != http.StatusForbidden {
+		t.Errorf("plain HTTP through the same-host proxy = %d, want 403", got)
+	}
 }
 
 // Requirement 4: the screen that issues a token says who it is for and what it

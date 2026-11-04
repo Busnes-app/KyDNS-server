@@ -250,7 +250,10 @@ func (s *Server) TransportGate(next http.Handler) http.Handler {
 
 func (s *Server) transportAllowed(r *http.Request) bool {
 	_, trusted, scheme := auth.RequestNetwork(r, s.o.Config.Admin.TrustedProxies)
-	if trusted {
+	// A trusted peer that forwarded nothing is not proxying: with a proxy on
+	// this host (KYDNS_TRUSTED_PROXIES=127.0.0.1) that is the CLI or an SSH
+	// tunnel, judged like any direct request below.
+	if trusted && (scheme == "https" || r.Header.Get("X-Forwarded-Proto") != "" || r.Header.Get("X-Forwarded-For") != "") {
 		return scheme == "https"
 	}
 	host, _, err := net.SplitHostPort(r.RemoteAddr)
