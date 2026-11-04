@@ -93,6 +93,25 @@ func OpenSnapshot(path string) (*Store, error) {
 	return &Store{db: db}, nil
 }
 
+// PauseRestoredSchedule turns scheduled deposits off in a restored database,
+// so a copy started for a test or before cutover does not deposit stale state
+// over the live server's capsules (KyNotes Q9 A). It writes only that one
+// setting and never migrates.
+func PauseRestoredSchedule(path string) error {
+	abs, err := filepath.Abs(path)
+	if err != nil {
+		return err
+	}
+	db, err := sql.Open("sqlite", (&url.URL{Scheme: "file", Path: abs, RawQuery: "mode=rw"}).String())
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+	_, err = db.Exec(`INSERT INTO local_settings(key, value) VALUES('backup_interval_sec', '0')
+		ON CONFLICT(key) DO UPDATE SET value = excluded.value`)
+	return err
+}
+
 // VerifySnapshot reports whether path holds an intact KyDNS database. It opens read-only
 // and never creates or migrates: the file is an artifact under test, not this node's store.
 func VerifySnapshot(path string) error {

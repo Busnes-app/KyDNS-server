@@ -213,8 +213,11 @@ was not found, which means the copy went somewhere other than `$vol`.
 - **Back up now** and **Download capsule** work straight away. `data/recovery.pub`
   is a capsule member when the node had a pinned key, so a restored node comes
   back pinned to the same key the custodians split, and the KyRecovery token in
-  the database opens with the restored `data/backup_key`. Deposits resume with
-  nothing typed.
+  the database opens with the restored `data/backup_key`. Scheduled deposits
+  are off in a restored copy (`kydns restore` turns them off and says so), so a
+  copy started for a test never deposits stale state over the live server's
+  capsules: set the schedule again under **Backups** once this server is the one
+  in service.
 - **If `recovery.pub` did not come across** — an older capsule, or a partial
   copy into the volume — the card says *Paired, but recovery.pub is missing or
   does not match the pin*, and **Back up now** and **Download capsule** fail

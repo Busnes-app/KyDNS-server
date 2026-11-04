@@ -35,7 +35,9 @@ func main() {
   defer st.Close()
   services, err := st.Services()
   if err != nil || len(services) != 1 || services[0].Name != "restore-sentinel" { panic("restored snapshot lost the sentinel service") }
-  fmt.Println("restored KyDNS snapshot: integrity and sentinel verified")
+  // A restored copy must not deposit until the operator turns the schedule back on.
+  if v, err := st.GetLocalSetting("backup_interval_sec"); err != nil || v != "0" { panic("restored copy kept its backup schedule") }
+  fmt.Println("restored KyDNS snapshot: integrity, sentinel and paused schedule verified")
   return
  }
  dir, err := os.MkdirTemp(filepath.Dir(os.Args[1]), "source-")
