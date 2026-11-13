@@ -1,0 +1,14 @@
+# OSV-Scanner configuration (also read by the OpenSSF Scorecard Vulnerabilities check).
+
+[[IgnoredVulns]]
+id = "GO-2026-6905"
+# ignoreUntil is omitted: there is no fixed version of github.com/blakesmith/ar to wait for.
+reason = """
+github.com/blakesmith/ar has no fixed version. It is pulled in only by the build-time
+tool github.com/goreleaser/nfpm/v2/cmd/nfpm (the `tool` line in go.mod, run by `make`
+to write the .deb). nfpm uses only ar.NewWriter to create packages from our own build
+output; the vulnerable ar.Reader.Read is never called, and KyDNS itself does not import
+the package. `govulncheck ./...` reports no vulnerabilities, and
+`govulncheck github.com/goreleaser/nfpm/v2/cmd/nfpm` reports GO-2026-6905 as imported
+but not called. Remove this entry when nfpm drops the dependency or a fix is released.
+"""
