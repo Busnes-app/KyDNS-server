@@ -11,6 +11,9 @@ these files, all built by `release.yml` from the tag:
   `kydns-X.Y.Z-1.aarch64.rpm`: the same binaries as the tarballs, packaged;
 - `kydns_X.Y.Z_rpi64.img.xz`: a Raspberry Pi OS Lite image with the arm64 package staged;
 - `SHA256SUMS`: the SHA-256 of every file above.
+- `kydns-vX.Y.Z.intoto.jsonl`: the Sigstore bundle of the build-provenance attestation for every
+  file above, for `gh attestation verify <file> --bundle kydns-vX.Y.Z.intoto.jsonl` without the
+  attestations API.
 
 The same job pushes the container image `ghcr.io/busnes-app/kydns-server`, tagged both `vX.Y.Z` and
 `X.Y.Z`, for `linux/amd64` and `linux/arm64`. This page shows how to check that a file or image was
