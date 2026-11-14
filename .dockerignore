@@ -3,6 +3,7 @@
 .gitignore
 .claude
 bin/
+/kydns
 browser/
 docs/
 *.md

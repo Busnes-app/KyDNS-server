@@ -97,6 +97,8 @@ jobs:
             exit 1
           fi
 
+      - run: scripts/check-no-binaries.sh
+
       - name: go vet
         run: go vet ./...
 
