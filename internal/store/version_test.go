@@ -113,6 +113,7 @@ func TestSettingsSplitBumpsOnlyForReplicatedKeys(t *testing.T) {
 	}
 	local := base
 	local.LogQueries = true
+	local.DNSSECValidate = true
 	if err := s.PutSettings(local); err != nil {
 		t.Fatal(err)
 	}

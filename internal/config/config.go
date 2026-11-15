@@ -67,6 +67,8 @@ type DNSConfig struct {
 	CacheEntries   int      `yaml:"cache_entries"`
 	LogQueries     bool     `yaml:"log_queries"`
 	LogClientIP    bool     `yaml:"log_client_ip"`
+	// DNSSECValidate defaults to true; a pointer tells absent from false.
+	DNSSECValidate *bool `yaml:"dnssec_validate"`
 }
 
 type AdminConfig struct {
@@ -275,6 +277,10 @@ func (c *Config) applyDefaults() {
 	setInt(&c.Health.Interval, 30)
 	setInt(&c.Health.Timeout, 5)
 	setInt(&c.Health.Workers, 8)
+	if c.DNS.DNSSECValidate == nil {
+		on := true
+		c.DNS.DNSSECValidate = &on
+	}
 	if len(c.DNS.Upstreams) == 0 {
 		c.DNS.Upstreams = []string{"tls://1.1.1.1:853", "tls://9.9.9.9:853"}
 	}
@@ -359,5 +365,6 @@ func (c *Config) SeedSettings() store.Settings {
 		HealthInterval:    c.Health.Interval,
 		HealthTimeout:     c.Health.Timeout,
 		HealthWorkers:     c.Health.Workers,
+		DNSSECValidate:    c.DNS.DNSSECValidate == nil || *c.DNS.DNSSECValidate,
 	}
 }

@@ -89,6 +89,7 @@ func (s *Server) postServerSettings(w http.ResponseWriter, r *http.Request) {
 		AllowTailscale: r.PostFormValue("allow_tailscale") != "",
 		LogQueries:     r.PostFormValue("log_queries") != "",
 		LogClientIP:    r.PostFormValue("log_client_ip") != "",
+		DNSSECValidate: r.PostFormValue("dnssec_validate") != "",
 	}
 	for _, f := range []struct {
 		name string

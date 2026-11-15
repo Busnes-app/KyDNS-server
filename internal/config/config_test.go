@@ -235,6 +235,7 @@ dns:
   cache_entries: 500
   log_queries: true
   log_client_ip: true
+  dnssec_validate: false
 discovery:
   dhcp_lease_file: /var/lib/misc/dnsmasq.leases
   interval: 15

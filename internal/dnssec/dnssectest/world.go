@@ -140,6 +140,7 @@ func (w *World) Query(_ context.Context, name string, qtype uint16) (*dns.Msg, e
 	m.SetQuestion(dns.CanonicalName(name), qtype)
 	m.Response = true
 	w.answer(m, dns.CanonicalName(name), qtype, 0)
+	m = m.Copy() // a tamper must not edit the zone itself
 	if w.Tamper != nil {
 		w.Tamper(dns.CanonicalName(name), qtype, m)
 	}

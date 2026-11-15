@@ -53,6 +53,9 @@ type Options struct {
 	// which the screens render as "not enabled" rather than as empty.
 	Health    func() []health.Status
 	Upstreams func() []dnsserver.UpstreamStatus
+	// DNSSECClock reports whether signature time checks are skipped, and why.
+	// Nil is never.
+	DNSSECClock func() (bool, string)
 
 	// Leases is the current lease set, and DiscoveryOn carries the on/off
 	// signal for it. They are separate because a lease source can be turned on
@@ -115,6 +118,7 @@ const (
 	PathRDNSSSuggest       = "/dhcp/rdnss/suggest"
 	PathInstallerDirectory = "/api/v1/installer/directory"
 	PathAccountPassword    = "/settings/account/password"
+	PathDNSSECNotice       = "/settings/dnssec-notice"
 	PathTokenNew           = "/settings/tokens/new"
 	PathTokenDelete        = "/settings/tokens/delete"
 	PathTokenAccess        = "/settings/tokens/access"
@@ -152,6 +156,8 @@ var webWriteExempt = map[string]bool{
 	PathDHCPSettings: true, PathDHCPSuggest: true,
 	// The IPv6 DNS advertisement is node-local for the same reason.
 	PathRDNSSSettings: true, PathRDNSSSuggest: true,
+	// DNSSEC validation and its notice are node-local like the DHCP settings.
+	PathDNSSECNotice: true,
 	// Signed identity authority is node-local and must reach replicas too.
 	PathInstallerDirectory: true,
 	// So is the admin account: a replica's admin changes its own password.

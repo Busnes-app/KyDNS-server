@@ -22,10 +22,14 @@ func (s *Server) getDashboard(w http.ResponseWriter, r *http.Request) {
 		if b := UpstreamsDownBanner(up); b != nil {
 			banners = append(banners, b)
 		}
-		if b := PlaintextUpstreamBanner(up); b != nil {
+		if b := PlaintextUpstreamBanner(up, s.validating()); b != nil {
 			banners = append(banners, b)
 		}
 	}
+	if b := s.dnssecClockBanner(); b != nil {
+		banners = append(banners, b)
+	}
+	data["DNSSECNotice"] = s.dnssecNotice()
 
 	views, err := s.o.Registry.Views()
 	if err != nil {

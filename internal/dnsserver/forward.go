@@ -7,8 +7,10 @@ import (
 	"log/slog"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
+	"github.com/Busnes-app/kydns-server/internal/dnssec"
 	"github.com/Busnes-app/kydns-server/internal/upstream"
 	"github.com/miekg/dns"
 	"golang.org/x/sync/singleflight"
@@ -70,6 +72,26 @@ type Forwarder struct {
 	timeout time.Duration
 	cache   *Cache
 	group   singleflight.Group
+	// val is the local DNSSEC validator; nil trusts a secure upstream's AD.
+	val atomic.Pointer[dnssec.Validator]
+}
+
+// SetValidator turns local validation on (non-nil) or off. Cached answers
+// carry the verdict of the mode they were fetched under, so a switch flushes.
+func (f *Forwarder) SetValidator(v *dnssec.Validator) {
+	if old := f.val.Swap(v); (old == nil) != (v == nil) {
+		f.cache.Flush()
+	}
+}
+
+// Validating reports whether KyDNS validates answers itself. Its answers then
+// carry AD only when KyDNS proved them.
+func (f *Forwarder) Validating() bool { return f.val.Load() != nil }
+
+// Query is the validator's lookup: DO=1, CD=1, through the upstream list,
+// bypassing the answer cache (the validator keeps its own).
+func (f *Forwarder) Query(ctx context.Context, name string, qtype uint16) (*dns.Msg, error) {
+	return f.exchange(ctx, dns.Question{Name: name, Qtype: qtype, Qclass: dns.ClassINET}, true, true)
 }
 
 func NewForwarder(ups []upstream.Upstream, timeout time.Duration, c *Cache) *Forwarder {
@@ -163,6 +185,10 @@ func (st *fwdState) record(i int, err error) {
 // single upstream query. That collapse is what survives the boot-time
 // stampede when every device on the LAN wakes at once.
 func (f *Forwarder) Resolve(ctx context.Context, q dns.Question, do bool) (*dns.Msg, error) {
+	val := f.val.Load()
+	if val != nil {
+		do = true // signatures are needed to validate; the server strips them
+	}
 	if m, ok := f.cache.Get(q, do); ok {
 		return m, nil
 	}
@@ -171,9 +197,14 @@ func (f *Forwarder) Resolve(ctx context.Context, q dns.Question, do bool) (*dns.
 		if m, ok := f.cache.Get(q, do); ok {
 			return m, nil
 		}
-		m, err := f.exchange(ctx, q, do)
+		m, err := f.exchange(ctx, q, do, val != nil)
 		if err != nil {
 			return nil, err
+		}
+		if val != nil {
+			if m, err = validated(ctx, val, q, m); err != nil {
+				return nil, err
+			}
 		}
 		f.cache.Put(q, do, m)
 		return m, nil
@@ -184,14 +215,40 @@ func (f *Forwarder) Resolve(ctx context.Context, q dns.Question, do bool) (*dns.
 	return v.(*dns.Msg).Copy(), nil
 }
 
-func (f *Forwarder) exchange(ctx context.Context, q dns.Question, do bool) (*dns.Msg, error) {
+// validated runs the validator on m. The verdict rides in the AD bit, so the
+// cached copy keeps it; a bogus answer becomes a SERVFAIL carrying the EDE.
+func validated(ctx context.Context, val *dnssec.Validator, q dns.Question, m *dns.Msg) (*dns.Msg, error) {
+	m = m.Copy()
+	res, err := val.Check(ctx, q, m)
+	if err != nil {
+		return nil, err
+	}
+	if res.Security == dnssec.Bogus {
+		out := new(dns.Msg)
+		out.MsgHdr = m.MsgHdr
+		out.Rcode = dns.RcodeServerFailure
+		out.AuthenticatedData = false
+		out.Question = m.Question
+		opt := &dns.OPT{Hdr: dns.RR_Header{Name: ".", Rrtype: dns.TypeOPT}}
+		opt.SetUDPSize(1232)
+		opt.Option = append(opt.Option, &dns.EDNS0_EDE{InfoCode: res.EDE})
+		out.Extra = []dns.RR{opt}
+		return out, nil
+	}
+	m.AuthenticatedData = res.Security == dnssec.Secure
+	return m, nil
+}
+
+func (f *Forwarder) exchange(ctx context.Context, q dns.Question, do, validating bool) (*dns.Msg, error) {
 	req := new(dns.Msg)
 	req.SetQuestion(dns.Fqdn(q.Name), q.Qtype)
 	req.SetEdns0(1232, do)
-	// The upstream is the validator, so it is never told to skip checking, and
-	// AD asks for its verdict without the RRSIG payload (RFC 6840 5.7).
-	req.CheckingDisabled = false
-	req.AuthenticatedData = true
+	// Validating locally, KyDNS asks for the data even if the upstream thinks
+	// it bogus (CD=1) and decides itself. Otherwise the upstream is the
+	// validator: never told to skip checking, and AD asks for its verdict
+	// without the RRSIG payload (RFC 6840 5.7).
+	req.CheckingDisabled = validating
+	req.AuthenticatedData = !validating
 
 	st, done := f.acquireState()
 	defer done()

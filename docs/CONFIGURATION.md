@@ -158,13 +158,49 @@ intended behaviour: silently dropping to plain DNS is exactly what an attacker
 who blocks 853 is hoping for.
 
 The escape hatch is one line. Add a `udp://` upstream and KyDNS will use it
-when the encrypted ones fail. Answers it serves have the authenticated-data
-flag cleared, because nothing authenticated them, and the dashboard carries a
-banner for as long as the entry is there.
+when the encrypted ones fail. With "Validate DNSSEC locally" off, answers it
+serves have the authenticated-data flag cleared, because nothing authenticated
+them. With it on, KyDNS checks signed answers itself, so those keep their
+protection over plain DNS too; unsigned names stay forgeable on that path. The
+dashboard carries a banner for as long as the entry is there.
 
-KyDNS is not a validating resolver. It does not verify signatures, hold a trust
-anchor, or walk a chain of trust. It makes the path to a resolver that does all
-of that private and tamper-proof, and passes that resolver's verdict through.
+### Validate DNSSEC locally
+
+On (the default for new installs), KyDNS validates every forwarded answer
+itself, from the root trust anchors (KSK-2017 and KSK-2024, built in), instead
+of trusting the upstream's verdict:
+
+- A signed answer that fails (forged, expired, wrong key, signatures stripped)
+  is `SERVFAIL` with an RFC 8914 Extended DNS Error naming why.
+- The `AD` bit is set only on answers KyDNS proved, and only for clients that
+  sent `DO` or `AD`. Local names, records and views are never marked.
+- Unsigned zones, and zones signed with algorithms KyDNS does not support
+  (anything but 8, 10, 13, 14, 15 and 16), answer normally without `AD`.
+- The private domain, the reverse zones, `home.arpa`, `internal`, `local`,
+  `lan`, `localdomain` and the private-range reverse zones are never
+  validated (negative trust anchors), because a router upstream answers them
+  itself, unsigned.
+- Upstreams are asked with `DO=1` and `CD=1`, so they hand over signatures
+  even for an answer they would reject; KyDNS decides.
+
+An upgraded install keeps its previous behaviour, with a one-time dashboard
+notice offering to turn it on. The setting is under Settings, Server,
+Upstreams, or `dnssec_validate` in the API and CLI. It is node-local: a
+replica keeps its own value, and may change it.
+
+**Clock safety.** A device without a battery-backed clock (a Raspberry Pi)
+boots with the wrong time, and every signature then looks expired, so nothing
+resolves and NTP cannot reach its servers to fix the clock. While the system
+clock reads earlier than the KyDNS build, or Linux reports that NTP has not
+synchronised the clock, KyDNS skips only the signature date checks, like
+dnsmasq's `dnssec-no-timecheck`. Everything else is still validated. It logs
+`dnssec time checks skipped` once, shows a dashboard banner, and resumes by
+itself once the clock is synchronised. A host with no NTP client at all stays
+in this state; install chrony or systemd-timesyncd.
+
+With it off, KyDNS is not a validating resolver: it makes the path to a
+resolver that validates private and tamper-proof, and passes that resolver's
+verdict through, as below.
 
 **Every upstream should be a validating resolver, and a DNSSEC rejection from
 any encrypted one is final.** When an upstream answers `SERVFAIL` with a

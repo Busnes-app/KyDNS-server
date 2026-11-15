@@ -97,6 +97,7 @@ func TestReplicaChangesItsOwnNodeLocalFields(t *testing.T) {
 		"log_client_ip":      func(v *store.Settings) { v.LogQueries, v.LogClientIP = true, true },
 		"dhcp_lease_file":    func(v *store.Settings) { v.DHCPLeaseFile = "/var/lib/misc/dnsmasq.leases" },
 		"discovery_interval": func(v *store.Settings) { v.DiscoveryInterval = 60 },
+		"dnssec_validate":    func(v *store.Settings) { v.DNSSECValidate = true },
 	} {
 		t.Run(name, func(t *testing.T) {
 			w, svc, _ := newReplicaService(t)

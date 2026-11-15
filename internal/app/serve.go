@@ -29,6 +29,7 @@ import (
 	"github.com/Busnes-app/kydns-server/internal/config"
 	"github.com/Busnes-app/kydns-server/internal/discovery"
 	"github.com/Busnes-app/kydns-server/internal/discovery/dhcp"
+	"github.com/Busnes-app/kydns-server/internal/dnssec"
 	"github.com/Busnes-app/kydns-server/internal/dnsserver"
 	"github.com/Busnes-app/kydns-server/internal/health"
 	"github.com/Busnes-app/kydns-server/internal/policy"
@@ -193,6 +194,8 @@ func Serve(ctx context.Context, cfgPath string, logger *slog.Logger) error {
 		}
 	}
 	fwd := dnsserver.NewForwarder(snap.Upstreams, 2*time.Second, cache)
+	dnssecClock := dnssec.NewClock(logger)
+	validator := dnssec.New(fwd.Query, dnssecClock)
 
 	authoritative := dnsserver.NewAuthoritative(privateFQDN, uint32(boot.TTL), snap.ReverseZones)
 	dnsSrv := dnsserver.New(dnsserver.Options{
@@ -252,8 +255,9 @@ func Serve(ctx context.Context, cfgPath string, logger *slog.Logger) error {
 		acl: acl, forwarder: fwd, cache: cache, dnsSrv: dnsSrv,
 		authoritative: authoritative, checker: checker, poller: poller,
 		zoneHolder: holder, registry: reg, logger: logger, prevUpstreams: boot.Upstreams,
-		dhcp: dhcpRun, rdnss: rdnssRun, current: settingsHolder.Current,
+		dhcp: dhcpRun, rdnss: rdnssRun, current: settingsHolder.Current, validator: validator,
 	}
+	live.applyDNSSEC(snap)
 	// The role is read per write, not captured: a replica may configure its own
 	// node-local DHCP settings and nothing else, and promotion must widen that
 	// without a restart.
@@ -359,6 +363,7 @@ func Serve(ctx context.Context, cfgPath string, logger *slog.Logger) error {
 		Policy:         policySvc,
 		Settings:       settingsSvc,
 		Upstreams:      fwd.Status,
+		DNSSECClock:    dnssecClock.Skip,
 		SetupToken:     setupToken,
 		SetupTokenFile: filepath.Join(cfg.DataDir, setupTokenName),
 		Logger:         logger,

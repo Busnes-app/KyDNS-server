@@ -90,12 +90,12 @@ func TestPlaintextUpstreamBanner(t *testing.T) {
 		{Spec: "tls://1.1.1.1:853", Secure: true},
 		{Spec: "https://9.9.9.9/dns-query", Secure: true},
 	}
-	if b := PlaintextUpstreamBanner(secure); b != nil {
+	if b := PlaintextUpstreamBanner(secure, false); b != nil {
 		t.Errorf("banner = %+v with every upstream encrypted, want nil", b)
 	}
 
 	mixed := append(secure, dnsserver.UpstreamStatus{Spec: "udp://192.168.1.1:53"})
-	b := PlaintextUpstreamBanner(mixed)
+	b := PlaintextUpstreamBanner(mixed, false)
 	if b == nil {
 		t.Fatal("banner = nil with a plaintext upstream configured")
 	}

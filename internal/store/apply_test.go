@@ -359,6 +359,7 @@ func TestApplySnapshotPreservesNodeLocalSettings(t *testing.T) {
 	local.DHCPLeaseSeconds = 43200
 	local.DHCPSecondaryDNS = "192.168.1.3"
 	local.DHCPAllowForeign = true
+	local.DNSSECValidate = true
 	if err := s.PutSettings(local); err != nil {
 		t.Fatal(err)
 	}
@@ -393,5 +394,8 @@ func TestApplySnapshotPreservesNodeLocalSettings(t *testing.T) {
 		got.DHCPLeaseSeconds != local.DHCPLeaseSeconds || got.DHCPSecondaryDNS != local.DHCPSecondaryDNS ||
 		got.DHCPAllowForeign != local.DHCPAllowForeign {
 		t.Fatalf("Settings() = %+v after apply, want DHCP fields untouched by the incoming snapshot", got)
+	}
+	if !got.DNSSECValidate {
+		t.Fatal("a pulled snapshot turned off this node's DNSSEC validation")
 	}
 }

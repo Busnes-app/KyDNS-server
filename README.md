@@ -49,7 +49,7 @@ can always see the terms of what they are running.
 ## What it can do
 
 - Private service names, DNS records and per-network views.
-- Blocklist filtering and encrypted upstream resolution.
+- Blocklist filtering, encrypted upstream resolution and local DNSSEC validation.
 - Service discovery and optional linked-node replication.
 - An MCP endpoint so AI agents can explain blocks and manage rules.
 - Optional DHCPv4 on supported native or host-network installations.

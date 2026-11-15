@@ -199,14 +199,13 @@ refresh lists and pause blocking for up to an hour over MCP; see
   elects a new one, nothing discovers peers, and a replica never promotes
   itself. Losing the primary costs administration, not resolution: give clients
   both servers and they keep resolving.
-- **Local DNSSEC validation.** KyDNS trusts the upstream's verdict over an
-  encrypted channel; it does not verify signatures itself. An `AD` bit from
-  KyDNS means "the resolver we talked to privately said it validated," not
-  "KyDNS checked the chain."
 - **IPv6 DNS advertisement in a non-root container.** The advertisement needs
   a raw ICMPv6 socket, which the default Compose install (uid 65532, every
   capability dropped) cannot open. Use the native package, or host networking
   as root. DHCPv6 is not offered either.
+- **DNSSEC trust-anchor rollover (RFC 5011).** KyDNS validates DNSSEC itself
+  ([Configuration](CONFIGURATION.md#validate-dnssec-locally)), from root keys
+  built into the release. A new root key arrives with an update, not by itself.
 - Docker Compose discovery, and lease formats other than dnsmasq.
 - Local TLS certificate issuance for private service names.
 

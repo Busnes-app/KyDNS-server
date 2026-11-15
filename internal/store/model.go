@@ -146,6 +146,9 @@ type Settings struct {
 	RDNSSEnabled   bool
 	RDNSSInterface string
 	RDNSSAddress   string // empty: choose a stable address automatically
+	// DNSSECValidate is "Validate DNSSEC locally". Node-local like
+	// log_queries: it depends on this node's clock and upstreams.
+	DNSSECValidate bool
 }
 
 // AdminIdentity holds the admin credentials and linked KyIdentity SSO identity.

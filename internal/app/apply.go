@@ -1,12 +1,16 @@
 package app
 
 import (
+	"fmt"
 	"log/slog"
+	"net/netip"
+	"strings"
 	"sync"
 	"time"
 
 	"github.com/Busnes-app/kydns-server/internal/discovery"
 	"github.com/Busnes-app/kydns-server/internal/discovery/dhcp"
+	"github.com/Busnes-app/kydns-server/internal/dnssec"
 	"github.com/Busnes-app/kydns-server/internal/dnsserver"
 	"github.com/Busnes-app/kydns-server/internal/health"
 	"github.com/Busnes-app/kydns-server/internal/registry"
@@ -29,8 +33,9 @@ type liveComponents struct {
 	zoneHolder    *zone.Holder
 	registry      *registry.Registry
 	logger        *slog.Logger
-	dhcp          *dhcpRunner  // nil in tests that do not build one
-	rdnss         *rdnssRunner // nil in tests that do not build one
+	dhcp          *dhcpRunner       // nil in tests that do not build one
+	rdnss         *rdnssRunner      // nil in tests that do not build one
+	validator     *dnssec.Validator // nil in tests that do not build one
 
 	// prevUpstreams tracks what the forwarder was last told, so a change
 	// against the previous upstream list flushes stale cached answers.
@@ -70,6 +75,7 @@ func (l *liveComponents) Apply(s *settings.Snapshot) {
 		l.logger.Info("private zone renamed", "from", old, "to", l.authoritative.Zone())
 	}
 	l.acl.Replace(s.AllowQuery)
+	l.applyDNSSEC(s)
 	l.forwarder.Replace(s.Upstreams)
 	flushOnUpstreamChange(l.cache, l.prevUpstreams, s.Raw.Upstreams, l.logger)
 	l.prevUpstreams = s.Raw.Upstreams
@@ -112,4 +118,51 @@ func (l *liveComponents) Apply(s *settings.Snapshot) {
 		l.logger.Error("snapshot rebuild after a settings change failed, still serving the previous snapshot", "error", err)
 	}
 	l.logger.Info("settings applied")
+}
+
+// applyDNSSEC switches local validation and refreshes its automatic negative
+// trust anchors: names KyDNS answers itself never reach the validator, but a
+// forwarded CNAME tail under them can.
+func (l *liveComponents) applyDNSSEC(s *settings.Snapshot) {
+	if l.validator == nil {
+		return
+	}
+	l.validator.SetNTAs(dnssecNTAs(s))
+	if s.Raw.DNSSECValidate {
+		l.forwarder.SetValidator(l.validator)
+	} else {
+		l.forwarder.SetValidator(nil)
+	}
+}
+
+func dnssecNTAs(s *settings.Snapshot) []string {
+	ntas := []string{s.Raw.PrivateDomain}
+	for _, p := range s.ReverseZones {
+		ntas = append(ntas, reverseZone(p))
+	}
+	return ntas
+}
+
+// reverseZone is the arpa zone holding prefix p, widened to the label
+// boundary (octet for IPv4, nibble for IPv6).
+func reverseZone(p netip.Prefix) string {
+	p = p.Masked()
+	a := p.Addr()
+	var labels []string
+	if a.Is4() {
+		b := a.As4()
+		for i := 0; i < p.Bits()/8; i++ {
+			labels = append([]string{fmt.Sprint(b[i])}, labels...)
+		}
+		return strings.Join(append(labels, "in-addr.arpa."), ".")
+	}
+	b := a.As16()
+	for i := 0; i < p.Bits()/4; i++ {
+		n := b[i/2] >> 4
+		if i%2 == 1 {
+			n = b[i/2] & 0xf
+		}
+		labels = append([]string{fmt.Sprintf("%x", n)}, labels...)
+	}
+	return strings.Join(append(labels, "ip6.arpa."), ".")
 }

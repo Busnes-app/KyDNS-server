@@ -39,6 +39,11 @@ query logging is enabled, each entry gains a `policy` field: `local` (the
 authoritative lookup answered), `allow`, `deny`, the name of the list that
 matched, or `forwarded` (no policy match).
 
+DNSSEC validation logs only its clock state: `dnssec time checks skipped`
+(with the reason) once on entering it, and `dnssec time checks resumed` once
+on leaving. A bogus verdict reaches the logs only as the `SERVFAIL` rcode of a
+query log entry, so it follows `log_queries`; the validator never logs a name.
+
 Never log upstream credentials, private keys, full DNS answers when they reveal
 sensitive private services, or raw request bodies. Do not send query history to
 KySecurity services by default. A blacklist list URL may never embed

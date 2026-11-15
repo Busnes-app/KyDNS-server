@@ -148,6 +148,17 @@ Code, one concern per package:
 - `internal/dnsserver` — ACL, authoritative answers, cache, forwarding, and the
   in-memory query ring (`QueryLog`) that fills only under `log_queries`, holds
   clients only under `log_client_ip`, and empties when either turns off.
+- `internal/dnssec` — local DNSSEC validation ("Validate DNSSEC locally",
+  `dnssec_validate`, node-local). `Forwarder` asks upstreams with DO=1, CD=1 and
+  runs `Validator.Check` before caching; the verdict rides in the cached AD bit,
+  a bogus answer becomes SERVFAIL with an RFC 8914 EDE, and the server sets AD
+  only for DO/AD clients and strips RRSIG/NSEC/NSEC3 for non-DO ones. Root
+  anchors are embedded and checked against `testdata/root-anchors.xml`; Ed448
+  goes through circl over miekg's own signed data. `Clock` skips signature
+  dates only (build floor, adjtimex). Never write crypto here, keep the
+  signature budgets, and test on `dnssectest` hierarchies (no network). Verify
+  with `go test ./internal/dnssec ./internal/dnsserver ./internal/web -run 'DNSSEC|Validat|Verdict|Tamper|Clock'`.
+  Design: `docs/superpowers/specs/2026-11-15-dnssec-validation-design.md`.
 - `internal/upstream` — DoT, DoH, and opt-in plain-UDP upstreams.
 - `internal/policy` — blacklist normalization, list parsing, fetch, refresh,
   and decision (deny/allow/list) for the DNS pipeline. `Explain` names every
