@@ -163,6 +163,9 @@ type run struct {
 	budget  int
 	skip    bool      // signature time checks off (Clock)
 	expires time.Time // earliest expiry the verdict rests on
+	// exhausted: the per-answer budget ran out, so a bogus delegation found
+	// meanwhile is not cached for other answers.
+	exhausted bool
 }
 
 // note lowers the run's expiry to t.
@@ -371,7 +374,11 @@ func (r *run) verifySet(set []dns.RR, sigs []*dns.RRSIG, z *zone) (Result, *dns.
 			if k.KeyTag() != sig.KeyTag || k.Algorithm != sig.Algorithm {
 				continue
 			}
-			if tries == maxSigsPerSet || r.budget == 0 {
+			if r.budget == 0 {
+				r.exhausted = true // this answer's limit, not a verdict on the data
+				return res, nil
+			}
+			if tries == maxSigsPerSet {
 				return res, nil
 			}
 			tries++
@@ -432,13 +439,16 @@ func (r *run) cut(p *zone, child string) (cut, error) {
 		return c, nil
 	}
 	got, err, _ := v.group.Do(child, func() (any, error) {
-		outer := r.expires
-		r.expires = time.Time{}
+		outer, spent := r.expires, r.exhausted
+		r.expires, r.exhausted = time.Time{}, false
 		c, ttl, err := r.classify(p, child)
-		sigs := r.expires
-		r.expires = outer
+		sigs, starved := r.expires, r.exhausted
+		r.expires, r.exhausted = outer, spent || starved
 		if err != nil {
 			return cut{}, err
+		}
+		if starved && c.kind == cutBogus {
+			return c, nil // decided by this answer's budget: do not cache
 		}
 		if c.kind == cutBogus {
 			ttl = bogusCutTTL

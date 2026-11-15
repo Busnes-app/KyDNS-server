@@ -465,3 +465,23 @@ func TestWildcardNSEC3IterationCeiling(t *testing.T) {
 		t.Fatalf("%+v, want insecure", res)
 	}
 }
+
+// Running out of one answer's signature budget must not cache the delegation
+// it was checking as bogus for every later answer.
+func TestExhaustedBudgetIsNotCached(t *testing.T) {
+	w := world(t)
+	v := newV(w)
+	r := &run{v: v, ctx: context.Background(), budget: 0}
+	if c, err := r.cut(nil, "."); err != nil || c.kind != cutBogus {
+		t.Fatalf("starved root check = %+v, %v", c, err)
+	}
+	v.mu.Lock()
+	_, cached := v.cuts["."]
+	v.mu.Unlock()
+	if cached {
+		t.Fatal("a budget-starved verdict was cached")
+	}
+	if res, _ := check(t, v, w, "www.test.", dns.TypeA); res.Security != Secure {
+		t.Fatalf("a fresh check after a starved one: %+v", res)
+	}
+}
