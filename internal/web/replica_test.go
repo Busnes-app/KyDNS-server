@@ -108,6 +108,9 @@ func TestReplicaRefusesEveryPostRoute(t *testing.T) {
 // PathAccountPassword: the admin account is node-local (ApplySnapshot never
 // touches it), so a replica's admin changes its own password (KyCalendar Q4 A).
 //
+// PathRDNSSSettings and PathRDNSSSuggest: the IPv6 DNS advertisement is
+// node-local for the same reason as DHCP.
+//
 // The token and SSO paths: tokens, the SSO provider and the linked identity
 // are node-local as well, so a replica manages its own (owner answer Q1 A).
 func TestExemptSetIsExactlyTheNamedPaths(t *testing.T) {
@@ -115,6 +118,7 @@ func TestExemptSetIsExactlyTheNamedPaths(t *testing.T) {
 		PathSetup: true, PathLogin: true, PathLogout: true,
 		PathPromote: true, PathJoin: true,
 		PathDHCPSettings: true, PathDHCPSuggest: true,
+		PathRDNSSSettings: true, PathRDNSSSuggest: true,
 		PathInstallerDirectory: true, PathAccountPassword: true,
 		PathTokenNew: true, PathTokenDelete: true, PathTokenAccess: true, PathTokenStepUp: true,
 		PathSSOSettings: true, PathSSOLink: true, PathSSOUnlink: true,

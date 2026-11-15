@@ -27,6 +27,12 @@ image needs network access on that boot. Read the setup token with:
 sudo cat /var/lib/kydns/setup-token
 ```
 
+The image installs the same `.deb`, so KyDNS runs under the packaged unit,
+including `CAP_NET_RAW` for the optional IPv6 DNS advertisement. On a
+dual-stack home network with Android phones, turn that on from the DHCP tab
+(see [Features](FEATURES.md#the-ipv6-dns-advertisement)) after turning off the
+router's own IPv6 DNS advertisement.
+
 The base is pinned. `packaging/rpi-base.pin` names one official arm64 Lite
 release and the SHA-256 Raspberry Pi published for it, and the builder refuses
 a download that does not match — a release is signed and attested, so what it

@@ -15,6 +15,11 @@ replication failures, and replication conflicts join that list. Query logs must
 be configurable, minimized by default, and retained by the operator's logging
 platform rather than KyDNS.
 
+The IPv6 DNS advertisement logs `ipv6 dns advertisement started` (the
+interface and KyDNS's own advertised address), `stopped`, and why it cannot
+start. Nothing about router solicitations or the hosts that send them is ever
+logged.
+
 Query logging is off by default (`log_queries`), and recording the client IP is
 a separate opt-in (`log_client_ip`), so turning on query logging does not by
 itself record who asked. Both are server settings, edited under Settings in the

@@ -73,7 +73,7 @@ SECURITY.md says), an attacker on the host, and a malicious administrator.
 ## Secure design principles applied
 
 - **Least privilege.** The container runs as uid 65532 with every capability dropped; the systemd
-  unit runs as `kydns` with only `CAP_NET_BIND_SERVICE` (both checked in CI). Agent tokens are
+  unit runs as `kydns` with only `CAP_NET_BIND_SERVICE` and `CAP_NET_RAW`, the second for the optional IPv6 DNS advertisement (both checked in CI). Agent tokens are
   read-only unless an administrator grants write.
 - **Fail-safe defaults.** The admin listener binds `127.0.0.1:8053`. Query logging and client-IP
   logging are off. `KYDNS_TRUSTED_PROXIES` is empty and refuses `/0`. Plain-UDP upstreams are

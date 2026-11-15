@@ -85,7 +85,7 @@ func Qualifies(name string) error {
 	if ifi.Flags&net.FlagLoopback != 0 {
 		return fmt.Errorf("interface %q is the loopback", name)
 	}
-	if isVeth(name) {
+	if IsVeth(name) {
 		// Everything above passes inside a bridge-mode container. The socket
 		// would bind, and no client would ever be heard.
 		return ErrNotSupported
@@ -96,7 +96,8 @@ func Qualifies(name string) error {
 	return nil
 }
 
-func isVeth(name string) bool {
+// IsVeth reports a veth interface: the inside of a bridge-mode container.
+func IsVeth(name string) bool {
 	b, err := os.ReadFile("/sys/class/net/" + name + "/uevent")
 	if err != nil {
 		return false

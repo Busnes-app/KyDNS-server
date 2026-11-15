@@ -132,7 +132,9 @@ func (s *Server) dhcpData(form dhcpForm, st adminapi.DHCPStatus, errMsg string) 
 	if err != nil && errMsg == "" {
 		errMsg = err.Error()
 	}
+	v, _ := s.liveSettings()
 	return map[string]any{
+		"RDNSS": rdnssFormOf(v), "RDNSSStatus": s.rdnssStatus(), "PrivateDomain": v.PrivateDomain,
 		"Title": "DHCP", "Nav": "dhcp", "Form": form, "Leases": rows,
 		"Running": st.Running, "StartError": st.Error,
 		"Supported": st.Supported, "Reason": st.Reason, "DualStack": st.DualStack,

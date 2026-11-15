@@ -69,7 +69,10 @@ zones, `allow_query`, `allow_tailscale`, the TTL, all four cache settings, both
 log flags, the three health settings, the discovery interval,
 `dhcp_lease_file` — the discovery poller is repointed at the new file in place —
 and every `dhcp_*` key, which reconciles the built-in server's listener: it
-starts, stops, or rebinds to match what you saved.
+starts, stops, or rebinds to match what you saved. The three `rdnss_*` keys
+(`rdnss_enabled`, `rdnss_interface`, `rdnss_address`) do the same for the IPv6
+DNS advertisement; like the `dhcp_*` keys they are node-local and never
+replicate.
 
 ### Renaming the private domain
 

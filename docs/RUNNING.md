@@ -89,7 +89,9 @@ or in Docker with `network_mode: host` (which needs a host sysctl, see "Four
 things that bite") — not on a LAN-attached container network. The startup check refuses a bridge-mode container but not this one,
 so enabling DHCP here gives you a listener that reports itself running and may
 never hear a client. Leave DHCP to the router on this path, or install
-natively.
+natively. The IPv6 DNS advertisement is the same, and also needs a raw socket
+this non-root container cannot open: it refuses to start with a message naming
+the native package.
 
 ```sh
 cp .env.example .env                    # set KYDNS_IP, and KYDNS_NETWORK if not br0

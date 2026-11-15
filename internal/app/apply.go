@@ -29,7 +29,8 @@ type liveComponents struct {
 	zoneHolder    *zone.Holder
 	registry      *registry.Registry
 	logger        *slog.Logger
-	dhcp          *dhcpRunner // nil in tests that do not build one
+	dhcp          *dhcpRunner  // nil in tests that do not build one
+	rdnss         *rdnssRunner // nil in tests that do not build one
 
 	// prevUpstreams tracks what the forwarder was last told, so a change
 	// against the previous upstream list flushes stale cached answers.
@@ -85,6 +86,9 @@ func (l *liveComponents) Apply(s *settings.Snapshot) {
 	// than a restart of a working listener.
 	if l.dhcp != nil {
 		l.dhcp.Reconcile(s.Raw)
+	}
+	if l.rdnss != nil {
+		l.rdnss.Reconcile(s.Raw)
 	}
 	if l.poller != nil {
 		// Gated on what is actually running, not on what was asked for: a

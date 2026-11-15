@@ -126,6 +126,7 @@ func (s *Server) postServerSettings(w http.ResponseWriter, r *http.Request) {
 	v.DHCPRangeStart, v.DHCPRangeEnd = cur.DHCPRangeStart, cur.DHCPRangeEnd
 	v.DHCPGateway, v.DHCPLeaseSeconds = cur.DHCPGateway, cur.DHCPLeaseSeconds
 	v.DHCPSecondaryDNS, v.DHCPAllowForeign = cur.DHCPSecondaryDNS, cur.DHCPAllowForeign
+	v.RDNSSEnabled, v.RDNSSInterface, v.RDNSSAddress = cur.RDNSSEnabled, cur.RDNSSInterface, cur.RDNSSAddress
 
 	// Renaming the private zone moves every manual record with it. That is the
 	// operator's data, so they see exactly what will change and say yes before

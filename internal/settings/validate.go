@@ -93,6 +93,27 @@ func ValidateStored(v store.Settings) error {
 	if err := validateDHCP(v); err != nil {
 		return err
 	}
+	return validateRDNSS(v)
+}
+
+// validateRDNSS checks the IPv6 DNS advertisement's stored values. Like DHCP,
+// whether the interface exists and holds the address is host state, checked
+// when the sender starts.
+func validateRDNSS(v store.Settings) error {
+	name := strings.TrimSpace(v.RDNSSInterface)
+	if name != v.RDNSSInterface || len(name) > 15 || strings.ContainsAny(name, "/ \t") || name == "." || name == ".." {
+		return bad("rdnss_interface", "%q is not an interface name", v.RDNSSInterface)
+	}
+	if v.RDNSSEnabled && name == "" {
+		return bad("rdnss_interface", "an interface is required to send IPv6 DNS advertisements")
+	}
+	if v.RDNSSAddress == "" {
+		return nil
+	}
+	a, err := netip.ParseAddr(v.RDNSSAddress)
+	if err != nil || !a.Is6() || a.Is4In6() || a.Zone() != "" || !a.IsGlobalUnicast() {
+		return bad("rdnss_address", "%q is not an IPv6 unicast address KyDNS can advertise; link-local, loopback and multicast addresses cannot be used", v.RDNSSAddress)
+	}
 	return nil
 }
 

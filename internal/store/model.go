@@ -141,6 +141,11 @@ type Settings struct {
 	// failure it guards against takes down the whole network rather than one
 	// name.
 	DHCPAllowForeign bool
+
+	// RDNSS settings drive the IPv6 DNS advertisement. Node-local, like DHCP.
+	RDNSSEnabled   bool
+	RDNSSInterface string
+	RDNSSAddress   string // empty: choose a stable address automatically
 }
 
 // AdminIdentity holds the admin credentials and linked KyIdentity SSO identity.

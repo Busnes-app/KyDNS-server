@@ -87,6 +87,8 @@ Keep these aligned:
 - `docs/superpowers/specs/2026-10-20-kydns-mcp-agent-access-design.md` — MCP
   endpoint for AI agents: agent token scopes, the query-log grant, the in-memory
   query ring, bounded pause.
+- `docs/superpowers/specs/2026-11-15-rdnss-design.md` — IPv6 DNS advertisement
+  (RDNSS/DNSSL router advertisements): threat model, packet, timing, routes.
 - `docs/RESTORE.md` — restore runbook; `scripts/restore-drill.sh` proves Step 1.
 - `docs/superpowers/plans/2026-09-05-kydns-recoveryclient-v051.md` — v0.5.1
   drill migration, existing-pairing compatibility, and separate fixture/live proof.
@@ -153,6 +155,17 @@ Code, one concern per package:
   `Decide` compares on every query, so it resumes with no timer.
 - `internal/discovery`, `internal/health` — DHCP leases and check probes.
   Runtime state only; never persisted unless an operator promotes it.
+- `internal/rdnss` — the optional IPv6 DNS advertisement: router advertisements
+  with router lifetime 0 carrying only RDNSS and DNSSL (RFC 8106), on one
+  interface, from a raw ICMPv6 socket (`CAP_NET_RAW`, granted by the packaged
+  unit). It never sends prefix information. The address is configured or a
+  stable ULA/global read with its kernel flags from `/proc/net/if_inet6`;
+  temporary, deprecated, tentative and link-local addresses are refused.
+  `internal/app/rdnss.go` runs it like DHCP: node-local `rdnss_*` settings, never
+  on a replica, refused when `dns.listen` does not answer on the address.
+  `TestAdvertBytes` pins the packet; `TestNetnsAdvertisement` sends a real one
+  over a veth pair in a user namespace (CI runs it with namespaces allowed).
+  Verify with `go test ./internal/rdnss ./internal/app ./internal/web ./internal/adminapi -run 'RDNSS|Advert|Netns|ListensOn|ACLWarning|Choose|Solicit'`.
 - `internal/dhcpd` — the optional built-in DHCPv4 server. It implements
   `discovery/dhcp.Source`, so its leases reach DNS by the lease-file path.
   Node-local: its settings never replicate, and a replica never serves it.

@@ -173,7 +173,10 @@ CREATE TABLE IF NOT EXISTS settings (
   dhcp_gateway       TEXT NOT NULL DEFAULT '',
   dhcp_lease_seconds INTEGER NOT NULL DEFAULT 86400,
   dhcp_secondary_dns TEXT NOT NULL DEFAULT '',
-  dhcp_allow_foreign INTEGER NOT NULL DEFAULT 0
+  dhcp_allow_foreign INTEGER NOT NULL DEFAULT 0,
+  rdnss_enabled      INTEGER NOT NULL DEFAULT 0,
+  rdnss_interface    TEXT NOT NULL DEFAULT '',
+  rdnss_address      TEXT NOT NULL DEFAULT ''
 );
 -- Node-local: no config_version trigger. A lease is this node's own DHCP
 -- state, never a peer's, same as the tables below.
@@ -363,6 +366,10 @@ var migrations = []string{
 	// seeded. The slot stays, empty, because user_version counts migrations;
 	// dropping it would make the next appended migration look already applied.
 	``,
+	// Node-local, like the dhcp_ columns: no cv_ trigger names them.
+	`ALTER TABLE settings ADD COLUMN rdnss_enabled INTEGER NOT NULL DEFAULT 0;
+	 ALTER TABLE settings ADD COLUMN rdnss_interface TEXT NOT NULL DEFAULT '';
+	 ALTER TABLE settings ADD COLUMN rdnss_address TEXT NOT NULL DEFAULT '';`,
 }
 
 // migrate runs against a transaction Open already holds, so a crash
@@ -1325,15 +1332,18 @@ func (s *Store) ApplySnapshot(in SnapshotInput, check func(SnapshotInput) error)
 	settings := in.Settings
 	var dhcpLeaseFile, dhcpInterface, dhcpRangeStart, dhcpRangeEnd, dhcpGateway, dhcpSecondaryDNS string
 	var discoveryInterval, dhcpLeaseSeconds int
-	var logQueries, logClientIP, dhcpEnabled, dhcpAllowForeign bool
+	var logQueries, logClientIP, dhcpEnabled, dhcpAllowForeign, rdnssEnabled bool
+	var rdnssInterface, rdnssAddress string
 	err = tx.QueryRow(`
 SELECT dhcp_lease_file, discovery_interval, log_queries, log_client_ip,
        dhcp_enabled, dhcp_interface, dhcp_range_start, dhcp_range_end,
-       dhcp_gateway, dhcp_lease_seconds, dhcp_secondary_dns, dhcp_allow_foreign
+       dhcp_gateway, dhcp_lease_seconds, dhcp_secondary_dns, dhcp_allow_foreign,
+       rdnss_enabled, rdnss_interface, rdnss_address
 FROM settings WHERE id = 1`).
 		Scan(&dhcpLeaseFile, &discoveryInterval, &logQueries, &logClientIP,
 			&dhcpEnabled, &dhcpInterface, &dhcpRangeStart, &dhcpRangeEnd,
-			&dhcpGateway, &dhcpLeaseSeconds, &dhcpSecondaryDNS, &dhcpAllowForeign)
+			&dhcpGateway, &dhcpLeaseSeconds, &dhcpSecondaryDNS, &dhcpAllowForeign,
+			&rdnssEnabled, &rdnssInterface, &rdnssAddress)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return err
 	}
@@ -1344,6 +1354,7 @@ FROM settings WHERE id = 1`).
 		settings.DHCPRangeStart, settings.DHCPRangeEnd = dhcpRangeStart, dhcpRangeEnd
 		settings.DHCPGateway, settings.DHCPLeaseSeconds = dhcpGateway, dhcpLeaseSeconds
 		settings.DHCPSecondaryDNS, settings.DHCPAllowForeign = dhcpSecondaryDNS, dhcpAllowForeign
+		settings.RDNSSEnabled, settings.RDNSSInterface, settings.RDNSSAddress = rdnssEnabled, rdnssInterface, rdnssAddress
 	}
 	in.Settings = settings
 	if check != nil {
