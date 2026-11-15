@@ -63,6 +63,7 @@ const (
 	minCutTTL       = 60 * time.Second
 	maxCutTTL       = time.Hour
 	bogusCutTTL     = 60 * time.Second
+	maxTTL          = 1<<31 - 1 // RFC 2181 §8
 )
 
 // builtinNTAs are private-use names a LAN router answers itself, unsigned,
@@ -166,6 +167,10 @@ type run struct {
 	// exhausted: the per-answer budget ran out, so a bogus delegation found
 	// meanwhile is not cached for other answers.
 	exhausted bool
+	// signed and proved: the answer's and the authority section's RRsets
+	// that verified, with the signature that did. Only these survive a
+	// Secure verdict.
+	signed, proved map[key]*dns.RRSIG
 }
 
 // note lowers the run's expiry to t.
@@ -185,7 +190,7 @@ func (v *Validator) Check(ctx context.Context, q dns.Question, m *dns.Msg) (Resu
 	if q.Qtype == dns.TypeRRSIG || q.Qtype == dns.TypeANY {
 		return insecure, nil
 	}
-	r := &run{v: v, ctx: ctx, budget: maxSigsPerCheck}
+	r := &run{v: v, ctx: ctx, budget: maxSigsPerCheck, signed: map[key]*dns.RRSIG{}, proved: map[key]*dns.RRSIG{}}
 	if v.clock != nil {
 		r.skip, _ = v.clock.Skip()
 	}
@@ -235,9 +240,7 @@ func (v *Validator) Check(ctx context.Context, q dns.Question, m *dns.Msg) (Resu
 		}
 		keep = append(keep, k)
 		if k.t != dns.TypeCNAME || q.Qtype == dns.TypeCNAME {
-			trim(m, keep, sigs, false)
-			res.Expires = r.expires
-			return res, nil
+			return r.finish(m, keep, false, res), nil
 		}
 		name = dns.CanonicalName(set[0].(*dns.CNAME).Target)
 	}
@@ -246,12 +249,38 @@ func (v *Validator) Check(ctx context.Context, q dns.Question, m *dns.Msg) (Resu
 	if err != nil {
 		return vr, err
 	}
-	res = merge(res, vr)
-	if res.Security != Bogus {
-		trim(m, keep, sigs, true)
-		res.Expires = r.expires
+	if res = merge(res, vr); res.Security == Bogus {
+		return res, nil
 	}
-	return res, nil
+	return r.finish(m, keep, true, res), nil
+}
+
+// finish trims m to what was validated and, when Secure, bounds every TTL by
+// the Original TTLs and expiries the verdict rests on (RFC 4035 §5.3.3), so
+// neither this reply nor a cached copy outlives its authentication.
+func (r *run) finish(m *dns.Msg, keep []key, negative bool, res Result) Result {
+	secure := res.Security == Secure
+	trim(m, keep, r.proved, negative, secure)
+	if secure {
+		now := r.v.now()
+		limit := uint32(maxTTL)
+		for _, sigs := range []map[key]*dns.RRSIG{r.signed, r.proved} {
+			for _, sig := range sigs {
+				limit = min(limit, sig.OrigTtl)
+			}
+		}
+		if !r.expires.IsZero() {
+			limit = uint32(min(time.Duration(limit), max(r.expires.Sub(now), 0)/time.Second))
+		}
+		r.note(now.Add(time.Duration(limit) * time.Second))
+		for _, sec := range [][]dns.RR{m.Answer, m.Ns} {
+			for _, rr := range sec {
+				rr.Header().Ttl = min(rr.Header().Ttl, limit)
+			}
+		}
+	}
+	res.Expires = r.expires
+	return res
 }
 
 // checkSet validates one answer RRset. A DS set lives in the parent zone.
@@ -268,10 +297,11 @@ func (r *run) checkSet(k key, set []dns.RR, sigs map[key][]*dns.RRSIG, ns []dns.
 	if res.Security != Secure {
 		return res, nil
 	}
+	r.signed[k] = sig
 	// Fewer RRSIG labels than the owner has: a wildcard expansion, valid only
 	// with proof that the owner itself does not exist (RFC 4035 §5.3.4).
 	if labels := dns.CountLabel(k.name); int(sig.Labels) < labels {
-		nsec, nsec3, pr := r.proofs(z, ns)
+		nsec, nsec3, pr := r.proofs(z, ns, r.proved)
 		if pr.Security != Secure {
 			return pr, nil
 		}
@@ -299,7 +329,7 @@ func (r *run) checkDenial(name string, qtype uint16, rcode int, ns []dns.RR) (Re
 	if err != nil || z == nil {
 		return res, err
 	}
-	nsec, nsec3, pr := r.proofs(z, ns)
+	nsec, nsec3, pr := r.proofs(z, ns, r.proved)
 	if pr.Security != Secure {
 		return pr, nil
 	}
@@ -322,9 +352,10 @@ func provedBy(ok bool) Result {
 	return bogus(dns.ExtendedErrorCodeNSECMissing)
 }
 
-// proofs verifies every NSEC, NSEC3 and SOA RRset in ns against z and returns
-// the denial records. Records outside z are ignored.
-func (r *run) proofs(z *zone, ns []dns.RR) ([]*dns.NSEC, []*dns.NSEC3, Result) {
+// proofs verifies every NSEC, NSEC3 and SOA RRset in ns against z, records
+// each in proved (nil skips), and returns the denial records. Records outside
+// z are ignored.
+func (r *run) proofs(z *zone, ns []dns.RR, proved map[key]*dns.RRSIG) ([]*dns.NSEC, []*dns.NSEC3, Result) {
 	sets, sigs := group(ns)
 	var nsec []*dns.NSEC
 	var nsec3 []*dns.NSEC3
@@ -347,6 +378,9 @@ func (r *run) proofs(z *zone, ns []dns.RR) ([]*dns.NSEC, []*dns.NSEC3, Result) {
 		}
 		if int(sig.Labels) != labels {
 			return nil, nil, bogus(dns.ExtendedErrorCodeDNSBogus)
+		}
+		if proved != nil {
+			proved[k] = sig
 		}
 		for _, rr := range set {
 			switch x := rr.(type) {
@@ -529,7 +563,7 @@ func (r *run) classify(p *zone, child string) (cut, time.Duration, error) {
 			return cut{kind: cutNone}, ttl, nil
 		}
 	}
-	nsec, nsec3, res := r.proofs(p, m.Ns)
+	nsec, nsec3, res := r.proofs(p, m.Ns, nil)
 	if res.Security != Secure {
 		return cut{kind: cutBogus, res: res}, ttl, nil
 	}
@@ -685,8 +719,9 @@ func group(rrs []dns.RR) (map[key][]dns.RR, map[key][]*dns.RRSIG) {
 }
 
 // trim keeps only the validated answer RRsets, and in the authority section
-// only the denial proof (and the SOA on a negative answer).
-func trim(m *dns.Msg, keep []key, sigs map[key][]*dns.RRSIG, negative bool) {
+// only the denial proof (and the SOA on a negative answer). A Secure answer
+// keeps only the authority RRsets in proved.
+func trim(m *dns.Msg, keep []key, proved map[key]*dns.RRSIG, negative, secure bool) {
 	want := map[key]bool{}
 	for _, k := range keep {
 		want[k] = true
@@ -698,20 +733,25 @@ func trim(m *dns.Msg, keep []key, sigs map[key][]*dns.RRSIG, negative bool) {
 		if s, ok := rr.(*dns.RRSIG); ok {
 			k.t = s.TypeCovered
 		}
-		if want[k] {
+		if want[k] && h.Class == dns.ClassINET {
 			ans = append(ans, rr)
 		}
 	}
 	m.Answer = ans
 	var ns []dns.RR
 	for _, rr := range m.Ns {
-		t := rr.Header().Rrtype
+		h := rr.Header()
+		k := key{dns.CanonicalName(h.Name), h.Rrtype}
 		if s, ok := rr.(*dns.RRSIG); ok {
-			t = s.TypeCovered
+			k.t = s.TypeCovered
 		}
-		if t == dns.TypeNSEC || t == dns.TypeNSEC3 || (negative && t == dns.TypeSOA) {
-			ns = append(ns, rr)
+		if k.t != dns.TypeNSEC && k.t != dns.TypeNSEC3 && (!negative || k.t != dns.TypeSOA) {
+			continue
 		}
+		if secure && (h.Class != dns.ClassINET || proved[k] == nil) {
+			continue
+		}
+		ns = append(ns, rr)
 	}
 	m.Ns = ns
 }

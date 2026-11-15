@@ -220,3 +220,31 @@ func TestCachePutUntilBeatsTheTTLFloor(t *testing.T) {
 		t.Fatal("cached an answer whose signatures had already expired")
 	}
 }
+
+// A validated reply never advertises a TTL past its signatures, neither the
+// first reply nor a cached one (RFC 4035 §5.3.3).
+func TestValidatedTTLsStopAtSignatureExpiry(t *testing.T) {
+	w := signedWorld()
+	w.Zones["test."].Until = time.Now().Add(30 * time.Second)
+	s, up := validatingServer(t, w)
+	var calls int64
+	for i := range 2 {
+		m := askV(s, "www.test.", flags{do: true})
+		if i == 0 {
+			calls = up.calls.Load()
+		}
+		if m.Rcode != dns.RcodeSuccess || !m.AuthenticatedData || len(m.Answer) == 0 {
+			t.Fatalf("reply %d: %v", i, m)
+		}
+		for _, sec := range [][]dns.RR{m.Answer, m.Ns} {
+			for _, rr := range sec {
+				if rr.Header().Ttl > 30 {
+					t.Errorf("reply %d: %v advertises %ds past a 30s signature", i, rr, rr.Header().Ttl)
+				}
+			}
+		}
+	}
+	if up.calls.Load() != calls {
+		t.Fatal("the second reply was not served from the cache")
+	}
+}

@@ -579,7 +579,7 @@ func TestWildcardOwnedNSECReplayedIsBogus(t *testing.T) {
 	tz := &zone{name: "test.", keys: []*dns.DNSKEY{w.Zones["test."].Key}}
 	lit := &dns.NSEC{Hdr: dns.RR_Header{Name: "*.wc.test.", Rrtype: dns.TypeNSEC, Class: dns.ClassINET, Ttl: 300},
 		NextDomain: "www.test.", TypeBitMap: []uint16{dns.TypeCNAME, dns.TypeRRSIG, dns.TypeNSEC}}
-	if got, _, res := r.proofs(tz, w.Zones["test."].Signed([]dns.RR{lit})); res.Security != Secure || len(got) != 1 {
+	if got, _, res := r.proofs(tz, w.Zones["test."].Signed([]dns.RR{lit}), nil); res.Security != Secure || len(got) != 1 {
 		t.Fatalf("literal wildcard NSEC refused: %+v", res)
 	}
 }
@@ -681,5 +681,98 @@ func TestDNAME(t *testing.T) {
 	m.Answer = append(append([]dns.RR{}, d.Answer...), bad)
 	if res, _ := v.Check(context.Background(), m.Question[0], m); res.Security == Secure {
 		t.Fatalf("mismatched CNAME after a DNAME: %+v", res)
+	}
+}
+
+// Unsigned authority records and other-class answers planted beside a Secure
+// answer are dropped; the signed denial proof survives.
+func TestSecureKeepsOnlyVerifiedAuthority(t *testing.T) {
+	w := world(t)
+	v := newV(w)
+	w.Tamper = func(n string, q uint16, m *dns.Msg) {
+		if q != dns.TypeA || (n != "www.test." && n != "x.wild.test." && n != "nope.test.") {
+			return
+		}
+		// Outside the zone, so no proof check ever looks at them.
+		m.Ns = append(m.Ns, mustRR("evil.example. 300 IN NSEC zz.evil.example. A RRSIG NSEC"),
+			mustRR("abc.evil.example. 300 IN NSEC3 1 0 0 - def A"),
+			mustRR("evil.example. 300 IN SOA ns.evil.example. h.evil.example. 1 2 3 4 5"))
+		if n == "www.test." { // no proof is needed here, so in-zone ones go unchecked too
+			m.Ns = append(m.Ns, mustRR("evil.test. 300 IN NSEC zz.test. A RRSIG NSEC"))
+		}
+		if len(m.Answer) > 0 {
+			chaos := dns.Copy(m.Answer[0])
+			chaos.Header().Class = dns.ClassCHAOS
+			m.Answer = append(m.Answer, chaos)
+		}
+	}
+	for _, name := range []string{"www.test.", "x.wild.test.", "nope.test."} {
+		res, m := check(t, v, w, name, dns.TypeA)
+		if res.Security != Secure {
+			t.Fatalf("%s: %+v", name, res)
+		}
+		for _, rr := range append(append([]dns.RR{}, m.Answer...), m.Ns...) {
+			h := rr.Header()
+			if h.Class != dns.ClassINET || strings.Contains(h.Name, "evil") {
+				t.Errorf("%s: unverified %v survived", name, rr)
+			}
+		}
+		if name != "www.test." && !hasNSEC(m.Ns) {
+			t.Errorf("%s: the signed proof was dropped: %v", name, m.Ns)
+		}
+	}
+}
+
+func hasNSEC(rrs []dns.RR) bool {
+	for _, rr := range rrs {
+		if rr.Header().Rrtype == dns.TypeNSEC {
+			return true
+		}
+	}
+	return false
+}
+
+// A Secure reply's TTLs never exceed the Original TTL or the time left on the
+// signatures (RFC 4035 §5.3.3), and the verdict expires no later.
+func TestSecureTTLsBoundedBySignatures(t *testing.T) {
+	w := world(t)
+	soon := dnssectest.Now.Add(30 * time.Second)
+	w.Zones["test."].Until = soon
+	w.Tamper = func(n string, q uint16, m *dns.Msg) {
+		if q == dns.TypeA && (n == "www.test." || n == "nope.test.") {
+			for _, sec := range [][]dns.RR{m.Answer, m.Ns} {
+				for _, rr := range sec {
+					if rr.Header().Rrtype != dns.TypeRRSIG {
+						rr.Header().Ttl = 86400 // unsigned: an upstream may inflate it
+					}
+				}
+			}
+		}
+	}
+	v := newV(w)
+	for _, name := range []string{"www.test.", "nope.test."} {
+		res, m := check(t, v, w, name, dns.TypeA)
+		if res.Security != Secure || res.Expires.After(soon) {
+			t.Fatalf("%s: %+v", name, res)
+		}
+		for _, sec := range [][]dns.RR{m.Answer, m.Ns} {
+			for _, rr := range sec {
+				if rr.Header().Ttl > 30 {
+					t.Errorf("%s: %v keeps TTL %d past its signature", name, rr, rr.Header().Ttl)
+				}
+			}
+		}
+	}
+	// Original TTL binds when the signatures last longer.
+	w = world(t)
+	w.Tamper = func(n string, q uint16, m *dns.Msg) {
+		if n == "www.test." && q == dns.TypeA {
+			m.Answer[0].Header().Ttl = 86400
+		}
+	}
+	v = newV(w)
+	res, m := check(t, v, w, "www.test.", dns.TypeA)
+	if res.Security != Secure || m.Answer[0].Header().Ttl != 300 || res.Expires.After(dnssectest.Now.Add(300*time.Second)) {
+		t.Fatalf("%+v TTL %d, want the signed 300", res, m.Answer[0].Header().Ttl)
 	}
 }

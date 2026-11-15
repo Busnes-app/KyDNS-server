@@ -66,9 +66,11 @@ Validation sits inside `dnsserver.Forwarder`, behind the cache. With the setting
    encloser do not exist; NODATA needs a matching NSEC/NSEC3 without the type (or the
    wildcard NODATA form). NSEC3 opt-out on a DS query is insecure, per RFC 5155.
 6. The answer leaves with only what was validated: on a secure positive answer the
-   authority section keeps only its NSEC/NSEC3/RRSIG proof records; on a negative one,
-   the SOA and the proof. The additional section is passed on, as resolvers do; AD does
-   not cover it.
+   authority section keeps only the NSEC/NSEC3 proof RRsets that verified (and their
+   RRSIGs); on a negative one, the verified SOA and proof. Every TTL in a secure answer
+   is capped by the Original TTLs and the time left on the signatures (RFC 4035
+   §5.3.3), before it is cached or sent. The additional section is passed on, as
+   resolvers do; AD does not cover it.
 
 Verdicts:
 
