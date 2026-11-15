@@ -71,6 +71,12 @@ Validation sits inside `dnsserver.Forwarder`, behind the cache. With the setting
    is capped by the Original TTLs and the time left on the signatures (RFC 4035
    §5.3.3), before it is cached or sent. The additional section is passed on, as
    resolvers do; AD does not cover it.
+7. Types that are not one RRset: ANY cannot be validated, so while validating the
+   Forwarder never forwards it and answers with the RFC 8482 §4.2 HINFO ("RFC8482",
+   AD=0, nothing cached); `Check` calls ANY bogus (EDE 21) as a backstop. An RRSIG
+   query is not validated either: it keeps only RRSIGs owned by the query name, AD=0.
+   Other meta types (AXFR, IXFR, MAILA, MAILB) go through the normal path, where
+   records not of the asked type need a denial proof and are trimmed.
 
 Verdicts:
 

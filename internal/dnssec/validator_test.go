@@ -110,7 +110,7 @@ func TestVerdicts(t *testing.T) {
 		{"nope.n3.test.", dns.TypeA, Insecure, 0},      // NXDOMAIN inside an opt-out span
 		{"printer.lan.", dns.TypeA, Insecure, 0},       // built-in NTA
 		{"www.test.", dns.TypeRRSIG, Insecure, 0},      // not an RRset to validate
-		{"www.test.", dns.TypeANY, Insecure, 0},
+		{"www.test.", dns.TypeANY, Bogus, dns.ExtendedErrorCodeNotSupported},
 		{"www.expired.test.", dns.TypeA, Bogus, dns.ExtendedErrorCodeSignatureExpired},
 		{"www.wrongkey.test.", dns.TypeA, Bogus, dns.ExtendedErrorCodeDNSKEYMissing},
 		{"www.dn.n3s.test.", dns.TypeA, Bogus, dns.ExtendedErrorCodeNSECMissing}, // NSEC3 NXDOMAIN under a DNAME
@@ -121,6 +121,27 @@ func TestVerdicts(t *testing.T) {
 		res, _ := check(t, v, w, c.name, c.qtype)
 		if res.Security != c.want || res.EDE != c.ede {
 			t.Errorf("%s %s = %+v, want %v ede %d", c.name, dns.TypeToString[c.qtype], res, c.want, c.ede)
+		}
+	}
+}
+
+// An RRSIG answer is not validated, so it keeps only the qname's RRSIGs:
+// forged data riding along must not pass as Insecure.
+func TestRRSIGAnswerKeepsOnlySignatures(t *testing.T) {
+	w := world(t)
+	v := newV(w)
+	w.Tamper = func(_ string, q uint16, m *dns.Msg) {
+		if q == dns.TypeRRSIG {
+			m.Answer = append(m.Answer, mustRR("www.test. 300 IN A 192.0.2.66"), mustRR("evil.test. 300 IN RRSIG A 13 2 300 20311114120000 20251115120000 1 test. AAAA"))
+		}
+	}
+	res, m := check(t, v, w, "www.test.", dns.TypeRRSIG)
+	if res.Security != Insecure {
+		t.Fatalf("%+v", res)
+	}
+	for _, rr := range m.Answer {
+		if rr.Header().Rrtype != dns.TypeRRSIG || rr.Header().Name != "www.test." {
+			t.Errorf("kept %v", rr)
 		}
 	}
 }

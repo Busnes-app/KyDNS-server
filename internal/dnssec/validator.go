@@ -186,8 +186,20 @@ func (v *Validator) Check(ctx context.Context, q dns.Question, m *dns.Msg) (Resu
 	if m.Rcode != dns.RcodeSuccess && m.Rcode != dns.RcodeNameError {
 		return insecure, nil
 	}
-	// RRSIG and ANY are not RRsets to validate; they pass through without AD.
-	if q.Qtype == dns.TypeRRSIG || q.Qtype == dns.TypeANY {
+	// ANY cannot be validated (the Forwarder answers it per RFC 8482).
+	if q.Qtype == dns.TypeANY {
+		return bogus(dns.ExtendedErrorCodeNotSupported), nil
+	}
+	// RRSIGs are not an RRset to validate: keep only the qname's, without AD.
+	if q.Qtype == dns.TypeRRSIG {
+		name := dns.CanonicalName(q.Name)
+		var keep []dns.RR
+		for _, rr := range m.Answer {
+			if h := rr.Header(); h.Rrtype == dns.TypeRRSIG && h.Class == dns.ClassINET && dns.CanonicalName(h.Name) == name {
+				keep = append(keep, rr)
+			}
+		}
+		m.Answer = keep
 		return insecure, nil
 	}
 	r := &run{v: v, ctx: ctx, budget: maxSigsPerCheck, signed: map[key]*dns.RRSIG{}, proved: map[key]*dns.RRSIG{}}

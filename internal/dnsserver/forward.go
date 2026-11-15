@@ -197,6 +197,9 @@ func (f *Forwarder) Resolve(ctx context.Context, q dns.Question, do bool) (*dns.
 	gen, val := f.gen.Load(), f.val.Load()
 	f.modeMu.RUnlock()
 	if val != nil {
+		if q.Qtype == dns.TypeANY {
+			return rfc8482(q), nil
+		}
 		do = true // signatures are needed to validate; the server strips them
 	}
 	if m, ok := f.cache.Get(q, do); ok {
@@ -228,6 +231,16 @@ func (f *Forwarder) Resolve(ctx context.Context, q dns.Question, do bool) (*dns.
 		return nil, err
 	}
 	return v.(*dns.Msg).Copy(), nil
+}
+
+// rfc8482 is the minimal ANY answer (RFC 8482 §4.2). ANY cannot be validated,
+// so a validating KyDNS never forwards it.
+func rfc8482(q dns.Question) *dns.Msg {
+	m := new(dns.Msg)
+	m.Question = []dns.Question{q}
+	m.Answer = []dns.RR{&dns.HINFO{Hdr: dns.RR_Header{Name: q.Name, Rrtype: dns.TypeHINFO, Class: dns.ClassINET, Ttl: 3600}, Cpu: "RFC8482"}}
+	m.SetEdns0(1232, false)
+	return m
 }
 
 // validated runs the validator on m. The verdict rides in the AD bit, so the

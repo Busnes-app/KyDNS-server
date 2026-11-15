@@ -248,3 +248,41 @@ func TestValidatedTTLsStopAtSignatureExpiry(t *testing.T) {
 		t.Fatal("the second reply was not served from the cache")
 	}
 }
+
+// ANY cannot be validated, so a validating KyDNS never forwards it: it answers
+// with the RFC 8482 HINFO and serves or caches nothing from the upstream.
+func TestValidatedANYServesNoUpstreamData(t *testing.T) {
+	w := signedWorld()
+	w.Tamper = func(_ string, q uint16, m *dns.Msg) {
+		if q == dns.TypeANY { // a forged, invalidly signed A set from a signed zone
+			rr, _ := dns.NewRR("www.test. 300 IN A 192.0.2.1")
+			a := w.Zones["test."].Signed([]dns.RR{rr})
+			a[0].(*dns.A).A = net.ParseIP("192.0.2.66").To4()
+			m.Answer = a
+		}
+	}
+	s, up := validatingServer(t, w)
+	for _, f := range []flags{{}, {do: true, ad: true}} {
+		r := new(dns.Msg)
+		r.SetQuestion("www.test.", dns.TypeANY)
+		r.AuthenticatedData = f.ad
+		if f.do {
+			r.SetEdns0(1232, true)
+		}
+		rw := &fakeResponseWriter{remote: &net.UDPAddr{IP: net.ParseIP("192.168.1.5"), Port: 12345}}
+		s.ServeDNS(rw, r)
+		m := rw.msg
+		if m.Rcode != dns.RcodeSuccess || m.AuthenticatedData || len(m.Answer) != 1 {
+			t.Fatalf("%+v: %v", f, m)
+		}
+		if h, ok := m.Answer[0].(*dns.HINFO); !ok || h.Cpu != "RFC8482" {
+			t.Fatalf("%+v: answer %v, want the RFC 8482 HINFO", f, m.Answer[0])
+		}
+	}
+	if n := up.calls.Load(); n != 0 {
+		t.Fatalf("ANY reached the upstream %d times", n)
+	}
+	if n := s.o.Forwarder.cache.Len(); n != 0 {
+		t.Fatalf("%d entries cached", n)
+	}
+}

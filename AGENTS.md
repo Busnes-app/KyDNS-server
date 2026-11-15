@@ -152,7 +152,9 @@ Code, one concern per package:
   `dnssec_validate`, node-local). `Forwarder` asks upstreams with DO=1, CD=1 and
   runs `Validator.Check` before caching. Check trims a Secure answer to the
   RRsets that verified (authority proofs included) and caps its TTLs by Original
-  TTL and signature expiry; the verdict rides in the cached AD bit,
+  TTL and signature expiry. ANY is never forwarded while validating (RFC 8482
+  HINFO answer); an RRSIG answer keeps only the qname's RRSIGs, AD=0. The
+  verdict rides in the cached AD bit,
   a bogus answer becomes SERVFAIL with an RFC 8914 EDE, and the server sets AD
   only for DO/AD clients and strips RRSIG/NSEC/NSEC3 for non-DO ones. Root
   anchors are embedded and checked against `testdata/root-anchors.xml`; Ed448
