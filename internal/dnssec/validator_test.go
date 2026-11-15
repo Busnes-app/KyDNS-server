@@ -102,6 +102,8 @@ func TestVerdicts(t *testing.T) {
 		{"www.deleg.n3.test.", dns.TypeA, Insecure, 0}, // NSEC3 opt-out
 		{"nope.n3.test.", dns.TypeA, Insecure, 0},      // NXDOMAIN inside an opt-out span
 		{"printer.lan.", dns.TypeA, Insecure, 0},       // built-in NTA
+		{"www.test.", dns.TypeRRSIG, Insecure, 0},      // not an RRset to validate
+		{"www.test.", dns.TypeANY, Insecure, 0},
 		{"www.expired.test.", dns.TypeA, Bogus, dns.ExtendedErrorCodeSignatureExpired},
 		{"www.wrongkey.test.", dns.TypeA, Bogus, dns.ExtendedErrorCodeDNSKEYMissing},
 	}

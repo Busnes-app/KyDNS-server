@@ -167,6 +167,10 @@ func (v *Validator) Check(ctx context.Context, q dns.Question, m *dns.Msg) (Resu
 	if m.Rcode != dns.RcodeSuccess && m.Rcode != dns.RcodeNameError {
 		return insecure, nil
 	}
+	// RRSIG and ANY are not RRsets to validate; they pass through without AD.
+	if q.Qtype == dns.TypeRRSIG || q.Qtype == dns.TypeANY {
+		return insecure, nil
+	}
 	r := &run{v: v, ctx: ctx, budget: maxSigsPerCheck}
 	if v.clock != nil {
 		r.skip, _ = v.clock.Skip()
