@@ -236,6 +236,16 @@ func validated(ctx context.Context, val *dnssec.Validator, q dns.Question, m *dn
 		return out, nil
 	}
 	m.AuthenticatedData = res.Security == dnssec.Secure
+	// The upstream's Extended DNS Errors describe its verdict, not ours.
+	if opt := m.IsEdns0(); opt != nil {
+		keep := opt.Option[:0]
+		for _, o := range opt.Option {
+			if _, ede := o.(*dns.EDNS0_EDE); !ede {
+				keep = append(keep, o)
+			}
+		}
+		opt.Option = keep
+	}
 	return m, nil
 }
 

@@ -192,6 +192,9 @@ func (s *Server) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 		// AD only for answers KyDNS proved, and only to a client that asked
 		// (RFC 6840 §5.7).
 		out.AuthenticatedData = resp.AuthenticatedData && (do || r.AuthenticatedData)
+		if opt := out.IsEdns0(); opt != nil {
+			opt.SetDo(do) // RFC 3225: echo the client's DO, not ours
+		}
 	}
 	if edns == nil {
 		stripOPT(out)

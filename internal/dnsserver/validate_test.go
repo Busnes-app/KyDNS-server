@@ -88,6 +88,22 @@ func TestValidatedADOnlyWhenAsked(t *testing.T) {
 	}
 }
 
+func TestValidatedReplyEchoesClientDOAndDropsUpstreamEDE(t *testing.T) {
+	w := signedWorld()
+	w.Tamper = func(_ string, _ uint16, m *dns.Msg) {
+		opt := &dns.OPT{Hdr: dns.RR_Header{Name: ".", Rrtype: dns.TypeOPT}}
+		opt.SetDo()
+		opt.Option = []dns.EDNS0{&dns.EDNS0_EDE{InfoCode: dns.ExtendedErrorCodeUnsupportedDNSKEYAlgorithm}}
+		m.Extra = append(m.Extra, opt)
+	}
+	s, _ := validatingServer(t, w)
+	m := askV(s, "www.test.", flags{edns: true})
+	opt := m.IsEdns0()
+	if opt == nil || opt.Do() || len(opt.Option) != 0 {
+		t.Fatalf("OPT = %v", opt)
+	}
+}
+
 func TestValidatedInsecureNeverAD(t *testing.T) {
 	s, _ := validatingServer(t, signedWorld())
 	m := askV(s, "www.unsigned.test.", flags{do: true, ad: true})
