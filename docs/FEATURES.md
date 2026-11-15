@@ -26,6 +26,10 @@ service checks remain separate at authenticated `/api/v1/health`.
   native install or Docker with `network_mode: host`, because DHCP has to
   hear broadcasts. DHCP lease discovery from a dnsmasq lease file still
   works for anyone who already runs their own.
+- An IPv6 DNS advertisement, off by default: router advertisements that carry
+  only KyDNS's address and the private domain (RFC 8106 RDNSS and DNSSL), so
+  IPv6 clients, and Android in particular, use KyDNS too. KyDNS never becomes
+  a router. See [below](#the-ipv6-dns-advertisement).
 - Optional health checks over HTTP, HTTPS, and TCP, configured through the CLI
   or API, with status at `/api/v1/health`. The Services page focuses on names,
   addresses, aliases and proxy routing.
@@ -111,6 +115,60 @@ DHCP, whatever its settings say, and promotion starts it with no restart. A
 promoted node comes up with an empty lease table and re-allocates from scratch,
 which is what the ARP probe before each address new to it is for.
 
+### The IPv6 DNS advertisement
+
+Android learns its DNS server only from IPv6 router advertisements, and other
+clients often prefer the IPv6 resolver the router advertises, so on a
+dual-stack network DHCP alone does not bring every query to KyDNS. Turn this on
+in the **IPv6 DNS advertisement** card on the DHCP tab: type the interface,
+press **Fill in from this interface** to see the address KyDNS would advertise,
+then save. **Turn off your router's own IPv6 DNS advertisement (RDNSS) first,
+keeping IPv6 addressing on**: if both advertise, clients use both resolvers and
+names the router answers bypass KyDNS and its filtering.
+
+What KyDNS sends, on the one interface you chose, to `ff02::1` from its
+link-local address with hop limit 255:
+
+- Router lifetime 0, no prefix information, M and O flags clear: it is never a
+  default router and never numbers anyone.
+- One RDNSS option with KyDNS's address and one DNSSL option with the private
+  domain, both with a 1800-second lifetime (three times the 600-second maximum
+  interval, per RFC 8106).
+- An advertisement every 200–600 seconds, the first three at most 16 seconds
+  apart (RFC 4861). A router solicitation is answered within half a second, but
+  never sooner than 3 seconds after the previous advertisement, so a flood of
+  solicitations cannot make KyDNS flood the link.
+- When you turn it off, change the interface, or stop KyDNS cleanly, a last
+  advertisement with lifetime 0, so clients drop the address at once.
+
+**The address is a stable one.** An address you enter must be on the
+interface and must not be temporary, deprecated or tentative. Left empty,
+KyDNS picks a ULA (`fd00::/8`) first, because it survives your ISP changing
+the global prefix, then a stable global address. Temporary (privacy) and
+link-local addresses are never used. If `dns.listen` answers on IPv4 only or on
+a different address, the advertisement refuses to start and says so. If the
+address is a global one whose /64 `allow_query` does not cover, the card warns:
+clients would query from that /64 and be refused.
+
+**Where it runs:** the same places as the built-in DHCP server, and it also
+needs `CAP_NET_RAW` for its ICMPv6 socket. The `.deb`, the `.rpm` and the
+Raspberry Pi image grant it in their systemd unit. In Docker it needs
+`network_mode: host` and a container running as root; the default Compose
+install runs as uid 65532 with every capability dropped, and a bridge-mode
+container (a veth interface) is refused with a message naming the native
+package. A replica never advertises, like DHCP; the three `rdnss_*` settings
+are node-local, so a standby is configured in advance and promotion starts it.
+
+From the API, `GET /api/v1/rdnss/status` says whether it is running, the
+address and why not, and `GET /api/v1/rdnss/suggest?interface=eth0` is the
+wizard's proposal. The settings are `rdnss_enabled`, `rdnss_interface` and
+`rdnss_address`.
+
+Not verified on real devices: that every Android, iOS, Windows and Linux
+release honours RDNSS from an advertisement with router lifetime 0. RFC 4861
+§6.3.4 says hosts process the options regardless, and the CI test receives the
+advertisement over a veth pair, but phones have not been tested.
+
 ### Blacklist filtering
 
 The web UI's Blacklists tab has a global on/off toggle, the built-in list
@@ -145,11 +203,10 @@ refresh lists and pause blocking for up to an hour over MCP; see
   encrypted channel; it does not verify signatures itself. An `AD` bit from
   KyDNS means "the resolver we talked to privately said it validated," not
   "KyDNS checked the chain."
-- **IPv6 DNS advertisement.** On a dual-stack network your router advertises
-  itself as a DNS server over IPv6, and clients often prefer it — so some
-  queries bypass KyDNS even with its DHCP server running. Turning off the
-  router's IPv6 DNS advertisement fixes it. Doing it properly means KyDNS
-  sending router advertisements itself, which it does not.
+- **IPv6 DNS advertisement in a non-root container.** The advertisement needs
+  a raw ICMPv6 socket, which the default Compose install (uid 65532, every
+  capability dropped) cannot open. Use the native package, or host networking
+  as root. DHCPv6 is not offered either.
 - Docker Compose discovery, and lease formats other than dnsmasq.
 - Local TLS certificate issuance for private service names.
 

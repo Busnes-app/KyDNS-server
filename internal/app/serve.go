@@ -242,12 +242,17 @@ func Serve(ctx context.Context, cfgPath string, logger *slog.Logger) error {
 		role: roleHolder.Current,
 	}
 	dhcpRun.Reconcile(snap.Raw)
+	rdnssRun := &rdnssRunner{logger: logger, role: roleHolder.Current, listen: cfg.DNS.Listen}
+	rdnssRun.Reconcile(snap.Raw)
+	// A clean stop withdraws the advertisement, so hosts drop the address now
+	// rather than after its lifetime.
+	defer rdnssRun.Shutdown()
 
 	live := &liveComponents{
 		acl: acl, forwarder: fwd, cache: cache, dnsSrv: dnsSrv,
 		authoritative: authoritative, checker: checker, poller: poller,
 		zoneHolder: holder, registry: reg, logger: logger, prevUpstreams: boot.Upstreams,
-		dhcp: dhcpRun, current: settingsHolder.Current,
+		dhcp: dhcpRun, rdnss: rdnssRun, current: settingsHolder.Current,
 	}
 	// The role is read per write, not captured: a replica may configure its own
 	// node-local DHCP settings and nothing else, and promotion must widen that
@@ -319,6 +324,7 @@ func Serve(ctx context.Context, cfgPath string, logger *slog.Logger) error {
 		WithMetrics(dnsSrv.Metrics()).
 		WithReplication(func() adminapi.ReplicaStatus { return replStatus().toAdminAPI() }).
 		WithDHCP(dhcpRun).
+		WithRDNSS(rdnssRun).
 		WithBackupService(backupSvc).
 		WithMCP(dnsSrv, cfg.Admin.TrustedProxies, cfg.Admin.Hostnames, web.Version).
 		WithReplicaAdmin(&replicaAdmin{st: st, srv: repl.srv}).
@@ -328,7 +334,10 @@ func Serve(ctx context.Context, cfgPath string, logger *slog.Logger) error {
 			// Promotion starts the listener. Waiting for the next settings save
 			// would leave the LAN without DHCP at the one moment the primary it
 			// was following has gone.
-			onPromote: func() { dhcpRun.Reconcile(settingsHolder.Current().Raw) }})
+			onPromote: func() {
+				dhcpRun.Reconcile(settingsHolder.Current().Raw)
+				rdnssRun.Reconcile(settingsHolder.Current().Raw)
+			}})
 	// Pairing needs this node's key, so it is offered only where there is one.
 	if repl.id != nil {
 		api = api.WithReplicaJoiner(&replicaJoiner{st: st, id: repl.id, stopPull: repl.stopPull})

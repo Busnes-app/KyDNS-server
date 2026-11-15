@@ -138,8 +138,8 @@ in_container '
 	}
 
 	assert_show User kydns
-	assert_show AmbientCapabilities cap_net_bind_service
-	assert_show CapabilityBoundingSet cap_net_bind_service
+	assert_show AmbientCapabilities "cap_net_bind_service cap_net_raw"
+	assert_show CapabilityBoundingSet "cap_net_bind_service cap_net_raw"
 	assert_show NoNewPrivileges yes
 	assert_show ProtectSystem strict
 '

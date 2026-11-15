@@ -73,6 +73,15 @@ For a proxy on another host, change `admin.listen` in
 `/etc/kydns/kydns.yaml` to `0.0.0.0:8053` and set `KYDNS_TRUSTED_PROXIES` to the
 proxy's address (comma-separated IPs or CIDRs) with `systemctl edit kydns`.
 
+The unit runs KyDNS as the `kydns` user with two capabilities:
+`CAP_NET_BIND_SERVICE` for port 53 (and 67 when the built-in DHCP server is on)
+and `CAP_NET_RAW` for the optional IPv6 DNS advertisement's ICMPv6 socket. The
+second is granted even while that feature is off, so turning it on in the web
+UI needs no unit edit. To take it away, run `systemctl edit kydns` and set
+`AmbientCapabilities=CAP_NET_BIND_SERVICE` and
+`CapabilityBoundingSet=CAP_NET_BIND_SERVICE`; the advertisement then refuses to
+start and says why.
+
 | Path | What it is |
 |---|---|
 | `/etc/kydns/kydns.yaml` | Configuration. Your edits survive upgrades. |

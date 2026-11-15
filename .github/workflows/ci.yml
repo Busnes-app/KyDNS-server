@@ -137,6 +137,16 @@ jobs:
       - name: test
         run: go test -race -count=1 -timeout 10m ./...
 
+      # The full run skips this where unprivileged namespaces are refused, as
+      # Ubuntu's AppArmor does by default. Here it must run, not skip: a real
+      # advertisement over a veth pair, with RDNSS and router lifetime 0.
+      - name: router advertisement in a network namespace
+        run: |
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+          go test -count=1 -run '^TestNetnsAdvertisement$' -v ./internal/rdnss | tee "$RUNNER_TEMP/ra.log"
+          grep -q -- '--- PASS: TestNetnsAdvertisement' "$RUNNER_TEMP/ra.log"
+          ! grep -q -- '--- SKIP' "$RUNNER_TEMP/ra.log"
+
       - name: profile preserves Compose configuration
         run: python3 scripts/check-strong-crypto-compose.py
 
@@ -499,8 +509,8 @@ jobs:
           }
 
           assert_show User kydns
-          assert_show AmbientCapabilities cap_net_bind_service
-          assert_show CapabilityBoundingSet cap_net_bind_service
+          assert_show AmbientCapabilities "cap_net_bind_service cap_net_raw"
+          assert_show CapabilityBoundingSet "cap_net_bind_service cap_net_raw"
           assert_show NoNewPrivileges yes
           assert_show ProtectSystem strict
 

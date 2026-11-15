@@ -16,6 +16,10 @@ import (
 	"github.com/Busnes-app/kydns-server/internal/discovery/dhcp"
 )
 
+// dualStackNote opens the dual-stack card; the page names IPv6 elsewhere too,
+// in the IPv6 DNS advertisement card.
+const dualStackNote = "This network also runs IPv6"
+
 // errNoBind stands in for the listener refusing to start.
 var errNoBind = errors.New("bind: permission denied")
 
@@ -156,7 +160,7 @@ func TestDHCPPageShowsTheDualStackNote(t *testing.T) {
 func TestDHCPPageHidesTheDualStackNoteWhileNotRunning(t *testing.T) {
 	_, srv := newWeb(t)
 	body := renderDHCPState(t, srv, adminapi.DHCPStatus{Supported: true, DualStack: true}, "")
-	if strings.Contains(body, "IPv6") {
+	if strings.Contains(body, dualStackNote) {
 		t.Errorf("dual-stack note shown while the server is not running:\n%s", body)
 	}
 }
@@ -164,7 +168,7 @@ func TestDHCPPageHidesTheDualStackNoteWhileNotRunning(t *testing.T) {
 func TestDHCPPageHidesTheDualStackNoteOnIPv4Only(t *testing.T) {
 	_, srv := newWeb(t)
 	body := renderDHCPState(t, srv, adminapi.DHCPStatus{Running: true, Supported: true}, "")
-	if strings.Contains(body, "IPv6") {
+	if strings.Contains(body, dualStackNote) {
 		t.Errorf("dual-stack note shown on an IPv4-only segment:\n%s", body)
 	}
 }

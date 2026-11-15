@@ -45,6 +45,11 @@ type settingsDTO struct {
 	DHCPSecondaryDNS string `json:"dhcp_secondary_dns" yaml:"dhcp_secondary_dns"`
 	DHCPAllowForeign bool   `json:"dhcp_allow_foreign" yaml:"dhcp_allow_foreign"`
 
+	// The IPv6 DNS advertisement. Node-local, like the DHCP fields.
+	RDNSSEnabled   bool   `json:"rdnss_enabled" yaml:"rdnss_enabled"`
+	RDNSSInterface string `json:"rdnss_interface" yaml:"rdnss_interface"`
+	RDNSSAddress   string `json:"rdnss_address" yaml:"rdnss_address"`
+
 	// ConfirmPublic authorises one public allow_query prefix for this request
 	// only. It is never stored and never returned, and it has no yaml tag: a
 	// field absent from the export document must never round-trip through it.
@@ -70,6 +75,7 @@ func toSettingsDTO(v store.Settings) settingsDTO {
 		DHCPRangeStart: v.DHCPRangeStart, DHCPRangeEnd: v.DHCPRangeEnd,
 		DHCPGateway: v.DHCPGateway, DHCPLeaseSeconds: v.DHCPLeaseSeconds,
 		DHCPSecondaryDNS: v.DHCPSecondaryDNS, DHCPAllowForeign: v.DHCPAllowForeign,
+		RDNSSEnabled: v.RDNSSEnabled, RDNSSInterface: v.RDNSSInterface, RDNSSAddress: v.RDNSSAddress,
 	}
 }
 
@@ -88,6 +94,7 @@ func fromSettingsDTO(d settingsDTO) store.Settings {
 		DHCPRangeStart: d.DHCPRangeStart, DHCPRangeEnd: d.DHCPRangeEnd,
 		DHCPGateway: d.DHCPGateway, DHCPLeaseSeconds: d.DHCPLeaseSeconds,
 		DHCPSecondaryDNS: d.DHCPSecondaryDNS, DHCPAllowForeign: d.DHCPAllowForeign,
+		RDNSSEnabled: d.RDNSSEnabled, RDNSSInterface: d.RDNSSInterface, RDNSSAddress: d.RDNSSAddress,
 	}
 }
 

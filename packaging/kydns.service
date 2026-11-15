@@ -12,12 +12,13 @@ ExecStart=/usr/bin/kydns serve --config /etc/kydns/kydns.yaml
 Restart=on-failure
 RestartSec=5s
 
-# Binding privileged ports is the only privileged thing KyDNS does: port 53
-# for DNS, and port 67 when the built-in DHCP server is turned on. No raw
-# sockets are needed, because every DHCP reply is broadcast, so this one
-# capability is the whole grant.
-AmbientCapabilities=CAP_NET_BIND_SERVICE
-CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+# Two privileged things: binding port 53 (and 67 when the built-in DHCP server
+# is on), and the raw ICMPv6 socket the optional IPv6 DNS advertisement sends
+# router advertisements from. DHCP needs no raw socket; every reply is
+# broadcast. CAP_NET_RAW is granted even while the advertisement is off, so
+# turning it on in the web UI needs no unit edit.
+AmbientCapabilities=CAP_NET_BIND_SERVICE CAP_NET_RAW
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE CAP_NET_RAW
 NoNewPrivileges=yes
 
 # The database and the first-run tokens. The only writable path.

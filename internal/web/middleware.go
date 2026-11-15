@@ -111,6 +111,8 @@ const (
 	PathJoin               = "/replication/join"
 	PathDHCPSettings       = "/dhcp/settings"
 	PathDHCPSuggest        = "/dhcp/suggest"
+	PathRDNSSSettings      = "/dhcp/rdnss"
+	PathRDNSSSuggest       = "/dhcp/rdnss/suggest"
 	PathInstallerDirectory = "/api/v1/installer/directory"
 	PathAccountPassword    = "/settings/account/password"
 	PathTokenNew           = "/settings/tokens/new"
@@ -148,6 +150,8 @@ var webWriteExempt = map[string]bool{
 	PathSetup: true, PathLogin: true, PathLogout: true,
 	PathPromote: true, PathJoin: true,
 	PathDHCPSettings: true, PathDHCPSuggest: true,
+	// The IPv6 DNS advertisement is node-local for the same reason.
+	PathRDNSSSettings: true, PathRDNSSSuggest: true,
 	// Signed identity authority is node-local and must reach replicas too.
 	PathInstallerDirectory: true,
 	// So is the admin account: a replica's admin changes its own password.

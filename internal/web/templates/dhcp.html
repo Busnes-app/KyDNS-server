@@ -1,4 +1,4 @@
-{{define "lede"}}<p class="ky-page-lede">The built-in DHCPv4 server and the leases it has handed out.</p>{{end}}
+{{define "lede"}}<p class="ky-page-lede">The built-in DHCPv4 server, the leases it has handed out, and the IPv6 DNS advertisement.</p>{{end}}
 {{define "page"}}
 
 <div class="card">
@@ -47,9 +47,10 @@
      advertising itself as a DNS server over IPv6, and clients often prefer
      that, so some queries bypass KyDNS and filtering looks intermittent.
      Turn off the IPv6 DNS advertisement (RDNSS) on your router, keeping IPv6
-     addressing, to stop that.</p>
-  <p class="muted">Nothing is broken; DHCP is IPv4 only, so this is the one
-     thing it cannot do for you.</p>
+     addressing, and turn on KyDNS's own under <a href="#rdnss">IPv6 DNS
+     advertisement</a> below.</p>
+  <p class="muted">Nothing is broken; DHCP is IPv4 only, so it cannot tell
+     IPv6 clients where DNS is on its own.</p>
 </div>
 {{end}}
 
@@ -83,6 +84,43 @@
     <label><input type="checkbox" name="allow_foreign" value="1"{{if .AllowForeign}} checked{{end}}>
       Start even if another DHCP server answers — only if you run two deliberately</label>
     {{end}}
+  </form>
+</div>
+
+<div class="card" id="rdnss">
+  <h3>IPv6 DNS advertisement</h3>
+  <p>KyDNS can tell IPv6 devices to use it for DNS, with router advertisements
+     that carry only its address and your private domain. Android learns DNS
+     only this way. KyDNS never becomes the default router and hands out no
+     addresses.</p>
+  <p><strong>Turn off your router's own IPv6 DNS advertisement (RDNSS) first.</strong>
+     If both advertise, devices use both resolvers, and names your router
+     answers bypass KyDNS and its filtering.</p>
+  {{with .RDNSSStatus}}
+  {{if .Running}}
+    <p><span class="ky-status" data-ky-status="success">Advertising</span> <code>{{.Address}}</code></p>
+  {{else}}
+    <p><span class="ky-status">Not advertising</span></p>
+  {{end}}
+  {{if .Error}}<p class="error">The advertisement is switched on but did not start: {{.Error}}</p>{{end}}
+  {{if .Warning}}<p class="error">{{.Warning}}</p>{{end}}
+  {{end}}
+  {{if .RDNSSError}}<p class="error">{{.RDNSSError}}</p>{{end}}
+  <form class="stack" method="post" action="/dhcp/rdnss">
+    <input type="hidden" name="csrf_token" value="{{.CSRF}}">
+    <!-- Not disabled on a replica: node-local, like the DHCP settings. -->
+    <button class="last" type="submit">Save</button>
+    {{with .RDNSS}}
+    <label><input type="checkbox" name="enabled" value="1"{{if .Enabled}} checked{{end}}>
+      Advertise KyDNS as the IPv6 DNS server</label>
+    <label for="rdnss-interface">Interface</label>
+    <input id="rdnss-interface" name="interface" type="text" value="{{.Interface}}" placeholder="eth0" maxlength="15">
+    <button class="ghost" type="submit" formaction="/dhcp/rdnss/suggest">Fill in from this interface</button>
+    <label for="rdnss-address">Advertised address (empty: a stable one is chosen)</label>
+    <input id="rdnss-address" name="address" type="text" value="{{.Address}}" placeholder="fd00::53">
+    {{end}}
+    <p class="muted">The search domain advertised is {{if .PrivateDomain}}<code>{{.PrivateDomain}}</code>{{else}}your private domain{{end}}.
+       Temporary and link-local addresses are never advertised.</p>
   </form>
 </div>
 

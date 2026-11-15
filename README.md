@@ -53,6 +53,7 @@ can always see the terms of what they are running.
 - Service discovery and optional linked-node replication.
 - An MCP endpoint so AI agents can explain blocks and manage rules.
 - Optional DHCPv4 on supported native or host-network installations.
+- Optional IPv6 DNS advertisement (RDNSS), so Android and other IPv6 clients use KyDNS too.
 
 ## Connect an AI agent
 

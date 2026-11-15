@@ -296,5 +296,6 @@ func withoutDHCP(v store.Settings) store.Settings {
 	v.DHCPRangeStart, v.DHCPRangeEnd = "", ""
 	v.DHCPGateway, v.DHCPLeaseSeconds = "", 0
 	v.DHCPSecondaryDNS, v.DHCPAllowForeign = "", false
+	v.RDNSSEnabled, v.RDNSSInterface, v.RDNSSAddress = false, "", ""
 	return v
 }

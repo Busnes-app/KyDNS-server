@@ -42,6 +42,7 @@ type API struct {
 	settings        *settings.Service
 	metrics         *dnsserver.Metrics
 	dhcp            DHCPRunner
+	rdnss           RDNSSRunner
 	replicaStatus   func() ReplicaStatus
 	replicaAdmin    ReplicaAdmin
 	replicaJoiner   ReplicaJoiner
@@ -317,6 +318,8 @@ func (a *API) routes(mux registrar) {
 	mux.HandleFunc("POST /api/v1/leases/{ip}/promote", auth(a.promoteLease))
 	mux.HandleFunc("GET /api/v1/dhcp/status", auth(a.getDHCPStatus))
 	mux.HandleFunc("GET /api/v1/dhcp/suggest", auth(a.dhcpSuggest))
+	mux.HandleFunc("GET /api/v1/rdnss/status", auth(a.getRDNSSStatus))
+	mux.HandleFunc("GET /api/v1/rdnss/suggest", auth(a.rdnssSuggest))
 	mux.HandleFunc("GET /api/v1/health", auth(a.listHealth))
 	mux.HandleFunc("GET /api/v1/stats", auth(a.stats))
 	mux.HandleFunc("POST /api/v1/cache/flush", auth(a.flushCache))
