@@ -335,8 +335,18 @@ func (r *run) proofs(z *zone, ns []dns.RR) ([]*dns.NSEC, []*dns.NSEC3, Result) {
 		if !dns.IsSubDomain(z.name, k.name) {
 			continue
 		}
-		if res, _ := r.verifySet(set, sigs[k], z); res.Security != Secure {
+		res, sig := r.verifySet(set, sigs[k], z)
+		if res.Security != Secure {
 			return nil, nil, res
+		}
+		// Denial records are never wildcard expansions: the signature must
+		// cover the owner as written (a literal "*" label is not counted).
+		labels := dns.CountLabel(k.name)
+		if strings.HasPrefix(k.name, "*.") {
+			labels--
+		}
+		if int(sig.Labels) != labels {
+			return nil, nil, bogus(dns.ExtendedErrorCodeDNSBogus)
 		}
 		for _, rr := range set {
 			switch x := rr.(type) {

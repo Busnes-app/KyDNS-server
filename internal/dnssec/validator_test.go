@@ -541,3 +541,41 @@ func TestWildcardCNAMEDoesNotHideADelegation(t *testing.T) {
 		t.Fatalf("genuine answer after the failure expired: %+v", res)
 	}
 }
+
+// The NSEC owned by *.wc.test, replayed under the delegation's own name, would
+// read as "real.wc.test has no NS and no DS". Its signature still covers the
+// wildcard owner, so it must not count as exact-owner evidence.
+func TestWildcardOwnedNSECReplayedIsBogus(t *testing.T) {
+	w := world(t)
+	v := newV(w)
+	w.Tamper = func(n string, q uint16, m *dns.Msg) {
+		if n != "real.wc.test." || q != dns.TypeDS {
+			return
+		}
+		// The zone's own NSEC at its wildcard, as the zone signs it.
+		nsec := &dns.NSEC{Hdr: dns.RR_Header{Name: "*.wc.test.", Rrtype: dns.TypeNSEC, Class: dns.ClassINET, Ttl: 300},
+			NextDomain: "www.test.", TypeBitMap: []uint16{dns.TypeCNAME, dns.TypeRRSIG, dns.TypeNSEC}}
+		proof := w.Zones["test."].Signed([]dns.RR{nsec})
+		for _, rr := range proof {
+			rr.Header().Name = n
+		}
+		m.Rcode, m.Answer, m.Ns = dns.RcodeSuccess, nil, proof
+	}
+	if res, _ := check(t, v, w, "www.real.wc.test.", dns.TypeA); res.Security == Secure {
+		t.Fatalf("forged: %+v", res)
+	}
+	v.mu.Lock()
+	c := v.cuts["real.wc.test."]
+	v.mu.Unlock()
+	if c.kind == cutNone {
+		t.Fatal("a replayed wildcard NSEC was cached as proof of no delegation")
+	}
+	// The same NSEC under its own literal wildcard owner is still accepted.
+	r := &run{v: v, ctx: context.Background(), budget: maxSigsPerCheck}
+	tz := &zone{name: "test.", keys: []*dns.DNSKEY{w.Zones["test."].Key}}
+	lit := &dns.NSEC{Hdr: dns.RR_Header{Name: "*.wc.test.", Rrtype: dns.TypeNSEC, Class: dns.ClassINET, Ttl: 300},
+		NextDomain: "www.test.", TypeBitMap: []uint16{dns.TypeCNAME, dns.TypeRRSIG, dns.TypeNSEC}}
+	if got, _, res := r.proofs(tz, w.Zones["test."].Signed([]dns.RR{lit})); res.Security != Secure || len(got) != 1 {
+		t.Fatalf("literal wildcard NSEC refused: %+v", res)
+	}
+}
