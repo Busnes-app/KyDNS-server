@@ -281,7 +281,7 @@ func (r *run) checkSet(k key, set []dns.RR, sigs map[key][]*dns.RRSIG, ns []dns.
 		if len(nsec3) > 0 && !nsec3Usable(nsec3) {
 			return insecure, nil // checked before any hashing (RFC 9276)
 		}
-		if !anyCovers(nsec, nc) && !anyCovers3(nsec3, nc) {
+		if !absent(nsec, nc) && !anyCovers3(nsec3, nc) {
 			return bogus(dns.ExtendedErrorCodeNSECMissing), nil
 		}
 	}
@@ -540,7 +540,7 @@ func (r *run) classify(p *zone, child string) (cut, time.Duration, error) {
 	}
 	for _, n := range nsec {
 		if covers(n, child) {
-			if dns.IsSubDomain(child, dns.CanonicalName(n.NextDomain)) {
+			if hasDescendants(nsec, child) {
 				return cut{kind: cutNone}, ttl, nil // empty non-terminal
 			}
 			return cut{kind: cutStop}, ttl, nil

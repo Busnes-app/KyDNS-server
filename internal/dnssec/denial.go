@@ -88,15 +88,28 @@ func wildcard(ce string) string {
 	return "*." + ce
 }
 
+// hasDescendants reports an NSEC owner or next name below name: then name
+// exists (an empty non-terminal), whatever interval covers it.
+func hasDescendants(nsec []*dns.NSEC, name string) bool {
+	for _, n := range nsec {
+		owner, next := dns.CanonicalName(n.Hdr.Name), dns.CanonicalName(n.NextDomain)
+		if (owner != name && dns.IsSubDomain(name, owner)) || (next != name && dns.IsSubDomain(name, next)) {
+			return true
+		}
+	}
+	return false
+}
+
+// absent: an NSEC covers name and none shows it has descendants.
+func absent(nsec []*dns.NSEC, name string) bool {
+	return anyCovers(nsec, name) && !hasDescendants(nsec, name)
+}
+
 // nsecNXDomain needs the name and the wildcard at its closest encloser
 // covered.
 func nsecNXDomain(nsec []*dns.NSEC, name string) bool {
-	for _, n := range nsec {
-		// A name with descendants exists (an empty non-terminal): NODATA, not NXDOMAIN.
-		owner, next := dns.CanonicalName(n.Hdr.Name), dns.CanonicalName(n.NextDomain)
-		if (owner != name && dns.IsSubDomain(name, owner)) || (next != name && dns.IsSubDomain(name, next)) {
-			return false
-		}
+	if hasDescendants(nsec, name) {
+		return false
 	}
 	for _, n := range nsec {
 		if covers(n, name) {

@@ -18,7 +18,8 @@ func world(t *testing.T) *dnssectest.World {
 	test := dnssectest.NewZone("test.", dns.ECDSAP256SHA256).Add(
 		"www.test. 300 IN A 192.0.2.1",
 		"*.wild.test. 300 IN A 192.0.2.2",
-		"b.wild.test. 300 IN A 192.0.2.20", // a closer encloser below the wildcard
+		"b.wild.test. 300 IN A 192.0.2.20",   // a closer encloser below the wildcard
+		"a.c.wild.test. 300 IN A 192.0.2.22", // c.wild.test: an empty non-terminal below it
 		"alias.test. 300 IN CNAME www.test.",
 		"out.test. 300 IN CNAME www.unsigned.test.",
 		"a.b.ent.test. 300 IN A 192.0.2.3",
@@ -577,5 +578,40 @@ func TestWildcardOwnedNSECReplayedIsBogus(t *testing.T) {
 		NextDomain: "www.test.", TypeBitMap: []uint16{dns.TypeCNAME, dns.TypeRRSIG, dns.TypeNSEC}}
 	if got, _, res := r.proofs(tz, w.Zones["test."].Signed([]dns.RR{lit})); res.Security != Secure || len(got) != 1 {
 		t.Fatalf("literal wildcard NSEC refused: %+v", res)
+	}
+}
+
+// An empty non-terminal blocks the wildcard too: c.wild.test has a descendant,
+// so *.wild.test cannot answer for x.c.wild.test, though an NSEC interval
+// "covers" c.wild.test.
+func TestWildcardBlockedByEmptyNonTerminal(t *testing.T) {
+	w := world(t)
+	v := newV(w)
+	w.Tamper = func(n string, q uint16, m *dns.Msg) {
+		if n != "x.c.wild.test." || q != dns.TypeA {
+			return
+		}
+		saved := w.Tamper
+		w.Tamper = nil
+		syn, _ := w.Query(context.Background(), "x.wild.test.", dns.TypeA)
+		ent, _ := w.Query(context.Background(), "c.wild.test.", dns.TypeA) // NODATA: the interval over c.wild.test
+		w.Tamper = saved
+		for _, rr := range syn.Answer {
+			rr.Header().Name = n
+		}
+		var proof []dns.RR
+		for _, rr := range ent.Ns {
+			t := rr.Header().Rrtype
+			if s, ok := rr.(*dns.RRSIG); ok {
+				t = s.TypeCovered
+			}
+			if t == dns.TypeNSEC {
+				proof = append(proof, rr)
+			}
+		}
+		m.Rcode, m.Answer, m.Ns = dns.RcodeSuccess, syn.Answer, proof
+	}
+	if res, _ := check(t, v, w, "x.c.wild.test.", dns.TypeA); res.Security != Bogus {
+		t.Fatalf("wildcard behind an empty non-terminal: %+v", res)
 	}
 }
