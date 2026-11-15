@@ -47,7 +47,12 @@ func wireLabels(name string) [][]byte {
 	}
 	var out [][]byte
 	for i := 0; i < end && buf[i] != 0; i += int(buf[i]) + 1 {
-		l := bytes.ToLower(buf[i+1 : i+1+int(buf[i])])
+		l := append([]byte(nil), buf[i+1:i+1+int(buf[i])]...)
+		for k, c := range l {
+			if 'A' <= c && c <= 'Z' { // ASCII only (RFC 4034 §6.1)
+				l[k] = c + 'a' - 'A'
+			}
+		}
 		out = append(out, l)
 	}
 	return out

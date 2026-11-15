@@ -627,6 +627,11 @@ func TestCanonicalOrderUsesOctets(t *testing.T) {
 		{"Z.test.", "a.test.", 1},
 		{`\000.test.`, "test.", 1},
 		{"a.b.test.", "z.test.", -1}, // rightmost label first
+		// Non-ASCII octets are never folded: "É" (0xC3 0x89) stays below "é"
+		// (0xC3 0xA9); Unicode folding would make them equal.
+		{`\195\137.test.`, `\195\169.test.`, -1},
+		{`\255\254.test.`, `\255\254.test.`, 0}, // invalid UTF-8 compares by octet
+		{`\200.test.`, "z.test.", 1},
 	} {
 		got := compare(c.a, c.b)
 		if (got > 0) != (c.want > 0) || (got < 0) != (c.want < 0) {
@@ -638,5 +643,11 @@ func TestCanonicalOrderUsesOctets(t *testing.T) {
 	n := &dns.NSEC{Hdr: dns.RR_Header{Name: "[.test."}, NextDomain: "a.test."}
 	if covers(n, `\255.test.`) {
 		t.Fatal(`[.test -> a.test covers \255.test by its spelling`)
+	}
+	// Unicode folding would move "É" (\195\137) to "é" (\195\169), inside this
+	// span; by octets it lies outside it.
+	u := &dns.NSEC{Hdr: dns.RR_Header{Name: `\195\160.test.`}, NextDomain: `\195\176.test.`}
+	if covers(u, `\195\137.test.`) {
+		t.Fatal("a non-ASCII label was folded into the span")
 	}
 }
