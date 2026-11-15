@@ -88,6 +88,10 @@ func (r *rdnssRunner) Reconcile(v store.Settings) {
 }
 
 // build runs every host-state check that can refuse a start.
+//
+// ponytail: the address is chosen when the sender starts. If it later leaves
+// the interface, the advertisement keeps naming it until the next save or
+// restart; a netlink address watch that calls Reconcile would close that.
 func (r *rdnssRunner) build(v store.Settings) (netip.Prefix, error) {
 	qualifies, pick := r.qualifies, r.pick
 	if qualifies == nil {
