@@ -122,15 +122,36 @@ func hasDescendants(nsec []*dns.NSEC, name string) bool {
 	return false
 }
 
-// absent: an NSEC covers name and none shows it has descendants.
+// cutsOff reports a bitmap that ends the zone's authority below its owner: a
+// DNAME redirects the names there, a delegation hands them to a child. Such
+// an owner's records prove nothing about its descendants (RFC 6672 §5.3.4.1,
+// RFC 6840 §4.1).
+func cutsOff(types []uint16) bool {
+	return has(types, dns.TypeDNAME) || (has(types, dns.TypeNS) && !has(types, dns.TypeSOA))
+}
+
+// belowCut reports an NSEC owner that is a proper ancestor of name and cuts
+// off authority there.
+func belowCut(nsec []*dns.NSEC, name string) bool {
+	for _, n := range nsec {
+		owner := dns.CanonicalName(n.Hdr.Name)
+		if owner != name && dns.IsSubDomain(owner, name) && cutsOff(n.TypeBitMap) {
+			return true
+		}
+	}
+	return false
+}
+
+// absent: an NSEC covers name, none shows it has descendants, and no
+// ancestor in the proof redirects or delegates it away.
 func absent(nsec []*dns.NSEC, name string) bool {
-	return anyCovers(nsec, name) && !hasDescendants(nsec, name)
+	return anyCovers(nsec, name) && !hasDescendants(nsec, name) && !belowCut(nsec, name)
 }
 
 // nsecNXDomain needs the name and the wildcard at its closest encloser
 // covered.
 func nsecNXDomain(nsec []*dns.NSEC, name string) bool {
-	if hasDescendants(nsec, name) {
+	if hasDescendants(nsec, name) || belowCut(nsec, name) {
 		return false
 	}
 	for _, n := range nsec {
@@ -144,6 +165,9 @@ func nsecNXDomain(nsec []*dns.NSEC, name string) bool {
 // nsecNoData accepts a matching NSEC without the type, an empty
 // non-terminal, or a matching wildcard without the type.
 func nsecNoData(nsec []*dns.NSEC, name string, qtype uint16) bool {
+	if belowCut(nsec, name) {
+		return false
+	}
 	for _, n := range nsec {
 		if dns.CanonicalName(n.Hdr.Name) == name {
 			return noType(n.TypeBitMap, qtype)
@@ -201,15 +225,18 @@ func closestEncloser(nsec3 []*dns.NSEC3, apex, name string) (string, *dns.NSEC3,
 		if !dns.IsSubDomain(apex, ce) {
 			return "", nil, false
 		}
-		matched := false
+		var match *dns.NSEC3
 		for _, n := range nsec3 {
 			if n.Match(ce) {
-				matched = true
+				match = n
 				break
 			}
 		}
-		if !matched {
+		if match == nil {
 			continue
+		}
+		if ce != dns.CanonicalName(name) && cutsOff(match.TypeBitMap) {
+			return "", nil, false // a DNAME or delegation above name
 		}
 		nc := dns.CanonicalName(strings.Join(labels[i-1:], "."))
 		for _, n := range nsec3 {

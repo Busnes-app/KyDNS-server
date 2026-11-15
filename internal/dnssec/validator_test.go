@@ -24,10 +24,12 @@ func world(t *testing.T) *dnssectest.World {
 		"out.test. 300 IN CNAME www.unsigned.test.",
 		"a.b.ent.test. 300 IN A 192.0.2.3",
 		"*.wc.test. 300 IN CNAME www.test.",
+		"dn.test. 300 IN DNAME secure.test.",
 	)
 	n3 := dnssectest.NewZone("n3.test.", dns.ECDSAP256SHA256).Add("www.n3.test. 300 IN A 192.0.2.4")
 	n3.NSEC3, n3.OptOut = true, true
-	n3s := dnssectest.NewZone("n3s.test.", dns.ECDSAP256SHA256).Add("www.n3s.test. 300 IN A 192.0.2.14", "*.w.n3s.test. 300 IN A 192.0.2.15")
+	n3s := dnssectest.NewZone("n3s.test.", dns.ECDSAP256SHA256).Add("www.n3s.test. 300 IN A 192.0.2.14", "*.w.n3s.test. 300 IN A 192.0.2.15",
+		"dn.n3s.test. 300 IN DNAME secure.test.")
 	n3s.NSEC3 = true
 	expired := dnssectest.NewZone("expired.test.", dns.ECDSAP256SHA256).Add("www.expired.test. 300 IN A 192.0.2.5")
 	expired.Expired = true
@@ -111,6 +113,7 @@ func TestVerdicts(t *testing.T) {
 		{"www.test.", dns.TypeANY, Insecure, 0},
 		{"www.expired.test.", dns.TypeA, Bogus, dns.ExtendedErrorCodeSignatureExpired},
 		{"www.wrongkey.test.", dns.TypeA, Bogus, dns.ExtendedErrorCodeDNSKEYMissing},
+		{"www.dn.n3s.test.", dns.TypeA, Bogus, dns.ExtendedErrorCodeNSECMissing}, // NSEC3 NXDOMAIN under a DNAME
 	}
 	w := world(t)
 	v := newV(w)
@@ -649,5 +652,34 @@ func TestCanonicalOrderUsesOctets(t *testing.T) {
 	u := &dns.NSEC{Hdr: dns.RR_Header{Name: `\195\160.test.`}, NextDomain: `\195\176.test.`}
 	if covers(u, `\195\137.test.`) {
 		t.Fatal("a non-ASCII label was folded into the span")
+	}
+}
+
+// Below a DNAME the zone's NSEC chain proves nothing: names there are
+// redirected. A forged NXDOMAIN for www.dn.test is bogus; the genuine
+// redirection (signed DNAME, synthesised CNAME, signed target) is secure.
+func TestDNAME(t *testing.T) {
+	w := world(t)
+	v := newV(w)
+	// The world has no DNAME synthesis, so www.dn.test comes back NXDOMAIN,
+	// proven by dn.test's own NSEC: exactly the forged denial.
+	if res, _ := check(t, v, w, "www.dn.test.", dns.TypeA); res.Security != Bogus {
+		t.Fatalf("NXDOMAIN under a DNAME: %+v", res)
+	}
+	d, _ := w.Query(context.Background(), "dn.test.", dns.TypeDNAME)
+	target, _ := w.Query(context.Background(), "www.secure.test.", dns.TypeA)
+	cname, _ := dns.NewRR("www.dn.test. 300 IN CNAME www.secure.test.")
+	m := new(dns.Msg)
+	m.SetQuestion("www.dn.test.", dns.TypeA)
+	m.Answer = append(append(append([]dns.RR{}, d.Answer...), cname), target.Answer...)
+	res, err := v.Check(context.Background(), m.Question[0], m)
+	if err != nil || res.Security != Secure {
+		t.Fatalf("genuine DNAME answer: %+v %v", res, err)
+	}
+	// A synthesised CNAME that does not follow the DNAME is not kept.
+	bad, _ := dns.NewRR("www.dn.test. 300 IN CNAME evil.example.")
+	m.Answer = append(append([]dns.RR{}, d.Answer...), bad)
+	if res, _ := v.Check(context.Background(), m.Question[0], m); res.Security == Secure {
+		t.Fatalf("mismatched CNAME after a DNAME: %+v", res)
 	}
 }

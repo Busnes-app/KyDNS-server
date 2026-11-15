@@ -540,6 +540,9 @@ func (r *run) classify(p *zone, child string) (cut, time.Duration, error) {
 	}
 	for _, n := range nsec {
 		if covers(n, child) {
+			if belowCut(nsec, child) {
+				return cut{kind: cutBogus, res: bogus(dns.ExtendedErrorCodeNSECMissing)}, ttl, nil
+			}
 			if hasDescendants(nsec, child) {
 				return cut{kind: cutNone}, ttl, nil // empty non-terminal
 			}
