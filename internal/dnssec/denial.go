@@ -92,6 +92,13 @@ func wildcard(ce string) string {
 // covered.
 func nsecNXDomain(nsec []*dns.NSEC, name string) bool {
 	for _, n := range nsec {
+		// A name with descendants exists (an empty non-terminal): NODATA, not NXDOMAIN.
+		owner, next := dns.CanonicalName(n.Hdr.Name), dns.CanonicalName(n.NextDomain)
+		if (owner != name && dns.IsSubDomain(name, owner)) || (next != name && dns.IsSubDomain(name, next)) {
+			return false
+		}
+	}
+	for _, n := range nsec {
 		if covers(n, name) {
 			return anyCovers(nsec, wildcard(encloser(n, name)))
 		}
@@ -191,6 +198,13 @@ func nsec3Denial(nsec3 []*dns.NSEC3, apex, name string, qtype uint16, nx bool) R
 		for _, n := range nsec3 {
 			if n.Match(name) {
 				return provedBy(noType(n.TypeBitMap, qtype))
+			}
+		}
+	}
+	if nx {
+		for _, n := range nsec3 {
+			if n.Match(name) {
+				return bogus(dns.ExtendedErrorCodeDNSBogus) // the name exists
 			}
 		}
 	}

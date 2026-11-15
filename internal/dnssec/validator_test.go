@@ -22,6 +22,7 @@ func world(t *testing.T) *dnssectest.World {
 		"alias.test. 300 IN CNAME www.test.",
 		"out.test. 300 IN CNAME www.unsigned.test.",
 		"a.b.ent.test. 300 IN A 192.0.2.3",
+		"*.wc.test. 300 IN CNAME www.test.",
 	)
 	n3 := dnssectest.NewZone("n3.test.", dns.ECDSAP256SHA256).Add("www.n3.test. 300 IN A 192.0.2.4")
 	n3.NSEC3, n3.OptOut = true, true
@@ -38,6 +39,7 @@ func world(t *testing.T) *dnssectest.World {
 		dnssectest.NewZone("p384.test.", dns.ECDSAP384SHA384).Add("www.p384.test. 300 IN A 192.0.2.9"),
 		dnssectest.NewZone("sha1.test.", dns.RSASHA1).Add("www.sha1.test. 300 IN A 192.0.2.10"),
 		dnssectest.NewZone("unsigned.test.", 0).Add("www.unsigned.test. 300 IN A 192.0.2.11"),
+		dnssectest.NewZone("real.wc.test.", dns.ECDSAP256SHA256).Add("www.real.wc.test. 300 IN A 192.0.2.21"),
 		dnssectest.NewZone("deleg.n3.test.", 0).Add("www.deleg.n3.test. 300 IN A 192.0.2.12"),
 		dnssectest.NewZone("wrongkey.test.", dns.ECDSAP256SHA256).Add("www.wrongkey.test. 300 IN A 192.0.2.13"),
 	}
@@ -483,5 +485,59 @@ func TestExhaustedBudgetIsNotCached(t *testing.T) {
 	}
 	if res, _ := check(t, v, w, "www.test.", dns.TypeA); res.Security != Secure {
 		t.Fatalf("a fresh check after a starved one: %+v", res)
+	}
+}
+
+// An empty non-terminal exists: a signed NODATA for it turned into NXDOMAIN
+// is bogus, the genuine NODATA secure.
+func TestNXDomainForEmptyNonTerminalIsBogus(t *testing.T) {
+	w := world(t)
+	v := newV(w)
+	if res, _ := check(t, v, w, "b.ent.test.", dns.TypeA); res.Security != Secure {
+		t.Fatalf("genuine NODATA: %+v", res)
+	}
+	w.Tamper = func(n string, q uint16, m *dns.Msg) {
+		if n == "b.ent.test." && q == dns.TypeA {
+			m.Rcode = dns.RcodeNameError
+		}
+	}
+	if res, _ := check(t, v, w, "b.ent.test.", dns.TypeA); res.Security != Bogus {
+		t.Fatalf("NXDOMAIN for an empty non-terminal: %+v", res)
+	}
+}
+
+// A wildcard CNAME expanded at a real delegation must not be cached as
+// "no delegation here", or the child's genuine answers fail for an hour.
+func TestWildcardCNAMEDoesNotHideADelegation(t *testing.T) {
+	w := world(t)
+	v := newV(w)
+	now := dnssectest.Now
+	v.now = func() time.Time { return now }
+	w.Tamper = func(n string, q uint16, m *dns.Msg) {
+		if n != "real.wc.test." || q != dns.TypeDS {
+			return
+		}
+		saved := w.Tamper
+		w.Tamper = nil
+		syn, _ := w.Query(context.Background(), "zzz.wc.test.", dns.TypeCNAME)
+		w.Tamper = saved
+		for _, rr := range syn.Answer {
+			rr.Header().Name = n
+		}
+		m.Rcode, m.Answer, m.Ns = dns.RcodeSuccess, syn.Answer, nil
+	}
+	if res, _ := check(t, v, w, "www.real.wc.test.", dns.TypeA); res.Security == Secure {
+		t.Fatalf("forged: %+v", res)
+	}
+	v.mu.Lock()
+	c := v.cuts["real.wc.test."]
+	v.mu.Unlock()
+	if c.kind == cutNone {
+		t.Fatal("a wildcard expansion was cached as proof of no delegation")
+	}
+	w.Tamper = nil
+	now = now.Add(bogusCutTTL + time.Second)
+	if res, _ := check(t, v, w, "www.real.wc.test.", dns.TypeA); res.Security != Secure {
+		t.Fatalf("genuine answer after the failure expired: %+v", res)
 	}
 }

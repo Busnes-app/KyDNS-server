@@ -497,18 +497,27 @@ func (r *run) classify(p *zone, child string) (cut, time.Duration, error) {
 	}
 	ttl := minTTL(m)
 	sets, sigs := group(m.Answer)
+	// A wildcard expansion proves nothing about a delegation at child.
+	expanded := func(sig *dns.RRSIG) bool { return int(sig.Labels) < dns.CountLabel(child) }
 	if ds := sets[key{child, dns.TypeDS}]; ds != nil {
-		if res, _ := r.verifySet(ds, sigs[key{child, dns.TypeDS}], p); res.Security != Secure {
+		res, sig := r.verifySet(ds, sigs[key{child, dns.TypeDS}], p)
+		if res.Security != Secure {
 			return cut{kind: cutBogus, res: res}, ttl, nil
+		}
+		if expanded(sig) {
+			return cut{kind: cutBogus, res: bogus(dns.ExtendedErrorCodeDNSBogus)}, ttl, nil
 		}
 		c, kttl, err := r.keys(child, ds)
 		return c, min(ttl, kttl), err
 	}
 	if c := sets[key{child, dns.TypeCNAME}]; c != nil {
-		if res, _ := r.verifySet(c, sigs[key{child, dns.TypeCNAME}], p); res.Security != Secure {
+		res, sig := r.verifySet(c, sigs[key{child, dns.TypeCNAME}], p)
+		if res.Security != Secure {
 			return cut{kind: cutBogus, res: res}, ttl, nil
 		}
-		return cut{kind: cutNone}, ttl, nil
+		if !expanded(sig) { // only a CNAME owned by child itself rules out a cut
+			return cut{kind: cutNone}, ttl, nil
+		}
 	}
 	nsec, nsec3, res := r.proofs(p, m.Ns)
 	if res.Security != Secure {
