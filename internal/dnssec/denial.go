@@ -25,15 +25,32 @@ func sigExpiry(sig *dns.RRSIG, now time.Time) time.Time {
 	return time.Unix(int64(sig.Expiration)+mod*year68, 0)
 }
 
-// compare orders names canonically (RFC 4034 §6.1).
+// compare orders names canonically (RFC 4034 §6.1): label by label from the
+// right, as wire octets with ASCII letters folded, never as escaped text.
 func compare(a, b string) int {
-	la, lb := dns.SplitDomainName(strings.ToLower(a)), dns.SplitDomainName(strings.ToLower(b))
+	la, lb := wireLabels(a), wireLabels(b)
 	for i, j := len(la)-1, len(lb)-1; i >= 0 && j >= 0; i, j = i-1, j-1 {
-		if c := bytes.Compare([]byte(la[i]), []byte(lb[j])); c != 0 {
+		if c := bytes.Compare(la[i], lb[j]); c != 0 {
 			return c
 		}
 	}
 	return len(la) - len(lb)
+}
+
+// wireLabels decodes name into lowercased label octets. A name that does not
+// pack (it never came off the wire) sorts as the root.
+func wireLabels(name string) [][]byte {
+	buf := make([]byte, 256)
+	end, err := dns.PackDomainName(dns.Fqdn(name), buf, 0, nil, false)
+	if err != nil {
+		return nil
+	}
+	var out [][]byte
+	for i := 0; i < end && buf[i] != 0; i += int(buf[i]) + 1 {
+		l := bytes.ToLower(buf[i+1 : i+1+int(buf[i])])
+		out = append(out, l)
+	}
+	return out
 }
 
 // covers reports whether name falls strictly inside n's span; the last NSEC

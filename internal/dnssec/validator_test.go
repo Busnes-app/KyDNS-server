@@ -615,3 +615,28 @@ func TestWildcardBlockedByEmptyNonTerminal(t *testing.T) {
 		t.Fatalf("wildcard behind an empty non-terminal: %+v", res)
 	}
 }
+
+// Canonical order is over label octets, not their escaped spelling.
+func TestCanonicalOrderUsesOctets(t *testing.T) {
+	for _, c := range []struct {
+		a, b string
+		want int // sign
+	}{
+		{`\255.test.`, "a.test.", 1}, // 0xff after 'a'; the text "\" sorts before it
+		{`\090.test.`, "z.test.", 0}, // \090 is 'Z', folded
+		{"Z.test.", "a.test.", 1},
+		{`\000.test.`, "test.", 1},
+		{"a.b.test.", "z.test.", -1}, // rightmost label first
+	} {
+		got := compare(c.a, c.b)
+		if (got > 0) != (c.want > 0) || (got < 0) != (c.want < 0) {
+			t.Errorf("compare(%s, %s) = %d, want sign %d", c.a, c.b, got, c.want)
+		}
+	}
+	// "[" (0x5b) < "\255" (0xff) but 0xff > "a": the escaped text lies inside
+	// [.test -> a.test, the octets do not.
+	n := &dns.NSEC{Hdr: dns.RR_Header{Name: "[.test."}, NextDomain: "a.test."}
+	if covers(n, `\255.test.`) {
+		t.Fatal(`[.test -> a.test covers \255.test by its spelling`)
+	}
+}
