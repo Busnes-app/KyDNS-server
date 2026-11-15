@@ -26,6 +26,9 @@ const (
 type Result struct {
 	Security Security
 	EDE      uint16
+	// Expires is the earliest signature expiry (or cached delegation expiry)
+	// the verdict rests on; a cache must not keep it longer. Zero is none.
+	Expires time.Time
 }
 
 var (
@@ -155,10 +158,18 @@ type cut struct {
 
 // run carries one Check's context and signature budget.
 type run struct {
-	v      *Validator
-	ctx    context.Context
-	budget int
-	skip   bool // signature time checks off (Clock)
+	v       *Validator
+	ctx     context.Context
+	budget  int
+	skip    bool      // signature time checks off (Clock)
+	expires time.Time // earliest expiry the verdict rests on
+}
+
+// note lowers the run's expiry to t.
+func (r *run) note(t time.Time) {
+	if !t.IsZero() && (r.expires.IsZero() || t.Before(r.expires)) {
+		r.expires = t
+	}
 }
 
 // Check validates m, the upstream's answer to q, and trims it to what was
@@ -222,6 +233,7 @@ func (v *Validator) Check(ctx context.Context, q dns.Question, m *dns.Msg) (Resu
 		keep = append(keep, k)
 		if k.t != dns.TypeCNAME || q.Qtype == dns.TypeCNAME {
 			trim(m, keep, sigs, false)
+			res.Expires = r.expires
 			return res, nil
 		}
 		name = dns.CanonicalName(set[0].(*dns.CNAME).Target)
@@ -234,6 +246,7 @@ func (v *Validator) Check(ctx context.Context, q dns.Question, m *dns.Msg) (Resu
 	res = merge(res, vr)
 	if res.Security != Bogus {
 		trim(m, keep, sigs, true)
+		res.Expires = r.expires
 	}
 	return res, nil
 }
@@ -259,8 +272,10 @@ func (r *run) checkSet(k key, set []dns.RR, sigs map[key][]*dns.RRSIG, ns []dns.
 		if pr.Security != Secure {
 			return pr, nil
 		}
+		// The next closer must not exist, or a closer encloser blocks the
+		// wildcard (RFC 4035 §5.3.4, RFC 5155 §8.8).
 		nc := lastLabels(k.name, int(sig.Labels)+1)
-		if !anyCovers(nsec, k.name) && !anyCovers3(nsec3, nc) {
+		if !anyCovers(nsec, nc) && !anyCovers3(nsec3, nc) {
 			return bogus(dns.ExtendedErrorCodeNSECMissing), nil
 		}
 	}
@@ -359,6 +374,7 @@ func (r *run) verifySet(set []dns.RR, sigs []*dns.RRSIG, z *zone) (Result, *dns.
 			tries++
 			r.budget--
 			if verifySig(sig, k, set) == nil {
+				r.note(sigExpiry(sig, now))
 				return secure, sig
 			}
 		}
@@ -409,17 +425,26 @@ func (r *run) cut(p *zone, child string) (cut, error) {
 	c, ok := v.cuts[child]
 	v.mu.Unlock()
 	if ok && v.now().Before(c.expires) {
+		r.note(c.expires)
 		return c, nil
 	}
 	got, err, _ := v.group.Do(child, func() (any, error) {
+		outer := r.expires
+		r.expires = time.Time{}
 		c, ttl, err := r.classify(p, child)
+		sigs := r.expires
+		r.expires = outer
 		if err != nil {
 			return cut{}, err
 		}
 		if c.kind == cutBogus {
 			ttl = bogusCutTTL
 		}
+		// The TTL floor never outlives a signature the cut rests on.
 		c.expires = v.now().Add(min(max(ttl, minCutTTL), maxCutTTL))
+		if !sigs.IsZero() && sigs.Before(c.expires) {
+			c.expires = sigs
+		}
 		v.mu.Lock()
 		if len(v.cuts) >= maxCuts {
 			v.cuts = map[string]cut{}
@@ -431,6 +456,7 @@ func (r *run) cut(p *zone, child string) (cut, error) {
 	if err != nil {
 		return cut{}, err
 	}
+	r.note(got.(cut).expires)
 	return got.(cut), nil
 }
 

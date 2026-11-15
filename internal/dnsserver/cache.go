@@ -100,15 +100,22 @@ func (c *Cache) lookup(q dns.Question, do bool) (*dns.Msg, bool) {
 
 // Put stores a response, clamping its TTL. Negative answers use the lesser of
 // the SOA's TTL and MINIMUM per RFC 2308, clamped by negMaxTTL.
-func (c *Cache) Put(q dns.Question, do bool, m *dns.Msg) {
+func (c *Cache) Put(q dns.Question, do bool, m *dns.Msg) { c.PutUntil(q, do, m, time.Time{}) }
+
+// PutUntil is Put that never keeps m past deadline (zero is none), whatever
+// the TTL floor says: a validated answer must not outlive its signatures.
+func (c *Cache) PutUntil(q dns.Question, do bool, m *dns.Msg, deadline time.Time) {
 	if m == nil {
 		return
 	}
 	ttl := c.ttlFor(m)
+	stored := c.now()
+	if !deadline.IsZero() {
+		ttl = min(ttl, uint32(max(deadline.Sub(stored), 0)/time.Second))
+	}
 	if ttl == 0 {
 		return
 	}
-	stored := c.now()
 	entry := &cacheEntry{
 		key: keyFor(q, do), msg: m.Copy(), stored: stored,
 		expires: stored.Add(time.Duration(ttl) * time.Second), ttl: ttl,

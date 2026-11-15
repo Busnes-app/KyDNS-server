@@ -17,6 +17,14 @@ func notYetValid(sig *dns.RRSIG, now time.Time) bool {
 	return int64(sig.Inception)+modi*year68 > utc
 }
 
+// sigExpiry is the signature's expiration as a time near now (RFC 1982).
+func sigExpiry(sig *dns.RRSIG, now time.Time) time.Time {
+	const year68 = 1 << 31
+	utc := now.UTC().Unix()
+	mod := (int64(sig.Expiration) - utc) / year68
+	return time.Unix(int64(sig.Expiration)+mod*year68, 0)
+}
+
 // compare orders names canonically (RFC 4034 §6.1).
 func compare(a, b string) int {
 	la, lb := dns.SplitDomainName(strings.ToLower(a)), dns.SplitDomainName(strings.ToLower(b))

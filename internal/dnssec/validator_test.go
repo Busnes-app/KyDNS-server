@@ -18,6 +18,7 @@ func world(t *testing.T) *dnssectest.World {
 	test := dnssectest.NewZone("test.", dns.ECDSAP256SHA256).Add(
 		"www.test. 300 IN A 192.0.2.1",
 		"*.wild.test. 300 IN A 192.0.2.2",
+		"b.wild.test. 300 IN A 192.0.2.20", // a closer encloser below the wildcard
 		"alias.test. 300 IN CNAME www.test.",
 		"out.test. 300 IN CNAME www.unsigned.test.",
 		"a.b.ent.test. 300 IN A 192.0.2.3",
@@ -386,5 +387,56 @@ func forgeAny(_ string, q uint16, m *dns.Msg) {
 		if a, ok := m.Answer[0].(*dns.A); ok {
 			a.A[3] = 66
 		}
+	}
+}
+
+// An existing closer encloser blocks the wildcard: a forged expansion of
+// *.wild.test for a.b.wild.test must not pass on an NSEC that covers only the
+// query name.
+func TestWildcardBlockedByCloserEncloser(t *testing.T) {
+	w := world(t)
+	v := newV(w)
+	w.Tamper = func(n string, q uint16, m *dns.Msg) {
+		if n != "a.b.wild.test." || q != dns.TypeA {
+			return
+		}
+		w.Tamper = nil
+		syn, _ := w.Query(context.Background(), "x.wild.test.", dns.TypeA)
+		for _, rr := range syn.Answer {
+			rr.Header().Name = n
+		}
+		var proof []dns.RR // the NSEC covering a.b.wild.test, from b.wild.test
+		for _, rr := range m.Ns {
+			if rr.Header().Rrtype != dns.TypeSOA && !(rr.Header().Rrtype == dns.TypeRRSIG && rr.(*dns.RRSIG).TypeCovered == dns.TypeSOA) {
+				proof = append(proof, rr)
+			}
+		}
+		m.Rcode, m.Answer, m.Ns = dns.RcodeSuccess, syn.Answer, proof
+	}
+	res, _ := check(t, v, w, "a.b.wild.test.", dns.TypeA)
+	if res.Security != Bogus {
+		t.Fatalf("forged wildcard behind a closer encloser: %+v", res)
+	}
+}
+
+// A verdict, and the delegations under it, expire with their signatures.
+func TestVerdictExpiresWithSignatures(t *testing.T) {
+	w := world(t)
+	soon := dnssectest.Now.Add(90 * time.Second)
+	w.Zones["test."].Until = soon
+	v := newV(w)
+	res, _ := check(t, v, w, "www.test.", dns.TypeA)
+	if res.Security != Secure || res.Expires.IsZero() || res.Expires.After(soon) {
+		t.Fatalf("%+v, want secure expiring by %v", res, soon)
+	}
+	v.mu.Lock()
+	c := v.cuts["secure.test."]
+	v.mu.Unlock()
+	check(t, v, w, "www.secure.test.", dns.TypeA)
+	v.mu.Lock()
+	c = v.cuts["secure.test."]
+	v.mu.Unlock()
+	if c.expires.After(soon) {
+		t.Fatalf("delegation cached until %v, past its DS signature at %v", c.expires, soon)
 	}
 }

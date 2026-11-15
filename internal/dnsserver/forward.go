@@ -74,12 +74,20 @@ type Forwarder struct {
 	group   singleflight.Group
 	// val is the local DNSSEC validator; nil trusts a secure upstream's AD.
 	val atomic.Pointer[dnssec.Validator]
+	// gen counts validation-mode switches. modeMu orders a switch's flush
+	// against cache writes, so a lookup started in the old mode can never
+	// store its answer in the new mode's cache.
+	gen    atomic.Uint64
+	modeMu sync.RWMutex
 }
 
 // SetValidator turns local validation on (non-nil) or off. Cached answers
 // carry the verdict of the mode they were fetched under, so a switch flushes.
 func (f *Forwarder) SetValidator(v *dnssec.Validator) {
+	f.modeMu.Lock()
+	defer f.modeMu.Unlock()
 	if old := f.val.Swap(v); (old == nil) != (v == nil) {
+		f.gen.Add(1)
 		f.cache.Flush()
 	}
 }
@@ -185,14 +193,16 @@ func (st *fwdState) record(i int, err error) {
 // single upstream query. That collapse is what survives the boot-time
 // stampede when every device on the LAN wakes at once.
 func (f *Forwarder) Resolve(ctx context.Context, q dns.Question, do bool) (*dns.Msg, error) {
-	val := f.val.Load()
+	f.modeMu.RLock()
+	gen, val := f.gen.Load(), f.val.Load()
+	f.modeMu.RUnlock()
 	if val != nil {
 		do = true // signatures are needed to validate; the server strips them
 	}
 	if m, ok := f.cache.Get(q, do); ok {
 		return m, nil
 	}
-	key := fmt.Sprintf("%s|%d|%t", strings.ToLower(dns.Fqdn(q.Name)), q.Qtype, do)
+	key := fmt.Sprintf("%s|%d|%t|%d", strings.ToLower(dns.Fqdn(q.Name)), q.Qtype, do, gen)
 	v, err, _ := f.group.Do(key, func() (any, error) {
 		if m, ok := f.cache.Get(q, do); ok {
 			return m, nil
@@ -201,12 +211,17 @@ func (f *Forwarder) Resolve(ctx context.Context, q dns.Question, do bool) (*dns.
 		if err != nil {
 			return nil, err
 		}
+		var deadline time.Time
 		if val != nil {
-			if m, err = validated(ctx, val, q, m); err != nil {
+			if m, deadline, err = validated(ctx, val, q, m); err != nil {
 				return nil, err
 			}
 		}
-		f.cache.Put(q, do, m)
+		f.modeMu.RLock()
+		if f.gen.Load() == gen {
+			f.cache.PutUntil(q, do, m, deadline)
+		}
+		f.modeMu.RUnlock()
 		return m, nil
 	})
 	if err != nil {
@@ -217,11 +232,11 @@ func (f *Forwarder) Resolve(ctx context.Context, q dns.Question, do bool) (*dns.
 
 // validated runs the validator on m. The verdict rides in the AD bit, so the
 // cached copy keeps it; a bogus answer becomes a SERVFAIL carrying the EDE.
-func validated(ctx context.Context, val *dnssec.Validator, q dns.Question, m *dns.Msg) (*dns.Msg, error) {
+func validated(ctx context.Context, val *dnssec.Validator, q dns.Question, m *dns.Msg) (*dns.Msg, time.Time, error) {
 	m = m.Copy()
 	res, err := val.Check(ctx, q, m)
 	if err != nil {
-		return nil, err
+		return nil, time.Time{}, err
 	}
 	if res.Security == dnssec.Bogus {
 		out := new(dns.Msg)
@@ -233,7 +248,7 @@ func validated(ctx context.Context, val *dnssec.Validator, q dns.Question, m *dn
 		opt.SetUDPSize(1232)
 		opt.Option = append(opt.Option, &dns.EDNS0_EDE{InfoCode: res.EDE})
 		out.Extra = []dns.RR{opt}
-		return out, nil
+		return out, time.Time{}, nil
 	}
 	m.AuthenticatedData = res.Security == dnssec.Secure
 	// The upstream's Extended DNS Errors describe its verdict, not ours.
@@ -246,7 +261,7 @@ func validated(ctx context.Context, val *dnssec.Validator, q dns.Question, m *dn
 		}
 		opt.Option = keep
 	}
-	return m, nil
+	return m, res.Expires, nil
 }
 
 func (f *Forwarder) exchange(ctx context.Context, q dns.Question, do, validating bool) (*dns.Msg, error) {

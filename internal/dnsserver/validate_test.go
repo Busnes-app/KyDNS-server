@@ -3,7 +3,9 @@ package dnsserver
 import (
 	"context"
 	"net"
+	"sync/atomic"
 	"testing"
+	"time"
 
 	"github.com/Busnes-app/kydns-server/internal/dnssec"
 	"github.com/Busnes-app/kydns-server/internal/dnssec/dnssectest"
@@ -160,5 +162,61 @@ func TestSwitchingValidationFlushesCache(t *testing.T) {
 	}
 	if m := askV(s, "www.test.", flags{do: true}); m.AuthenticatedData {
 		t.Fatal("validation off: a plaintext upstream's AD must still be cleared")
+	}
+}
+
+// A lookup started before validation was switched on must not leave its
+// unchecked answer in the validating cache.
+func TestLookupAcrossTheSwitchIsNotCached(t *testing.T) {
+	w := signedWorld()
+	release := make(chan struct{})
+	var first atomic.Bool
+	up := &fakeUpstream{name: "tls://192.0.2.53:853", secure: true, reply: func(m *dns.Msg) (*dns.Msg, error) {
+		resp, err := w.Query(context.Background(), m.Question[0].Name, m.Question[0].Qtype)
+		resp.Id = m.Id
+		if m.Question[0].Name == "www.test." && first.CompareAndSwap(false, true) {
+			<-release
+			resp.Answer[0].(*dns.A).A[3] = 66 // forged, with a claimed AD
+			resp.AuthenticatedData = true
+		}
+		return resp, err
+	}}
+	f := newForwarder(up)
+	q := dns.Question{Name: "www.test.", Qtype: dns.TypeA, Qclass: dns.ClassINET}
+	done := make(chan struct{})
+	go func() { f.Resolve(context.Background(), q, true); close(done) }()
+	waitFor(t, time.Second, func() bool { return up.calls.Load() == 1 })
+	v := dnssec.New(f.Query, nil)
+	v.UseAnchors(w.Anchors())
+	f.SetValidator(v)
+	close(release)
+	<-done
+	m, err := f.Resolve(context.Background(), q, true)
+	if err != nil || m.Rcode != dns.RcodeSuccess || m.AuthenticatedData != true || m.Answer[0].(*dns.A).A[3] == 66 {
+		t.Fatalf("validating lookup served the pre-switch answer: %v %v", m, err)
+	}
+}
+
+// PutUntil never keeps an answer past the deadline, even under a TTL floor.
+func TestCachePutUntilBeatsTheTTLFloor(t *testing.T) {
+	c := NewCache(10, 600, 3600, 300) // a 10-minute floor
+	now := time.Unix(1_000_000, 0)
+	c.now = func() time.Time { return now }
+	q := dns.Question{Name: "www.test.", Qtype: dns.TypeA, Qclass: dns.ClassINET}
+	m := new(dns.Msg)
+	m.SetQuestion(q.Name, q.Qtype)
+	rr, _ := dns.NewRR("www.test. 300 IN A 192.0.2.1")
+	m.Answer = []dns.RR{rr}
+	c.PutUntil(q, true, m, now.Add(30*time.Second))
+	if _, ok := c.Get(q, true); !ok {
+		t.Fatal("not cached at all")
+	}
+	now = now.Add(31 * time.Second)
+	if _, ok := c.Get(q, true); ok {
+		t.Fatal("served after the signatures expired")
+	}
+	c.PutUntil(q, true, m, now.Add(-time.Second))
+	if c.Len() != 0 {
+		t.Fatal("cached an answer whose signatures had already expired")
 	}
 }

@@ -23,10 +23,11 @@ var Now = time.Date(2026, 11, 15, 12, 0, 0, 0, time.UTC)
 // Zone is one zone. Unsigned zones carry no keys.
 type Zone struct {
 	Name    string
-	Alg     uint8 // 0: unsigned
-	NSEC3   bool  // NSEC3 instead of NSEC
-	OptOut  bool  // NSEC3 opt-out: insecure delegations stay out of the chain
-	Expired bool  // signatures expired a day before Now
+	Alg     uint8     // 0: unsigned
+	NSEC3   bool      // NSEC3 instead of NSEC
+	OptOut  bool      // NSEC3 opt-out: insecure delegations stay out of the chain
+	Expired bool      // signatures expired a day before Now
+	Until   time.Time // if set, every signature expires then
 	Key     *dns.DNSKEY
 	priv    crypto.Signer
 	ed448   ed448.PrivateKey
@@ -390,6 +391,9 @@ func (z *Zone) sig(set []dns.RR) *dns.RRSIG {
 	inc, exp := Now.Add(-365*24*time.Hour), Now.Add(5*365*24*time.Hour)
 	if z.Expired {
 		inc, exp = Now.Add(-30*24*time.Hour), Now.Add(-24*time.Hour)
+	}
+	if !z.Until.IsZero() {
+		exp = z.Until
 	}
 	s := &dns.RRSIG{Hdr: dns.RR_Header{Ttl: set[0].Header().Ttl}, Algorithm: z.Alg, SignerName: z.Name,
 		KeyTag: z.Key.KeyTag(), Inception: uint32(inc.Unix()), Expiration: uint32(exp.Unix()), OrigTtl: set[0].Header().Ttl}
