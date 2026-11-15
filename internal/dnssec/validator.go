@@ -220,7 +220,7 @@ func (v *Validator) Check(ctx context.Context, q dns.Question, m *dns.Msg) (Resu
 			return res, nil
 		}
 		keep = append(keep, k)
-		if k.t != dns.TypeCNAME {
+		if k.t != dns.TypeCNAME || q.Qtype == dns.TypeCNAME {
 			trim(m, keep, sigs, false)
 			return res, nil
 		}

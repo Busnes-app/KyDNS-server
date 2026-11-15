@@ -84,6 +84,7 @@ func TestVerdicts(t *testing.T) {
 		{"test.", dns.TypeDNSKEY, Secure, 0},
 		{"secure.test.", dns.TypeDS, Secure, 0},
 		{"alias.test.", dns.TypeA, Secure, 0},
+		{"alias.test.", dns.TypeCNAME, Secure, 0}, // the CNAME itself, not followed
 		{"x.wild.test.", dns.TypeA, Secure, 0},
 		{"nope.test.", dns.TypeA, Secure, 0},      // NXDOMAIN
 		{"www.test.", dns.TypeAAAA, Secure, 0},    // NODATA
