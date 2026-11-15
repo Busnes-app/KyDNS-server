@@ -440,3 +440,28 @@ func TestVerdictExpiresWithSignatures(t *testing.T) {
 		t.Fatalf("delegation cached until %v, past its DS signature at %v", c.expires, soon)
 	}
 }
+
+// A signed wildcard proof with NSEC3 iterations above the ceiling is insecure,
+// decided before any of its hashes are computed.
+func TestWildcardNSEC3IterationCeiling(t *testing.T) {
+	w := world(t)
+	v := newV(w)
+	z := w.Zones["n3s.test."]
+	w.Tamper = func(n string, q uint16, m *dns.Msg) {
+		if n != "x.w.n3s.test." || q != dns.TypeA {
+			return
+		}
+		var forged []dns.RR
+		for _, rr := range m.Ns {
+			if n3, ok := rr.(*dns.NSEC3); ok {
+				n3.Iterations = 5000
+				forged = append(forged, z.Signed([]dns.RR{n3})...)
+			}
+		}
+		m.Ns = forged
+	}
+	res, _ := check(t, v, w, "x.w.n3s.test.", dns.TypeA)
+	if res.Security != Insecure {
+		t.Fatalf("%+v, want insecure", res)
+	}
+}

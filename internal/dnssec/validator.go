@@ -275,6 +275,9 @@ func (r *run) checkSet(k key, set []dns.RR, sigs map[key][]*dns.RRSIG, ns []dns.
 		// The next closer must not exist, or a closer encloser blocks the
 		// wildcard (RFC 4035 §5.3.4, RFC 5155 §8.8).
 		nc := lastLabels(k.name, int(sig.Labels)+1)
+		if len(nsec3) > 0 && !nsec3Usable(nsec3) {
+			return insecure, nil // checked before any hashing (RFC 9276)
+		}
 		if !anyCovers(nsec, nc) && !anyCovers3(nsec3, nc) {
 			return bogus(dns.ExtendedErrorCodeNSECMissing), nil
 		}

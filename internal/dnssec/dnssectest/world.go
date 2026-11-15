@@ -376,6 +376,9 @@ func (z *Zone) n3cover(name string) []dns.RR {
 	return nil
 }
 
+// Signed is signed for tests that forge records the zone itself signs.
+func (z *Zone) Signed(set []dns.RR) []dns.RR { return z.signed(set) }
+
 // signed returns set followed by its RRSIG (none in an unsigned zone).
 func (z *Zone) signed(set []dns.RR) []dns.RR {
 	if len(set) == 0 {
