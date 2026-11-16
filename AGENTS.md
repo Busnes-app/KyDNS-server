@@ -51,6 +51,8 @@ Non-trivial logic must include one runnable check (unit test or minimal self-che
 
 ## Child DOX Index
 
+- `docs/AGENTS.md` — mdBook manual, chapter ownership and documentation checks.
+
 Keep these aligned:
 
 - `docs/ui-dns-eight/AGENTS.md` — fresh Council captures, independent raw reviews and visual progression evidence.

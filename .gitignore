@@ -26,3 +26,6 @@ dist/
 /browser/node_modules/
 /browser/test-results/
 /browser/playwright-report/
+
+# Generated mdBook manual
+/docs/book/
