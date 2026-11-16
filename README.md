@@ -97,3 +97,12 @@ but give an agent write access only if you trust everyone who can message it. De
 - [Security model](docs/SECURITY-MODEL.md) — Security model. <a id="security-model"></a>
 - [Verifying releases](docs/VERIFYING-RELEASES.md) — Check a release file or image's signature and source commit, and rebuild the binary to the same bytes.
 - [Assurance case](docs/ASSURANCE-CASE.md) — Threat model, trust boundaries, and why the security requirements are met.
+
+## User manual
+
+Read the [online manual](https://busnes.app/manuals/kydns-server/) or browse its
+[Markdown sources](docs/src/introduction.md).
+
+Build and check it with `mdbook build docs` and `python3 docs/check-links.py`,
+then open `docs/book/index.html`. The documentation workflow also provides a
+downloadable `documentation-book` artifact.
