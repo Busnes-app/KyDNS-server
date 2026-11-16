@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
   workflow_dispatch:
 
 permissions:
@@ -19,13 +20,16 @@ jobs:
   # The name the ruleset requires and publish needs: green only when every leg passed.
   test:
     needs: [go, go-strong, browser]
-    if: always()
+    if: (always()) && github.event.pull_request.draft != true
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - run: test "${{ !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') && !contains(needs.*.result, 'skipped') }}" = true
 
   browser:
+    if: github.event.pull_request.draft != true
     runs-on: ubuntu-latest
+    timeout-minutes: 35
     # Playwright's own image, browsers and their system libraries included. Its version must
     # be the lockfile's; the first step fails on drift.
     container:
@@ -79,7 +83,9 @@ jobs:
           retention-days: 7
 
   go:
+    if: github.event.pull_request.draft != true
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -161,7 +167,9 @@ jobs:
   # The supported strong-crypto profile, in its own job: in one job with the default pass
   # the two shared the runner's cores and took longer than both in turn.
   go-strong:
+    if: github.event.pull_request.draft != true
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -177,7 +185,9 @@ jobs:
         run: go test -race -count=1 -timeout 10m ./...
 
   build:
+    if: github.event.pull_request.draft != true
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -213,7 +223,9 @@ jobs:
         run: go test ./internal/config/ -run TestExample -v
 
   docker:
+    if: github.event.pull_request.draft != true
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -327,6 +339,7 @@ jobs:
     needs: [test, build, docker]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
       packages: write
@@ -389,7 +402,9 @@ jobs:
             arch: amd64
           - runner: ubuntu-24.04-arm
             arch: arm64
+    if: github.event.pull_request.draft != true
     runs-on: ${{ matrix.runner }}
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -592,7 +607,9 @@ jobs:
   # A synthetic base of the same shape proves the download, loop, and staging
   # steps without pulling 500 MB of Raspberry Pi OS on every pull request.
   rpi-image:
+    if: github.event.pull_request.draft != true
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -677,7 +694,9 @@ jobs:
             arch: amd64
             rpmarch: x86_64
             base: rockylinux:9
+    if: github.event.pull_request.draft != true
     runs-on: ${{ matrix.runner }}
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
