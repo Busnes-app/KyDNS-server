@@ -65,6 +65,8 @@ Validation sits inside `dnsserver.Forwarder`, behind the cache. With the setting
 5. Negative answers: NXDOMAIN needs proof that the name and the wildcard at its closest
    encloser do not exist; NODATA needs a matching NSEC/NSEC3 without the type (or the
    wildcard NODATA form). NSEC3 opt-out on a DS query is insecure, per RFC 5155.
+   NXDOMAIN applies to the end of the alias chain (RFC 6604): data at that end under
+   NXDOMAIN is bogus, and a chain ending without data needs the denial proof.
 6. The answer leaves with only what was validated: on a secure positive answer the
    authority section keeps only the NSEC/NSEC3 proof RRsets that verified (and their
    RRSIGs); on a negative one, the verified SOA and proof. Every TTL in a secure answer

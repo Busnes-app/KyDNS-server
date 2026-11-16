@@ -252,6 +252,10 @@ func (v *Validator) Check(ctx context.Context, q dns.Question, m *dns.Msg) (Resu
 		}
 		keep = append(keep, k)
 		if k.t != dns.TypeCNAME || q.Qtype == dns.TypeCNAME {
+			// RFC 6604: NXDOMAIN names the chain's end, which here has data.
+			if m.Rcode == dns.RcodeNameError {
+				return bogus(dns.ExtendedErrorCodeDNSBogus), nil
+			}
 			return r.finish(m, keep, false, res), nil
 		}
 		name = dns.CanonicalName(set[0].(*dns.CNAME).Target)

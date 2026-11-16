@@ -132,6 +132,23 @@ func TestValidatedBogusIsServfailWithEDE(t *testing.T) {
 	}
 }
 
+// A signed answer under NXDOMAIN contradicts itself: SERVFAIL, never AD.
+func TestValidatedNXDomainWithAnswerIsServfail(t *testing.T) {
+	w := signedWorld()
+	w.Tamper = func(n string, q uint16, m *dns.Msg) {
+		if n == "www.test." && q == dns.TypeA {
+			m.Rcode = dns.RcodeNameError
+		}
+	}
+	s, _ := validatingServer(t, w)
+	for range 2 { // the second ask would hit a cached verdict
+		m := askV(s, "www.test.", flags{do: true, ad: true})
+		if m.Rcode != dns.RcodeServerFailure || m.AuthenticatedData || len(m.Answer) != 0 || !hasEDE(m, dns.ExtendedErrorCodeDNSBogus) {
+			t.Fatalf("got %v", m)
+		}
+	}
+}
+
 func TestValidationIgnoresUpstreamVerdicts(t *testing.T) {
 	s, up := validatingServer(t, signedWorld())
 	askV(s, "www.test.", flags{})

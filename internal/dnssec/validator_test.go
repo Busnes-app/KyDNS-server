@@ -199,6 +199,11 @@ func TestTampering(t *testing.T) {
 				m.Ns = m.Ns[:2] // SOA and its RRSIG only
 			}
 		}, dns.ExtendedErrorCodeNSECMissing},
+		{"signed answer under NXDOMAIN", "www.test.", dns.TypeA, func(_ string, q uint16, m *dns.Msg) {
+			if q == dns.TypeA {
+				m.Rcode = dns.RcodeNameError
+			}
+		}, dns.ExtendedErrorCodeDNSBogus},
 		{"NODATA turned NXDOMAIN", "www.test.", dns.TypeAAAA, func(_ string, q uint16, m *dns.Msg) {
 			if q == dns.TypeAAAA {
 				m.Rcode = dns.RcodeNameError

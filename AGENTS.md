@@ -153,7 +153,8 @@ Code, one concern per package:
   runs `Validator.Check` before caching. Check trims a Secure answer to the
   RRsets that verified (authority proofs included) and caps its TTLs by Original
   TTL and signature expiry. ANY is never forwarded while validating (RFC 8482
-  HINFO answer); an RRSIG answer keeps only the qname's RRSIGs, AD=0. The
+  HINFO answer); an RRSIG answer keeps only the qname's RRSIGs, AD=0; NXDOMAIN
+  with data at the chain's end is bogus. The
   verdict rides in the cached AD bit,
   a bogus answer becomes SERVFAIL with an RFC 8914 EDE, and the server sets AD
   only for DO/AD clients and strips RRSIG/NSEC/NSEC3 for non-DO ones. Root
