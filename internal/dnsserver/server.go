@@ -82,9 +82,14 @@ func (s *Server) LogClientIP() bool { return s.logClientIP.Load() }
 // resolution, authoritative lookup, then forwarding.
 func (s *Server) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 	start := time.Now()
+	edns := r.IsEdns0()
+	do := edns != nil && edns.Do()
 	reply := func(m *dns.Msg, source, view, policy string) {
 		// Every reply passes through here, so no path can forget the datagram
 		// ceiling. Over-large answers are common now that DO=1 is forwarded.
+		if !do {
+			stripDNSSEC(m, r.Question)
+		}
 		if _, udp := w.RemoteAddr().(*net.UDPAddr); udp {
 			m.Truncate(clientUDPSize(r))
 		}
@@ -135,13 +140,12 @@ func (s *Server) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 		m.Ns = []dns.RR{blockSOA(q.Name, ttl)}
 		reply(m, "blocked", view, decision)
 	}
-	edns := r.IsEdns0()
-	do := edns != nil && edns.Do()
 
 	if m := s.o.Auth.Answer(snap, view, q); m != nil {
 		rcode := m.Rcode
 		m.SetRcode(r, rcode)
 		m.Authoritative = true
+		m.AuthenticatedData = false // local data is never DNSSEC-validated
 		if blocked, decision, ttl := s.finishChain(m, q, do); blocked {
 			block(ttl, decision)
 			return
@@ -184,6 +188,14 @@ func (s *Server) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 	out.SetRcode(r, rcode)
 	out.Authoritative = false
 	out.RecursionAvailable = true
+	if s.o.Forwarder.Validating() {
+		// AD only for answers KyDNS proved, and only to a client that asked
+		// (RFC 6840 §5.7).
+		out.AuthenticatedData = resp.AuthenticatedData && (do || r.AuthenticatedData)
+		if opt := out.IsEdns0(); opt != nil {
+			opt.SetDo(do) // RFC 3225: echo the client's DO, not ours
+		}
+	}
 	if edns == nil {
 		stripOPT(out)
 	}
@@ -309,6 +321,30 @@ func clientUDPSize(r *dns.Msg) int {
 		return min(int(edns.UDPSize()), 1232)
 	}
 	return dns.MinMsgSize
+}
+
+// stripDNSSEC drops RRSIG, NSEC and NSEC3 records for a client that did not
+// set DO, unless it asked for that type (RFC 4035 §3.2.1). The upstream is
+// asked with DO=1 whenever KyDNS validates.
+func stripDNSSEC(m *dns.Msg, qs []dns.Question) {
+	var qtype uint16
+	if len(qs) == 1 {
+		qtype = qs[0].Qtype
+	}
+	keep := func(rrs []dns.RR) []dns.RR {
+		out := rrs[:0]
+		for _, rr := range rrs {
+			switch t := rr.Header().Rrtype; t {
+			case dns.TypeRRSIG, dns.TypeNSEC, dns.TypeNSEC3:
+				if t != qtype {
+					continue
+				}
+			}
+			out = append(out, rr)
+		}
+		return out
+	}
+	m.Answer, m.Ns, m.Extra = keep(m.Answer), keep(m.Ns), keep(m.Extra)
 }
 
 // stripOPT removes the EDNS0 record from a response. The forwarder always

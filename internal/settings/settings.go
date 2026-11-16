@@ -126,8 +126,8 @@ type Writer interface {
 // preserves them; every other setting belongs to the primary and the next pull
 // would discard it.
 var ErrReadOnlyReplica = errors.New(
-	"this node is a read-only replica: only its DHCP, lease file, discovery interval and " +
-		"query logging settings can be changed here, and every other setting must be changed on its primary")
+	"this node is a read-only replica: only its DHCP, lease file, discovery interval, " +
+		"query logging and DNSSEC validation settings can be changed here, and every other setting must be changed on its primary")
 
 // Service is the single write path for settings: validate, persist, rebuild,
 // apply. onApply is injected so this package never imports the runtime.
@@ -297,5 +297,6 @@ func withoutDHCP(v store.Settings) store.Settings {
 	v.DHCPGateway, v.DHCPLeaseSeconds = "", 0
 	v.DHCPSecondaryDNS, v.DHCPAllowForeign = "", false
 	v.RDNSSEnabled, v.RDNSSInterface, v.RDNSSAddress = false, "", ""
+	v.DNSSECValidate = false
 	return v
 }

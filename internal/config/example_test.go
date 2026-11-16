@@ -109,6 +109,7 @@ func TestExampleMatchesDefaults(t *testing.T) {
 		"dns.allow_tailscale":  {example.DNS.AllowTailscale, def.DNS.AllowTailscale},
 		"dns.log_queries":      {example.DNS.LogQueries, def.DNS.LogQueries},
 		"dns.log_client_ip":    {example.DNS.LogClientIP, def.DNS.LogClientIP},
+		"dns.dnssec_validate":  {*example.DNS.DNSSECValidate, *def.DNS.DNSSECValidate},
 		"admin.listen":         {example.Admin.Listen, def.Admin.Listen},
 		"discovery.interval":   {example.Discovery.Interval, def.Discovery.Interval},
 		"health.interval":      {example.Health.Interval, def.Health.Interval},
@@ -162,7 +163,7 @@ var seededKeys = []string{
 	"private_domain", "reverse_zones", "upstreams", "allow_query",
 	"allow_tailscale", "ttl", "cache_min_ttl", "cache_max_ttl",
 	"negative_max_ttl", "cache_entries", "log_queries", "log_client_ip",
-	"dhcp_lease_file", "interval", "timeout", "workers",
+	"dnssec_validate", "dhcp_lease_file", "interval", "timeout", "workers",
 }
 
 // markedAsSeed reports whether key's comment block says it is a seed value.
@@ -203,7 +204,7 @@ func TestExampleDocumentsEverySetting(t *testing.T) {
 		"data_dir", "listen", "private_domain", "reverse_zones", "upstreams",
 		"allow_query", "allow_tailscale", "ttl", "cache_min_ttl", "cache_max_ttl",
 		"negative_max_ttl", "cache_entries", "log_queries", "log_client_ip",
-		"dhcp_lease_file", "interval", "timeout", "workers",
+		"dnssec_validate", "dhcp_lease_file", "interval", "timeout", "workers",
 	} {
 		if !strings.Contains(body, key+":") {
 			t.Errorf("kydns.example.yaml does not mention %q", key)

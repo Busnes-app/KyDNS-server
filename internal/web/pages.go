@@ -36,6 +36,7 @@ func (s *Server) pageRoutes(mux registrar) {
 
 	mux.HandleFunc("GET /dhcp", s.requireSession(s.getDHCP))
 	mux.HandleFunc("POST "+PathDHCPSettings, s.requireCSRF(s.postDHCPSettings))
+	mux.HandleFunc("POST "+PathDNSSECNotice, s.requireCSRF(s.postDNSSECNotice))
 	mux.HandleFunc("POST "+PathDHCPSuggest, s.requireCSRF(s.postDHCPSuggest))
 	mux.HandleFunc("POST "+PathRDNSSSettings, s.requireCSRF(s.postRDNSSSettings))
 	mux.HandleFunc("POST "+PathRDNSSSuggest, s.requireCSRF(s.postRDNSSSuggest))

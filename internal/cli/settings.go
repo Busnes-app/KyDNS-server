@@ -20,7 +20,7 @@ keys:
   health_interval, health_timeout, health_workers,
   dhcp_enabled, dhcp_interface, dhcp_range_start, dhcp_range_end,
   dhcp_gateway, dhcp_lease_seconds, dhcp_secondary_dns, dhcp_allow_foreign,
-  rdnss_enabled, rdnss_interface, rdnss_address
+  rdnss_enabled, rdnss_interface, rdnss_address, dnssec_validate
 
 lists take commas: upstreams=tls://1.1.1.1:853,tls://9.9.9.9:853`
 
@@ -40,6 +40,7 @@ var settingsKinds = map[string]string{
 	"dhcp_gateway": "string", "dhcp_lease_seconds": "int",
 	"dhcp_secondary_dns": "string", "dhcp_allow_foreign": "bool",
 	"rdnss_enabled": "bool", "rdnss_interface": "string", "rdnss_address": "string",
+	"dnssec_validate": "bool",
 }
 
 func settingsCmd(c *Client, args []string, stdout, stderr io.Writer) int {

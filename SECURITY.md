@@ -60,8 +60,13 @@ notes unless you would rather stay anonymous.
   whose signature fails the cached keys refetches the key set, one fetch at a time,
   which is go-oidc's key-rotation path.
 - Upstream resolvers are reached over DNS-over-TLS or DNS-over-HTTPS with
-  certificate verification always on. Plain `udp://` is per-upstream opt-in and
-  clears the authenticated-data bit on anything it answers.
+  certificate verification always on. Plain `udp://` is per-upstream opt-in.
+  With local DNSSEC validation off it clears the authenticated-data bit on
+  anything it answers; with it on, the bit means KyDNS checked the chain itself.
+- Local DNSSEC validation trusts only the root anchors built into the binary.
+  Signature checks are bounded (8 per RRset, 64 per answer; NSEC3 iterations
+  above 150 count as insecure). While the clock is provably untrustworthy, only
+  signature dates are skipped, and the dashboard says so.
 - Discovery sources such as DHCP and Docker are configuration inputs and must
   be validated before their data is published.
 - With the built-in DHCP server enabled, KyDNS parses packets from any device
@@ -210,10 +215,13 @@ operator's HTTPS proxy is a separate boundary and must be configured too.
 
 ## Known limitations
 
-- **KyDNS is not a validating resolver.** It does not verify DNSSEC signatures,
-  hold a trust anchor, or walk a chain of trust. An `AD` bit from KyDNS means
-  the upstream said it validated, not that KyDNS checked.
-- **Every configured upstream should be a validating resolver.** A DNSSEC
+- **With "Validate DNSSEC locally" off** (an upgraded install that has not
+  turned it on), KyDNS does not verify DNSSEC signatures: an `AD` bit means the
+  upstream said it validated. With it on, there is no RFC 5011 trust-anchor
+  rollover (a new root key arrives in a release), a client's `CD` bit does not
+  get it bogus data, and names under the automatic negative trust anchors are
+  never validated.
+- **With validation off, every configured upstream should be a validating resolver.** A DNSSEC
   rejection from any encrypted upstream is final: a `SERVFAIL` carrying a
   DNSSEC Extended DNS Error (RFC 8914) goes to the client, without any records
   it carried, and the next upstream is not asked. A `SERVFAIL` without one is

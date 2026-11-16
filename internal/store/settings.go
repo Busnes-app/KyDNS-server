@@ -34,7 +34,7 @@ SELECT private_domain, reverse_zones, upstreams, allow_query, allow_tailscale,
        health_interval, health_timeout, health_workers,
        dhcp_enabled, dhcp_interface, dhcp_range_start, dhcp_range_end,
        dhcp_gateway, dhcp_lease_seconds, dhcp_secondary_dns, dhcp_allow_foreign,
-       rdnss_enabled, rdnss_interface, rdnss_address
+       rdnss_enabled, rdnss_interface, rdnss_address, dnssec_validate
 FROM settings WHERE id = 1`).Scan(
 		&v.PrivateDomain, &rz, &up, &aq, &v.AllowTailscale,
 		&v.TTL, &v.CacheMinTTL, &v.CacheMaxTTL, &v.NegativeMaxTTL, &v.CacheEntries,
@@ -42,7 +42,7 @@ FROM settings WHERE id = 1`).Scan(
 		&v.HealthInterval, &v.HealthTimeout, &v.HealthWorkers,
 		&v.DHCPEnabled, &v.DHCPInterface, &v.DHCPRangeStart, &v.DHCPRangeEnd,
 		&v.DHCPGateway, &v.DHCPLeaseSeconds, &v.DHCPSecondaryDNS, &v.DHCPAllowForeign,
-		&v.RDNSSEnabled, &v.RDNSSInterface, &v.RDNSSAddress)
+		&v.RDNSSEnabled, &v.RDNSSInterface, &v.RDNSSAddress, &v.DNSSECValidate)
 	if errors.Is(err, sql.ErrNoRows) {
 		return Settings{}, false, nil
 	}
@@ -60,7 +60,8 @@ func (s *Store) PutSettings(v Settings) error {
 }
 
 // PutDHCPSettings writes the node-local columns (the eight dhcp_*, plus
-// dhcp_lease_file, discovery_interval, log_queries and log_client_ip, which no
+// dhcp_lease_file, discovery_interval, log_queries, log_client_ip and
+// dnssec_validate, which no
 // cv_ trigger names) and leaves every other one exactly as it is. It exists for the replica write path: a whole-row
 // write there would put back whatever the background pull applied between the
 // caller's read and this write. One statement, so it is correct against
@@ -73,12 +74,12 @@ UPDATE settings SET dhcp_enabled = ?, dhcp_interface = ?, dhcp_range_start = ?,
   dhcp_range_end = ?, dhcp_gateway = ?, dhcp_lease_seconds = ?,
   dhcp_secondary_dns = ?, dhcp_allow_foreign = ?,
   dhcp_lease_file = ?, discovery_interval = ?, log_queries = ?, log_client_ip = ?,
-  rdnss_enabled = ?, rdnss_interface = ?, rdnss_address = ?
+  rdnss_enabled = ?, rdnss_interface = ?, rdnss_address = ?, dnssec_validate = ?
 WHERE id = 1`,
 		v.DHCPEnabled, v.DHCPInterface, v.DHCPRangeStart, v.DHCPRangeEnd,
 		v.DHCPGateway, v.DHCPLeaseSeconds, v.DHCPSecondaryDNS, v.DHCPAllowForeign,
 		v.DHCPLeaseFile, v.DiscoveryInterval, v.LogQueries, v.LogClientIP,
-		v.RDNSSEnabled, v.RDNSSInterface, v.RDNSSAddress)
+		v.RDNSSEnabled, v.RDNSSInterface, v.RDNSSAddress, v.DNSSECValidate)
 	if err != nil {
 		return err
 	}
@@ -108,8 +109,8 @@ INSERT INTO settings (id, private_domain, reverse_zones, upstreams, allow_query,
   discovery_interval, health_interval, health_timeout, health_workers,
   dhcp_enabled, dhcp_interface, dhcp_range_start, dhcp_range_end,
   dhcp_gateway, dhcp_lease_seconds, dhcp_secondary_dns, dhcp_allow_foreign,
-  rdnss_enabled, rdnss_interface, rdnss_address)
-VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  rdnss_enabled, rdnss_interface, rdnss_address, dnssec_validate)
+VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 ON CONFLICT(id) DO UPDATE SET
   private_domain=excluded.private_domain, reverse_zones=excluded.reverse_zones,
   upstreams=excluded.upstreams, allow_query=excluded.allow_query,
@@ -127,7 +128,8 @@ ON CONFLICT(id) DO UPDATE SET
   dhcp_secondary_dns=excluded.dhcp_secondary_dns,
   dhcp_allow_foreign=excluded.dhcp_allow_foreign,
   rdnss_enabled=excluded.rdnss_enabled, rdnss_interface=excluded.rdnss_interface,
-  rdnss_address=excluded.rdnss_address`,
+  rdnss_address=excluded.rdnss_address,
+  dnssec_validate=excluded.dnssec_validate`,
 		v.PrivateDomain, packList(v.ReverseZones), packList(v.Upstreams),
 		packList(v.AllowQuery), v.AllowTailscale, v.TTL, v.CacheMinTTL,
 		v.CacheMaxTTL, v.NegativeMaxTTL, v.CacheEntries, v.LogQueries,
@@ -135,7 +137,24 @@ ON CONFLICT(id) DO UPDATE SET
 		v.HealthTimeout, v.HealthWorkers,
 		v.DHCPEnabled, v.DHCPInterface, v.DHCPRangeStart, v.DHCPRangeEnd,
 		v.DHCPGateway, v.DHCPLeaseSeconds, v.DHCPSecondaryDNS, v.DHCPAllowForeign,
-		v.RDNSSEnabled, v.RDNSSInterface, v.RDNSSAddress)
+		v.RDNSSEnabled, v.RDNSSInterface, v.RDNSSAddress, v.DNSSECValidate)
+	return err
+}
+
+// DNSSECNotice reports whether the one-time "turn on DNSSEC validation"
+// notice is pending. Only an upgraded database starts with it set.
+func (s *Store) DNSSECNotice() (bool, error) {
+	var on bool
+	err := s.db.QueryRow(`SELECT dnssec_notice FROM settings WHERE id = 1`).Scan(&on)
+	if errors.Is(err, sql.ErrNoRows) {
+		return false, nil
+	}
+	return on, err
+}
+
+// ClearDNSSECNotice retires the notice for good.
+func (s *Store) ClearDNSSECNotice() error {
+	_, err := s.db.Exec(`UPDATE settings SET dnssec_notice = 0 WHERE id = 1`)
 	return err
 }
 

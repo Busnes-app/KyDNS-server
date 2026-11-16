@@ -49,6 +49,8 @@ type settingsDTO struct {
 	RDNSSEnabled   bool   `json:"rdnss_enabled" yaml:"rdnss_enabled"`
 	RDNSSInterface string `json:"rdnss_interface" yaml:"rdnss_interface"`
 	RDNSSAddress   string `json:"rdnss_address" yaml:"rdnss_address"`
+	// "Validate DNSSEC locally". Node-local, like log_queries.
+	DNSSECValidate bool `json:"dnssec_validate" yaml:"dnssec_validate"`
 
 	// ConfirmPublic authorises one public allow_query prefix for this request
 	// only. It is never stored and never returned, and it has no yaml tag: a
@@ -76,6 +78,7 @@ func toSettingsDTO(v store.Settings) settingsDTO {
 		DHCPGateway: v.DHCPGateway, DHCPLeaseSeconds: v.DHCPLeaseSeconds,
 		DHCPSecondaryDNS: v.DHCPSecondaryDNS, DHCPAllowForeign: v.DHCPAllowForeign,
 		RDNSSEnabled: v.RDNSSEnabled, RDNSSInterface: v.RDNSSInterface, RDNSSAddress: v.RDNSSAddress,
+		DNSSECValidate: v.DNSSECValidate,
 	}
 }
 
@@ -95,6 +98,7 @@ func fromSettingsDTO(d settingsDTO) store.Settings {
 		DHCPGateway: d.DHCPGateway, DHCPLeaseSeconds: d.DHCPLeaseSeconds,
 		DHCPSecondaryDNS: d.DHCPSecondaryDNS, DHCPAllowForeign: d.DHCPAllowForeign,
 		RDNSSEnabled: d.RDNSSEnabled, RDNSSInterface: d.RDNSSInterface, RDNSSAddress: d.RDNSSAddress,
+		DNSSECValidate: d.DNSSECValidate,
 	}
 }
 

@@ -72,8 +72,13 @@ plain DNS is exactly what an attacker who blocks port 853 wants, so it is not
 automatic: an operator opts in per upstream with a `udp://` entry, and anything
 that entry answers has its authenticated-data bit cleared.
 
-KyDNS does not validate DNSSEC itself. It makes the path to a resolver that
-does private and tamper-proof, and passes that resolver's verdict through.
+With "Validate DNSSEC locally" on, `internal/dnssec` validates each forwarded
+answer before it is cached: the chain from the built-in root anchors, NSEC and
+NSEC3 denial, wildcards, and RFC 8914 errors on bogus answers
+([design](docs/superpowers/specs/2026-11-15-dnssec-validation-design.md)).
+Upstreams are asked with `DO=1, CD=1`; the verdict rides in the cached copy's
+AD bit. With it off, KyDNS makes the path to a resolver that validates private
+and tamper-proof, and passes that resolver's verdict through.
 A `SERVFAIL` carrying a DNSSEC Extended DNS Error (RFC 8914) from an encrypted
 upstream is that verdict, so it ends the upstream walk, is never cached, and
 reaches the client stripped of any records; a bare `SERVFAIL`, or one from a
@@ -288,7 +293,7 @@ pairing, the pinned transport, the pull loop, the read-only replica, and
 operator-driven promotion. Automatic failover, leader election, and more than
 one primary are outside it.
 
-Parental controls, device posture, traffic inspection, local DNSSEC validation,
+Parental controls, device posture, traffic inspection,
 local certificate issuance, and automatic peer discovery are outside the
 boundary. Blacklist filtering is specified in
 [`docs/superpowers/specs/2026-08-12-kydns-blacklists.md`](docs/superpowers/specs/2026-08-12-kydns-blacklists.md).

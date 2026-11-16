@@ -149,6 +149,8 @@
           <label for="upstreams">Upstreams, one per line, tried in order</label>
           <textarea id="upstreams" name="upstreams" rows="4">{{range .Upstreams}}{{.}}
 {{end}}</textarea>
+          <label><input type="checkbox" name="dnssec_validate" {{if .DNSSECValidate}}checked{{end}}> Validate DNSSEC locally</label>
+          <p class="muted">KyDNS checks signatures itself, from the root keys, instead of trusting the upstream. A forged or broken signed answer fails instead of resolving.</p>
         </div>
       </fieldset>
 

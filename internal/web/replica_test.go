@@ -113,11 +113,13 @@ func TestReplicaRefusesEveryPostRoute(t *testing.T) {
 //
 // The token and SSO paths: tokens, the SSO provider and the linked identity
 // are node-local as well, so a replica manages its own (owner answer Q1 A).
+//
+// PathDNSSECNotice: dnssec_validate and its notice are node-local.
 func TestExemptSetIsExactlyTheNamedPaths(t *testing.T) {
 	want := map[string]bool{
 		PathSetup: true, PathLogin: true, PathLogout: true,
 		PathPromote: true, PathJoin: true,
-		PathDHCPSettings: true, PathDHCPSuggest: true,
+		PathDHCPSettings: true, PathDHCPSuggest: true, PathDNSSECNotice: true,
 		PathRDNSSSettings: true, PathRDNSSSuggest: true,
 		PathInstallerDirectory: true, PathAccountPassword: true,
 		PathTokenNew: true, PathTokenDelete: true, PathTokenAccess: true, PathTokenStepUp: true,

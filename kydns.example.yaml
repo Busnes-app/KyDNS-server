@@ -126,6 +126,11 @@ dns:
   # A first-run seed; edit it under Settings, where it applies immediately.
   log_client_ip: false
 
+  # Validate DNSSEC locally: check signatures from the root trust anchors
+  # instead of trusting the upstream's verdict. Bogus answers become SERVFAIL.
+  # A first-run seed; edit it under Settings, where it applies immediately.
+  dnssec_validate: true
+
 admin:
   # Owned by this file. The web UI and JSON API, which have to be listening
   # before anyone can edit anything, so this one can only come from here.

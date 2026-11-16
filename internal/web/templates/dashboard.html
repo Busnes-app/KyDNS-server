@@ -8,6 +8,18 @@
 </div>
 {{end}}
 
+{{if .DNSSECNotice}}
+<div class="banner">
+  <strong>KyDNS can now validate DNSSEC itself.</strong>
+  <p>Today it trusts its upstream's word that a signed answer is genuine. With "Validate DNSSEC locally" on, KyDNS checks the signatures from the root keys, and a forged answer fails instead of resolving. New installs have it on; this one kept its old behaviour when it was upgraded.</p>
+  <form method="post" action="/settings/dnssec-notice">
+    <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
+    <button type="submit" name="action" value="enable">Turn it on</button>
+    <button class="ghost" type="submit" name="action" value="dismiss">Not now</button>
+  </form>
+</div>
+{{end}}
+
 {{with .ReplicationLine}}
 <div class="card stat-row">
   <div class="stat"><div class="value" data-stat="role">{{.Role}}</div><div class="label">This node</div></div>
