@@ -138,15 +138,35 @@ func (l *liveComponents) applyDNSSEC(s *settings.Snapshot) {
 func dnssecNTAs(s *settings.Snapshot) []string {
 	ntas := []string{s.Raw.PrivateDomain}
 	for _, p := range s.ReverseZones {
-		ntas = append(ntas, reverseZone(p))
+		ntas = append(ntas, reverseZones(p)...)
 	}
 	return ntas
 }
 
-// reverseZone is the arpa zone holding prefix p, widened to the label
-// boundary (octet for IPv4, nibble for IPv6).
-func reverseZone(p netip.Prefix) string {
+// reverseZones are the arpa zones covering exactly prefix p: a prefix off
+// the label boundary (octet for IPv4, nibble for IPv6) splits into one zone per
+// sub-prefix at the next boundary, so the exception never widens past p.
+func reverseZones(p netip.Prefix) []string {
 	p = p.Masked()
+	step := 4
+	if p.Addr().Is4() {
+		step = 8
+	}
+	bits := (p.Bits() + step - 1) / step * step
+	var out []string
+	for i := 0; i < 1<<(bits-p.Bits()); i++ {
+		b := p.Addr().AsSlice()
+		if k := (bits - 1) / 8; i > 0 { // the split bits all sit in the boundary's byte
+			b[k] |= byte(i << (8*(k+1) - bits))
+		}
+		a, _ := netip.AddrFromSlice(b)
+		out = append(out, reverseZone(netip.PrefixFrom(a, bits)))
+	}
+	return out
+}
+
+// reverseZone is the arpa zone of a prefix on the label boundary.
+func reverseZone(p netip.Prefix) string {
 	a := p.Addr()
 	var labels []string
 	if a.Is4() {

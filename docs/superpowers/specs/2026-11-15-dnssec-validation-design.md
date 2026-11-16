@@ -112,8 +112,10 @@ KyDNS in a release, and the daily dependency releases make that fast.
   tail of a local CNAME chain is validated (a bogus tail is dropped), but the reply stays
   AD=0 because its head is local.
 - Negative trust anchors, applied automatically: the private domain, every configured
-  reverse zone, `home.arpa`, `internal`, `local`, `lan`, `localdomain`, and the RFC 6303
-  private reverse zones (`10.in-addr.arpa`, `16.172` … `31.172.in-addr.arpa`,
+  reverse zone (a prefix off a label boundary splits into the exact zones at the next
+  octet or nibble, never widened: `172.16.0.0/12` is its sixteen `/16` zones),
+  `home.arpa`, `internal`, `local`, `lan`, `localdomain`, and the RFC 6303 private
+  reverse zones (`10.in-addr.arpa`, `16.172` … `31.172.in-addr.arpa`,
   `168.192.in-addr.arpa`, `254.169.in-addr.arpa`, `d.f.ip6.arpa`, `8.e.f.ip6.arpa` …
   `b.e.f.ip6.arpa`). KyDNS has no conditional forwarding today, but a router used as a
   `udp://` upstream commonly answers these names itself, unsigned, while the root proves
