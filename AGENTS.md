@@ -262,3 +262,11 @@ Keep `README.md` as the concise product overview and navigation. Detailed proced
 - OIDC keeps coreos/go-oidc signature/claim checks. Its private JWKS transport matches the verifier's envelope/member parsing and refuses every RSA modulus below 2048 bits, bounded malformed inputs and redirects. `TestOIDCSigningKeyFloor` covers real signatures and case-variant members in both process modes. Configured-mode discovery/exchange requires direct HTTPS metadata endpoints and returns an explicit login failure. Preserve injected trust roots/timeouts.
 - `internal/upstream/strong_crypto_test.go` runs the TLS peer in a separate ordinary-mode process so the selected client's key policy is what is tested. Keep strong acceptance and weak-leaf/trusted-root refusal evidence for both DoT and DoH.
 - Run full ordinary and `GODEBUG=fips140=on` race suites; `python3 scripts/check-strong-crypto-compose.py` proves overlay preservation. Docker CI reuses its data volume to verify DNS after enabling the profile; review the selected profile's integration tests and local-data/restore checks before rollout. Health certificate opt-out is outside the profile; pinned Ed25519 replication and durable recovery remain supported.
+
+## Application version
+
+- `cmd/kydns/main.go` holds the source release line; packaged builds override `main.version` with the exact tag or source revision. Keep CLI and web version reporting on that same variable.
+
+## Release notes
+
+- `CHANGELOG.md` owns pending application release notes and upgrade impact. A version bump alone does not publish a release.

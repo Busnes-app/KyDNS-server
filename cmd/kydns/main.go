@@ -19,9 +19,9 @@ import (
 	"github.com/Busnes-app/kydns-server/internal/web"
 )
 
-// version is set at link time with -X main.version. "dev" means someone built
-// straight from a source tree, which is exactly what a bug report needs to say.
-var version = "dev"
+// version defaults to the source release line; packaged builds stamp their
+// exact tag or source revision at link time with -X main.version.
+var version = "0.6.1"
 
 // The web UI prints the same string. One stamp, one answer, whichever way an
 // operator asks.
