@@ -64,6 +64,10 @@ func pinnedTLSConfig(id *Identity, allowed func(fp string) bool) (*tls.Config, e
 	return &tls.Config{
 		Certificates: []tls.Certificate{cert},
 		MinVersion:   tls.VersionTLS13,
+		// Both ends are KyDNS, so offer only the hybrid post-quantum key
+		// exchange: a peer that cannot do it is refused, never downgraded.
+		// ponytail: inline until ky-primitives pqtls.HybridOnly is released.
+		CurvePreferences: []tls.CurveID{tls.X25519MLKEM768},
 		// Code scanning flags this and the alert is dismissed there. Do not add
 		// a codeql[...] marker: it does nothing in Go.
 		InsecureSkipVerify: true,

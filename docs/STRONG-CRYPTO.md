@@ -69,7 +69,7 @@ is required by enabling this profile.
 | Blacklist HTTPS | Existing fetches require verified HTTPS and refuse redirects away from HTTPS. The same process TLS key policy applies. Keep list integrity and source selection under administrator control. |
 | Service health | For HTTPS checks, leave certificate verification enabled (`check_insecure=false`) and use a trusted strong certificate chain. Install a private CA in the process trust store where needed. The opt-out deliberately skips CA/hostname verification and is outside this profile. Plain HTTP/TCP probes test availability and provide no authenticated TLS claim. |
 | OIDC | Use direct HTTPS issuer, authorization, token, JWKS and optional userinfo URLs without embedded URL credentials. Configured-mode discovery/exchange refuses plaintext endpoints and redirects; failed discovery refuses login instead of silently choosing fallback URLs. The private JWKS input boundary always refuses RSA moduli below 2048 bits, malformed/oversized bodies and redirects. Upstream signature, issuer, audience, expiry and nonce checks remain. |
-| Linked nodes | Keep the operator-compared Ed25519 fingerprints and original node seeds. TLS 1.3 requires the pinned Ed25519 peer; its explicit pin replaces CA validation. It cannot accept an arbitrary RSA certificate. Pairing peeks first, then sends the one-time code only over the confirmed pinned connection. |
+| Linked nodes | Keep the operator-compared Ed25519 fingerprints and original node seeds. TLS 1.3 with only the hybrid post-quantum X25519MLKEM768 key exchange (both ends; a classical-only peer is refused, `TestReplicaLinkRefusesX25519OnlyPeer`) requires the pinned Ed25519 peer; its explicit pin replaces CA validation. It cannot accept an arbitrary RSA certificate. Pairing peeks first, then sends the one-time code only over the confirmed pinned connection. |
 | KyRecovery | Existing fixed X-Wing HPKE/AES-256-GCM capsule format and 32-byte local sealing key remain. Recoveryclient requires HTTPS and refuses redirects, with private/LAN access only through the documented explicit opt-in; the process TLS key policy still applies. Preserve the write-once pin and receipt checks. |
 | Admin UI/API/MCP and remote CLI | KyDNS serves internal HTTP; put a TLS proxy with strong certificates in front and restrict direct access to the admin port to that proxy. The remote CLI requires HTTPS outside loopback and must run with the profile setting too. Trust only actual proxy peers and configure the admin hostnames. |
 
@@ -106,7 +106,7 @@ reuses an existing data volume when enabling the profile. These are
 local fixtures, not proof of a live deployment, private CA installation or
 browser/proxy policy.
 
-Replication TLS has forward secrecy. Durable custodian recovery intentionally
+Replication TLS has forward secrecy, and its hybrid key exchange protects recorded replication traffic against a future quantum computer. The Ed25519 node identities are classical; a quantum attacker could only forge them live, and their ML-DSA replacement is later work. Durable custodian recovery intentionally
 allows later decryption of archived capsules and does not have recipient-key
 forward secrecy. Do not replace that recovery contract with an ephemeral key.
 
