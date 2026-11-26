@@ -14,6 +14,8 @@ import (
 	"math/big"
 	"net/http"
 	"time"
+
+	"github.com/Busnes-app/ky-primitives/pqtls"
 )
 
 // requestTimeout bounds one replication request. A primary that stops
@@ -61,13 +63,10 @@ func pinnedTLSConfig(id *Identity, allowed func(fp string) bool) (*tls.Config, e
 	if err != nil {
 		return nil, err
 	}
-	return &tls.Config{
+	// Both ends are KyDNS, so HybridOnly pins TLS 1.3 with X25519MLKEM768:
+	// a peer that cannot do the hybrid exchange is refused, never downgraded.
+	return pqtls.HybridOnly(&tls.Config{
 		Certificates: []tls.Certificate{cert},
-		MinVersion:   tls.VersionTLS13,
-		// Both ends are KyDNS, so offer only the hybrid post-quantum key
-		// exchange: a peer that cannot do it is refused, never downgraded.
-		// ponytail: inline until ky-primitives pqtls.HybridOnly is released.
-		CurvePreferences: []tls.CurveID{tls.X25519MLKEM768},
 		// Code scanning flags this and the alert is dismissed there. Do not add
 		// a codeql[...] marker: it does nothing in Go.
 		InsecureSkipVerify: true,
@@ -85,7 +84,7 @@ func pinnedTLSConfig(id *Identity, allowed func(fp string) bool) (*tls.Config, e
 			}
 			return nil
 		},
-	}, nil
+	}), nil
 }
 
 // leafFingerprint parses the leaf itself, because verifiedChains is empty

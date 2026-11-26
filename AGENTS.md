@@ -144,7 +144,11 @@ Code, one concern per package:
   `node_key` (raw 32-byte seed) loads through `keyfile`, so a non-0600 key is
   refused. A replica validates a pulled snapshot (settings and registry) before
   committing it. A peer's `Address` is the host it paired from, for display
-  only; the primary never dials a replica.
+  only; the primary never dials a replica. Replica TLS pins TLS 1.3 and
+  `X25519MLKEM768` via `ky-primitives/pqtls.HybridOnly` (no classical
+  downgrade); `scripts/check-pqc-tls.sh` guards against direct
+  `CurvePreferences` or `tlsmlkem` overrides and runs hybrid handshake proofs
+  under default and `GODEBUG=fips140=on` modes.
 - `internal/dnsserver` — ACL, authoritative answers, cache, forwarding, and the
   in-memory query ring (`QueryLog`) that fills only under `log_queries`, holds
   clients only under `log_client_ip`, and empties when either turns off.
@@ -164,7 +168,9 @@ Code, one concern per package:
   signature budgets, and test on `dnssectest` hierarchies (no network). Verify
   with `go test ./internal/dnssec ./internal/dnsserver ./internal/web -run 'DNSSEC|Validat|Verdict|Tamper|Clock|Secure'`.
   Design: `docs/superpowers/specs/2026-11-15-dnssec-validation-design.md`.
-- `internal/upstream` — DoT, DoH, and opt-in plain-UDP upstreams.
+- `internal/upstream` — DoT, DoH, and opt-in plain-UDP upstreams. Outbound
+  DoT/DoH TLS keeps Go's default `X25519MLKEM768` preference, verified by
+  `TestOutboundTLSNegotiatesHybrid`.
 - `internal/policy` — blacklist normalization, list parsing, fetch, refresh,
   and decision (deny/allow/list) for the DNS pipeline. `Explain` names every
   matching source; a pause is an in-memory deadline (at most `MaxPause`) that
