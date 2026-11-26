@@ -170,3 +170,66 @@ func ecdsaCert(t *testing.T) ([]byte, *ecdsa.PrivateKey) {
 	}
 	return der, key
 }
+
+// Replica links run TLS 1.3 with only the hybrid post-quantum key exchange.
+func TestReplicaLinkNegotiatesHybrid(t *testing.T) {
+	_, addr, fp := startServer(t, newFakePeers(), &fakeSource{})
+	cfg, err := pinnedTLSConfig(newIdentity(t), func(got string) bool { return got == fp })
+	if err != nil {
+		t.Fatal(err)
+	}
+	conn, err := tls.Dial("tcp", addr, cfg)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer conn.Close()
+	if got := conn.ConnectionState().CurveID; got != tls.X25519MLKEM768 {
+		t.Fatalf("replica link key exchange = %v, want X25519MLKEM768", got)
+	}
+}
+
+// A peer offering only classical X25519 gets no handshake, in either role.
+func TestReplicaLinkRefusesX25519OnlyPeer(t *testing.T) {
+	classical := func(cfg *tls.Config) { cfg.CurvePreferences = []tls.CurveID{tls.X25519} }
+
+	t.Run("server refuses client", func(t *testing.T) {
+		_, addr, fp := startServer(t, newFakePeers(), &fakeSource{})
+		cfg, err := pinnedTLSConfig(newIdentity(t), func(got string) bool { return got == fp })
+		if err != nil {
+			t.Fatal(err)
+		}
+		classical(cfg)
+		if conn, err := tls.Dial("tcp", addr, cfg); err == nil {
+			conn.Close()
+			t.Fatalf("server accepted an X25519-only client (%v)", conn.ConnectionState().CurveID)
+		}
+	})
+
+	t.Run("client refuses primary", func(t *testing.T) {
+		primary := newIdentity(t)
+		cfg, err := pinnedTLSConfig(primary, func(string) bool { return true })
+		if err != nil {
+			t.Fatal(err)
+		}
+		classical(cfg)
+		ln, err := tls.Listen("tcp", "127.0.0.1:0", cfg)
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer ln.Close()
+		// A primary that would answer, so only the key exchange can refuse it.
+		go http.Serve(ln, http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+			_ = json.NewEncoder(w).Encode(VersionReply{SchemaVersion: SchemaVersion, ConfigVersion: 1})
+		}))
+		c, err := NewClient(ln.Addr().String(), newIdentity(t), primary.NodeID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer c.Close()
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		if _, err := c.Version(ctx, 0); err == nil {
+			t.Fatal("client completed a request to an X25519-only primary")
+		}
+	})
+}

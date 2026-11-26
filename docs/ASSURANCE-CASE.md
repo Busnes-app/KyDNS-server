@@ -60,7 +60,7 @@ SECURITY.md says), an attacker on the host, and a malicious administrator.
    (`internal/upstream/dot.go`). Plain UDP is a per-upstream opt-in. Blacklists are fetched over
    HTTPS only, with redirects followed only while they stay HTTPS, and a 32 MB body cap
    (`internal/policy/fetch.go`).
-5. **Node ↔ node.** Replication uses TLS 1.3 with each side pinning the other's Ed25519 key
+5. **Node ↔ node.** Replication uses TLS 1.3 with only the hybrid X25519MLKEM768 key exchange, each side pinning the other's Ed25519 key
    fingerprint instead of a CA (`internal/replica/transport.go`). Peers are enrolled with a one-time
    code and an operator-compared fingerprint.
 6. **LAN devices → DHCP.** Packets from any device are parsed; a malformed one is dropped. Hostnames
@@ -111,7 +111,7 @@ about a live installation or FIPS certification.
 | Cross-site scripting | Server-side rendering with `html/template` (no `template.HTML` conversions); `static/theme.js` builds the theme picker with DOM calls and `textContent`, with no `innerHTML` | `internal/web/render.go`, `internal/web/static/theme.js` |
 | Untrusted DHCP input | Bounded range, sanitised hostnames, reserved names refused, RELEASE honoured only from the leaseholder; `FuzzHandle` exercises the packet handler | `internal/dhcpd/server.go`, `internal/zone/snapshot.go`, `internal/dhcpd/server_test.go` |
 | Hostile list contents | HTTPS only, a 32 MB cap and a ceiling of 2^21 parsed entries; the blacklist is consulted only for names the local zones do not answer, so a list cannot blackhole a local service | `internal/policy/fetch.go`, `internal/policy/parse.go`, `internal/dnsserver/server.go` |
-| Rogue replica | TLS 1.3, pinned Ed25519 fingerprints, operator-approved pairing, literal IP:port peers only | `internal/replica` |
+| Rogue replica | TLS 1.3 (X25519MLKEM768 only), pinned Ed25519 fingerprints, operator-approved pairing, literal IP:port peers only | `internal/replica` |
 | Secrets in logs | A logging contract; the setup token goes to a `0600` file (and the log, which SECURITY.md tells operators to restrict) | [LOGGING.md](../LOGGING.md), `internal/app/serve.go` |
 | Vulnerable dependencies | Dependabot; a daily dependency release ships the updates | `.github/dependabot.yml`, `.github/workflows/dependency-release.yml` |
 | Supply-chain tampering | Every GitHub Action pinned by commit; base images pinned by digest; every release file and image attested by `release.yml`; the binaries rebuild to the same bytes | [VERIFYING-RELEASES.md](VERIFYING-RELEASES.md) |
