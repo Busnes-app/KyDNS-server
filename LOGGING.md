@@ -10,10 +10,9 @@ collector.
 
 Log service registration changes, record changes, blacklist policy and list
 refresh changes, DHCP and discovery failures, health-check results, policy
-changes, and administrative actions. When replication ships, peer enrollment,
-replication failures, and replication conflicts join that list. Query logs must
-be configurable, minimized by default, and retained by the operator's logging
-platform rather than KyDNS.
+changes, administrative actions, and replication peer enrollment, failures, and
+conflicts. Query logs must be configurable, minimized by default, and retained
+by the operator's logging platform rather than KyDNS.
 
 The IPv6 DNS advertisement logs `ipv6 dns advertisement started` (the
 interface and KyDNS's own advertised address), `stopped`, and why it cannot

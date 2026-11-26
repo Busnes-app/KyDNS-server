@@ -14,4 +14,4 @@ The built-in DHCP service and replication have their own setup and primary-failu
 
 ## Backups
 
-Settings → Disaster recovery pins/pairs a suite public key and shows destinations, schedule and newest local copy. Preserve the key pin. Restore needs the sealed capsule and enough custodian cards, entered through stdin according to the runbook.
+Settings → Backups → Disaster recovery pins/pairs a suite public key and shows destinations, schedule and newest local copy. Preserve the key pin. Restore needs the sealed capsule and enough custodian cards, entered through stdin according to the runbook.

@@ -19,7 +19,7 @@ The links below open repository documents and need network access.
 - [Configuration](https://github.com/Busnes-app/KyDNS-server/blob/main/docs/CONFIGURATION.md)
 - [Replication](https://github.com/Busnes-app/KyDNS-server/blob/main/docs/REPLICATION.md)
 - [Packages](https://github.com/Busnes-app/KyDNS-server/blob/main/docs/PACKAGES.md)
-- [Raspberry pi](https://github.com/Busnes-app/KyDNS-server/blob/main/docs/RASPBERRY-PI.md)
+- [Raspberry Pi](https://github.com/Busnes-app/KyDNS-server/blob/main/docs/RASPBERRY-PI.md)
 - [Strong-key configuration](https://github.com/Busnes-app/KyDNS-server/blob/main/docs/STRONG-CRYPTO.md)
 - [Security model](https://github.com/Busnes-app/KyDNS-server/blob/main/docs/SECURITY-MODEL.md)
 - [Verifying releases](https://github.com/Busnes-app/KyDNS-server/blob/main/docs/VERIFYING-RELEASES.md)

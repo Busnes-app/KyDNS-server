@@ -1,4 +1,4 @@
-# Raspberry pi
+# Raspberry Pi
 
 [Product overview](../README.md) · [Standalone installation](../INSTALL.md)
 
