@@ -76,8 +76,7 @@ dig +tcp @192.168.1.53 service.home.arpa A
 Also verify upstream resolution/filtering and access restrictions before changing a
 client’s DNS settings. DHCP is not supported on this LAN-attached Compose path. See
 [Docker networking and pitfalls](docs/RUNNING.md#docker), [configuration](kydns.example.yaml)
-and [restore](docs/RESTORE.md). The prior nine-app installation campaign did not exercise
-KyDNS; its screenshots/results are not DNS acceptance evidence.
+and [restore](docs/RESTORE.md).
 
 ## Keep it recoverable
 
