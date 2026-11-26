@@ -108,6 +108,9 @@ jobs:
       - name: go vet
         run: go vet ./...
 
+      - name: PQC TLS policy and handshakes
+        run: scripts/check-pqc-tls.sh
+
       # Release binaries must not depend on where they are built. Both release paths run
       # from two directories: `make dist` in a git checkout (the tarballs, .deb and .rpm carry
       # that binary) and the Dockerfile's -trimpath build from a tree with no .git (the
