@@ -14,6 +14,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/Busnes-app/ky-primitives/pqtls"
 )
 
 // A peer whose key changed is an impostor or a reinstalled node. Either way it
@@ -183,9 +185,7 @@ func TestReplicaLinkNegotiatesHybrid(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer conn.Close()
-	if got := conn.ConnectionState().CurveID; got != tls.X25519MLKEM768 {
-		t.Fatalf("replica link key exchange = %v, want X25519MLKEM768", got)
-	}
+	pqtls.RequireHybrid(t, conn.ConnectionState())
 }
 
 // A peer offering only classical X25519 gets no handshake, in either role.
