@@ -2,7 +2,6 @@ package replica
 
 import (
 	"context"
-	"crypto/ed25519"
 	"crypto/rand"
 	"crypto/tls"
 	"crypto/x509"
@@ -30,9 +29,10 @@ var requestTimeout = 10 * time.Second
 // replication either.
 const maxReplyBytes = 16 << 20
 
-// selfSignedCert wraps the node's Ed25519 key in a certificate. Nothing but
-// the key itself signs it, and the validity is a century because there is no
-// renewal path: unpinning, not expiry, is how trust ends here.
+// selfSignedCert wraps the node's identity key (ML-DSA-65 or legacy Ed25519) in
+// a certificate. Nothing but the key itself signs it, and the validity is a
+// century because there is no renewal path: unpinning, not expiry, is how trust
+// ends here.
 func selfSignedCert(id *Identity) (tls.Certificate, error) {
 	serial, err := rand.Int(rand.Reader, new(big.Int).Lsh(big.NewInt(1), 128))
 	if err != nil {
@@ -97,11 +97,7 @@ func leafFingerprint(rawCerts [][]byte) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("parse peer certificate: %w", err)
 	}
-	pub, ok := leaf.PublicKey.(ed25519.PublicKey)
-	if !ok {
-		return "", fmt.Errorf("peer key is %T, want ed25519", leaf.PublicKey)
-	}
-	return Fingerprint(pub), nil
+	return publicKeyFingerprint(leaf.PublicKey)
 }
 
 // Client pulls from one primary.
