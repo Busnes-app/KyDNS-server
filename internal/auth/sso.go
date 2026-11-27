@@ -202,7 +202,11 @@ func (c *SSOClient) providerVerifier(ctx context.Context) (context.Context, *oid
 	if err != nil {
 		return nil, nil, nil, fmt.Errorf("discover OIDC provider: %w", err)
 	}
-	var endpoints OIDCEndpoints
+	var endpoints struct {
+		OIDCEndpoints
+		Issuer                           string   `json:"issuer"`
+		IDTokenSigningAlgValuesSupported []string `json:"id_token_signing_alg_values_supported"`
+	}
 	if err := provider.Claims(&endpoints); err != nil {
 		return nil, nil, nil, fmt.Errorf("OIDC metadata: %w", err)
 	}
@@ -216,13 +220,63 @@ func (c *SSOClient) providerVerifier(ctx context.Context) (context.Context, *oid
 			}
 		}
 	}
+	algs, err := supportedSigningAlgs(endpoints.IDTokenSigningAlgValuesSupported)
+	if err != nil {
+		return nil, nil, nil, err
+	}
 	jwksClient := *client
 	base := client.Transport
 	if base == nil {
 		base = http.DefaultTransport
 	}
 	jwksClient.Transport = strongJWKSTransport{base: base}
-	return ctx, provider, provider.VerifierContext(oidc.ClientContext(ctx, &jwksClient), &oidc.Config{ClientID: c.ClientID}), nil
+	issuer := endpoints.Issuer
+	if issuer == "" {
+		issuer = c.IssuerURL
+	}
+	keySet := newRemoteJWKSKeySet(endpoints.JWKSURI, &jwksClient, algs)
+	verifier := oidc.NewVerifier(issuer, keySet, &oidc.Config{
+		ClientID:             c.ClientID,
+		SupportedSigningAlgs: algs,
+	})
+	return ctx, provider, verifier, nil
+}
+
+// allowedOIDCSigningAlgs mirrors coreos/go-oidc's asymmetric allowlist plus RFC 9964 ML-DSA-65.
+var allowedOIDCSigningAlgs = map[string]bool{
+	"ML-DSA-65": true,
+	oidc.RS256:  true,
+	oidc.RS384:  true,
+	oidc.RS512:  true,
+	oidc.ES256:  true,
+	oidc.ES384:  true,
+	oidc.ES512:  true,
+	oidc.PS256:  true,
+	oidc.PS384:  true,
+	oidc.PS512:  true,
+	oidc.EdDSA:  true,
+}
+
+func supportedSigningAlgs(advertised []string) ([]string, error) {
+	if len(advertised) == 0 {
+		return []string{oidc.RS256}, nil
+	}
+	seen := make(map[string]struct{}, len(advertised))
+	out := make([]string, 0, len(advertised))
+	for _, alg := range advertised {
+		if !allowedOIDCSigningAlgs[alg] {
+			continue
+		}
+		if _, dup := seen[alg]; dup {
+			continue
+		}
+		seen[alg] = struct{}{}
+		out = append(out, alg)
+	}
+	if len(out) == 0 {
+		return nil, errors.New("OIDC provider advertises no supported asymmetric signing algorithms")
+	}
+	return out, nil
 }
 
 // ExchangeCode exchanges an authorization code with code_verifier for identity claims.
