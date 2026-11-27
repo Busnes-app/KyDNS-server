@@ -1,7 +1,6 @@
 package replica
 
 import (
-	"crypto/ed25519"
 	"crypto/tls"
 	"encoding/json"
 	"net"
@@ -106,16 +105,16 @@ func (s *Server) pinnedExcept(h http.Handler) http.Handler {
 }
 
 // peerFingerprint is the identity the handshake verified for this connection.
-// The pin check already rejected anything that is not an Ed25519 leaf.
+// The pin check already rejected anything other than ML-DSA-65 or legacy Ed25519.
 func peerFingerprint(r *http.Request) (string, bool) {
 	if r.TLS == nil || len(r.TLS.PeerCertificates) == 0 {
 		return "", false
 	}
-	pub, ok := r.TLS.PeerCertificates[0].PublicKey.(ed25519.PublicKey)
-	if !ok {
+	fp, err := publicKeyFingerprint(r.TLS.PeerCertificates[0].PublicKey)
+	if err != nil {
 		return "", false
 	}
-	return Fingerprint(pub), true
+	return fp, true
 }
 
 func (s *Server) handleVersion(w http.ResponseWriter, r *http.Request) {
