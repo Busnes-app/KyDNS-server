@@ -50,7 +50,7 @@ func TestSSOClientVerifiesMLDSA65AndMixedJWKS(t *testing.T) {
 		})
 	})
 
-	srv := httptest.NewServer(mux)
+	srv := httptest.NewTLSServer(mux)
 	defer srv.Close()
 	issuer = srv.URL
 
