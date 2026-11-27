@@ -2,7 +2,6 @@ package backup
 
 import (
 	"context"
-	"crypto/ed25519"
 	"errors"
 	"fmt"
 	"io/fs"
@@ -16,6 +15,7 @@ import (
 	"github.com/Busnes-app/ky-primitives/keyfile"
 	"github.com/Busnes-app/ky-primitives/recoveryclient"
 	"github.com/Busnes-app/kydns-server/internal/config"
+	"github.com/Busnes-app/kydns-server/internal/replica"
 	"github.com/Busnes-app/kydns-server/internal/store"
 	"gopkg.in/yaml.v3"
 )
@@ -89,8 +89,8 @@ func drillChecks(dir string, opened capsule.Manifest) []recoveryclient.Check {
 	check("configuration", err)
 	if slices.Contains(required, "data/node_key") {
 		raw, err := os.ReadFile(filepath.Join(dir, "data/node_key"))
-		if err == nil && len(raw) != ed25519.SeedSize {
-			err = errors.New("node_key must contain an Ed25519 seed")
+		if err == nil {
+			err = replica.ValidateNodeKeyBytes(raw)
 		}
 		check("node identity", err)
 	}
