@@ -3,7 +3,7 @@ module github.com/Busnes-app/kydns-server
 go 1.27.4
 
 require (
-	github.com/Busnes-app/ky-primitives v0.11.0
+	github.com/Busnes-app/ky-primitives v0.12.0
 	github.com/cloudflare/circl v1.6.5
 	github.com/coreos/go-oidc/v3 v3.21.0
 	github.com/go-jose/go-jose/v4 v4.1.9
